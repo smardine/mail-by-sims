@@ -1,7 +1,6 @@
-package fenetre.principale.popUpMenu;
+package fenetre.principale.jtree;
 
 import fenetre.principale.Main;
-import fenetre.principale.jtree.ActionTree;
 import imap.util.REPONSE;
 import imap.util.messageUtilisateur;
 

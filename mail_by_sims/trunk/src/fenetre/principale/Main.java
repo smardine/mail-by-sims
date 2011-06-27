@@ -76,7 +76,7 @@ public class Main extends JFrame {
 		jTable.setColumnModel(ColoneModel);
 		tableModel = new MyTableModel(new MlListeMessage(), ColoneModel);
 		jTable.setModel(tableModel);
-		jTable.addMouseListener(new MlActionJtable(jTable));
+		jTable.addMouseListener(new MlActionJtable(jTable, jEditorPane));
 		jMenuContact
 				.addActionListener(new MlActionMain(tableModel, jEditorPane));
 		jTree.addMouseListener(new MlActionJtree(jTree, jTable));

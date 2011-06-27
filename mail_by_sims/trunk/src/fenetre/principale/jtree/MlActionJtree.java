@@ -231,7 +231,10 @@ public class MlActionJtree implements TreeSelectionListener,
 		ArrayList<String> lstDossierBase = new ArrayList<String>(4);
 		EnDossierBase[] lstEnum = EnDossierBase.values();
 		for (EnDossierBase dossier : lstEnum) {
-			lstDossierBase.add(dossier.getLib());
+			if (dossier != EnDossierBase.ROOT) {
+				lstDossierBase.add(dossier.getLib());
+			}
+
 		}
 		return lstDossierBase;
 	}

@@ -41,7 +41,7 @@ public class MlActionJtable implements MouseListener {
 	private JMenuItem getSupprimer() {
 		if (Supprimer == null) {
 			Supprimer = new JMenuItem();
-			Supprimer.setText("Supprimer ce dossier");
+			Supprimer.setText("Supprimer ce message");
 			Supprimer.setActionCommand("SUPPRIMER");
 			Supprimer.addActionListener(new MlActionPopupJTable(table));
 		}

@@ -343,10 +343,10 @@ public class BDRequette {
 	 * @return
 	 */
 	private static String get1Champ(String requete) {
-		Statement state;
+
 		String chaine_champ = "";
 		try {
-			state = laConnexion.createStatement();
+			Statement state = laConnexion.createStatement();
 			final ResultSet jeuEnregistrements = state.executeQuery(requete);
 			final ResultSetMetaData infojeuEnregistrements = jeuEnregistrements
 					.getMetaData();
@@ -457,6 +457,28 @@ public class BDRequette {
 
 	}
 
+	public static boolean deleteMessageRecu(int idMessage) {
+		// on commence par effacer les piece jointe associées au message.
+		ArrayList<String> lstPieceJointe = getListePieceJointe(idMessage);
+		for (String pieceJointe : lstPieceJointe) {
+			String requete = "DELETE FROM PIECE_JOINTE WHERE ID_PIECE_JOINTE='"
+					+ pieceJointe + "'";
+			executeRequete(requete);
+		}
+
+		// on peut ensuite supprimer les messages
+		String requetteMessage = "DELETE FROM MAIL_RECU WHERE ID_MESSAGE_RECU='"
+				+ idMessage + "'";
+		return executeRequete(requetteMessage);
+
+	}
+
+	public static ArrayList<String> getListePieceJointe(int p_idMessage) {
+		String requette = "SELECT a.ID_PIECE_JOINTE FROM PIECE_JOINTE a where a.ID_MESSAGE='"
+				+ p_idMessage + "' ORDER BY a.ID_PIECE_JOINTE";
+		return getListeDeChamp(requette);
+	}
+
 	public static ArrayList<String> getListeDossier(String p_idCompte) {
 		String requette = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_COMPTE='"
 				+ p_idCompte + "' ORDER BY a.NOM_DOSSIER";
@@ -516,6 +538,7 @@ public class BDRequette {
 					.println("l'id de message que l'on vient d'enregistrer est: "
 							+ maxId);
 			fileToBlobContenu.delete();
+			fileToBlobDestinataires.delete();
 			// on insere le contenu en base
 			// si des pieces jointe sont presente, on enregistre leur chemin en
 			// base avec l'id du message
@@ -531,8 +554,8 @@ public class BDRequette {
 
 	private static boolean enregistrePieceJointe(String maxId,
 			File p_PieceJointe) {
-		String requette = "INSERT INTO PIECE_JOINTE (CONTENU_PIECE_JOINTE, ID_MESSAGE) VALUES ("
-				+ "?,'" + maxId + "')";
+		String requette = "INSERT INTO PIECE_JOINTE (CONTENU_PIECE_JOINTE,NOM_PIECE_JOINTE, ID_MESSAGE) VALUES ("
+				+ "?,'" + p_PieceJointe.getName() + "','" + maxId + "')";
 		PreparedStatement ps = null;
 		FileInputStream inPieceJointe = null;
 		try {
@@ -653,4 +676,5 @@ public class BDRequette {
 		return lstMessage;
 		// return null;
 	}
+
 }

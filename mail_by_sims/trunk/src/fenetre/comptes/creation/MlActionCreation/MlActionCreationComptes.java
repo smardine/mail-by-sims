@@ -82,7 +82,10 @@ public class MlActionCreationComptes implements ActionListener {
 
 			EnDossierBase[] lstEnum = EnDossierBase.values();
 			for (EnDossierBase dossier : lstEnum) {
-				lstDossierBase.add(dossier.getLib());
+				if (dossier != EnDossierBase.ROOT) {
+					lstDossierBase.add(dossier.getLib());
+				}
+
 			}
 
 			for (String nomDossier : lstDossierBase) {

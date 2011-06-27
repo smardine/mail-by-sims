@@ -17,7 +17,7 @@ public class BDScripts {
 				+ " CREATE GENERATOR GEN_DOSSIER_ID;"
 				+ " CREATE GENERATOR GEN_MAIL_ENVOYE_ID;"
 				+ " CREATE GENERATOR GEN_MAIL_RECU_ID;"
-				+ " CREATE GENERATOR GEN_RELGES_ID,"
+				+ " CREATE GENERATOR GEN_RELGES_ID;"
 				+ "CREATE GENERATOR GEN_PIECE_JOINTE_ID;";
 		version1.add(generator);
 
@@ -29,6 +29,7 @@ public class BDScripts {
 		String createTablePieceJointe = "CREATE TABLE PIECE_JOINTE "
 				+ "( ID_PIECE_JOINTE Integer,"
 				+ " CONTENU_PIECE_JOINTE Blob sub_type 0,"
+				+ " NOM_PIECE_JOINTE Varchar(500),"// 
 				+ " ID_MESSAGE Integer );";
 		version1.add(createTablePieceJointe);
 

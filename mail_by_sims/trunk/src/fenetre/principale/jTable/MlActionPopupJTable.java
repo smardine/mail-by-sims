@@ -1,9 +1,15 @@
 package fenetre.principale.jTable;
 
+import imap.util.REPONSE;
+import imap.util.messageUtilisateur;
+
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Date;
 
 import javax.swing.JTable;
+
+import bdd.BDRequette;
 
 public class MlActionPopupJTable implements ActionListener {
 
@@ -19,15 +25,32 @@ public class MlActionPopupJTable implements ActionListener {
 		String actionCommand = e.getActionCommand();
 		int selectedLine = table.getSelectedRow();
 
-		table.getModel().getValueAt(selectedLine, 0);// le n° du message (meme
+		Integer idMessage = (Integer) table.getModel().getValueAt(selectedLine,
+				0);// le
+		// n°
+		// du
+		// message
+		// (meme
 		// si il est caché.
-		table.getModel().getValueAt(selectedLine, 1);// la date de reception
+		Date dateReception = (Date) table.getModel()
+				.getValueAt(selectedLine, 1);// la date de reception
 
-		table.getModel().getValueAt(selectedLine, 2);// l'expediteur
+		String expediteur = (String) table.getModel().getValueAt(selectedLine,
+				2);// l'expediteur
 
-		table.getModel().getValueAt(selectedLine, 3);// le sujet du message
+		String sujet = (String) table.getModel().getValueAt(selectedLine, 3);// le
+		// sujet
+		// du
+		// message
 
 		if ("SUPPRIMER".equals(actionCommand)) {
+			REPONSE reponse = messageUtilisateur.affMessageQuestionOuiNon(
+					"Suppression de message",
+					"Voulez vous vraiment supprimer ce message?");
+			if (reponse == REPONSE.OUI) {
+				BDRequette.deleteMessageRecu(idMessage);
+
+			}
 
 		}
 

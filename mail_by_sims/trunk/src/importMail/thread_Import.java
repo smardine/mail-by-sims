@@ -44,7 +44,7 @@ public class thread_Import extends Thread {
 	public void run() {
 		String chemin = GestionRepertoire
 				.OpenFolder("Veuillez indiquer l'emplacement de vos mails Windows Mail");
-		messageUtilisateur.affMessageInfo("Vous avez choisi: " + chemin);
+		// messageUtilisateur.affMessageInfo("Vous avez choisi: " + chemin);
 
 		String choixCompte = messageUtilisateur.afficheChoixMultiple(
 				"Choix du compte",
@@ -68,8 +68,8 @@ public class thread_Import extends Thread {
 
 		MlListeMessage listeDeMessage = parcoursDossier(chemin, choixCompte,
 				treePathInitial);
-		messageUtilisateur.affMessageInfo("il y a au total "
-				+ listeDeMessage.size() + " message(s)");
+		// messageUtilisateur.affMessageInfo("il y a au total "
+		// + listeDeMessage.size() + " message(s)");
 
 		enregistreMessageEnBase(listeDeMessage);
 
@@ -86,12 +86,14 @@ public class thread_Import extends Thread {
 
 		Session mailSession = Session.getDefaultInstance(props, null);
 		/***/
+		int messNumber = 1;
 		for (MlMessage m : listeDeMessage) {
 			String cheminPhysique = m.getCheminPhysique();
 			// String idCpt = m.getIdCompte();
 			// String idDossier = m.getIdDossier();
 			// String nomDossier = m.getNomDossier();
-
+			System.out.println("importation du message " + messNumber++
+					+ "sur " + listeDeMessage.size());
 			InputStream source;
 			try {
 				source = new FileInputStream(cheminPhysique);
@@ -116,8 +118,9 @@ public class thread_Import extends Thread {
 				 * piece jointe
 				 */
 
-				m.setContenu(recupContenuMail(m, mime, m.getDateReception()
-						.getTime()));
+				m.setContenu(recupContenuMail(m, mime));// ,
+														// m.getDateReception()
+				// .getTime()));
 
 			} catch (FileNotFoundException e) {
 				messageUtilisateur.affMessageException(e, "le fichier "
@@ -138,7 +141,7 @@ public class thread_Import extends Thread {
 	}
 
 	public String recupContenuMail(MlMessage p_mlMessage,
-			Message p_messageJavaMail, long p_prefixeNomFichier)
+			Message p_messageJavaMail)// , long p_prefixeNomFichier)//
 			throws MessagingException, IOException {
 		StringBuilder sb = new StringBuilder();
 		// int messageNumber = p_messageJavaMail.getMessageNumber();
@@ -149,7 +152,7 @@ public class thread_Import extends Thread {
 			sb.append((String) o);
 		} else if (o instanceof Multipart) {
 			Multipart mp = (Multipart) o;
-			decodeMultipart(p_mlMessage, mp, sb, p_prefixeNomFichier);
+			decodeMultipart(p_mlMessage, mp, sb);// , p_prefixeNomFichier);
 
 		} else if (o instanceof InputStream) {
 			System.out.println("on ne devrait jamais passé par là");
@@ -159,7 +162,7 @@ public class thread_Import extends Thread {
 	}
 
 	public static void decodeMultipart(MlMessage p_mlMessage, Multipart mp,
-			StringBuilder sb, long p_prefixeNomFichier)
+			StringBuilder sb)// , long p_prefixeNomFichier)
 			throws MessagingException, IOException {
 		for (int j = 0; j < mp.getCount(); j++) {
 			// Part are numbered starting at 0
@@ -175,11 +178,12 @@ public class thread_Import extends Thread {
 			} else if (o2 instanceof Multipart) {
 				System.out.print("**MultiPart Imbriqué.  ");
 				Multipart mp2 = (Multipart) o2;
-				decodeMultipart(p_mlMessage, mp2, sb, p_prefixeNomFichier);
+				decodeMultipart(p_mlMessage, mp2, sb);// , p_prefixeNomFichier);
 
 			} else if (o2 instanceof InputStream) {
 
-				recuperePieceJointe(p_mlMessage, p_prefixeNomFichier, b, o2);
+				recuperePieceJointe(p_mlMessage,// p_prefixeNomFichier,//
+						b, o2);
 
 			}
 
@@ -197,7 +201,8 @@ public class thread_Import extends Thread {
 	 * @throws IOException
 	 */
 	public static void recuperePieceJointe(MlMessage p_mlMessage,
-			long p_prefixeNomFichier, BodyPart p_bodyPart, Object p_inputStream)
+	// long p_prefixeNomFichier, //
+			BodyPart p_bodyPart, Object p_inputStream)
 			throws MessagingException, FileNotFoundException {
 
 		InputStream input = (InputStream) p_inputStream;
@@ -215,8 +220,14 @@ public class thread_Import extends Thread {
 			fileName = decodeurIso(fileName);
 		}
 
-		File fichier = new File(GestionRepertoire.RecupRepTravail()
-				+ "/pieces jointes/" + p_prefixeNomFichier + "_" + fileName);
+		// creation du repertoire qui va acceuillir les pieces jointes
+		File repPieceJointe = new File(GestionRepertoire.RecupRepTravail()
+				+ "/tempo/pieces jointes");
+		if (!repPieceJointe.exists()) {
+			repPieceJointe.mkdirs();
+		}
+		File fichier = new File(repPieceJointe.getAbsolutePath() + "/"
+				+ fileName);
 		if (!fichier.exists()) {
 			FileOutputStream writeFile = new FileOutputStream(fichier);
 			byte[] buffer = new byte[p_bodyPart.getSize()];
@@ -292,6 +303,8 @@ public class thread_Import extends Thread {
 						try {
 							message.setCheminPhysique(f.getCanonicalPath());
 							lstMessage.add(message);
+							System.out.println(lstMessage.size()
+									+ " message(s) trouvé(s)");
 						} catch (IOException e) {
 							messageUtilisateur.affMessageException(e,
 									"impossible d'acceder au repertoire :\n\r");
@@ -310,6 +323,7 @@ public class thread_Import extends Thread {
 			m.setIdDossier(BDRequette.getIdDossier(nomDossier, idCompte));
 		}
 		for (File f : lstSousDossier) {
+			System.out.println("creation du dossier:" + f.getName());
 			MlListeMessage lstMessge = null;
 			try {
 				if (newTp != null) {

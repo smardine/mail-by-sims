@@ -93,6 +93,8 @@ public class MyTableModel extends AbstractTableModel {
 			data[i][2] = m.getExpediteur();
 			// sujet
 			data[i][3] = m.getSujet();
+			// data[i][4] = BDRequette.messageHavePieceJointe(m.getIdMessage());
+
 		}
 
 		fireTableDataChanged();

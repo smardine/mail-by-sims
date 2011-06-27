@@ -7,7 +7,9 @@ import importMail.MlMessage;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -675,6 +677,61 @@ public class BDRequette {
 
 		return lstMessage;
 		// return null;
+	}
+
+	public static boolean messageHavePieceJointe(int idMessage) {
+		String requette = "SELECT COUNT (*) FROM PIECE_JOINTE WHERE ID_MESSAGE='"
+				+ idMessage + "'";
+		int messageCount = Integer.parseInt(get1Champ(requette));
+
+		return messageCount > 0;
+	}
+
+	public static File getContenuFromId(Integer idMessage) {
+		String requette = "SELECT CONTENU FROM MAIL_RECU WHERE ID_MESSAGE_RECU='"
+				+ idMessage + "'";
+		return writeBlobToFile(requette);
+	}
+
+	private static File writeBlobToFile(String requette) {
+		File contenuHMTL = new File(GestionRepertoire.RecupRepTravail()
+				+ "/tempo/contenu.html");
+		try {
+			PreparedStatement stmt = laConnexion.prepareStatement(requette);
+			ResultSet resultSet = stmt.executeQuery();
+			while (resultSet.next()) {
+				String name = resultSet.getString(1);
+				// System.out.println("Name        = " + name);
+				// String description = resultSet.getString(2);
+				// System.out.println("Description = " + description);
+
+				FileOutputStream fos = new FileOutputStream(contenuHMTL);
+
+				byte[] buffer = new byte[256];
+
+				//
+				// Get the binary stream of our BLOB data
+				//
+				InputStream is = resultSet.getBinaryStream(1);
+				while (is.read(buffer) > 0) {
+					fos.write(buffer);
+				}
+
+				fos.close();
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} finally {
+
+		}
+		return contenuHMTL;
+
 	}
 
 }

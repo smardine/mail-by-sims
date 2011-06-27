@@ -20,7 +20,6 @@ import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.Main;
 import fenetre.principale.jTable.MyTableModel;
-import fenetre.principale.popUpMenu.MlActionPopupJTree;
 
 public class MlActionJtree implements TreeSelectionListener,
 		TreeExpansionListener, MouseListener {

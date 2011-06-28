@@ -5,8 +5,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.Date;
 
 import javax.swing.JEditorPane;
@@ -27,10 +25,10 @@ public class MlActionJtable implements MouseListener {
 
 	private final JEditorPane editor;
 
-	public MlActionJtable(JTable p_table, JEditorPane p_editor) {
+	public MlActionJtable(JTable p_table, JEditorPane jEditorPane) {
 		this.table = p_table;
 		this.popUpMenu = getJPopupMenu();
-		this.editor = p_editor;
+		this.editor = jEditorPane;
 	}
 
 	/**
@@ -123,19 +121,34 @@ public class MlActionJtable implements MouseListener {
 		// sujet
 
 		File contenu = BDRequette.getContenuFromId(idMessage);
-		try {
-			// on RAZ le contenu du panelEditor
-			Document doc = editor.getDocument();
-			doc.putProperty(Document.StreamDescriptionProperty, null);
 
-			editor.setPage(new URL("file:///" + contenu.getAbsolutePath()));
-		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		// on converti le .html en .xml; exploitable par XHTMLPanel
+		// String url = "file:///" + contenu.getAbsolutePath();
+		// String outputFilename = GestionRepertoire.RecupRepTravail()
+		// + "/tempo/contenu.xml";
+		// String errorfilename = GestionRepertoire.RecupRepTravail()
+		// + "/tempo/error.log";
+		//
+		// HTML2XML t = new HTML2XML(url, outputFilename, errorfilename);
+		// File xmlFile = t.convert();
+		// try {
+		// editor.setDocument(xmlFile);
+		// } catch (Exception e) {
+		// // TODO Auto-generated catch block
+		// e.printStackTrace();
+		// }
+
+		// on RAZ le contenu du panelEditor
+		Document doc = editor.getDocument();
+		doc.putProperty(Document.StreamDescriptionProperty, null);
+		try {
+			editor.setPage("file:///" + contenu.getAbsolutePath());
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+
+		// editor.setPage(new URL("file:///" + contenu.getAbsolutePath()));
 
 	}
 

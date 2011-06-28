@@ -13,9 +13,9 @@ public class thread_ReleveImap extends Thread {
 	private final MyTableModel model;
 	private final JEditorPane pane;
 
-	public thread_ReleveImap(MyTableModel p_tableModel, JEditorPane p_pane) {
+	public thread_ReleveImap(MyTableModel p_tableModel, JEditorPane editor) {
 		this.model = p_tableModel;
-		this.pane = p_pane;
+		this.pane = editor;
 	}
 
 	@Override

@@ -77,6 +77,7 @@ public class Main2 extends JFrame {
 			jDesktopPaneGauche = new JDesktopPane();
 			jDesktopPaneGauche.setLayout(borderLayout);
 			jDesktopPaneGauche.setPreferredSize(new Dimension(310, 300));
+			jDesktopPaneGauche.setMinimumSize(new Dimension(310, 300));
 			jDesktopPaneGauche.add(getJTree(), BorderLayout.CENTER);
 		}
 		return jDesktopPaneGauche;

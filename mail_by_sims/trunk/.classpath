@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="fenetre/TreeExpandRowAndMakeRowVisible.java|JTree/TreeExpandRowAndMakeRowVisible.java|layout/BoxLayoutDemo2.java|html/gui.java|html/fetchMail.java|fenetre/test.java|fenetre/test1.java|fenetre/test2.java|fenetre/test3.java|fenetre/test4.java|jseparator/|resizable/|Mail/|fenetre/principale/RightClick.java|fenetre/principale/test.java|fenetre/principale/DocumentViewer.java" kind="src" path="src"/>
+	<classpathentry excluding="fenetre/TreeExpandRowAndMakeRowVisible.java|JTree/TreeExpandRowAndMakeRowVisible.java|layout/BoxLayoutDemo2.java|html/gui.java|html/fetchMail.java|fenetre/test.java|fenetre/test1.java|fenetre/test2.java|fenetre/test3.java|fenetre/test4.java|jseparator/|resizable/|Mail/|fenetre/principale/RightClick.java|fenetre/principale/DocumentViewer.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="Images"/>
 	<classpathentry kind="src" path="lib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>

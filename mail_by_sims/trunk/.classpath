@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="fenetre/TreeExpandRowAndMakeRowVisible.java|JTree/TreeExpandRowAndMakeRowVisible.java|layout/BoxLayoutDemo2.java|html/gui.java|html/fetchMail.java|fenetre/test.java|fenetre/test1.java|fenetre/test2.java|fenetre/test3.java|fenetre/test4.java|jseparator/|resizable/|Mail/|fenetre/principale/RightClick.java|fenetre/principale/test.java|html/|fenetre/principale/DocumentViewer.java" kind="src" path="src"/>
+	<classpathentry excluding="fenetre/TreeExpandRowAndMakeRowVisible.java|JTree/TreeExpandRowAndMakeRowVisible.java|layout/BoxLayoutDemo2.java|html/gui.java|html/fetchMail.java|fenetre/test.java|fenetre/test1.java|fenetre/test2.java|fenetre/test3.java|fenetre/test4.java|jseparator/|resizable/|Mail/|fenetre/principale/RightClick.java|fenetre/principale/test.java|fenetre/principale/DocumentViewer.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="Images"/>
 	<classpathentry kind="src" path="lib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
@@ -9,7 +9,7 @@
 	<classpathentry kind="lib" path="lib/jaybird-2.1.6-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/activation.jar"/>
 	<classpathentry kind="lib" path="lib/jsse.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/core-renderer.jar" sourcepath="flyingsaucer-R8-src.zip"/>
+	<classpathentry exported="true" kind="lib" path="lib/core-renderer.jar" sourcepath="lib/flyingsaucer-R8-src.zip"/>
 	<classpathentry exported="true" kind="lib" path="lib/iText-2.0.8.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/xml-apis-xerces-2.9.1.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jtidy-r938.jar"/>

@@ -50,7 +50,7 @@ public class Main extends JFrame {
 	private JMenuItem jMenuHistorique = null;
 	private JMenuItem jMenuContact = null;
 	private static JTree jTree = null;
-	private JEditorPane jEditorPane = null;
+	private JEditorPane htmlPane = null;
 	private JScrollPane jScrollPane = null;
 	private JScrollPane jScrollPaneEditor = null;
 	private JTable jTable = null;
@@ -76,9 +76,8 @@ public class Main extends JFrame {
 		jTable.setColumnModel(ColoneModel);
 		tableModel = new MyTableModel(new MlListeMessage(), ColoneModel);
 		jTable.setModel(tableModel);
-		jTable.addMouseListener(new MlActionJtable(jTable, jEditorPane));
-		jMenuContact
-				.addActionListener(new MlActionMain(tableModel, jEditorPane));
+		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane));
+		jMenuContact.addActionListener(new MlActionMain(tableModel, htmlPane));
 		jTree.addMouseListener(new MlActionJtree(jTree, jTable));
 		jTree.addTreeSelectionListener(new MlActionJtree(jTree, jTable));
 		jTree.addTreeExpansionListener(new MlActionJtree(jTree, jTable));
@@ -116,14 +115,15 @@ public class Main extends JFrame {
 	 */
 	private JEditorPane getJEditorPane() {
 
-		jEditorPane = new JEditorPane();
+		htmlPane = new JEditorPane();
 
-		jEditorPane.setComponentOrientation(ComponentOrientation.UNKNOWN);
-		jEditorPane.setFont(new Font("Dialog", Font.PLAIN, 12));
-		jEditorPane.setContentType("text/html");
-		jEditorPane.setEditable(true);
+		htmlPane.setComponentOrientation(ComponentOrientation.UNKNOWN);
+		htmlPane.setFont(new Font("Dialog", Font.PLAIN, 12));
+		// htmlPane.setContentType("text/html");
+		htmlPane.setEditable(false);
+		htmlPane.addHyperlinkListener(new MlActionHtmlPane());
 
-		return jEditorPane;
+		return htmlPane;
 	}
 
 	/**

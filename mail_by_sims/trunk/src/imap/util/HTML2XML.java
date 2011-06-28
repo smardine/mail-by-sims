@@ -1,4 +1,4 @@
-package fenetre.principale;
+package imap.util;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -14,18 +14,18 @@ import org.w3c.tidy.Tidy;
 import org.xhtmlrenderer.simple.FSScrollPane;
 import org.xhtmlrenderer.simple.XHTMLPanel;
 
-public class TestHTML2XML {
+public class HTML2XML {
 	private final String url;
 	private final String outFileName;
 	private final String errOutFileName;
 
-	public TestHTML2XML(String url, String outFileName, String errOutFileName) {
+	public HTML2XML(String url, String outFileName, String errOutFileName) {
 		this.url = url;
 		this.outFileName = outFileName;
 		this.errOutFileName = errOutFileName;
 	}
 
-	public void convert() {
+	public File convert() {
 		URL u;
 		BufferedInputStream in;
 		FileOutputStream out;
@@ -56,6 +56,7 @@ public class TestHTML2XML {
 		} catch (IOException e) {
 			System.out.println(this.toString() + e.toString());
 		}
+		return new File(outFileName);
 	}
 
 	public static void main(String[] args) throws Exception {
@@ -67,7 +68,7 @@ public class TestHTML2XML {
 		String outputFilename = "c:/contenu.xml";
 		String errorfilename = "c:/error.log";
 
-		TestHTML2XML t = new TestHTML2XML(url, outputFilename, errorfilename);
+		HTML2XML t = new HTML2XML(url, outputFilename, errorfilename);
 		t.convert();
 
 		XHTMLPanel panel = new XHTMLPanel();

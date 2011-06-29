@@ -2,16 +2,20 @@ package fenetre.principale;
 
 import importMail.MlListeMessage;
 
+import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.io.IOException;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JDesktopPane;
 import javax.swing.JEditorPane;
 import javax.swing.JFrame;
+import javax.swing.JList;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
@@ -28,7 +32,6 @@ import javax.swing.tree.TreePath;
 import Verif.Thread_Verif;
 import bdd.BDAcces;
 import fenetre.EnTitreFenetre;
-import fenetre.SizeAndPosition;
 import fenetre.principale.MlAction.EnActionMain;
 import fenetre.principale.MlAction.MlActionMain;
 import fenetre.principale.jTable.MlActionJtable;
@@ -40,31 +43,270 @@ import fenetre.principale.jtree.MlActionJtree;
 public class Main extends JFrame {
 
 	private static final long serialVersionUID = 1L;
+	private static TreePath treePath;
+	private static String nomCompte;
 	private JPanel jContentPane = null;
-	private JMenuBar jJMenuBar = null;
-	private JMenu jMenuFichier = null;
-	private JMenu jMenuAide = null;
-	private JMenuItem jMenuCompte = null;
-	private JMenuItem jMenuQuitter = null;
-	private JMenuItem jMenuExplorer = null;
-	private JMenuItem jMenuHistorique = null;
-	private JMenuItem jMenuContact = null;
-	private static JTree jTree = null;
+	private JDesktopPane jDesktopPaneHaut = null;
+	private JDesktopPane jDesktopPaneGauche = null;
+	private JDesktopPane jDesktopPaneDroite = null;
+	private JDesktopPane jDesktopPaneBas = null;
+	private JButton jButton = null;
+	private JButton jButton1 = null;
+	private JButton jButton2 = null;
+	private JTree jTree = null;
 	private JEditorPane htmlPane = null;
 	private JScrollPane jScrollPane = null;
-	private JScrollPane jScrollPaneEditor = null;
 	private JTable jTable = null;
-	private final MyTableModel tableModel;
-	private static TreePath treePath; // @jve:decl-index=0:
-	private static String nomCompte;
-	private JMenu jMenuImportExport = null;
-	private JMenuItem jMenuItemImporter = null;
+	private JList jList = null;
+	private JMenuBar jJMenuBar;
+	private JMenu jMenuFichier;
+	private JMenu jMenuAide; // @jve:decl-index=0:
+	private JMenuItem jMenuCompte;
+	private JMenuItem jMenuQuitter;
+	private JMenuItem jMenuExplorer;
+	private JMenuItem jMenuHistorique;
+	private JMenuItem jMenuContact;
 	private static XTableColumnModel ColoneModel;
+	private final MyTableModel tableModel;
+	private JMenu jMenuImportExport;
+	private JMenuItem jMenuItemImporter; // @jve:decl-index=0:
+	private JScrollPane jScrollPane1 = null;
+
+	/**
+	 * This method initializes jDesktopPaneHaut
+	 * @return javax.swing.JDesktopPane
+	 */
+	private JDesktopPane getJDesktopPaneHaut() {
+		if (jDesktopPaneHaut == null) {
+			jDesktopPaneHaut = new JDesktopPane();
+			jDesktopPaneHaut
+					.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
+			jDesktopPaneHaut.setPreferredSize(new Dimension(
+					EnNomComposant.PANEL_BOUTON.getLargeurInitiale(),
+					EnNomComposant.PANEL_BOUTON.getHauteurInitiale()));
+			jDesktopPaneHaut.setMinimumSize(new Dimension(
+					EnNomComposant.PANEL_BOUTON.getLargeurInitiale(),
+					EnNomComposant.PANEL_BOUTON.getHauteurInitiale()));
+			jDesktopPaneHaut.setName(EnNomComposant.PANEL_BOUTON.getLib());
+			jDesktopPaneHaut.add(getJButton(), null);
+			jDesktopPaneHaut.add(getJButton1(), null);
+			jDesktopPaneHaut.add(getJButton2(), null);
+
+		}
+		return jDesktopPaneHaut;
+	}
+
+	/**
+	 * This method initializes jDesktopPaneGauche
+	 * @return javax.swing.JDesktopPane
+	 */
+	private JDesktopPane getJDesktopPaneGauche() {
+		if (jDesktopPaneGauche == null) {
+			BorderLayout borderLayout = new BorderLayout();
+			borderLayout.setHgap(1);
+			borderLayout.setVgap(1);
+			jDesktopPaneGauche = new JDesktopPane();
+			jDesktopPaneGauche.setName(EnNomComposant.PANEL_TREE.getLib());
+			jDesktopPaneGauche.setLayout(borderLayout);
+			jDesktopPaneGauche.setPreferredSize(new Dimension(
+					EnNomComposant.PANEL_TREE.getLargeurInitiale(),
+					EnNomComposant.PANEL_TREE.getHauteurInitiale()));
+			jDesktopPaneGauche.setMinimumSize(new Dimension(
+					EnNomComposant.PANEL_TREE.getLargeurInitiale(),
+					EnNomComposant.PANEL_TREE.getHauteurInitiale()));
+			jDesktopPaneGauche.add(getJTree(), BorderLayout.CENTER);
+		}
+		return jDesktopPaneGauche;
+	}
+
+	/**
+	 * This method initializes jDesktopPaneDroite
+	 * @return javax.swing.JDesktopPane
+	 */
+	private JDesktopPane getJDesktopPaneDroite() {
+		if (jDesktopPaneDroite == null) {
+			jDesktopPaneDroite = new JDesktopPane();
+			jDesktopPaneDroite.setPreferredSize(new Dimension(
+					EnNomComposant.PANEL_TABLE_ET_LISTE.getLargeurInitiale(),
+					EnNomComposant.PANEL_TABLE_ET_LISTE.getHauteurInitiale()));
+			jDesktopPaneDroite.setMinimumSize(new Dimension(
+					EnNomComposant.PANEL_TABLE_ET_LISTE.getLargeurInitiale(),
+					EnNomComposant.PANEL_TABLE_ET_LISTE.getHauteurInitiale()));
+			jDesktopPaneDroite.setLayout(new BorderLayout());
+			jDesktopPaneDroite.setName(EnNomComposant.PANEL_TABLE_ET_LISTE
+					.getLib());
+			jDesktopPaneDroite.add(getJScrollPane(), BorderLayout.CENTER);
+			jDesktopPaneDroite.add(getJList(), BorderLayout.SOUTH);
+		}
+		return jDesktopPaneDroite;
+	}
+
+	/**
+	 * This method initializes jDesktopPaneBas
+	 * @return javax.swing.JDesktopPane
+	 */
+	private JDesktopPane getJDesktopPaneBas() {
+		if (jDesktopPaneBas == null) {
+			BorderLayout borderLayout = new BorderLayout();
+			borderLayout.setHgap(1);
+			borderLayout.setVgap(1);
+			jDesktopPaneBas = new JDesktopPane();
+			jDesktopPaneBas.setPreferredSize(new Dimension(
+					EnNomComposant.PANEL_HTML.getLargeurInitiale(),
+					EnNomComposant.PANEL_HTML.getHauteurInitiale()));
+			jDesktopPaneBas.setMinimumSize(new Dimension(
+					EnNomComposant.PANEL_HTML.getLargeurInitiale(),
+					EnNomComposant.PANEL_HTML.getHauteurInitiale()));
+			jDesktopPaneBas.setName(EnNomComposant.PANEL_HTML.getLib());
+			jDesktopPaneBas.setLayout(borderLayout);
+			jDesktopPaneBas.add(getJScrollPane1(), BorderLayout.CENTER);
+		}
+		return jDesktopPaneBas;
+	}
+
+	/**
+	 * This method initializes jButton
+	 * @return javax.swing.JButton
+	 */
+	private JButton getJButton() {
+		if (jButton == null) {
+			jButton = new JButton();
+			jButton.setBounds(new Rectangle(9, 6, 59, 19));
+		}
+		return jButton;
+	}
+
+	/**
+	 * This method initializes jButton1
+	 * @return javax.swing.JButton
+	 */
+	private JButton getJButton1() {
+		if (jButton1 == null) {
+			jButton1 = new JButton();
+			jButton1.setBounds(new Rectangle(78, 6, 55, 20));
+		}
+		return jButton1;
+	}
+
+	/**
+	 * This method initializes jButton2
+	 * @return javax.swing.JButton
+	 */
+	private JButton getJButton2() {
+		if (jButton2 == null) {
+			jButton2 = new JButton();
+			jButton2.setBounds(new Rectangle(143, 7, 71, 21));
+		}
+		return jButton2;
+	}
+
+	/**
+	 * This method initializes jTree
+	 * @return javax.swing.JTree
+	 */
+	private JTree getJTree() {
+		if (jTree == null) {
+			new BDAcces();
+			ArborescenceBoiteMail arbo = new ArborescenceBoiteMail();
+			jTree = new JTree(arbo);
+			jTree.setBounds(new Rectangle(3, 5, 290, 255));
+			jTree.setShowsRootHandles(true);
+			jTree.setRootVisible(false);
+			jTree.setToggleClickCount(1);
+			jTree.setExpandsSelectedPaths(true);
+		}
+		return jTree;
+	}
+
+	/**
+	 * This method initializes jEditorPane
+	 * @return javax.swing.JEditorPane
+	 */
+	private JEditorPane getJEditorPane() {
+		htmlPane = new JEditorPane();
+		htmlPane.setComponentOrientation(ComponentOrientation.UNKNOWN);
+		htmlPane.setFont(new Font("Dialog", Font.PLAIN, 12));
+		// htmlPane.setContentType("text/html");
+		// htmlPane.setContentType("text/html");
+		htmlPane.setEditable(false);
+		htmlPane.addHyperlinkListener(new MlActionHtmlPane());
+
+		return htmlPane;
+	}
+
+	/**
+	 * This method initializes jScrollPane
+	 * @return javax.swing.JScrollPane
+	 */
+	private JScrollPane getJScrollPane() {
+		if (jScrollPane == null) {
+			jScrollPane = new JScrollPane();
+			jScrollPane.setViewportView(getJTable());
+		}
+		return jScrollPane;
+	}
+
+	/**
+	 * This method initializes jTable
+	 * @return javax.swing.JTable
+	 */
+	private JTable getJTable() {
+		if (jTable == null) {
+			jTable = new JTable();
+			jTable.setAutoCreateColumnsFromModel(false);
+			jTable.setColumnSelectionAllowed(true);
+			jTable
+					.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			jTable.setShowVerticalLines(true);
+		}
+		return jTable;
+	}
+
+	/**
+	 * This method initializes jList
+	 * @return javax.swing.JList
+	 */
+	private JList getJList() {
+		if (jList == null) {
+			jList = new JList();
+
+			jList.setBackground(Color.black);
+			jList.setPreferredSize(new Dimension(50, 50));
+		}
+		return jList;
+	}
+
+	/**
+	 * This method initializes jScrollPane1
+	 * @return javax.swing.JScrollPane
+	 */
+	private JScrollPane getJScrollPane1() {
+		if (jScrollPane1 == null) {
+			jScrollPane1 = new JScrollPane();
+			jScrollPane1.setViewportView(getJEditorPane());
+			jScrollPane1.setViewportBorder(BorderFactory
+					.createEtchedBorder(EtchedBorder.RAISED));
+		}
+		return jScrollPane1;
+	}
+
+	/**
+	 * @param args
+	 */
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				Main thisClass = new Main();
+				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+				thisClass.setVisible(true);
+			}
+		});
+	}
 
 	/**
 	 * This is the default constructor
 	 */
-
 	public Main() {
 		super();
 		new BDAcces();
@@ -82,97 +324,83 @@ public class Main extends JFrame {
 		jTree.addTreeSelectionListener(new MlActionJtree(jTree, jTable));
 		jTree.addTreeExpansionListener(new MlActionJtree(jTree, jTable));
 		jMenuItemImporter.addActionListener(new MlActionMain(jTree));
+	}
+
+	/**
+	 * This method initializes this
+	 * @return void
+	 */
+	private void initialize() {
+		// Dimension screenSize = getToolkit().getScreenSize();
+		// int width = screenSize.width * 8 / 10;
+		// int height = screenSize.height * 8 / 10;
+		// setBounds(width / 8, height / 8, width, height);
+		this.setSize(800, 600);
+		this.setMinimumSize(new Dimension(800, 600));
+		this.setPreferredSize(new Dimension(800, 600));
+
+		this.setContentPane(getJContentPane());
+		this.setJMenuBar(getJJMenuBar());
+		this.setTitle(EnTitreFenetre.PRINCIPALE.getLib());
+		this.addWindowListener(new java.awt.event.WindowAdapter() {
+			@Override
+			public void windowClosing(java.awt.event.WindowEvent e) {
+				System.exit(0);
+			}
+		});
+		this.setLocationRelativeTo(null);// on centre la fenetre
+
+		this.setVisible(true);
+		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(
+				getClass().getResource("/logo_appli.png")));
+		this.addComponentListener(new MlComposantListener(jContentPane));
 
 	}
 
 	/**
-	 * This method initializes jTree
-	 * @return javax.swing.JTree
+	 * This method initializes jContentPane
+	 * @return javax.swing.JPanel
 	 */
-	private JTree getJTree() {
-		if (jTree == null) {
-			// chargement du model du jTree
-			new BDAcces();
-			ArborescenceBoiteMail arbo = new ArborescenceBoiteMail();
-			jTree = new JTree(arbo);
-			jTree.setLocation(new Point(0, 1));
-			jTree.setShowsRootHandles(true);
-			jTree.setRootVisible(false);
-			jTree.setSize(new Dimension(264, 281));
-			jTree.setToggleClickCount(1);
-			jTree.setExpandsSelectedPaths(true);
-			jTree.setSize(SizeAndPosition.JTREE.getHauteur(),
-					SizeAndPosition.JTREE.getLargeur());
-
+	private JPanel getJContentPane() {
+		if (jContentPane == null) {
+			BorderLayout borderLayout1 = new BorderLayout();
+			borderLayout1.setHgap(3);
+			borderLayout1.setVgap(3);
+			jContentPane = new JPanel();
+			jContentPane.setLayout(borderLayout1);
+			jContentPane.add(getJDesktopPaneHaut(), BorderLayout.NORTH);
+			jContentPane.add(getJDesktopPaneGauche(), BorderLayout.WEST);
+			jContentPane.add(getJDesktopPaneDroite(), BorderLayout.CENTER);
+			jContentPane.add(getJDesktopPaneBas(), BorderLayout.SOUTH);
 		}
-		return jTree;
+		return jContentPane;
+	}
+
+	private JMenuBar getJJMenuBar() {
+		if (jJMenuBar == null) {
+			jJMenuBar = new JMenuBar();
+			jJMenuBar.setPreferredSize(new Dimension(0, 25));
+			jJMenuBar.add(getJMenuFichier());
+			jJMenuBar.add(getJMenuAide());
+		}
+		return jJMenuBar;
 	}
 
 	/**
-	 * This method initializes jEditorPane
-	 * @return javax.swing.JEditorPane
-	 * @throws IOException
+	 * This method initializes jMenuFichier
+	 * @return javax.swing.JMenu
 	 */
-	private JEditorPane getJEditorPane() {
+	private JMenu getJMenuFichier() {
 
-		htmlPane = new JEditorPane();
-
-		htmlPane.setComponentOrientation(ComponentOrientation.UNKNOWN);
-		htmlPane.setFont(new Font("Dialog", Font.PLAIN, 12));
-		// htmlPane.setContentType("text/html");
-		htmlPane.setEditable(false);
-		htmlPane.addHyperlinkListener(new MlActionHtmlPane());
-
-		return htmlPane;
-	}
-
-	/**
-	 * This method initializes jScrollPane
-	 * @return javax.swing.JScrollPane
-	 */
-	private JScrollPane getJScrollPane() {
-		if (jScrollPane == null) {
-			jScrollPane = new JScrollPane();
-			jScrollPane.setLocation(new Point(SizeAndPosition.JTABLE
-					.getPositionHorizontale(), SizeAndPosition.JTABLE
-					.getPositionVerticale()));
-			jScrollPane.setSize(new Dimension(SizeAndPosition.JTABLE
-					.getHauteur(), SizeAndPosition.JTABLE.getLargeur()));
-			jScrollPane.setViewportView(getJTable());
+		if (jMenuFichier == null) {
+			jMenuFichier = new JMenu();
+			jMenuFichier.setText("Fichier");
+			jMenuFichier.add(getJMenuCompte());
+			jMenuFichier.add(getJMenuImportExport());
+			jMenuFichier.add(getJMenuQuitter());
 		}
-		return jScrollPane;
-	}
-
-	private JScrollPane getScrollPaneEditor() {
-		if (jScrollPaneEditor == null) {
-			jScrollPaneEditor = new JScrollPane();
-			jScrollPaneEditor.setLocation(new Point(SizeAndPosition.JEDITOR
-					.getPositionHorizontale(), SizeAndPosition.JEDITOR
-					.getPositionVerticale()));
-			jScrollPaneEditor.setViewportBorder(BorderFactory
-					.createEtchedBorder(EtchedBorder.RAISED));
-			jScrollPaneEditor.setViewportView(getJEditorPane());
-			jScrollPaneEditor.setSize(new Dimension(SizeAndPosition.JEDITOR
-					.getHauteur(), SizeAndPosition.JEDITOR.getLargeur()));
-		}
-		return jScrollPaneEditor;
-	}
-
-	/**
-	 * This method initializes jTable
-	 * @return javax.swing.JTable
-	 */
-	JTable getJTable() {
-		if (jTable == null) {
-			jTable = new JTable();
-			jTable.setAutoCreateColumnsFromModel(false);
-			jTable.setColumnSelectionAllowed(true);
-			jTable
-					.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
-			jTable.setShowVerticalLines(true);
-
-		}
-		return jTable;
+		return jMenuFichier;
 	}
 
 	/**
@@ -200,84 +428,6 @@ public class Main extends JFrame {
 
 		}
 		return jMenuItemImporter;
-	}
-
-	public static void main(String args[]) {
-		SwingUtilities.invokeLater(new Runnable() {
-			public void run() {
-				Main thisClass = new Main();
-				thisClass.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-				thisClass.setVisible(true);
-			}
-		});
-	}
-
-	/**
-	 * This method initializes this
-	 * @return void
-	 */
-	private void initialize() {
-		this.setSize(800, 600);
-		this.setJMenuBar(getJJMenuBar());
-		this.setContentPane(getJContentPane());
-		this.setTitle(EnTitreFenetre.PRINCIPALE.getLib());
-		this.addWindowListener(new java.awt.event.WindowAdapter() {
-			@Override
-			public void windowClosing(java.awt.event.WindowEvent e) {
-				System.exit(0);
-			}
-		});
-		this.setLocationRelativeTo(null);// on centre la fenetre
-
-		this.setVisible(true);
-		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-		this.setIconImage(Toolkit.getDefaultToolkit().getImage(
-				getClass().getResource("/logo_appli.png")));
-	}
-
-	/**
-	 * This method initializes jContentPane
-	 * @return javax.swing.JPanel
-	 */
-	private JPanel getJContentPane() {
-		if (jContentPane == null) {
-			jContentPane = new JPanel();
-			jContentPane.setLayout(null);
-			jContentPane.add(getJTree(), null);
-			jContentPane.add(getJEditorPane(), null);
-			jContentPane.add(getJScrollPane(), null);
-			jContentPane.add(getScrollPaneEditor(), null);
-		}
-		return jContentPane;
-	}
-
-	/**
-	 * This method initializes jJMenuBar
-	 * @return javax.swing.JMenuBar
-	 */
-	private JMenuBar getJJMenuBar() {
-		if (jJMenuBar == null) {
-			jJMenuBar = new JMenuBar();
-			jJMenuBar.setPreferredSize(new Dimension(20, 25));
-			jJMenuBar.add(getJMenuFichier());
-			jJMenuBar.add(getJMenuAide());
-		}
-		return jJMenuBar;
-	}
-
-	/**
-	 * This method initializes jMenuFichier
-	 * @return javax.swing.JMenu
-	 */
-	private JMenu getJMenuFichier() {
-		if (jMenuFichier == null) {
-			jMenuFichier = new JMenu();
-			jMenuFichier.setText("Fichier");
-			jMenuFichier.add(getJMenuCompte());
-			jMenuFichier.add(getJMenuQuitter());
-			jMenuFichier.add(getJMenuImportExport());
-		}
-		return jMenuFichier;
 	}
 
 	/**
@@ -391,4 +541,4 @@ public class Main extends JFrame {
 		return ColoneModel;
 	}
 
-}
+} // @jve:decl-index=0:visual-constraint="10,10"

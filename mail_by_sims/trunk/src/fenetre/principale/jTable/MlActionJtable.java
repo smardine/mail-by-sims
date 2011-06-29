@@ -5,8 +5,11 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JEditorPane;
+import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
@@ -21,13 +24,14 @@ public class MlActionJtable implements MouseListener {
 
 	private JMenuItem Supprimer;
 	private final JTable table;
-
+	private final JList jList;
 	private final JEditorPane editor;
 
-	public MlActionJtable(JTable p_table, JEditorPane jEditorPane) {
+	public MlActionJtable(JTable p_table, JEditorPane jEditorPane, JList jList) {
 		this.table = p_table;
 		this.popUpMenu = getJPopupMenu();
 		this.editor = jEditorPane;
+		this.jList = jList;
 	}
 
 	/**
@@ -99,45 +103,19 @@ public class MlActionJtable implements MouseListener {
 			popUpMenu.show(e.getComponent(), e.getX(), e.getY());
 
 		} else {
-			afficheContenuMail(table);
+			afficheContenuMail(table, jList);
 		}
 
 	}
 
-	private void afficheContenuMail(JTable table) {
+	private void afficheContenuMail(JTable table, JList jList) {
 		int selectedLine = table.getSelectedRow();
 
 		Integer idMessage = (Integer) table.getModel().getValueAt(selectedLine,
 				0);
 		// le n° du message (meme si il est caché).
-		// Date dateReception = (Date) table.getModel()
-		// .getValueAt(selectedLine, 1);// la date de reception
-		//
-		// String expediteur = (String)
-		// table.getModel().getValueAt(selectedLine,
-		// 2);// l'expediteur
-		//
-		// String sujet = (String) table.getModel().getValueAt(selectedLine,
-		// 3);// le
-		// // sujet
 
 		File contenu = BDRequette.getContenuFromId(idMessage);
-
-		// on converti le .html en .xml; exploitable par XHTMLPanel
-		// String url = "file:///" + contenu.getAbsolutePath();
-		// String outputFilename = GestionRepertoire.RecupRepTravail()
-		// + "/tempo/contenu.xml";
-		// String errorfilename = GestionRepertoire.RecupRepTravail()
-		// + "/tempo/error.log";
-		//
-		// HTML2XML t = new HTML2XML(url, outputFilename, errorfilename);
-		// File xmlFile = t.convert();
-		// try {
-		// editor.setDocument(xmlFile);
-		// } catch (Exception e) {
-		// // TODO Auto-generated catch block
-		// e.printStackTrace();
-		// }
 
 		// on RAZ le contenu du panelEditor
 		Document doc = editor.getDocument();
@@ -149,8 +127,19 @@ public class MlActionJtable implements MouseListener {
 			e.printStackTrace();
 		}
 
-		// editor.setPage(new URL("file:///" + contenu.getAbsolutePath()));
+		// affichage des piece jointe dans la liste (si il y en a)
+		ArrayList<String> lstPj = BDRequette.getListNomPieceJointe(idMessage);
+		DefaultListModel model = (DefaultListModel) jList.getModel();
+		int nbLigne = model.getSize();
+		if (nbLigne > 0) {// si la liste est deja repli, on la vide
+			model.removeAllElements();
+		}
+		if (lstPj.size() > 0) {
+			for (String s : lstPj) {
+				model.addElement(s);
+			}
 
+		}
 	}
 
 }

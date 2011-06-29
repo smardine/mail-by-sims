@@ -461,7 +461,7 @@ public class BDRequette {
 
 	public static boolean deleteMessageRecu(int idMessage) {
 		// on commence par effacer les piece jointe associées au message.
-		ArrayList<String> lstPieceJointe = getListePieceJointe(idMessage);
+		ArrayList<String> lstPieceJointe = getListeIdPieceJointe(idMessage);
 		for (String pieceJointe : lstPieceJointe) {
 			String requete = "DELETE FROM PIECE_JOINTE WHERE ID_PIECE_JOINTE='"
 					+ pieceJointe + "'";
@@ -475,8 +475,14 @@ public class BDRequette {
 
 	}
 
-	public static ArrayList<String> getListePieceJointe(int p_idMessage) {
+	public static ArrayList<String> getListeIdPieceJointe(int p_idMessage) {
 		String requette = "SELECT a.ID_PIECE_JOINTE FROM PIECE_JOINTE a where a.ID_MESSAGE='"
+				+ p_idMessage + "' ORDER BY a.ID_PIECE_JOINTE";
+		return getListeDeChamp(requette);
+	}
+
+	public static ArrayList<String> getListNomPieceJointe(int p_idMessage) {
+		String requette = "SELECT a.NOM_PIECE_JOINTE FROM PIECE_JOINTE a where a.ID_MESSAGE='"
 				+ p_idMessage + "' ORDER BY a.ID_PIECE_JOINTE";
 		return getListeDeChamp(requette);
 	}
@@ -610,7 +616,9 @@ public class BDRequette {
 	}
 
 	public static String encodeHTMLforBase(String aText) {
-
+		if (aText == null) {
+			aText = "inconnu";
+		}
 		final StringBuilder result = new StringBuilder();
 		final StringCharacterIterator iterator = new StringCharacterIterator(
 				aText);

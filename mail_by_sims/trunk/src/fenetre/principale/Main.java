@@ -11,6 +11,7 @@ import java.awt.Rectangle;
 import java.awt.Toolkit;
 
 import javax.swing.BorderFactory;
+import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JEditorPane;
@@ -71,6 +72,10 @@ public class Main extends JFrame {
 	private JMenu jMenuImportExport;
 	private JMenuItem jMenuItemImporter; // @jve:decl-index=0:
 	private JScrollPane jScrollPane1 = null;
+	private JMenu jMenuReleve = null;
+	private JMenu jMenuEnvoiReception = null;
+	private JMenuItem jMenuItemReleve = null;
+	private DefaultListModel modelList = null;
 
 	/**
 	 * This method initializes jDesktopPaneHaut
@@ -270,7 +275,7 @@ public class Main extends JFrame {
 		if (jList == null) {
 			jList = new JList();
 
-			jList.setBackground(Color.black);
+			jList.setBackground(Color.LIGHT_GRAY);
 			jList.setPreferredSize(new Dimension(50, 50));
 		}
 		return jList;
@@ -288,6 +293,46 @@ public class Main extends JFrame {
 					.createEtchedBorder(EtchedBorder.RAISED));
 		}
 		return jScrollPane1;
+	}
+
+	/**
+	 * This method initializes jMenuReleve
+	 * @return javax.swing.JMenu
+	 */
+	private JMenu getJMenuReleve() {
+		if (jMenuReleve == null) {
+			jMenuReleve = new JMenu();
+			jMenuReleve.setActionCommand("dfsdffdsf");
+			jMenuReleve.setText("Outils");
+			jMenuReleve.add(getJMenuEnvoiReception());
+		}
+		return jMenuReleve;
+	}
+
+	/**
+	 * This method initializes jMenuEnvoiReception
+	 * @return javax.swing.JMenu
+	 */
+	private JMenu getJMenuEnvoiReception() {
+		if (jMenuEnvoiReception == null) {
+			jMenuEnvoiReception = new JMenu();
+			jMenuEnvoiReception.setText("Envoyer / Recevoir");
+			jMenuEnvoiReception.add(getJMenuItemReleve());
+		}
+		return jMenuEnvoiReception;
+	}
+
+	/**
+	 * This method initializes jMenuItemReleve
+	 * @return javax.swing.JMenuItem
+	 */
+	private JMenuItem getJMenuItemReleve() {
+		if (jMenuItemReleve == null) {
+			jMenuItemReleve = new JMenuItem();
+			jMenuItemReleve.setText(EnActionMain.RECEVOIR.getLib());
+			jMenuItemReleve.setActionCommand(EnActionMain.RECEVOIR.getLib());
+		}
+		return jMenuItemReleve;
 	}
 
 	/**
@@ -314,16 +359,20 @@ public class Main extends JFrame {
 
 		Thread_Verif verif = new Thread_Verif(jTree);
 		verif.start();
+		modelList = new DefaultListModel();
+		jList.setModel(modelList);
 		ColoneModel = new XTableColumnModel();
 		jTable.setColumnModel(ColoneModel);
 		tableModel = new MyTableModel(new MlListeMessage(), ColoneModel);
 		jTable.setModel(tableModel);
-		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane));
+		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jList));
 		jMenuContact.addActionListener(new MlActionMain(tableModel, htmlPane));
 		jTree.addMouseListener(new MlActionJtree(jTree, jTable));
 		jTree.addTreeSelectionListener(new MlActionJtree(jTree, jTable));
 		jTree.addTreeExpansionListener(new MlActionJtree(jTree, jTable));
 		jMenuItemImporter.addActionListener(new MlActionMain(jTree));
+		jMenuItemReleve.addActionListener(new MlActionMain(jTree));
+
 	}
 
 	/**
@@ -383,6 +432,7 @@ public class Main extends JFrame {
 			jJMenuBar.setPreferredSize(new Dimension(0, 25));
 			jJMenuBar.add(getJMenuFichier());
 			jJMenuBar.add(getJMenuAide());
+			jJMenuBar.add(getJMenuReleve());
 		}
 		return jJMenuBar;
 	}

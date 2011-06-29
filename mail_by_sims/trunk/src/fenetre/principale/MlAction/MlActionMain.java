@@ -57,13 +57,14 @@ public class MlActionMain implements ActionListener {
 			Historique.lire();
 		}
 		if (e.getActionCommand().equals(EnActionMain.CONTACT.getLib())) {
-			thread_ReleveImap t = new thread_ReleveImap(model, editor);
-			t.start();
+
 		}
 		if (e.getActionCommand().equals(EnActionMain.IMPORTER.getLib())) {
-
 			thread_Import t = new thread_Import(tree);
-
+			t.start();
+		}
+		if (e.getActionCommand().equals(EnActionMain.RECEVOIR.getLib())) {
+			thread_ReleveImap t = new thread_ReleveImap(model);
 			t.start();
 		}
 

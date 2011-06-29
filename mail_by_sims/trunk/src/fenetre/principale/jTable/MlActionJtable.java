@@ -5,7 +5,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.Date;
 
 import javax.swing.JEditorPane;
 import javax.swing.JMenuItem;
@@ -111,14 +110,16 @@ public class MlActionJtable implements MouseListener {
 		Integer idMessage = (Integer) table.getModel().getValueAt(selectedLine,
 				0);
 		// le n° du message (meme si il est caché).
-		Date dateReception = (Date) table.getModel()
-				.getValueAt(selectedLine, 1);// la date de reception
-
-		String expediteur = (String) table.getModel().getValueAt(selectedLine,
-				2);// l'expediteur
-
-		String sujet = (String) table.getModel().getValueAt(selectedLine, 3);// le
-		// sujet
+		// Date dateReception = (Date) table.getModel()
+		// .getValueAt(selectedLine, 1);// la date de reception
+		//
+		// String expediteur = (String)
+		// table.getModel().getValueAt(selectedLine,
+		// 2);// l'expediteur
+		//
+		// String sujet = (String) table.getModel().getValueAt(selectedLine,
+		// 3);// le
+		// // sujet
 
 		File contenu = BDRequette.getContenuFromId(idMessage);
 

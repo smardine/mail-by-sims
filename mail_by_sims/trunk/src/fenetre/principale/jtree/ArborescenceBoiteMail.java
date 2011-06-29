@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
+import javax.swing.UIManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
@@ -26,6 +28,10 @@ public class ArborescenceBoiteMail implements TreeModel {
 		root = EnDossierBase.ROOT.getLib();
 		listeners = new Vector<TreeModelListener>();
 		lstCpt = BDRequette.getListeDeComptes();
+		UIManager.put("Tree.openIcon", new ImageIcon(
+				"Images/dossier-ouvert-16.png"));
+		UIManager.put("Tree.closedIcon", new ImageIcon(
+				"Images/dossier-ferme-16.png"));
 	}
 
 	public Object getRoot() {

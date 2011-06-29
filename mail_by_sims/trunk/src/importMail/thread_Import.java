@@ -77,7 +77,7 @@ public class thread_Import extends Thread {
 
 	}
 
-	private void enregistreMessageEnBase(MlListeMessage listeDeMessage) {
+	public static void enregistreMessageEnBase(MlListeMessage listeDeMessage) {
 
 		/** On simule la reception d'un message */
 		Properties props = System.getProperties();
@@ -119,7 +119,7 @@ public class thread_Import extends Thread {
 				 */
 
 				m.setContenu(recupContenuMail(m, mime));// ,
-														// m.getDateReception()
+				// m.getDateReception()
 				// .getTime()));
 
 			} catch (FileNotFoundException e) {
@@ -140,7 +140,7 @@ public class thread_Import extends Thread {
 
 	}
 
-	public String recupContenuMail(MlMessage p_mlMessage,
+	public static String recupContenuMail(MlMessage p_mlMessage,
 			Message p_messageJavaMail)// , long p_prefixeNomFichier)//
 			throws MessagingException, IOException {
 		StringBuilder sb = new StringBuilder();

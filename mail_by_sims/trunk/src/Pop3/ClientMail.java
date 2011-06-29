@@ -84,10 +84,7 @@ public class ClientMail {
 		}
 
 		System.out.println("Connexion ok");
-
 		System.out.println("st=:" + st);
-		// modelDeListe.addElement("st=:" + st);
-
 		System.out.println("Obtention d'un folder");
 
 		/*
@@ -96,6 +93,7 @@ public class ClientMail {
 		Folder f = null;
 		try {
 			f = st.getFolder("INBOX");
+
 		} catch (MessagingException e) {
 
 			System.out.println(e.getMessage());

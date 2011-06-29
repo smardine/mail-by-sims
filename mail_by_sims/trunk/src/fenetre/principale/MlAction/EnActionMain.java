@@ -2,26 +2,22 @@ package fenetre.principale.MlAction;
 
 public enum EnActionMain {
 
-	QUITTER(0, "Quitter"), //
-	GESTION_COMPTE(1, "Gestion des comptes"), //
-	IMPORT_EXPORT(5, "Import /Export"), //
-	IMPORTER(6, "Importer"), //
-	CHOIX_COMPTE(5, "Choix du compte"), //
-	EXPLORER(2, "Explorer"), //
-	HISTORIQUE(3, "Historique"), //
-	CONTACT(4, "Contact");
+	QUITTER("Quitter"), //
+	GESTION_COMPTE("Gestion des comptes"), //
+	IMPORT_EXPORT("Import /Export"), //
+	IMPORTER("Importer"), //
+	CHOIX_COMPTE("Choix du compte"), //
+	EXPLORER("Explorer"), //
+	HISTORIQUE("Historique"), //
+	CONTACT("Contact"), //
+	RECEVOIR("Recevoir");
 
-	private int code;
 	private String lib;
 
-	EnActionMain(int p_code, String p_lib) {
-		code = p_code;
+	EnActionMain(String p_lib) {
+
 		lib = p_lib;
 
-	}
-
-	public int getCode() {
-		return code;
 	}
 
 	public String getLib() {

@@ -24,6 +24,9 @@ public class RecupDate {
 	static DateFormat formatTimeStampToDate = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss.S");
 
+	public static DateFormat formatPourTable = new SimpleDateFormat(
+			"dd-MM-yyyy HH:mm:ss");
+
 	// * Donne la date au format "aaaa-mm-jj"
 
 	/**
@@ -86,4 +89,15 @@ public class RecupDate {
 
 	}
 
+	public static Date getDatepourTable(Date p_date) {
+		String dateretour = formatPourTable.format(p_date);
+		Date date = null;
+		try {
+			date = formatPourTable.parse(dateretour);
+		} catch (ParseException e) {
+			messageUtilisateur.affMessageException(e,
+					"impossible de recuperer la date au bon format");
+		}
+		return date;
+	}
 }

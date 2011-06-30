@@ -9,6 +9,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -363,6 +364,7 @@ public class Main extends JFrame {
 		jList.setModel(modelList);
 		ColoneModel = new XTableColumnModel();
 		jTable.setColumnModel(ColoneModel);
+		jTable.setDefaultRenderer(Date.class, new DateTimeCellRenderer());
 		tableModel = new MyTableModel(new MlListeMessage(), ColoneModel);
 		jTable.setModel(tableModel);
 		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jList));

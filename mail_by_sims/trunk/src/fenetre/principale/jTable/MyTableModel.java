@@ -8,6 +8,8 @@ import java.util.Date;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
+import tools.RecupDate;
+
 public class MyTableModel extends AbstractTableModel {
 	/**
 	 * 
@@ -88,7 +90,7 @@ public class MyTableModel extends AbstractTableModel {
 			// numero de message
 			data[i][0] = m.getIdMessage();
 			// date de reception
-			data[i][1] = m.getDateReception();
+			data[i][1] = RecupDate.getDatepourTable(m.getDateReception());
 			// expediteur
 			data[i][2] = m.getExpediteur();
 			// sujet

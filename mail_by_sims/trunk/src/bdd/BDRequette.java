@@ -742,4 +742,11 @@ public class BDRequette {
 
 	}
 
+	public static boolean verifieAbscenceUID(long uid) {
+		String requete = "SELECT count (*) from MAIL_RECU a where a.UID_MESSAGE="
+				+ uid;
+		return ("0".equals(get1Champ(requete)));
+
+	}
+
 }

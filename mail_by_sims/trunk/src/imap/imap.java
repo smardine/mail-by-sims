@@ -27,6 +27,7 @@ import bdd.BDRequette;
 
 import com.sun.mail.imap.IMAPFolder;
 
+import fenetre.comptes.EnDossierBase;
 import fenetre.principale.jTable.MyTableModel;
 
 /**
@@ -61,11 +62,6 @@ public class imap {
 			String p_idCompte) {
 		// TODO Auto-generated method stub
 
-		// SUBSTITUTE YOUR ISP's POP3 SERVER HERE!!!
-		// String host = "imap.gmail.com";
-		// SUBSTITUTE YOUR USERNAME AND PASSWORD TO ACCESS E-MAIL HERE!!!
-		// String user = "s.mardine@gmail.com";
-		// String password = "&Gouranga2010";
 		// SUBSTITUTE YOUR ISP's POP3 SERVER HERE!!!
 		// String host = "pop3.club-internet.fr";
 		// // SUBSTITUTE YOUR USERNAME AND PASSWORD TO ACCESS E-MAIL HERE!!!
@@ -110,43 +106,55 @@ public class imap {
 			fldr.open(Folder.READ_WRITE);
 			int count = fldr.getMessageCount();
 			System.out.println(count + " total messages");
+			String id_Dossier = BDRequette.getIdDossier(EnDossierBase.RECEPTION
+					.getLib(), p_idCompte);
 
 			// Message numbers start at 1
 			int nbActu = 1;
 			for (Message m : fldr.getMessages()) {
 				System.out.println("message " + nbActu++ + "sur un total de "
 						+ count);
-				// Get some headers
-				MlMessage messPourBase = new MlMessage();
+				// on commence par verifier si le message est deja enregistré
+				// dans la base
+				// pour cela, comme on est en IMAp,
+				// on se base sur l'UID du message.
 
-				messPourBase.setCheminPhysique(GestionRepertoire
-						.RecupRepTravail()
-						+ "/tempo/" + System.currentTimeMillis() + ".eml");
-				messPourBase.setContenu(thread_Import.recupContenuMail(
-						messPourBase, m));
-				messPourBase.setDateReception(m.getReceivedDate());
-				ArrayList<String> listeDestinataires;
-				if (null != m.getAllRecipients()) {// si on connait la taille de
-					// la liste, on la fixe
-					listeDestinataires = new ArrayList<String>(m
-							.getAllRecipients().length);
-					for (Address uneAdresse : m.getAllRecipients()) {
-						listeDestinataires.add(uneAdresse.toString());
+				if (BDRequette.verifieAbscenceUID(fldr.getUID(m))) {
+					MlMessage messPourBase = new MlMessage();
+
+					messPourBase.setCheminPhysique(GestionRepertoire
+							.RecupRepTravail()
+							+ "/tempo/" + System.currentTimeMillis() + ".eml");
+					messPourBase.setContenu(thread_Import.recupContenuMail(
+							messPourBase, m));
+					messPourBase.setDateReception(m.getReceivedDate());
+					ArrayList<String> listeDestinataires;
+					if (null != m.getAllRecipients()) {// si on connait la
+						// taille de
+						// la liste, on la fixe
+						listeDestinataires = new ArrayList<String>(m
+								.getAllRecipients().length);
+						for (Address uneAdresse : m.getAllRecipients()) {
+							listeDestinataires.add(uneAdresse.toString());
+						}
+					} else {
+						listeDestinataires = new ArrayList<String>(1);
+						listeDestinataires.add("Destinataire(s) masqué(s)");
 					}
-				} else {
-					listeDestinataires = new ArrayList<String>(1);
-					listeDestinataires.add("Destinataire(s) masqué(s)");
-				}
 
-				messPourBase.setDestinataire(listeDestinataires);
-				messPourBase.setExpediteur(m.getFrom()[0].toString());
-				messPourBase.setIdCompte(p_idCompte);
-				String idDossier = verifieRegle(messPourBase.getExpediteur());
-				messPourBase.setIdDossier(idDossier);
-				messPourBase.setUIDMessage("" + fldr.getUID(m));
-				messPourBase.setSujet(m.getSubject());
-				lstMessage.add(messPourBase);
-				BDRequette.createNewMessage(messPourBase);
+					messPourBase.setDestinataire(listeDestinataires);
+					messPourBase.setExpediteur(m.getFrom()[0].toString());
+					messPourBase.setIdCompte(p_idCompte);
+					messPourBase.setIdDossier(verifieRegle(messPourBase
+							.getExpediteur(), id_Dossier));
+					messPourBase.setUIDMessage("" + fldr.getUID(m));
+					messPourBase.setSujet(m.getSubject());
+					lstMessage.add(messPourBase);
+					BDRequette.createNewMessage(messPourBase);
+				} else {
+					System.out.println("message uid " + fldr.getUID(m)
+							+ " deja enregistré en base");
+				}
 
 			}
 
@@ -166,8 +174,10 @@ public class imap {
 
 	}
 
-	private static String verifieRegle(String expediteur) {
-		// TODO Auto-generated method stub
+	private static String verifieRegle(String expediteur, String p_idDossier) {
+		if (p_idDossier != null) {
+			return p_idDossier;
+		}
 		return "7";
 	}
 

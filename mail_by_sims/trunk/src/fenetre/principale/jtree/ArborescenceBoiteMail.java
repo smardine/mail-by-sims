@@ -32,6 +32,8 @@ public class ArborescenceBoiteMail implements TreeModel {
 				"Images/dossier-ouvert-16.png"));
 		UIManager.put("Tree.closedIcon", new ImageIcon(
 				"Images/dossier-ferme-16.png"));
+		// UIManager.put("Tree.leafIcon", new ImageIcon(
+		// "Images/dossier-ferme-16.png"));
 	}
 
 	public Object getRoot() {
@@ -100,6 +102,12 @@ public class ArborescenceBoiteMail implements TreeModel {
 	}
 
 	public boolean isLeaf(Object node) {
+		// String idCompte = BDRequette.getIdComptes(getCompte());
+		// String idDossier = BDRequette.getIdDossier((String) node, idCompte);
+		// if (BDRequette.getnbMessage(idDossier) > 0) {
+		// return false;
+		// }
+		// return true;
 		return false;
 
 	}

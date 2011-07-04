@@ -267,12 +267,33 @@ public class BDRequette {
 	}
 
 	/**
+	 * obtenir la liste des message a partir du nom d'un dossier racine
+	 * @param p_idDossierracine
+	 * @return
+	 */
+	public static ArrayList<String> getListeMessage(String p_idDossierracine) {
+		String requete = "SELECT a.ID_MESSAGE_RECU FROM MAIL_RECU a where a.ID_DOSSIER_STOCKAGE='"
+				+ p_idDossierracine + "'";
+		return getListeDeChamp(requete);
+
+	}
+
+	/**
 	 * Obtenir le nombre de sous dossier a partir du nom d'un dossier racine
 	 * @param p_idDossierracine
 	 * @return
 	 */
 	public static int getnbSousDossier(String p_idDossierracine) {
 		return getListeSousDossier(p_idDossierracine).size();
+	}
+
+	/**
+	 * Obtenir le nombre de message a partir du nom d'un dossier racine
+	 * @param p_idDossierracine
+	 * @return
+	 */
+	public static int getnbMessage(String p_idDossierracine) {
+		return getListeMessage(p_idDossierracine).size();
 	}
 
 	/**

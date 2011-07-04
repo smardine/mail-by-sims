@@ -10,7 +10,8 @@ public enum EnActionMain {
 	EXPLORER("Explorer"), //
 	HISTORIQUE("Historique"), //
 	CONTACT("Contact"), //
-	RECEVOIR("Recevoir");
+	RECEVOIR("Recevoir"), //
+	SUPPRIMER("Supprimer");
 
 	private String lib;
 

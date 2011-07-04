@@ -7,12 +7,14 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.util.Date;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDesktopPane;
 import javax.swing.JEditorPane;
@@ -35,6 +37,7 @@ import Verif.Thread_Verif;
 import bdd.BDAcces;
 import fenetre.EnTitreFenetre;
 import fenetre.principale.MlAction.EnActionMain;
+import fenetre.principale.MlAction.MlActionBouton;
 import fenetre.principale.MlAction.MlActionMain;
 import fenetre.principale.jTable.MlActionJtable;
 import fenetre.principale.jTable.MyTableModel;
@@ -52,9 +55,9 @@ public class Main extends JFrame {
 	private JDesktopPane jDesktopPaneGauche = null;
 	private JDesktopPane jDesktopPaneDroite = null;
 	private JDesktopPane jDesktopPaneBas = null;
-	private JButton jButton = null;
-	private JButton jButton1 = null;
-	private JButton jButton2 = null;
+	private JButton btNewMessage = null;
+	private JButton btSupprMessage = null;
+	private JButton btEnvoyerRecevoir = null;
 	private JTree jTree = null;
 	private JEditorPane htmlPane = null;
 	private JScrollPane jScrollPane = null;
@@ -85,6 +88,7 @@ public class Main extends JFrame {
 	private JDesktopPane getJDesktopPaneHaut() {
 		if (jDesktopPaneHaut == null) {
 			jDesktopPaneHaut = new JDesktopPane();
+
 			jDesktopPaneHaut
 					.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
 			jDesktopPaneHaut.setPreferredSize(new Dimension(
@@ -175,35 +179,49 @@ public class Main extends JFrame {
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJButton() {
-		if (jButton == null) {
-			jButton = new JButton();
-			jButton.setBounds(new Rectangle(9, 6, 59, 19));
+		if (btNewMessage == null) {
+			btNewMessage = new JButton();
+			btNewMessage.setLocation(new Point(1, 1));
+			btNewMessage.setText("");
+			btNewMessage.setIcon(new ImageIcon(getClass().getResource(
+					"/nouveau_message.png")));
+			btNewMessage.setSize(new Dimension(75, 50));
 		}
-		return jButton;
+		return btNewMessage;
 	}
 
 	/**
-	 * This method initializes jButton1
+	 * This method initializes btSupprMessage
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJButton1() {
-		if (jButton1 == null) {
-			jButton1 = new JButton();
-			jButton1.setBounds(new Rectangle(78, 6, 55, 20));
+		if (btSupprMessage == null) {
+			btSupprMessage = new JButton();
+			btSupprMessage.setLocation(new Point(75, 1));
+			btSupprMessage.setText("");
+			btSupprMessage.setActionCommand(EnActionMain.SUPPRIMER.getLib());
+			btSupprMessage.setIcon(new ImageIcon(getClass().getResource(
+					"/supprimer.png")));
+			btSupprMessage.setSize(new Dimension(75, 50));
 		}
-		return jButton1;
+		return btSupprMessage;
 	}
 
 	/**
-	 * This method initializes jButton2
+	 * This method initializes btEnvoyerRecevoir
 	 * @return javax.swing.JButton
 	 */
 	private JButton getJButton2() {
-		if (jButton2 == null) {
-			jButton2 = new JButton();
-			jButton2.setBounds(new Rectangle(143, 7, 71, 21));
+		if (btEnvoyerRecevoir == null) {
+			btEnvoyerRecevoir = new JButton();
+			btEnvoyerRecevoir.setLocation(new Point(149, 0));
+			btEnvoyerRecevoir.setText("");
+			btEnvoyerRecevoir.setIcon(new ImageIcon(getClass().getResource(
+					"/envoyer_recevoir.png")));
+			btEnvoyerRecevoir.setSize(new Dimension(75, 50));
+			btEnvoyerRecevoir.setActionCommand(EnActionMain.RECEVOIR.getLib());
 		}
-		return jButton2;
+		return btEnvoyerRecevoir;
 	}
 
 	/**
@@ -219,6 +237,7 @@ public class Main extends JFrame {
 			jTree.setShowsRootHandles(true);
 			jTree.setRootVisible(false);
 			jTree.setToggleClickCount(1);
+			jTree.setFont(new Font("Perpetua", Font.BOLD, 12));
 			jTree.setExpandsSelectedPaths(true);
 		}
 		return jTree;
@@ -374,7 +393,8 @@ public class Main extends JFrame {
 		jTree.addTreeExpansionListener(new MlActionJtree(jTree, jTable));
 		jMenuItemImporter.addActionListener(new MlActionMain(jTree));
 		jMenuItemReleve.addActionListener(new MlActionMain(jTree));
-
+		btEnvoyerRecevoir.addActionListener(new MlActionMain(jTree));
+		btSupprMessage.addActionListener(new MlActionBouton(jTable));
 	}
 
 	/**

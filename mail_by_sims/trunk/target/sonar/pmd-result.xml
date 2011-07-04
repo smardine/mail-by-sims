@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.2.5" timestamp="2011-06-29T14:56:42.182">
+<pmd version="4.2.5" timestamp="2011-07-01T14:44:39.537">
 <file name="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\src\Mail\MailMessage.java">
 <violation beginline="41" endline="41" begincolumn="18" endcolumn="30" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="Mail" class="MailMessage" variable="_receivedDate" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
 Avoid unused private fields such as '_receivedDate'.
@@ -270,31 +270,34 @@ Ensure that resources like this Statement object are closed after use
 <violation beginline="412" endline="412" begincolumn="41" endcolumn="58" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="getListeDenregistrement" variable="jeuEnregistrements" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
 Ensure that resources like this ResultSet object are closed after use
 </violation>
-<violation beginline="478" endline="478" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListePieceJointe" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
+<violation beginline="478" endline="478" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeIdPieceJointe" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
 Avoid using implementation types like 'ArrayList'; use the interface instead
 </violation>
-<violation beginline="484" endline="484" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeDossier" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
+<violation beginline="484" endline="484" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListNomPieceJointe" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
 Avoid using implementation types like 'ArrayList'; use the interface instead
 </violation>
-<violation beginline="539" endline="540" begincolumn="25" endcolumn="48" rule="SystemPrintln" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="createNewMessage" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
+<violation beginline="490" endline="490" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeDossier" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
+Avoid using implementation types like 'ArrayList'; use the interface instead
+</violation>
+<violation beginline="545" endline="546" begincolumn="25" endcolumn="48" rule="SystemPrintln" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="createNewMessage" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
 System.out.print is used
 </violation>
-<violation beginline="703" endline="703" begincolumn="35" endcolumn="43" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="writeBlobToFile" variable="resultSet" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
+<violation beginline="709" endline="709" begincolumn="35" endcolumn="43" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="writeBlobToFile" variable="resultSet" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
 Ensure that resources like this ResultSet object are closed after use
 </violation>
-<violation beginline="705" endline="705" begincolumn="40" endcolumn="43" rule="UnusedLocalVariable" ruleset="Unused Code Rules" package="bdd" class="BDRequette" method="writeBlobToFile" variable="name" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable" priority="3">
+<violation beginline="711" endline="711" begincolumn="40" endcolumn="43" rule="UnusedLocalVariable" ruleset="Unused Code Rules" package="bdd" class="BDRequette" method="writeBlobToFile" variable="name" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable" priority="3">
 Avoid unused local variables such as 'name'.
-</violation>
-<violation beginline="725" endline="725" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
-Avoid printStackTrace(); use a logger call instead.
-</violation>
-<violation beginline="728" endline="728" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
-Avoid printStackTrace(); use a logger call instead.
 </violation>
 <violation beginline="731" endline="731" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
 Avoid printStackTrace(); use a logger call instead.
 </violation>
-<violation beginline="732" endline="734" begincolumn="19" endcolumn="17" rule="EmptyFinallyBlock" ruleset="Basic Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyFinallyBlock" priority="2">
+<violation beginline="734" endline="734" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
+Avoid printStackTrace(); use a logger call instead.
+</violation>
+<violation beginline="737" endline="737" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
+Avoid printStackTrace(); use a logger call instead.
+</violation>
+<violation beginline="738" endline="740" begincolumn="19" endcolumn="17" rule="EmptyFinallyBlock" ruleset="Basic Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyFinallyBlock" priority="2">
 Avoid empty finally blocks
 </violation>
 </file>
@@ -365,8 +368,11 @@ Perhaps 'modelList' could be replaced by a local variable.
 </violation>
 </file>
 <file name="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\src\fenetre\principale\Main.java">
-<violation beginline="70" endline="70" begincolumn="23" endcolumn="46" rule="SingularField" ruleset="Design Rules" package="fenetre.principale" class="Main" variable="tableModel" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField" priority="4">
+<violation beginline="72" endline="72" begincolumn="23" endcolumn="46" rule="SingularField" ruleset="Design Rules" package="fenetre.principale" class="Main" variable="tableModel" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField" priority="4">
 Perhaps 'tableModel' could be replaced by a local variable.
+</violation>
+<violation beginline="79" endline="79" begincolumn="17" endcolumn="50" rule="SingularField" ruleset="Design Rules" package="fenetre.principale" class="Main" variable="modelList" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField" priority="4">
+Perhaps 'modelList' could be replaced by a local variable.
 </violation>
 </file>
 <file name="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\src\fenetre\principale\MlAction\MlActionMain.java">
@@ -398,7 +404,7 @@ System.out.print is used
 </violation>
 </file>
 <file name="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\src\fenetre\principale\jTable\MlActionJtable.java">
-<violation beginline="149" endline="149" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="fenetre.principale.jTable" class="MlActionJtable" method="afficheContenuMail" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
+<violation beginline="127" endline="127" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="fenetre.principale.jTable" class="MlActionJtable" method="afficheContenuMail" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
 Avoid printStackTrace(); use a logger call instead.
 </violation>
 </file>
@@ -414,10 +420,10 @@ Avoid unused local variables such as 'sujet'.
 </violation>
 </file>
 <file name="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\src\fenetre\principale\jTable\MyTableModel.java">
-<violation beginline="21" endline="21" begincolumn="23" endcolumn="52" rule="SingularField" ruleset="Design Rules" package="fenetre.principale.jTable" class="MyTableModel" variable="coloneModel" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField" priority="4">
+<violation beginline="23" endline="23" begincolumn="23" endcolumn="52" rule="SingularField" ruleset="Design Rules" package="fenetre.principale.jTable" class="MyTableModel" variable="coloneModel" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField" priority="4">
 Perhaps 'coloneModel' could be replaced by a local variable.
 </violation>
-<violation beginline="26" endline="26" begincolumn="17" endcolumn="38" rule="ConstructorCallsOverridableMethod" ruleset="Design Rules" package="fenetre.principale.jTable" class="MyTableModel" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ConstructorCallsOverridableMethod" priority="3">
+<violation beginline="28" endline="28" begincolumn="17" endcolumn="38" rule="ConstructorCallsOverridableMethod" ruleset="Design Rules" package="fenetre.principale.jTable" class="MyTableModel" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#ConstructorCallsOverridableMethod" priority="3">
 Overridable method 'valorisetable' called during object construction
 </violation>
 </file>
@@ -491,28 +497,31 @@ Avoid using implementation types like 'ArrayList'; use the interface instead
 </violation>
 </file>
 <file name="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\src\imap\imap.java">
-<violation beginline="35" endline="174" begincolumn="8" endcolumn="1" rule="ClassNamingConventions" ruleset="Naming Rules" package="imap" externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ClassNamingConventions" priority="3">
+<violation beginline="36" endline="184" begincolumn="8" endcolumn="1" rule="ClassNamingConventions" ruleset="Naming Rules" package="imap" externalInfoUrl="http://pmd.sourceforge.net/rules/naming.html#ClassNamingConventions" priority="3">
 Class names should begin with an uppercase character
 </violation>
-<violation beginline="38" endline="38" begincolumn="23" endcolumn="38" rule="SingularField" ruleset="Design Rules" package="imap" class="imap" variable="idCompte" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField" priority="4">
+<violation beginline="39" endline="39" begincolumn="23" endcolumn="38" rule="SingularField" ruleset="Design Rules" package="imap" class="imap" variable="idCompte" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField" priority="4">
 Perhaps 'idCompte' could be replaced by a local variable.
 </violation>
-<violation beginline="42" endline="42" begincolumn="41" endcolumn="42" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="imap" class="imap" variable="df" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
+<violation beginline="43" endline="43" begincolumn="41" endcolumn="42" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="imap" class="imap" variable="df" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
 Avoid unused private fields such as 'df'.
 </violation>
-<violation beginline="88" endline="91" begincolumn="24" endcolumn="17" rule="EmptyIfStmt" ruleset="Basic Rules" package="imap" class="imap" method="main" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="2">
+<violation beginline="84" endline="87" begincolumn="24" endcolumn="17" rule="EmptyIfStmt" ruleset="Basic Rules" package="imap" class="imap" method="main" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyIfStmt" priority="2">
 Avoid empty if statements
 </violation>
-<violation beginline="112" endline="112" begincolumn="25" endcolumn="42" rule="SystemPrintln" ruleset="Java Logging Rules" package="imap" class="imap" method="releveImap" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
+<violation beginline="108" endline="108" begincolumn="25" endcolumn="42" rule="SystemPrintln" ruleset="Java Logging Rules" package="imap" class="imap" method="releveImap" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
 System.out.print is used
 </violation>
-<violation beginline="117" endline="117" begincolumn="33" endcolumn="50" rule="SystemPrintln" ruleset="Java Logging Rules" package="imap" class="imap" method="releveImap" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
+<violation beginline="115" endline="115" begincolumn="33" endcolumn="50" rule="SystemPrintln" ruleset="Java Logging Rules" package="imap" class="imap" method="releveImap" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
 System.out.print is used
 </violation>
-<violation beginline="156" endline="156" begincolumn="25" endcolumn="42" rule="SystemPrintln" ruleset="Java Logging Rules" package="imap" class="imap" method="releveImap" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
+<violation beginline="155" endline="155" begincolumn="41" endcolumn="58" rule="SystemPrintln" ruleset="Java Logging Rules" package="imap" class="imap" method="releveImap" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
 System.out.print is used
 </violation>
-<violation beginline="169" endline="172" begincolumn="24" endcolumn="9" rule="UnusedFormalParameter" ruleset="Unused Code Rules" package="imap" class="imap" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter" priority="3">
+<violation beginline="164" endline="164" begincolumn="25" endcolumn="42" rule="SystemPrintln" ruleset="Java Logging Rules" package="imap" class="imap" method="releveImap" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
+System.out.print is used
+</violation>
+<violation beginline="177" endline="182" begincolumn="24" endcolumn="9" rule="UnusedFormalParameter" ruleset="Unused Code Rules" package="imap" class="imap" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedFormalParameter" priority="3">
 Avoid unused method parameters such as 'expediteur'.
 </violation>
 </file>
@@ -663,16 +672,16 @@ System.out.print is used
 </violation>
 </file>
 <file name="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\src\tools\RecupDate.java">
-<violation beginline="35" endline="35" begincolumn="17" endcolumn="27" rule="UnnecessaryLocalBeforeReturn" ruleset="Design Rules" package="tools" class="RecupDate" method="date" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnnecessaryLocalBeforeReturn" priority="3">
+<violation beginline="38" endline="38" begincolumn="17" endcolumn="27" rule="UnnecessaryLocalBeforeReturn" ruleset="Design Rules" package="tools" class="RecupDate" method="date" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnnecessaryLocalBeforeReturn" priority="3">
 Consider simply returning the value vs storing it in local variable 'dat'
 </violation>
-<violation beginline="40" endline="40" begincolumn="17" endcolumn="27" rule="UnnecessaryLocalBeforeReturn" ruleset="Design Rules" package="tools" class="RecupDate" method="dateSeulement" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnnecessaryLocalBeforeReturn" priority="3">
+<violation beginline="43" endline="43" begincolumn="17" endcolumn="27" rule="UnnecessaryLocalBeforeReturn" ruleset="Design Rules" package="tools" class="RecupDate" method="dateSeulement" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnnecessaryLocalBeforeReturn" priority="3">
 Consider simply returning the value vs storing it in local variable 'dat'
 </violation>
-<violation beginline="49" endline="49" begincolumn="17" endcolumn="27" rule="UnnecessaryLocalBeforeReturn" ruleset="Design Rules" package="tools" class="RecupDate" method="dateEtHeure" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnnecessaryLocalBeforeReturn" priority="3">
+<violation beginline="52" endline="52" begincolumn="17" endcolumn="27" rule="UnnecessaryLocalBeforeReturn" ruleset="Design Rules" package="tools" class="RecupDate" method="dateEtHeure" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnnecessaryLocalBeforeReturn" priority="3">
 Consider simply returning the value vs storing it in local variable 'dat'
 </violation>
-<violation beginline="54" endline="54" begincolumn="17" endcolumn="27" rule="UnnecessaryLocalBeforeReturn" ruleset="Design Rules" package="tools" class="RecupDate" method="dateEtHeureArchive" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnnecessaryLocalBeforeReturn" priority="3">
+<violation beginline="57" endline="57" begincolumn="17" endcolumn="27" rule="UnnecessaryLocalBeforeReturn" ruleset="Design Rules" package="tools" class="RecupDate" method="dateEtHeureArchive" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#UnnecessaryLocalBeforeReturn" priority="3">
 Consider simply returning the value vs storing it in local variable 'dat'
 </violation>
 </file>

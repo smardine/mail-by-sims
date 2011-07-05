@@ -175,6 +175,7 @@ public class methodeImap {
 			// Prints all nested (chained) exceptions as well
 			messageUtilisateur.affMessageException(mex, "Message Exception");
 		} catch (IOException ioex) {
+			azerty
 			messageUtilisateur.affMessageException(ioex,
 					"erreur lors de la releve des messages");
 		}

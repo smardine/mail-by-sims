@@ -681,7 +681,8 @@ public class BDRequette {
 				+ "a.EXPEDITEUR, " + "a.DESTINATAIRE, " + "a.SUJET, "
 				+ "a.CONTENU, " + "a.DATE_RECEPTION " + "FROM MAIL_RECU a "
 				+ "where a.ID_COMPTE='" + idCompte
-				+ "' and a.ID_DOSSIER_STOCKAGE='" + idDossierChoisi + "'";
+				+ "' and a.ID_DOSSIER_STOCKAGE='" + idDossierChoisi
+				+ "' ORDER BY a.DATE_RECEPTION DESC";
 		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(requette);
 		for (int i = 0; i < lstResultat.size(); i++) {
 			ArrayList<String> unEnregistrement = lstResultat.get(i);

@@ -1,20 +1,27 @@
 package imap;
 
+import imap.util.methodeImap;
+
 import java.util.ArrayList;
 
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
+
 import bdd.BDRequette;
-import fenetre.principale.jTable.MyTableModel;
 
 public class thread_ReleveImap extends Thread {
 
-	private final MyTableModel model;
+	private final JProgressBar progress;
+	private final JTextArea textArea;
+	private final JLabel label;
 
-	// private final JEditorPane pane;
+	public thread_ReleveImap(JProgressBar p_progressBar, JTextArea jTextArea,
+			JLabel jLabel) {// ,
+		this.label = jLabel;
+		this.textArea = jTextArea;
+		this.progress = p_progressBar;
 
-	public thread_ReleveImap(MyTableModel p_tableModel) {// , JEditorPane
-		// editor) {
-		this.model = p_tableModel;
-		// this.pane = editor;
 	}
 
 	@Override
@@ -30,8 +37,14 @@ public class thread_ReleveImap extends Thread {
 			if (serveur.contains("pop")) {
 				System.out.println("not yet implemented");
 				// new ClientMail(user, pass, serveur);
-			} else {
-				new imap(model, idCpt, user, pass, serveur, true);
+			} else if (serveur.contains("gmail")) {
+				methodeImap.afficheText(textArea, "Releve du compte " + s);
+				new ReleveGmail(idCpt, user, pass, serveur, progress, textArea,
+						label);
+			}
+
+			else {
+				new ReleveAutreImap(idCpt, user, pass, serveur, progress);
 			}
 
 		}

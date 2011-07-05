@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<pmd version="4.2.5" timestamp="2011-07-01T14:44:39.537">
+<pmd version="4.2.5" timestamp="2011-07-04T17:23:10.767">
 <file name="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\src\Mail\MailMessage.java">
 <violation beginline="41" endline="41" begincolumn="18" endcolumn="30" rule="UnusedPrivateField" ruleset="Unused Code Rules" package="Mail" class="MailMessage" variable="_receivedDate" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedPrivateField" priority="3">
 Avoid unused private fields such as '_receivedDate'.
@@ -243,61 +243,64 @@ Avoid using implementation types like 'ArrayList'; use the interface instead
 <violation beginline="262" endline="262" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeSousDossier" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
 Avoid using implementation types like 'ArrayList'; use the interface instead
 </violation>
-<violation beginline="336" endline="336" begincolumn="33" endcolumn="37" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer Rules" package="bdd" class="BDRequette" method="createNewDossier" externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#AvoidDuplicateLiterals" priority="3">
-The String literal &quot;','&quot; appears 6 times in this file; the first occurrence is on line 336
+<violation beginline="274" endline="274" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeMessage" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
+Avoid using implementation types like 'ArrayList'; use the interface instead
 </violation>
-<violation beginline="351" endline="351" begincolumn="35" endcolumn="39" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="get1Champ" variable="state" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
+<violation beginline="357" endline="357" begincolumn="33" endcolumn="37" rule="AvoidDuplicateLiterals" ruleset="String and StringBuffer Rules" package="bdd" class="BDRequette" method="createNewDossier" externalInfoUrl="http://pmd.sourceforge.net/rules/strings.html#AvoidDuplicateLiterals" priority="3">
+The String literal &quot;','&quot; appears 6 times in this file; the first occurrence is on line 357
+</violation>
+<violation beginline="372" endline="372" begincolumn="35" endcolumn="39" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="get1Champ" variable="state" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
 Ensure that resources like this Statement object are closed after use
 </violation>
-<violation beginline="352" endline="352" begincolumn="41" endcolumn="58" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="get1Champ" variable="jeuEnregistrements" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
+<violation beginline="373" endline="373" begincolumn="41" endcolumn="58" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="get1Champ" variable="jeuEnregistrements" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
 Ensure that resources like this ResultSet object are closed after use
 </violation>
-<violation beginline="376" endline="376" begincolumn="24" endcolumn="40" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeDeChamp" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
+<violation beginline="397" endline="397" begincolumn="24" endcolumn="40" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeDeChamp" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
 Avoid using implementation types like 'ArrayList'; use the interface instead
 </violation>
-<violation beginline="377" endline="377" begincolumn="27" endcolumn="31" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="getListeDeChamp" variable="state" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
+<violation beginline="398" endline="398" begincolumn="27" endcolumn="31" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="getListeDeChamp" variable="state" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
 Ensure that resources like this Statement object are closed after use
 </violation>
-<violation beginline="381" endline="381" begincolumn="41" endcolumn="58" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="getListeDeChamp" variable="jeuEnregistrements" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
+<violation beginline="402" endline="402" begincolumn="41" endcolumn="58" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="getListeDeChamp" variable="jeuEnregistrements" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
 Ensure that resources like this ResultSet object are closed after use
 </violation>
-<violation beginline="406" endline="406" begincolumn="24" endcolumn="51" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeDenregistrement" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
+<violation beginline="427" endline="427" begincolumn="24" endcolumn="51" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeDenregistrement" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
 Avoid using implementation types like 'ArrayList'; use the interface instead
 </violation>
-<violation beginline="408" endline="408" begincolumn="27" endcolumn="31" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="getListeDenregistrement" variable="state" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
+<violation beginline="429" endline="429" begincolumn="27" endcolumn="31" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="getListeDenregistrement" variable="state" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
 Ensure that resources like this Statement object are closed after use
 </violation>
-<violation beginline="412" endline="412" begincolumn="41" endcolumn="58" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="getListeDenregistrement" variable="jeuEnregistrements" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
+<violation beginline="433" endline="433" begincolumn="41" endcolumn="58" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="getListeDenregistrement" variable="jeuEnregistrements" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
 Ensure that resources like this ResultSet object are closed after use
 </violation>
-<violation beginline="478" endline="478" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeIdPieceJointe" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
+<violation beginline="499" endline="499" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeIdPieceJointe" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
 Avoid using implementation types like 'ArrayList'; use the interface instead
 </violation>
-<violation beginline="484" endline="484" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListNomPieceJointe" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
+<violation beginline="505" endline="505" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListNomPieceJointe" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
 Avoid using implementation types like 'ArrayList'; use the interface instead
 </violation>
-<violation beginline="490" endline="490" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeDossier" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
+<violation beginline="511" endline="511" begincolumn="23" endcolumn="39" rule="LooseCoupling" ruleset="Coupling Rules" package="bdd" class="BDRequette" method="getListeDossier" externalInfoUrl="http://pmd.sourceforge.net/rules/coupling.html#LooseCoupling" priority="3">
 Avoid using implementation types like 'ArrayList'; use the interface instead
 </violation>
-<violation beginline="545" endline="546" begincolumn="25" endcolumn="48" rule="SystemPrintln" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="createNewMessage" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
+<violation beginline="566" endline="567" begincolumn="25" endcolumn="48" rule="SystemPrintln" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="createNewMessage" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
 System.out.print is used
 </violation>
-<violation beginline="709" endline="709" begincolumn="35" endcolumn="43" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="writeBlobToFile" variable="resultSet" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
+<violation beginline="730" endline="730" begincolumn="35" endcolumn="43" rule="CloseResource" ruleset="Design Rules" package="bdd" class="BDRequette" method="writeBlobToFile" variable="resultSet" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#CloseResource" priority="3">
 Ensure that resources like this ResultSet object are closed after use
 </violation>
-<violation beginline="711" endline="711" begincolumn="40" endcolumn="43" rule="UnusedLocalVariable" ruleset="Unused Code Rules" package="bdd" class="BDRequette" method="writeBlobToFile" variable="name" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable" priority="3">
+<violation beginline="732" endline="732" begincolumn="40" endcolumn="43" rule="UnusedLocalVariable" ruleset="Unused Code Rules" package="bdd" class="BDRequette" method="writeBlobToFile" variable="name" externalInfoUrl="http://pmd.sourceforge.net/rules/unusedcode.html#UnusedLocalVariable" priority="3">
 Avoid unused local variables such as 'name'.
 </violation>
-<violation beginline="731" endline="731" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
+<violation beginline="752" endline="752" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
 Avoid printStackTrace(); use a logger call instead.
 </violation>
-<violation beginline="734" endline="734" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
+<violation beginline="755" endline="755" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
 Avoid printStackTrace(); use a logger call instead.
 </violation>
-<violation beginline="737" endline="737" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
+<violation beginline="758" endline="758" begincolumn="25" endcolumn="43" rule="AvoidPrintStackTrace" ruleset="Java Logging Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#AvoidPrintStackTrace" priority="3">
 Avoid printStackTrace(); use a logger call instead.
 </violation>
-<violation beginline="738" endline="740" begincolumn="19" endcolumn="17" rule="EmptyFinallyBlock" ruleset="Basic Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyFinallyBlock" priority="2">
+<violation beginline="759" endline="761" begincolumn="19" endcolumn="17" rule="EmptyFinallyBlock" ruleset="Basic Rules" package="bdd" class="BDRequette" method="writeBlobToFile" externalInfoUrl="http://pmd.sourceforge.net/rules/basic.html#EmptyFinallyBlock" priority="2">
 Avoid empty finally blocks
 </violation>
 </file>
@@ -368,10 +371,10 @@ Perhaps 'modelList' could be replaced by a local variable.
 </violation>
 </file>
 <file name="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\src\fenetre\principale\Main.java">
-<violation beginline="72" endline="72" begincolumn="23" endcolumn="46" rule="SingularField" ruleset="Design Rules" package="fenetre.principale" class="Main" variable="tableModel" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField" priority="4">
+<violation beginline="75" endline="75" begincolumn="23" endcolumn="46" rule="SingularField" ruleset="Design Rules" package="fenetre.principale" class="Main" variable="tableModel" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField" priority="4">
 Perhaps 'tableModel' could be replaced by a local variable.
 </violation>
-<violation beginline="79" endline="79" begincolumn="17" endcolumn="50" rule="SingularField" ruleset="Design Rules" package="fenetre.principale" class="Main" variable="modelList" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField" priority="4">
+<violation beginline="82" endline="82" begincolumn="17" endcolumn="50" rule="SingularField" ruleset="Design Rules" package="fenetre.principale" class="Main" variable="modelList" externalInfoUrl="http://pmd.sourceforge.net/rules/design.html#SingularField" priority="4">
 Perhaps 'modelList' could be replaced by a local variable.
 </violation>
 </file>
@@ -478,7 +481,7 @@ Avoid using implementation types like 'ArrayList'; use the interface instead
 <violation beginline="29" endline="29" begincolumn="33" endcolumn="57" rule="UseArrayListInsteadOfVector" ruleset="Optimization Rules" package="fenetre.principale.jtree" class="ArborescenceBoiteMail" externalInfoUrl="http://pmd.sourceforge.net/rules/optimizations.html#UseArrayListInsteadOfVector" priority="3">
 Use ArrayList instead of Vector
 </violation>
-<violation beginline="135" endline="135" begincolumn="25" endcolumn="42" rule="SystemPrintln" ruleset="Java Logging Rules" package="fenetre.principale.jtree" class="ArborescenceBoiteMail" method="valueForPathChanged" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
+<violation beginline="143" endline="143" begincolumn="25" endcolumn="42" rule="SystemPrintln" ruleset="Java Logging Rules" package="fenetre.principale.jtree" class="ArborescenceBoiteMail" method="valueForPathChanged" externalInfoUrl="http://pmd.sourceforge.net/rules/logging-java.html#SystemPrintln" priority="3">
 System.out.print is used
 </violation>
 </file>

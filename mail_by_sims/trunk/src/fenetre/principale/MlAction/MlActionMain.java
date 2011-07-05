@@ -1,26 +1,26 @@
 package fenetre.principale.MlAction;
 
-import imap.thread_ReleveImap;
 import importMail.thread_Import;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JEditorPane;
+import javax.swing.JProgressBar;
 import javax.swing.JTree;
 
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.OpenWithDefaultViewer;
+import fenetre.ReleveMessagerie;
 import fenetre.comptes.gestion.GestionCompte;
 import fenetre.principale.jTable.MyTableModel;
 
 public class MlActionMain implements ActionListener {
 	private MyTableModel model;
-	private JEditorPane editor;
 	private Window fenetre;
 	private JTree tree;
+	private JProgressBar progress;
 
 	public MlActionMain() {
 
@@ -30,13 +30,14 @@ public class MlActionMain implements ActionListener {
 		this.fenetre = p_fenetre;
 	}
 
-	public MlActionMain(MyTableModel p_tableModel, JEditorPane jEditorPane) {
+	public MlActionMain(MyTableModel p_tableModel, JProgressBar p_progress) {
 		this.model = p_tableModel;
-		this.editor = jEditorPane;
+		this.progress = p_progress;
 	}
 
-	public MlActionMain(JTree p_tree) {
+	public MlActionMain(JTree p_tree, JProgressBar p_progress) {
 		this.tree = p_tree;
+		this.progress = p_progress;
 	}
 
 	@Override
@@ -64,8 +65,8 @@ public class MlActionMain implements ActionListener {
 			t.start();
 		}
 		if (e.getActionCommand().equals(EnActionMain.RECEVOIR.getLib())) {
-			thread_ReleveImap t = new thread_ReleveImap(model);
-			t.start();
+			new ReleveMessagerie();
+
 		}
 
 	}

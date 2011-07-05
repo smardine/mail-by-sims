@@ -4,6 +4,7 @@ import fenetre.comptes.EnDossierBase;
 import fenetre.principale.Main;
 import fenetre.principale.jtree.ActionTree;
 import imap.util.messageUtilisateur;
+import imap.util.methodeImap;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -22,6 +23,7 @@ import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
@@ -118,7 +120,7 @@ public class thread_Import extends Thread {
 				 * piece jointe
 				 */
 
-				m.setContenu(recupContenuMail(m, mime));// ,
+				m.setContenu(recupContenuMail(m, mime, new JTextArea()));// ,
 				// m.getDateReception()
 				// .getTime()));
 
@@ -141,18 +143,20 @@ public class thread_Import extends Thread {
 	}
 
 	public static String recupContenuMail(MlMessage p_mlMessage,
-			Message p_messageJavaMail)// , long p_prefixeNomFichier)//
+			Message p_messageJavaMail, JTextArea textArea)// , long
+			// p_prefixeNomFichier)//
 			throws MessagingException, IOException {
 		StringBuilder sb = new StringBuilder();
 		// int messageNumber = p_messageJavaMail.getMessageNumber();
 		// String messageName = p_messageJavaMail.getFileName();
-
+		methodeImap.afficheText(textArea, "Recupération du contenu du message");
 		Object o = p_messageJavaMail.getContent();
 		if (o instanceof String) {
 			sb.append((String) o);
 		} else if (o instanceof Multipart) {
 			Multipart mp = (Multipart) o;
-			decodeMultipart(p_mlMessage, mp, sb);// , p_prefixeNomFichier);
+			decodeMultipart(p_mlMessage, mp, sb, textArea);// ,
+			// p_prefixeNomFichier);
 
 		} else if (o instanceof InputStream) {
 			System.out.println("on ne devrait jamais passé par là");
@@ -162,7 +166,7 @@ public class thread_Import extends Thread {
 	}
 
 	public static void decodeMultipart(MlMessage p_mlMessage, Multipart mp,
-			StringBuilder sb)// , long p_prefixeNomFichier)
+			StringBuilder sb, JTextArea textArea)// , long p_prefixeNomFichier)
 			throws MessagingException, IOException {
 		for (int j = 0; j < mp.getCount(); j++) {
 			// Part are numbered starting at 0
@@ -178,12 +182,13 @@ public class thread_Import extends Thread {
 			} else if (o2 instanceof Multipart) {
 				System.out.print("**MultiPart Imbriqué.  ");
 				Multipart mp2 = (Multipart) o2;
-				decodeMultipart(p_mlMessage, mp2, sb);// , p_prefixeNomFichier);
+				decodeMultipart(p_mlMessage, mp2, sb, textArea);// ,
+				// p_prefixeNomFichier);
 
 			} else if (o2 instanceof InputStream) {
 
 				recuperePieceJointe(p_mlMessage,// p_prefixeNomFichier,//
-						b, o2);
+						b, o2, textArea);
 
 			}
 
@@ -196,13 +201,14 @@ public class thread_Import extends Thread {
 	 * @param p_prefixeNomFichier
 	 * @param p_bodyPart
 	 * @param p_inputStream
+	 * @param textArea
 	 * @throws MessagingException
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
 	public static void recuperePieceJointe(MlMessage p_mlMessage,
 	// long p_prefixeNomFichier, //
-			BodyPart p_bodyPart, Object p_inputStream)
+			BodyPart p_bodyPart, Object p_inputStream, JTextArea textArea)
 			throws MessagingException, FileNotFoundException {
 
 		InputStream input = (InputStream) p_inputStream;
@@ -214,11 +220,16 @@ public class thread_Import extends Thread {
 		} else {
 			fileName = "inconnu";
 		}
+
 		System.out.println("**C'est une piece jointe dont le nom est :"
 				+ fileName);
-		if (fileName.contains("ISO")) {
+		if (fileName.contains("ISO") || fileName.contains("UTF")) {
 			fileName = decodeurIso(fileName);
 		}
+		methodeImap
+				.afficheText(textArea,
+						"Recuperation d'une piece jointe dont le nom est \n"
+								+ fileName);
 
 		// creation du repertoire qui va acceuillir les pieces jointes
 		File repPieceJointe = new File(GestionRepertoire.RecupRepTravail()
@@ -268,8 +279,9 @@ public class thread_Import extends Thread {
 
 	public static String decodeurIso(String fileName) {
 
-		fileName = fileName.replaceAll("ISO-8859-1", "").replace("?", "")
-				.replace("=", "").replace(",", "");
+		fileName = fileName.replaceAll("=?ISO-8859-1?Q?", "").replace("?", "")
+				.replace(",", "").replaceAll("UTF-8", "").replace("=5F", "_")
+				.replace("=E9", "é").replace("=Q", "").replace("=", "");
 
 		return fileName;
 	}

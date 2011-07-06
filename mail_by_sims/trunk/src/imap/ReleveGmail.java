@@ -104,6 +104,7 @@ public class ReleveGmail {
 			// on recupere ensuite les sous dossiers de la boite de reception
 			IMAPFolder[] lstFolder = methodeImap.getSousDossierIMAP(store,
 					inbox.getFullName());
+
 			for (IMAPFolder folder : lstFolder) {
 				String idSousDossier = BDRequette.getIdDossier(
 						folder.getName(), p_idCompte);
@@ -119,30 +120,31 @@ public class ReleveGmail {
 
 			}
 		}
+
 		// recuperation des autres dossiers:envoyé, brouillons, spam, corbeille
 		IMAPFolder[] lstFolder = methodeImap.getSousDossierIMAP(store,
 				"[Gmail]");
 
 		for (IMAPFolder folder : lstFolder) {
-			if (folder.getFullName().equals("[Gmail]/Drafts")) {
+			if (folder.getFullName().equals("[Gmail]/Drafts") || //
+					folder.getFullName().equals("[Gmail]/Brouillons")) {
 				id_Dossier = BDRequette.getIdDossier(EnDossierBase.BROUILLON
 						.getLib(), p_idCompte);
 				methodeImap.releveImap(props, p_idCompte, p_progress,
 						id_Dossier, folder, textArea, label);
-			}
-			if (folder.getFullName().equals("[Gmail]/Sent Mail")) {
+			} else if (folder.getFullName().equals("[Gmail]/Sent Mail") || //
+					folder.getFullName().equals("[Gmail]/Messages envoyés")) {
 				id_Dossier = BDRequette.getIdDossier(EnDossierBase.ENVOYES
 						.getLib(), p_idCompte);
 				methodeImap.releveImap(props, p_idCompte, p_progress,
 						id_Dossier, folder, textArea, label);
-			}
-			if (folder.getFullName().equals("[Gmail]/Spam")) {
+			} else if (folder.getFullName().equals("[Gmail]/Spam")) {
 				id_Dossier = BDRequette.getIdDossier(EnDossierBase.SPAM
 						.getLib(), p_idCompte);
 				methodeImap.releveImap(props, p_idCompte, p_progress,
 						id_Dossier, folder, textArea, label);
-			}
-			if (folder.getFullName().equals("[Gmail]/Trash")) {
+			} else if (folder.getFullName().equals("[Gmail]/Trash") || //
+					folder.getFullName().equals("[Gmail]/Corbeille")) {
 				id_Dossier = BDRequette.getIdDossier(EnDossierBase.CORBEILLE
 						.getLib(), p_idCompte);
 				methodeImap.releveImap(props, p_idCompte, p_progress,

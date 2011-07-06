@@ -90,13 +90,31 @@ public class methodeImap {
 				if (EnDossierBase.RECEPTION.getLib().equals(dossier)) {
 					fldr = (IMAPFolder) store.getFolder("INBOX");
 				} else if (EnDossierBase.BROUILLON.getLib().equals(dossier)) {
-					fldr = (IMAPFolder) store.getFolder("[Gmail]/Drafts");
+					if (store.getFolder("[Gmail]/Drafts").exists()) {
+						fldr = (IMAPFolder) store.getFolder("[Gmail]/Drafts");
+					} else {
+						fldr = (IMAPFolder) store
+								.getFolder("[Gmail]/Brouillons");
+					}
 				} else if (EnDossierBase.ENVOYES.getLib().equals(dossier)) {
-					fldr = (IMAPFolder) store.getFolder("[Gmail]/Sent Mail");
+					if (store.getFolder("[Gmail]/Sent Mail").exists()) {
+						fldr = (IMAPFolder) store
+								.getFolder("[Gmail]/Sent Mail");
+					} else {
+						fldr = (IMAPFolder) store
+								.getFolder("[Gmail]/Messages envoyés");
+					}
+
 				} else if (EnDossierBase.SPAM.getLib().equals(dossier)) {
 					fldr = (IMAPFolder) store.getFolder("[Gmail]/Spam");
 				} else if (EnDossierBase.CORBEILLE.getLib().equals(dossier)) {
-					fldr = (IMAPFolder) store.getFolder("[Gmail]/Trash");
+					if (store.getFolder("[Gmail]/Trash").exists()) {
+						fldr = (IMAPFolder) store.getFolder("[Gmail]/Trash");
+					} else {
+						fldr = (IMAPFolder) store
+								.getFolder("[Gmail]/Corbeille");
+					}
+
 				} else {
 					ArrayList<String> lstSousDossierInbox = BDRequette
 							.getListeSousDossier(BDRequette
@@ -167,18 +185,9 @@ public class methodeImap {
 			JTextArea textArea, JLabel p_label) {
 
 		MlListeMessage lstMessage = new MlListeMessage();
-		try {
-			releveDossier(p_idCompte, p_idDossier, p_progress, lstMessage,
-					folder, textArea, p_label);
 
-		} catch (MessagingException mex) {
-			// Prints all nested (chained) exceptions as well
-			messageUtilisateur.affMessageException(mex, "Message Exception");
-		} catch (IOException ioex) {
-			azerty
-			messageUtilisateur.affMessageException(ioex,
-					"erreur lors de la releve des messages");
-		}
+		releveDossier(p_idCompte, p_idDossier, p_progress, lstMessage, folder,
+				textArea, p_label);
 
 	}
 
@@ -194,72 +203,77 @@ public class methodeImap {
 	 */
 	private static void releveDossier(String p_idCompte, String p_idDossier,
 			JProgressBar p_progress, MlListeMessage lstMessage,
-			IMAPFolder imapFolder, JTextArea textArea, JLabel p_label)
-			throws MessagingException, IOException {
+			IMAPFolder imapFolder, JTextArea textArea, JLabel p_label) {
 		afficheText(textArea, "Releve du dossier " + imapFolder.getFullName());
-		imapFolder.open(Folder.READ_WRITE);
-		int count = imapFolder.getMessageCount();
+		try {
+			imapFolder.open(Folder.READ_WRITE);
+			int count = imapFolder.getMessageCount();
 
-		afficheText(textArea, "Nombre de messages: " + count);
-		// Message numbers start at 1
-		int nbActu = 0;
-		for (Message m : imapFolder.getMessages()) {
-			p_label.setText("Message traité n° " + nbActu++
-					+ " sur un total de " + count);
+			afficheText(textArea, "Nombre de messages: " + count);
+			// Message numbers start at 1
+			int nbActu = 0;
+			for (Message m : imapFolder.getMessages()) {
+				p_label.setText("Message traité n° " + nbActu++
+						+ " sur un total de " + count);
 
-			int pourcent = (nbActu * 100) / count;
-			p_progress.setValue(pourcent);
-			p_progress.setString("Releve de " + imapFolder.getFullName() + " :"
-					+ pourcent + " %");
-			// on commence par verifier si le message est deja enregistré
-			// dans la base
-			// pour cela, comme on est en IMAp,
-			// on se base sur l'UID du message.
+				int pourcent = (nbActu * 100) / count;
+				p_progress.setValue(pourcent);
+				p_progress.setString("Releve de " + imapFolder.getFullName()
+						+ " :" + pourcent + " %");
+				// on commence par verifier si le message est deja enregistré
+				// dans la base
+				// pour cela, comme on est en IMAp,
+				// on se base sur l'UID du message.
 
-			if (BDRequette.verifieAbscenceUID(imapFolder.getUID(m))) {
-				MlMessage messPourBase = new MlMessage();
+				if (BDRequette.verifieAbscenceUID(imapFolder.getUID(m))) {
+					MlMessage messPourBase = new MlMessage();
 
-				messPourBase.setCheminPhysique(GestionRepertoire
-						.RecupRepTravail()
-						+ "/tempo/" + System.currentTimeMillis() + ".eml");
+					messPourBase.setCheminPhysique(GestionRepertoire
+							.RecupRepTravail()
+							+ "/tempo/" + System.currentTimeMillis() + ".eml");
 
-				messPourBase.setContenu(thread_Import.recupContenuMail(
-						messPourBase, m, textArea));
-				messPourBase.setDateReception(m.getReceivedDate());
-				ArrayList<String> listeDestinataires;
-				if (null != m.getAllRecipients()) {// si on connait la
-					// taille de
-					// la liste, on la fixe
-					listeDestinataires = new ArrayList<String>(m
-							.getAllRecipients().length);
-					for (Address uneAdresse : m.getAllRecipients()) {
-						listeDestinataires.add(uneAdresse.toString());
+					messPourBase.setContenu(thread_Import.recupContenuMail(
+							messPourBase, m, textArea));
+					messPourBase.setDateReception(m.getReceivedDate());
+					ArrayList<String> listeDestinataires;
+					if (null != m.getAllRecipients()) {// si on connait la
+						// taille de
+						// la liste, on la fixe
+						listeDestinataires = new ArrayList<String>(m
+								.getAllRecipients().length);
+						for (Address uneAdresse : m.getAllRecipients()) {
+							listeDestinataires.add(uneAdresse.toString());
+						}
+					} else {
+						listeDestinataires = new ArrayList<String>(1);
+						listeDestinataires.add("Destinataire(s) masqué(s)");
 					}
-				} else {
-					listeDestinataires = new ArrayList<String>(1);
-					listeDestinataires.add("Destinataire(s) masqué(s)");
-				}
 
-				messPourBase.setDestinataire(listeDestinataires);
-				messPourBase.setExpediteur(m.getFrom()[0].toString());
-				messPourBase.setIdCompte(p_idCompte);
-				messPourBase.setIdDossier(verifieRegle(messPourBase
-						.getExpediteur(), p_idDossier));
-				messPourBase.setUIDMessage("" + imapFolder.getUID(m));
-				messPourBase.setSujet(m.getSubject());
-				lstMessage.add(messPourBase);
-				afficheText(textArea, "Enregistrement du message dans la base");
-				BDRequette.createNewMessage(messPourBase);
+					messPourBase.setDestinataire(listeDestinataires);
+					messPourBase.setExpediteur(m.getFrom()[0].toString());
+					messPourBase.setIdCompte(p_idCompte);
+					messPourBase.setIdDossier(verifieRegle(messPourBase
+							.getExpediteur(), p_idDossier));
+					messPourBase.setUIDMessage("" + imapFolder.getUID(m));
+					messPourBase.setSujet(m.getSubject());
+					lstMessage.add(messPourBase);
+					afficheText(textArea,
+							"Enregistrement du message dans la base");
+					BDRequette.createNewMessage(messPourBase);
+
+				}
 
 			}
 
+			// "true" actually deletes flagged messages from folder
+			afficheText(textArea, "Fermeture du repertoire "
+					+ imapFolder.getFullName());
+
+			imapFolder.close(false);
+		} catch (MessagingException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur a la releve des messages");
 		}
-
-		// "true" actually deletes flagged messages from folder
-		afficheText(textArea, "Fermeture du repertoire "
-				+ imapFolder.getFullName());
-
-		imapFolder.close(false);
 
 	}
 

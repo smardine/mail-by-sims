@@ -144,54 +144,75 @@ public class thread_Import extends Thread {
 
 	public static String recupContenuMail(MlMessage p_mlMessage,
 			Message p_messageJavaMail, JTextArea textArea)// , long
-			// p_prefixeNomFichier)//
-			throws MessagingException, IOException {
+	// p_prefixeNomFichier)//
+	{
 		StringBuilder sb = new StringBuilder();
 		// int messageNumber = p_messageJavaMail.getMessageNumber();
 		// String messageName = p_messageJavaMail.getFileName();
 		methodeImap.afficheText(textArea, "Recupération du contenu du message");
-		Object o = p_messageJavaMail.getContent();
-		if (o instanceof String) {
-			sb.append((String) o);
-		} else if (o instanceof Multipart) {
-			Multipart mp = (Multipart) o;
-			decodeMultipart(p_mlMessage, mp, sb, textArea);// ,
-			// p_prefixeNomFichier);
+		Object o;
+		try {
+			o = p_messageJavaMail.getContent();
+			if (o instanceof String) {
+				sb.append((String) o);
+			} else if (o instanceof Multipart) {
+				Multipart mp = (Multipart) o;
+				decodeMultipart(p_mlMessage, mp, sb, textArea);// ,
+				// p_prefixeNomFichier);
 
-		} else if (o instanceof InputStream) {
-			System.out.println("on ne devrait jamais passé par là");
-			// recuperePieceJointe(p_complet, p_prefixeNomFichier, b, o);
+			} else if (o instanceof InputStream) {
+				System.out.println("on ne devrait jamais passé par là");
+				// recuperePieceJointe(p_complet, p_prefixeNomFichier, b, o);
+			}
+		} catch (IOException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur a la recuperation du mail");
+		} catch (MessagingException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur a la recuperation du mail");
 		}
+
 		return sb.toString();
 	}
 
 	public static void decodeMultipart(MlMessage p_mlMessage, Multipart mp,
-			StringBuilder sb, JTextArea textArea)// , long p_prefixeNomFichier)
-			throws MessagingException, IOException {
-		for (int j = 0; j < mp.getCount(); j++) {
-			// Part are numbered starting at 0
-			BodyPart b = mp.getBodyPart(j);
-			// String contentType = b.getContentType();
-			Object o2 = b.getContent();
-			if (o2 instanceof String) {
-				if (j == mp.getCount() - 1) {
-					// on ne veut que la partie html du message
-					sb.append(o2);
+			StringBuilder sb, JTextArea textArea) // , long p_prefixeNomFichier)
+	{
+		try {
+			for (int j = 0; j < mp.getCount(); j++) {
+				// Part are numbered starting at 0
+				BodyPart b = mp.getBodyPart(j);
+				// String contentType = b.getContentType();
+				Object o2 = b.getContent();
+				if (o2 instanceof String) {
+					if (j == mp.getCount() - 1) {
+						// on ne veut que la partie html du message
+						sb.append(o2);
+					}
+
+				} else if (o2 instanceof Multipart) {
+					System.out.print("**MultiPart Imbriqué.  ");
+					Multipart mp2 = (Multipart) o2;
+					decodeMultipart(p_mlMessage, mp2, sb, textArea);// ,
+					// p_prefixeNomFichier);
+
+				} else if (o2 instanceof InputStream) {
+
+					recuperePieceJointe(p_mlMessage,// p_prefixeNomFichier,//
+							b, o2, textArea);
+
 				}
 
-			} else if (o2 instanceof Multipart) {
-				System.out.print("**MultiPart Imbriqué.  ");
-				Multipart mp2 = (Multipart) o2;
-				decodeMultipart(p_mlMessage, mp2, sb, textArea);// ,
-				// p_prefixeNomFichier);
-
-			} else if (o2 instanceof InputStream) {
-
-				recuperePieceJointe(p_mlMessage,// p_prefixeNomFichier,//
-						b, o2, textArea);
-
 			}
-
+		} catch (FileNotFoundException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur Decodage MultiPart");
+		} catch (MessagingException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur Decodage MultiPart");
+		} catch (IOException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur Decodage MultiPart");
 		}
 
 	}
@@ -280,8 +301,9 @@ public class thread_Import extends Thread {
 	public static String decodeurIso(String fileName) {
 
 		fileName = fileName.replaceAll("=?ISO-8859-1?Q?", "").replace("?", "")
-				.replace(",", "").replaceAll("UTF-8", "").replace("=5F", "_")
-				.replace("=E9", "é").replace("=Q", "").replace("=", "");
+				.replace(",", "").replaceAll("=?UTF-8?Q?", "").replace("=5F",
+						"_").replace("=E9", "é").replace("=Q", "").replace(
+						"=CC=81e", "é").replace("=", "");
 
 		return fileName;
 	}

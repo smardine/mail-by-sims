@@ -543,7 +543,7 @@ public class BDRequette {
 		requette.ensureCapacity(tailleStringBuilder);
 		requette.append("INSERT INTO MAIL_RECU");
 		requette
-				.append("(ID_COMPTE, ID_DOSSIER_STOCKAGE, UID_MESSAGE, EXPEDITEUR, DESTINATAIRE, SUJET,CONTENU,DATE_RECEPTION)");
+				.append("(ID_COMPTE, ID_DOSSIER_STOCKAGE, UID_MESSAGE, EXPEDITEUR, DESTINATAIRE, SUJET,CONTENU,DATE_RECEPTION,STATUT)");
 		requette.append("VALUES (");
 		requette.append("'" + idCompte + "','");
 		requette.append(idDossierStockage + "','");
@@ -553,7 +553,9 @@ public class BDRequette {
 		requette.append(sujet + "',");
 		requette.append("?,'");// c'est pour le contenu qui sera stocké dans un
 		// blob
-		requette.append(dateReception + "')");
+		requette.append(dateReception + "',");
+		requette.append("0)");// le status de lecture du message (0= non
+								// lu,1=lu)
 
 		// on l'execute
 
@@ -768,6 +770,22 @@ public class BDRequette {
 		String requete = "SELECT count (*) from MAIL_RECU a where a.UID_MESSAGE="
 				+ uid;
 		return ("0".equals(get1Champ(requete)));
+
+	}
+
+	public static String getVersionBase() {
+		String script = "SELECT a.VERSION_BASE FROM PARAM a";
+		return get1Champ(script);
+
+	}
+
+	public static boolean isMessageLu(int i) {
+		String script = "SELECT a.STATUT FROM MAIL_RECU a where a.ID_MESSAGE_RECU='"
+				+ i + "'";
+		if ("1".equals(get1Champ(script))) {
+			return true;
+		}
+		return false;
 
 	}
 

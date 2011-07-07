@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public class BDScripts {
 
 	private ArrayList<String> version1;
+	private ArrayList<String> version2;
 
 	public BDScripts() {
 
@@ -190,6 +191,17 @@ public class BDScripts {
 		version1.add("INSERT INTO PARAM (VERSION_BASE) VALUES ( 1);");
 
 		return version1;
+	}
+
+	public ArrayList<String> getVersion2() {
+		version2 = new ArrayList<String>();
+		String script = "ALTER TABLE MAIL_RECU " + "ADD STATUT Char(1) "
+				+ "CHARACTER SET ISO8859_1 NOT NULL COLLATE FR_FR; ";
+		version2.add(script);
+		script = "UPDATE MAIL_RECU SET STATUT = '1' WHERE STATUT IS NULL;";
+		version2.add(script);
+		version2.add("UPDATE PARAM SET VERSION_BASE=2;");
+		return version2;
 	}
 
 }

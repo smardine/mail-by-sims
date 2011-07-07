@@ -1,5 +1,7 @@
 package bdd;
 
+import imap.util.messageUtilisateur;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -19,6 +21,7 @@ public class BDAcces {
 	static boolean etatConnexion;
 	static Connection connexion;
 	static FBManager firebirdManager;
+	static final String VERSION_BASE = "2";
 
 	/**
 	 * constructeur
@@ -105,20 +108,43 @@ public class BDAcces {
 			ArrayList<String> version1 = scripts.getVersion1();
 			boolean succes = true;
 			ScriptExecutor se = new ScriptExecutor();
-			for (String s : version1) {
-				succes = se.executeScriptSQL(connexion, s);
-				if (!succes) {
-					connexion.rollback();
+			LanceMiseAJour(se, version1);
+			ArrayList<String> version2 = scripts.getVersion2();
+			LanceMiseAJour(se, version2);
 
-				} else {
-					connexion.commit();
+		} else {
+			String versionActuelle = BDRequette.getVersionBase();
+			if (!VERSION_BASE.equals(versionActuelle)) {
+				ScriptExecutor se = new ScriptExecutor();
+				BDScripts scripts = new BDScripts();
+				if ("1".equals(versionActuelle)) {
+					LanceMiseAJour(se, scripts.getVersion2());
+					verifVersionBDD(true);
 				}
-
 			}
-
 		}
 		return true;
 
+	}
+
+	/**
+	 * @param se
+	 * @param versionApasser
+	 * @throws SQLException
+	 */
+	private void LanceMiseAJour(ScriptExecutor se,
+			ArrayList<String> versionApasser) throws SQLException {
+		boolean succes;
+		for (String s : versionApasser) {
+			succes = se.executeScriptSQL(connexion, s);
+			if (!succes) {
+				connexion.rollback();
+				messageUtilisateur
+						.affMessageErreur("Impossible de mettre a jour la base de données \r\n Votre logiciel va se fermer");
+			} else {
+				connexion.commit();
+			}
+		}
 	}
 
 	private boolean isDataBaseExist(String p_emplacementBase) {

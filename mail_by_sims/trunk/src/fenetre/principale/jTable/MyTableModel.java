@@ -11,6 +11,7 @@ import javax.swing.table.TableColumn;
 
 import tools.RecupDate;
 import bdd.BDRequette;
+import fenetre.principale.EnNomComposant;
 
 public class MyTableModel extends AbstractTableModel {
 	/**
@@ -43,19 +44,40 @@ public class MyTableModel extends AbstractTableModel {
 		TableColumn columnPieceJointe = coloneModel.getColumn(4);
 		TableColumn columnStatus = coloneModel.getColumn(5);
 
+		int largeurJTable = EnNomComposant.PANEL_TABLE_ET_LISTE
+				.getLargeurInitiale();
+
 		columnId.setMinWidth(0);
 		columnId.setMaxWidth(0);
 		columnId.setPreferredWidth(0);
 
-		columnDate.setWidth(150);
-		columnExpediteur.setWidth(200);
-		columnSujet.setWidth(500);
+		columnDate.setMinWidth(120);
+		columnDate.setWidth(120);
+		columnDate.setMaxWidth(120);
+		columnDate.setPreferredWidth(120);
+
+		columnExpediteur.setMinWidth(150);
+		columnExpediteur.setWidth(150);
+		columnExpediteur.setPreferredWidth(150);
+
+		columnSujet.setMinWidth(200);
+		columnSujet.setWidth(200);
+		columnSujet.setPreferredWidth(200);
+
+		columnPieceJointe.setMinWidth(20);
 		columnPieceJointe.setWidth(20);
+		columnPieceJointe.setPreferredWidth(20);
+		columnPieceJointe.setMaxWidth(20);
+
 		columnPieceJointe.setHeaderRenderer(new IconRenderer());
 		columnPieceJointe.setHeaderValue(new txtIcon("", new ImageIcon(
 				getClass().getResource("/piece_jointe16.png"))));
 
+		columnStatus.setMinWidth(20);
 		columnStatus.setWidth(20);
+		columnStatus.setPreferredWidth(20);
+		columnStatus.setMaxWidth(20);
+
 		columnStatus.setHeaderRenderer(new IconRenderer());
 		columnStatus.setHeaderValue(new txtIcon("", new ImageIcon(getClass()
 				.getResource("/lu16.png"))));

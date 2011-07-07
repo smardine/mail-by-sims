@@ -281,8 +281,10 @@ public class Main extends JFrame {
 			jTable.setAutoCreateColumnsFromModel(false);
 			jTable.setColumnSelectionAllowed(true);
 			jTable
-					.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-			jTable.setShowVerticalLines(true);
+					.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+			jTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+			jTable.setShowHorizontalLines(false);
+			jTable.setShowVerticalLines(false);
 		}
 		return jTable;
 	}
@@ -376,7 +378,7 @@ public class Main extends JFrame {
 		super();
 		new BDAcces();
 		initialize();
-
+		this.addComponentListener(new MlComposantListener(jContentPane));
 		Thread_Verif verif = new Thread_Verif(jTree);
 		verif.start();
 		modelList = new DefaultListModel();
@@ -425,7 +427,6 @@ public class Main extends JFrame {
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(
 				getClass().getResource("/logo_appli.png")));
-		this.addComponentListener(new MlComposantListener(jContentPane));
 
 	}
 

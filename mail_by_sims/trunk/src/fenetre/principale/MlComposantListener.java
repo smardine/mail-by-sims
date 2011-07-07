@@ -69,14 +69,12 @@ public class MlComposantListener implements ComponentListener {
 			if (EnNomComposant.PANEL_TABLE_ET_LISTE.getLib().equals(nomCompo)) {
 				dim = EnNomComposant.PANEL_TABLE_ET_LISTE
 						.calculNouvelleDimension(largeur, hauteur);
-				System.out.println("taille table et liste=" + dim);
 
 			}
 
 			panelPrincipal.getComponent(i).setSize(dim);
 			panelPrincipal.getComponent(i).repaint();
-			// System.out.println("nom du composant:"
-			// + panelPrincipal.getComponent(i).getName());
+
 		}
 		panelPrincipal.repaint();
 		panelPrincipal.setVisible(false);

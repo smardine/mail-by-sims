@@ -79,6 +79,7 @@ public class thread_Import extends Thread {
 
 	}
 
+	@SuppressWarnings("hiding")
 	public static void enregistreMessageEnBase(MlListeMessage listeDeMessage) {
 
 		/** On simule la reception d'un message */

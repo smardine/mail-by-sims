@@ -9,6 +9,11 @@ import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 
 public class IconRenderer extends DefaultTableCellRenderer {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -7704722991301113701L;
+
 	@Override
 	public Component getTableCellRendererComponent(JTable table, Object obj,
 			boolean isSelected, boolean hasFocus, int row, int column) {

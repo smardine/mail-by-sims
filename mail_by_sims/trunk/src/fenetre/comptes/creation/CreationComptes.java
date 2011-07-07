@@ -7,7 +7,6 @@ import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.creation.MlActionCreation.EnActionCreationComptes;
 import fenetre.comptes.creation.MlActionCreation.MlActionCreationComptes;

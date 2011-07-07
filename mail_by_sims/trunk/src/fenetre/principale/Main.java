@@ -24,7 +24,6 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
@@ -81,7 +80,6 @@ public class Main extends JFrame {
 	private JMenu jMenuEnvoiReception = null;
 	private JMenuItem jMenuItemReleve = null;
 	private DefaultListModel modelList = null;
-	private JProgressBar jProgressBar = null;
 
 	/**
 	 * This method initializes jDesktopPaneHaut
@@ -104,7 +102,6 @@ public class Main extends JFrame {
 			jDesktopPaneHaut.add(getJButton1(), null);
 			jDesktopPaneHaut.add(getJButton2(), null);
 
-			jDesktopPaneHaut.add(getJProgressBar(), null);
 		}
 		return jDesktopPaneHaut;
 	}
@@ -359,21 +356,6 @@ public class Main extends JFrame {
 	}
 
 	/**
-	 * This method initializes jProgressBar
-	 * @return javax.swing.JProgressBar
-	 */
-	private JProgressBar getJProgressBar() {
-		if (jProgressBar == null) {
-			jProgressBar = new JProgressBar();
-			jProgressBar.setBounds(new Rectangle(300, 3, 478, 16));
-			jProgressBar.setStringPainted(true);
-			jProgressBar
-					.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-		}
-		return jProgressBar;
-	}
-
-	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -405,17 +387,13 @@ public class Main extends JFrame {
 		tableModel = new MyTableModel(new MlListeMessage(), ColoneModel);
 		jTable.setModel(tableModel);
 		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jList));
-		jMenuContact.addActionListener(new MlActionMain(tableModel,
-				jProgressBar));
+		jMenuContact.addActionListener(new MlActionMain());
 		jTree.addMouseListener(new MlActionJtree(jTree, jTable));
 		jTree.addTreeSelectionListener(new MlActionJtree(jTree, jTable));
 		jTree.addTreeExpansionListener(new MlActionJtree(jTree, jTable));
-		jMenuItemImporter.addActionListener(new MlActionMain(jTree,
-				jProgressBar));
-		jMenuItemReleve
-				.addActionListener(new MlActionMain(jTree, jProgressBar));
-		btEnvoyerRecevoir.addActionListener(new MlActionMain(jTree,
-				jProgressBar));
+		jMenuItemImporter.addActionListener(new MlActionMain(jTree));
+		jMenuItemReleve.addActionListener(new MlActionMain(jTree));
+		btEnvoyerRecevoir.addActionListener(new MlActionMain(jTree));
 		btSupprMessage.addActionListener(new MlActionBouton(jTable));
 	}
 

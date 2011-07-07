@@ -12,6 +12,8 @@ import javax.swing.JOptionPane;
 
 import org.firebirdsql.management.FBManager;
 
+import tools.Historique;
+
 /**
  * classe s'occupant de l'acces a la base de données
  * @author sims
@@ -106,7 +108,7 @@ public class BDAcces {
 			// creation
 			BDScripts scripts = new BDScripts();
 			ArrayList<String> version1 = scripts.getVersion1();
-			boolean succes = true;
+
 			ScriptExecutor se = new ScriptExecutor();
 			LanceMiseAJour(se, version1);
 			ArrayList<String> version2 = scripts.getVersion2();
@@ -141,6 +143,9 @@ public class BDAcces {
 				connexion.rollback();
 				messageUtilisateur
 						.affMessageErreur("Impossible de mettre a jour la base de données \r\n Votre logiciel va se fermer");
+				Historique.ecrire("Erreur a la mise a jour sur le script:\n\r"
+						+ s);
+				System.exit(0);
 			} else {
 				connexion.commit();
 			}

@@ -5,10 +5,12 @@ import importMail.MlMessage;
 
 import java.util.Date;
 
+import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
 import tools.RecupDate;
+import bdd.BDRequette;
 
 public class MyTableModel extends AbstractTableModel {
 	/**
@@ -16,10 +18,10 @@ public class MyTableModel extends AbstractTableModel {
 	 */
 	private static final long serialVersionUID = 1L;
 	private final String[] columnNames = { "n°", "Date reception",
-			"Expediteur", "Sujet" };
+			"Expediteur", "Sujet", "Piece Jointe", "Statut" };
 
 	Class<?> types[] = new Class[] { Number.class, Date.class, String.class,
-			String.class };
+			String.class, ImageIcon.class, Boolean.class };
 	private final XTableColumnModel coloneModel;
 
 	// private final MlListeMessage rowValues = new MlListeMessage();
@@ -31,13 +33,32 @@ public class MyTableModel extends AbstractTableModel {
 		coloneModel.addColumn(new TableColumn(1), "Date de reception");
 		coloneModel.addColumn(new TableColumn(2), "Expediteur");
 		coloneModel.addColumn(new TableColumn(3), "Sujet");
+		coloneModel.addColumn(new TableColumn(4), "Piece Jointe");
+		coloneModel.addColumn(new TableColumn(5), "Statut");
 
-		coloneModel.getColumn(0).setMinWidth(0);
-		coloneModel.getColumn(0).setMaxWidth(0);
-		coloneModel.getColumn(0).setPreferredWidth(0);
-		coloneModel.getColumn(1).setWidth(150);
-		coloneModel.getColumn(2).setWidth(200);
-		coloneModel.getColumn(3).setWidth(500);
+		TableColumn columnId = coloneModel.getColumn(0);
+		TableColumn columnDate = coloneModel.getColumn(1);
+		TableColumn columnExpediteur = coloneModel.getColumn(2);
+		TableColumn columnSujet = coloneModel.getColumn(3);
+		TableColumn columnPieceJointe = coloneModel.getColumn(4);
+		TableColumn columnStatus = coloneModel.getColumn(5);
+
+		columnId.setMinWidth(0);
+		columnId.setMaxWidth(0);
+		columnId.setPreferredWidth(0);
+
+		columnDate.setWidth(150);
+		columnExpediteur.setWidth(200);
+		columnSujet.setWidth(500);
+		columnPieceJointe.setWidth(20);
+		columnPieceJointe.setHeaderRenderer(new IconRenderer());
+		columnPieceJointe.setHeaderValue(new txtIcon("", new ImageIcon(
+				getClass().getResource("/piece_jointe16.png"))));
+
+		columnStatus.setWidth(20);
+		columnStatus.setHeaderRenderer(new IconRenderer());
+		columnStatus.setHeaderValue(new txtIcon("", new ImageIcon(getClass()
+				.getResource("/lu16.png"))));
 
 	}
 
@@ -95,7 +116,18 @@ public class MyTableModel extends AbstractTableModel {
 			data[i][2] = m.getExpediteur();
 			// sujet
 			data[i][3] = m.getSujet();
-			// data[i][4] = BDRequette.messageHavePieceJointe(m.getIdMessage());
+
+			if (BDRequette.messageHavePieceJointe(m.getIdMessage())) {
+				data[i][4] = new ImageIcon(getClass().getResource(
+						"/piece_jointe16.png"));
+			} else {
+				data[i][4] = null;
+			}
+			if (BDRequette.isMessageLu(m.getIdMessage())) {
+				data[i][5] = Boolean.TRUE;
+			} else {
+				data[i][5] = Boolean.FALSE;
+			}
 
 		}
 

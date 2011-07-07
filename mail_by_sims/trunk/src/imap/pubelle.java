@@ -1,6 +1,5 @@
 package imap;
 
-
 public class pubelle {
 
 	// Object content = m.getContent();

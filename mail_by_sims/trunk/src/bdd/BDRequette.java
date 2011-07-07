@@ -555,7 +555,7 @@ public class BDRequette {
 		// blob
 		requette.append(dateReception + "',");
 		requette.append("0)");// le status de lecture du message (0= non
-								// lu,1=lu)
+		// lu,1=lu)
 
 		// on l'execute
 
@@ -732,10 +732,7 @@ public class BDRequette {
 			PreparedStatement stmt = laConnexion.prepareStatement(requette);
 			ResultSet resultSet = stmt.executeQuery();
 			while (resultSet.next()) {
-				String name = resultSet.getString(1);
-				// System.out.println("Name        = " + name);
-				// String description = resultSet.getString(2);
-				// System.out.println("Description = " + description);
+				// String name = resultSet.getString(1);
 
 				FileOutputStream fos = new FileOutputStream(contenuHMTL);
 

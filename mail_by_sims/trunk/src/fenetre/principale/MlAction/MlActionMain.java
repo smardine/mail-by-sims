@@ -56,8 +56,10 @@ public class MlActionMain implements ActionListener {
 			thread_Import t = new thread_Import(tree);
 			t.start();
 		}
-		if (e.getActionCommand().equals(EnActionMain.RECEVOIR.getLib())) {
+		if (e.getActionCommand().equals(EnActionMain.ENVOYER_RECEVOIR.getLib())) {
 			new ReleveMessagerie();
+		}
+		if (e.getActionCommand().equals(EnActionMain.RECEVOIR.getLib())) {
 
 		}
 

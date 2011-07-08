@@ -81,6 +81,8 @@ public class Main extends JFrame {
 	private JMenu jMenuEnvoiReception = null;
 	private JMenuItem jMenuItemReleve = null;
 	private DefaultListModel modelList = null;
+	private JButton btRecevoir = null;
+	private JButton btEnvoyer = null;
 
 	/**
 	 * This method initializes jDesktopPaneHaut
@@ -103,6 +105,8 @@ public class Main extends JFrame {
 			jDesktopPaneHaut.add(getJButton1(), null);
 			jDesktopPaneHaut.add(getJButton2(), null);
 
+			jDesktopPaneHaut.add(getJButtonRecevoir(), null);
+			jDesktopPaneHaut.add(getJButtonEnvoyer(), null);
 		}
 		return jDesktopPaneHaut;
 	}
@@ -220,7 +224,8 @@ public class Main extends JFrame {
 			btEnvoyerRecevoir.setIcon(new ImageIcon(getClass().getResource(
 					"/envoyer_recevoir.png")));
 			btEnvoyerRecevoir.setSize(new Dimension(75, 50));
-			btEnvoyerRecevoir.setActionCommand(EnActionMain.RECEVOIR.getLib());
+			btEnvoyerRecevoir.setActionCommand(EnActionMain.ENVOYER_RECEVOIR
+					.getLib());
 		}
 		return btEnvoyerRecevoir;
 	}
@@ -353,10 +358,44 @@ public class Main extends JFrame {
 	private JMenuItem getJMenuItemReleve() {
 		if (jMenuItemReleve == null) {
 			jMenuItemReleve = new JMenuItem();
-			jMenuItemReleve.setText(EnActionMain.RECEVOIR.getLib());
-			jMenuItemReleve.setActionCommand(EnActionMain.RECEVOIR.getLib());
+			jMenuItemReleve.setText(EnActionMain.ENVOYER_RECEVOIR.getLib());
+			jMenuItemReleve.setActionCommand(EnActionMain.ENVOYER_RECEVOIR
+					.getLib());
 		}
 		return jMenuItemReleve;
+	}
+
+	/**
+	 * This method initializes btRecevoir
+	 * @return javax.swing.JButton
+	 */
+	private JButton getJButtonRecevoir() {
+		if (btRecevoir == null) {
+			btRecevoir = new JButton();
+			btRecevoir.setLocation(new Point(224, 0));
+			btRecevoir.setIcon(new ImageIcon(getClass().getResource(
+					"/recevoir.png")));
+			btRecevoir.setSize(new Dimension(75, 50));
+			btRecevoir.setActionCommand(EnActionMain.ENVOYER_RECEVOIR.getLib());
+
+		}
+		return btRecevoir;
+	}
+
+	/**
+	 * This method initializes btEnvoyer
+	 * @return javax.swing.JButton
+	 */
+	private JButton getJButtonEnvoyer() {
+		if (btEnvoyer == null) {
+			btEnvoyer = new JButton();
+			btEnvoyer.setLocation(new Point(301, 0));
+			btEnvoyer.setIcon(new ImageIcon(getClass().getResource(
+					"/envoyer.png")));
+			btEnvoyer.setSize(new Dimension(75, 50));
+			btEnvoyer.setActionCommand(EnActionMain.ENVOYER.getLib());
+		}
+		return btEnvoyer;
 	}
 
 	/**
@@ -399,6 +438,8 @@ public class Main extends JFrame {
 		jMenuItemImporter.addActionListener(new MlActionMain(jTree));
 		jMenuItemReleve.addActionListener(new MlActionMain(jTree));
 		btEnvoyerRecevoir.addActionListener(new MlActionMain(jTree));
+		btRecevoir.addActionListener(new MlActionMain(jTree));
+		btEnvoyer.addActionListener(new MlActionMain(jTree));
 		btSupprMessage
 				.addActionListener(new MlActionPopupJTable(jTable, jList));
 	}

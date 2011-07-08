@@ -10,6 +10,8 @@ public enum EnActionMain {
 	EXPLORER("Explorer"), //
 	HISTORIQUE("Historique"), //
 	CONTACT("Contact"), //
+	ENVOYER_RECEVOIR("Envoyer / Recevoir"), //
+	ENVOYER("Envoyer"), //
 	RECEVOIR("Recevoir"), //
 	SUPPRIMER("Supprimer");
 

@@ -1,4 +1,4 @@
-package fenetre.principale;
+package fenetre.principale.jTable;
 
 import java.text.DateFormat;
 import java.util.Date;

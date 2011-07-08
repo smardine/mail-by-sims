@@ -786,4 +786,11 @@ public class BDRequette {
 
 	}
 
+	public static boolean setStatusLecture(Integer p_idMessage) {
+		String script = "UPDATE MAIL_RECU a SET STATUT=1 WHERE a.ID_MESSAGE_RECU="
+				+ p_idMessage;
+		return executeRequete(script);
+
+	}
+
 }

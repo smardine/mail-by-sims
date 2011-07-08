@@ -37,9 +37,10 @@ import Verif.Thread_Verif;
 import bdd.BDAcces;
 import fenetre.EnTitreFenetre;
 import fenetre.principale.MlAction.EnActionMain;
-import fenetre.principale.MlAction.MlActionBouton;
 import fenetre.principale.MlAction.MlActionMain;
+import fenetre.principale.jTable.DateTimeCellRenderer;
 import fenetre.principale.jTable.MlActionJtable;
+import fenetre.principale.jTable.MlActionPopupJTable;
 import fenetre.principale.jTable.MyTableModel;
 import fenetre.principale.jTable.XTableColumnModel;
 import fenetre.principale.jtree.ArborescenceBoiteMail;
@@ -284,6 +285,7 @@ public class Main extends JFrame {
 					.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 			jTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
 			jTable.setShowHorizontalLines(false);
+
 			jTable.setShowVerticalLines(false);
 		}
 		return jTable;
@@ -389,6 +391,7 @@ public class Main extends JFrame {
 		tableModel = new MyTableModel(new MlListeMessage(), ColoneModel);
 		jTable.setModel(tableModel);
 		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jList));
+
 		jMenuContact.addActionListener(new MlActionMain());
 		jTree.addMouseListener(new MlActionJtree(jTree, jTable));
 		jTree.addTreeSelectionListener(new MlActionJtree(jTree, jTable));
@@ -396,7 +399,8 @@ public class Main extends JFrame {
 		jMenuItemImporter.addActionListener(new MlActionMain(jTree));
 		jMenuItemReleve.addActionListener(new MlActionMain(jTree));
 		btEnvoyerRecevoir.addActionListener(new MlActionMain(jTree));
-		btSupprMessage.addActionListener(new MlActionBouton(jTable));
+		btSupprMessage
+				.addActionListener(new MlActionPopupJTable(jTable, jList));
 	}
 
 	/**

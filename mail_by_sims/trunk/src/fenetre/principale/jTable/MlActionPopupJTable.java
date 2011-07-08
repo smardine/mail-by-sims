@@ -1,6 +1,5 @@
 package fenetre.principale.jTable;
 
-import fenetre.principale.Main;
 import imap.util.REPONSE;
 import imap.util.messageUtilisateur;
 import importMail.MlListeMessage;
@@ -9,17 +8,22 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.Date;
 
+import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.tree.TreePath;
 
 import bdd.BDRequette;
+import fenetre.principale.Main;
+import fenetre.principale.MlAction.EnActionMain;
 
 public class MlActionPopupJTable implements ActionListener {
 
 	private final JTable table;
+	private final JList list;
 
-	public MlActionPopupJTable(JTable p_table) {
+	public MlActionPopupJTable(JTable p_table, JList jList) {
 		this.table = p_table;
+		this.list = jList;
 
 	}
 
@@ -27,46 +31,62 @@ public class MlActionPopupJTable implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		String actionCommand = e.getActionCommand();
-		int selectedLine = table.getSelectedRow();
 
-		Integer idMessage = (Integer) table.getModel().getValueAt(selectedLine,
-				0);
-		// le n° du message (meme si il est caché).
-		Date dateReception = (Date) table.getModel()
-				.getValueAt(selectedLine, 1);// la date de reception
+		if (EnActionMain.SUPPRIMER.getLib().equals(actionCommand)) {
 
-		String expediteur = (String) table.getModel().getValueAt(selectedLine,
-				2);// l'expediteur
+			int[] nbDeLigneSelectionnee = table.getSelectedRows();
+			REPONSE reponse = REPONSE.NON;
+			if (nbDeLigneSelectionnee.length == 1) {
+				reponse = messageUtilisateur.affMessageQuestionOuiNon(
+						"Suppression de message",
+						"Voulez vous vraiment supprimer ce message?");
+			} else {
+				if (nbDeLigneSelectionnee.length > 1) {
+					reponse = messageUtilisateur
+							.affMessageQuestionOuiNon("Suppression de message",
+									"Voulez vous vraiment supprimer tous ces messages?");
+				}
+			}
 
-		String sujet = (String) table.getModel().getValueAt(selectedLine, 3);// le
-		// sujet
-		// du
-		// message
+			for (int i = 0; i < nbDeLigneSelectionnee.length; i++) {
+				int selectedLine = nbDeLigneSelectionnee[i];
+				Integer idMessage = (Integer) table.getModel().getValueAt(
+						selectedLine, 0);
+				// le n° du message (meme si il est caché).
+				Date dateReception = (Date) table.getModel().getValueAt(
+						selectedLine, 1);// la date de reception
 
-		if ("SUPPRIMER".equals(actionCommand)) {
-			REPONSE reponse = messageUtilisateur.affMessageQuestionOuiNon(
-					"Suppression de message",
-					"Voulez vous vraiment supprimer ce message?");
-			if (reponse == REPONSE.OUI) {
-				BDRequette.deleteMessageRecu(idMessage);
-				TreePath treePath = Main.getTreePath();
-				String dossierChoisi = (String) treePath.getLastPathComponent();
+				String expediteur = (String) table.getModel().getValueAt(
+						selectedLine, 2);// l'expediteur
 
-				if (!BDRequette.getListeDeComptes().contains(dossierChoisi)) {
-					String idCompte = BDRequette.getIdComptes(Main
-							.getNomCompte());
-					String idDossierChoisi = BDRequette.getIdDossier(
-							dossierChoisi, idCompte);
-					MlListeMessage listeMessage = BDRequette.getListeDeMessage(
-							idCompte, idDossierChoisi);
+				String sujet = (String) table.getModel().getValueAt(
+						selectedLine, 3);// le
+				// sujet
+				// du
+				// message
 
-					MyTableModel modelDetable = (MyTableModel) table.getModel();
-					modelDetable.valorisetable(listeMessage);
+				if (reponse == REPONSE.OUI) {
+					BDRequette.deleteMessageRecu(idMessage);
 
 				}
 
 			}
+			TreePath treePath = Main.getTreePath();
+			String dossierChoisi = (String) treePath.getLastPathComponent();
 
+			if (!BDRequette.getListeDeComptes().contains(dossierChoisi)) {
+				String idCompte = BDRequette.getIdComptes(Main.getNomCompte());
+				String idDossierChoisi = BDRequette.getIdDossier(dossierChoisi,
+						idCompte);
+				MlListeMessage listeMessage = BDRequette.getListeDeMessage(
+						idCompte, idDossierChoisi);
+
+				MyTableModel modelDetable = (MyTableModel) table.getModel();
+				modelDetable.valorisetable(listeMessage);
+
+			}
+			table.setRowSelectionInterval(0, 0);
+			MlActionJtable.afficheContenuMail(table, list);
 		}
 
 	}

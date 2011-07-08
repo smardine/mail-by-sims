@@ -1,6 +1,8 @@
 package fenetre.principale.jTable;
 
 import java.awt.Point;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
@@ -13,24 +15,24 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
-import javax.swing.ListSelectionModel;
 import javax.swing.text.Document;
 
 import bdd.BDRequette;
+import fenetre.principale.MlAction.EnActionMain;
 
-public class MlActionJtable implements MouseListener {
+public class MlActionJtable implements MouseListener, ActionListener {
 
 	private JPopupMenu popUpMenu;
 
 	private JMenuItem Supprimer;
 	private final JTable table;
 	private final JList jList;
-	private final JEditorPane editor;
+	private static JEditorPane editor;
 
 	public MlActionJtable(JTable p_table, JEditorPane jEditorPane, JList jList) {
 		this.table = p_table;
 		this.popUpMenu = getJPopupMenu();
-		this.editor = jEditorPane;
+		MlActionJtable.editor = jEditorPane;
 		this.jList = jList;
 	}
 
@@ -54,9 +56,9 @@ public class MlActionJtable implements MouseListener {
 	private JMenuItem getSupprimer() {
 		if (Supprimer == null) {
 			Supprimer = new JMenuItem();
-			Supprimer.setText("Supprimer ce message");
-			Supprimer.setActionCommand("SUPPRIMER");
-			Supprimer.addActionListener(new MlActionPopupJTable(table));
+			Supprimer.setText(EnActionMain.SUPPRIMER.getLib());
+			Supprimer.setActionCommand(EnActionMain.SUPPRIMER.getLib());
+			Supprimer.addActionListener(new MlActionPopupJTable(table, jList));
 		}
 		return Supprimer;
 	}
@@ -93,22 +95,34 @@ public class MlActionJtable implements MouseListener {
 		int rowNumber = table.rowAtPoint(p);
 
 		// Get the ListSelectionModel of the JTable
-		ListSelectionModel model = table.getSelectionModel();
+		// ListSelectionModel model = table.getSelectionModel();
 
 		// set the selected interval of rows. Using the "rowNumber"
 		// variable for the beginning and end selects only that one row.
-		model.setSelectionInterval(rowNumber, rowNumber);
+		// model.setSelectionInterval(rowNumber, rowNumber);
 
 		if (e.isPopupTrigger()) {
 			popUpMenu.show(e.getComponent(), e.getX(), e.getY());
 
 		} else {
-			afficheContenuMail(table, jList);
+			if (table.getSelectedRowCount() == 1) {
+				// on affiche le contenu du mail et on rafraichi le status de
+				// lecture uniquement
+				// si une seule ligne est selectionnée
+				afficheContenuMail(table, jList);
+				boolean succes = BDRequette.setStatusLecture((Integer) table
+						.getValueAt(rowNumber, 0));
+				if (succes) {
+					table.getModel().setValueAt(true, rowNumber,
+							table.getModel().getColumnCount() - 1);
+				}
+			}
+
 		}
 
 	}
 
-	private void afficheContenuMail(JTable table, JList jList) {
+	protected static void afficheContenuMail(JTable table, JList jList) {
 		int selectedLine = table.getSelectedRow();
 
 		Integer idMessage = (Integer) table.getModel().getValueAt(selectedLine,
@@ -140,6 +154,24 @@ public class MlActionJtable implements MouseListener {
 			}
 
 		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		if (table.getSelectedRowCount() == 1) {
+			// on affiche le contenu du mail et on rafraichi le status de
+			// lecture uniquement
+			// si une seule ligne est selectionnée
+			afficheContenuMail(table, jList);
+
+			boolean succes = BDRequette.setStatusLecture((Integer) table
+					.getValueAt(table.getSelectedRow(), 0));
+			if (succes) {
+				table.getModel().setValueAt(true, table.getSelectedRow(),
+						table.getModel().getColumnCount() - 1);
+			}
+		}
+
 	}
 
 }

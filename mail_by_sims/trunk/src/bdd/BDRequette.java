@@ -793,4 +793,40 @@ public class BDRequette {
 
 	}
 
+	public static MlMessage getMessageById(Integer p_idMessage) {
+		String script = "SELECT a.ID_MESSAGE_RECU, a.UID_MESSAGE, a.EXPEDITEUR, a.DESTINATAIRE, "
+				+ "a.SUJET, a.CONTENU, a.DATE_RECEPTION, a.ID_DOSSIER_STOCKAGE"
+				+ " FROM MAIL_RECU a WHERE a.ID_MESSAGE_RECU=" + p_idMessage;
+
+		MlMessage m = new MlMessage();
+		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(script);
+		for (int i = 0; i < lstResultat.size(); i++) {
+			ArrayList<String> unEnregistrement = lstResultat.get(i);
+
+			m.setIdMessage(Integer.parseInt(unEnregistrement.get(0)));
+			m.setUIDMessage(unEnregistrement.get(1));
+			m.setExpediteur(decodeHTMLFromBase(unEnregistrement.get(2)));
+			String[] tabDestinaire = unEnregistrement.get(3).split(";");
+			ArrayList<String> lstDest = new ArrayList<String>();
+			for (String des : tabDestinaire) {
+				lstDest.add(des);
+			}
+			m.setDestinataire(lstDest);
+			m.setSujet(decodeHTMLFromBase(unEnregistrement.get(4)));
+			m.setContenu(unEnregistrement.get(5));
+			m.setDateReception(RecupDate.getdateFromTimeStamp((unEnregistrement
+					.get(6))));
+			m.setNomDossier(BDRequette.getNomDossier(unEnregistrement.get(7)));
+
+		}
+		return m;
+	}
+
+	public static String getNomDossier(String p_idDossierStockage) {
+		String script = "SELECT a.NOM_DOSSIER FROM DOSSIER a WHERE a.ID_DOSSIER="
+				+ p_idDossierStockage;
+		return get1Champ(script);
+
+	}
+
 }

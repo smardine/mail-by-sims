@@ -1,8 +1,10 @@
 package fenetre.principale.jTable;
 
+import imap.thread_ReleveImap;
 import imap.util.REPONSE;
 import imap.util.messageUtilisateur;
 import importMail.MlListeMessage;
+import importMail.MlMessage;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,7 +49,7 @@ public class MlActionPopupJTable implements ActionListener {
 									"Voulez vous vraiment supprimer tous ces messages?");
 				}
 			}
-
+			MlListeMessage lst = new MlListeMessage();
 			for (int i = 0; i < nbDeLigneSelectionnee.length; i++) {
 				int selectedLine = nbDeLigneSelectionnee[i];
 				Integer idMessage = (Integer) table.getModel().getValueAt(
@@ -66,11 +68,16 @@ public class MlActionPopupJTable implements ActionListener {
 				// message
 
 				if (reponse == REPONSE.OUI) {
+					MlMessage m = BDRequette.getMessageById(idMessage);
+					lst.add(m);
 					BDRequette.deleteMessageRecu(idMessage);
 
 				}
 
 			}
+			thread_ReleveImap t = new thread_ReleveImap(null, null, null);
+			t.SupprMessage(lst, Main.getNomCompte());
+
 			TreePath treePath = Main.getTreePath();
 			String dossierChoisi = (String) treePath.getLastPathComponent();
 

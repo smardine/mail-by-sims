@@ -1,6 +1,7 @@
 package imap;
 
 import imap.util.methodeImap;
+import importMail.MlListeMessage;
 
 import java.util.ArrayList;
 
@@ -51,4 +52,15 @@ public class thread_ReleveImap extends Thread {
 
 	}
 
+	public void SupprMessage(MlListeMessage p_listeMessageASupprimer,
+			String nomCompte) {
+
+		String idCpt = BDRequette.getIdComptes(nomCompte);
+		String user = BDRequette.getUserFromIdCompte(idCpt);
+		String pass = BDRequette.getPasswordFromIdCompte(idCpt);
+		String serveur = BDRequette.getHostFromIdCompte(idCpt);
+		new MajServeurGmail(p_listeMessageASupprimer, idCpt, user, pass, serveur,
+				progress);
+
+	}
 }

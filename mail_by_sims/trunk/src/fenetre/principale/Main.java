@@ -1,6 +1,5 @@
 package fenetre.principale;
 
-import importMail.MlListeMessage;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -32,6 +31,8 @@ import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.TreePath;
+
+import mdl.MlListeMessage;
 
 import Verif.Thread_Verif;
 import bdd.BDAcces;

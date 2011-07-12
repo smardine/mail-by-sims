@@ -72,6 +72,7 @@ public class ScriptExecutor {
 				}
 			}
 			if (hassql)
+
 				stmt.executeBatch();
 			return true;
 		} catch (Exception e) {

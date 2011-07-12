@@ -27,6 +27,9 @@ import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
+import mdl.MlListeMessage;
+import mdl.MlMessage;
+
 import tools.GestionRepertoire;
 import tools.ReadFile;
 import bdd.BDAcces;

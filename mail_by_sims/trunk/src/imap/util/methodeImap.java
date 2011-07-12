@@ -1,8 +1,6 @@
 package imap.util;
 
 import fenetre.comptes.EnDossierBase;
-import importMail.MlListeMessage;
-import importMail.MlMessage;
 import importMail.thread_Import;
 
 import java.io.IOException;
@@ -18,6 +16,9 @@ import javax.mail.Store;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
+
+import mdl.MlListeMessage;
+import mdl.MlMessage;
 
 import tools.GestionRepertoire;
 import bdd.BDRequette;

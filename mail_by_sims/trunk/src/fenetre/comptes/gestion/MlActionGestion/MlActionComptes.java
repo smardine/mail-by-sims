@@ -7,7 +7,7 @@ import fenetre.comptes.creation.CreationComptes;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class MlActionComptes implements ActionListener {
-	private GestionCompte fenetre;
+	private final GestionCompte fenetre;
 
 	public MlActionComptes(GestionCompte p_fenetre) {
 		this.fenetre = p_fenetre;
@@ -18,7 +18,6 @@ public class MlActionComptes implements ActionListener {
 		if (EnActionComptes.CREER.getLib().equals(p_arg0.getActionCommand())) {
 			fenetre.dispose();
 			new CreationComptes();
-
 		}
 
 	}

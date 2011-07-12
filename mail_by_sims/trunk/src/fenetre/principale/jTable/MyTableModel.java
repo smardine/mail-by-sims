@@ -1,13 +1,14 @@
 package fenetre.principale.jTable;
 
-import importMail.MlListeMessage;
-import importMail.MlMessage;
 
 import java.util.Date;
 
 import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
+
+import mdl.MlListeMessage;
+import mdl.MlMessage;
 
 import tools.RecupDate;
 import bdd.BDRequette;

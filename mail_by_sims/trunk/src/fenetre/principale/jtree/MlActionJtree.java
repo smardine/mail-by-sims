@@ -1,6 +1,5 @@
 package fenetre.principale.jtree;
 
-import importMail.MlListeMessage;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -15,6 +14,8 @@ import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
+
+import mdl.MlListeMessage;
 
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;

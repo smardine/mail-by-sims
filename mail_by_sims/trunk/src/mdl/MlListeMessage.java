@@ -1,4 +1,4 @@
-package importMail;
+package mdl;
 
 import java.util.ArrayList;
 

@@ -3,8 +3,6 @@ package fenetre.principale.jTable;
 import imap.thread_ReleveImap;
 import imap.util.REPONSE;
 import imap.util.messageUtilisateur;
-import importMail.MlListeMessage;
-import importMail.MlMessage;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +11,9 @@ import java.util.Date;
 import javax.swing.JList;
 import javax.swing.JTable;
 import javax.swing.tree.TreePath;
+
+import mdl.MlListeMessage;
+import mdl.MlMessage;
 
 import bdd.BDRequette;
 import fenetre.principale.Main;

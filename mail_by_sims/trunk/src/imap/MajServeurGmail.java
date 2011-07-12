@@ -2,8 +2,6 @@ package imap;
 
 import fenetre.comptes.EnDossierBase;
 import imap.util.messageUtilisateur;
-import importMail.MlListeMessage;
-import importMail.MlMessage;
 
 import java.util.Properties;
 
@@ -14,6 +12,9 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.swing.JProgressBar;
+
+import mdl.MlListeMessage;
+import mdl.MlMessage;
 
 import com.sun.mail.imap.IMAPFolder;
 

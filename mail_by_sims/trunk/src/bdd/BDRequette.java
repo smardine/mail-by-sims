@@ -1,8 +1,6 @@
 package bdd;
 
 import imap.util.messageUtilisateur;
-import importMail.MlListeMessage;
-import importMail.MlMessage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,6 +18,8 @@ import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 
+import mdl.MlListeMessage;
+import mdl.MlMessage;
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.RecupDate;
@@ -826,6 +826,18 @@ public class BDRequette {
 		String script = "SELECT a.NOM_DOSSIER FROM DOSSIER a WHERE a.ID_DOSSIER="
 				+ p_idDossierStockage;
 		return get1Champ(script);
+
+	}
+
+	public static ArrayList<String> getCompteByID(int p_idCompte) {
+		String script = "SELECT a.NOM_COMPTE," + " a.SERVEUR_POP,"
+				+ " a.PORT_POP," + " a.SERVEUR_SMTP," + " a.PORT_SMTP,"
+				+ " a.USERNAME," + " a.PWD," + " a.TYPE_COMPTE"
+				+ " FROM COMPTES" + " a where a.ID_COMPTE=" + p_idCompte;
+
+		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(script);
+
+		return lstResultat.get(0);
 
 	}
 

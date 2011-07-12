@@ -6,6 +6,7 @@ public class BDScripts {
 
 	private ArrayList<String> version1;
 	private ArrayList<String> version2;
+	private ArrayList<String> version3;
 
 	public BDScripts() {
 
@@ -202,6 +203,16 @@ public class BDScripts {
 		version2.add(script);
 		version2.add("UPDATE PARAM SET VERSION_BASE=2;");
 		return version2;
+	}
+
+	public ArrayList<String> getVersion3() {
+		version3 = new ArrayList<String>();
+		version3.add("ALTER TABLE COMPTES " + "ADD TYPE_COMPTE Varchar(4) "
+				+ "CHARACTER SET ISO8859_1 NOT NULL " + "COLLATE FR_FR; ");
+		version3.add("UPDATE COMPTES SET TYPE_COMPTE = 'pop' "
+				+ "WHERE TYPE_COMPTE IS NULL;");
+		version3.add("UPDATE PARAM SET VERSION_BASE=3;");
+		return version3;
 	}
 
 }

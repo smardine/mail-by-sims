@@ -23,7 +23,7 @@ public class BDAcces {
 	static boolean etatConnexion;
 	static Connection connexion;
 	static FBManager firebirdManager;
-	static final String VERSION_BASE = "2";
+	static final String VERSION_BASE = "3";
 
 	/**
 	 * constructeur
@@ -121,6 +121,10 @@ public class BDAcces {
 				BDScripts scripts = new BDScripts();
 				if ("1".equals(versionActuelle)) {
 					LanceMiseAJour(se, scripts.getVersion2());
+					verifVersionBDD(true);
+				}
+				if ("2".equals(versionActuelle)) {
+					LanceMiseAJour(se, scripts.getVersion3());
 					verifVersionBDD(true);
 				}
 			}

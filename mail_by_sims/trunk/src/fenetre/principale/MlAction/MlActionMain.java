@@ -38,7 +38,6 @@ public class MlActionMain implements ActionListener {
 			System.exit(0);
 		}
 		if (e.getActionCommand().equals(EnActionMain.GESTION_COMPTE.getLib())) {
-			fenetre.dispose();
 			new GestionCompte();
 		}
 		if (e.getActionCommand().equals(EnActionMain.EXPLORER.getLib())) {

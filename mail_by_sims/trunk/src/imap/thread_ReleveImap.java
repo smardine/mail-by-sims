@@ -1,7 +1,6 @@
 package imap;
 
 import imap.util.methodeImap;
-import importMail.MlListeMessage;
 
 import java.util.ArrayList;
 
@@ -9,6 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
+import mdl.MlCompteMail;
+import mdl.MlListeMessage;
 import bdd.BDRequette;
 
 public class thread_ReleveImap extends Thread {
@@ -32,20 +33,26 @@ public class thread_ReleveImap extends Thread {
 
 		for (String s : lst) {
 			String idCpt = BDRequette.getIdComptes(s);
-			String user = BDRequette.getUserFromIdCompte(idCpt);
-			String pass = BDRequette.getPasswordFromIdCompte(idCpt);
-			String serveur = BDRequette.getHostFromIdCompte(idCpt);
-			if (serveur.contains("pop")) {
+			MlCompteMail cpt = new MlCompteMail(Integer.parseInt(idCpt));
+			// String user = BDRequette.getUserFromIdCompte(idCpt);
+			// String pass = BDRequette.getPasswordFromIdCompte(idCpt);
+			// String serveur = BDRequette.getHostFromIdCompte(idCpt);
+			if (!cpt.isImap()) {
 				System.out.println("not yet implemented");
 				// new ClientMail(user, pass, serveur);
-			} else if (serveur.contains("gmail")) {
-				methodeImap.afficheText(textArea, "Releve du compte " + s);
-				new ReleveGmail(idCpt, user, pass, serveur, progress, textArea,
-						label);
 			}
+			if (cpt.isImap()) {
+				if (cpt.getServeurReception().contains("gmail")) {
+					methodeImap.afficheText(textArea, "Releve du compte " + s);
+					new ReleveGmail(idCpt, cpt.getUserName(),
+							cpt.getPassword(), cpt.getServeurReception(),
+							progress, textArea, label);
+				}
 
-			else {
-				new ReleveAutreImap(idCpt, user, pass, serveur, progress);
+				else {
+					new ReleveAutreImap(idCpt, cpt.getUserName(), cpt
+							.getPassword(), cpt.getServeurReception(), progress);
+				}
 			}
 
 		}
@@ -59,8 +66,8 @@ public class thread_ReleveImap extends Thread {
 		String user = BDRequette.getUserFromIdCompte(idCpt);
 		String pass = BDRequette.getPasswordFromIdCompte(idCpt);
 		String serveur = BDRequette.getHostFromIdCompte(idCpt);
-		new MajServeurGmail(p_listeMessageASupprimer, idCpt, user, pass, serveur,
-				progress);
+		new MajServeurGmail(p_listeMessageASupprimer, idCpt, user, pass,
+				serveur, progress);
 
 	}
 }

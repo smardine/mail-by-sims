@@ -408,8 +408,7 @@ public class Main extends JFrame {
 	private JTabbedPane getJTabbedPane() {
 		if (jTabbedPane == null) {
 			jTabbedPane = new JTabbedPane();
-			jTabbedPane.setBounds(new Rectangle(0, 0,
-					EnNomComposant.PANEL_BOUTON.getLargeurInitiale() / 3,
+			jTabbedPane.setBounds(new Rectangle(0, 0, 5 * 50,
 					EnNomComposant.PANEL_BOUTON.getHauteurInitiale()));
 			jTabbedPane
 					.addTab("Gestion Messages", null, getJPanel(),

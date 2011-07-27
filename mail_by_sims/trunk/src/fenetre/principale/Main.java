@@ -1,12 +1,10 @@
 package fenetre.principale;
 
-
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
-import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.util.Date;
@@ -24,6 +22,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
@@ -33,7 +32,6 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.tree.TreePath;
 
 import mdl.MlListeMessage;
-
 import Verif.Thread_Verif;
 import bdd.BDAcces;
 import fenetre.EnTitreFenetre;
@@ -84,6 +82,9 @@ public class Main extends JFrame {
 	private DefaultListModel modelList = null;
 	private JButton btRecevoir = null;
 	private JButton btEnvoyer = null;
+	private JScrollPane jScrollPane2 = null;
+	private JTabbedPane jTabbedPane = null;
+	private JPanel jPanel = null;
 
 	/**
 	 * This method initializes jDesktopPaneHaut
@@ -102,12 +103,7 @@ public class Main extends JFrame {
 					EnNomComposant.PANEL_BOUTON.getLargeurInitiale(),
 					EnNomComposant.PANEL_BOUTON.getHauteurInitiale()));
 			jDesktopPaneHaut.setName(EnNomComposant.PANEL_BOUTON.getLib());
-			jDesktopPaneHaut.add(getJButton(), null);
-			jDesktopPaneHaut.add(getJButton1(), null);
-			jDesktopPaneHaut.add(getJButton2(), null);
-
-			jDesktopPaneHaut.add(getJButtonRecevoir(), null);
-			jDesktopPaneHaut.add(getJButtonEnvoyer(), null);
+			jDesktopPaneHaut.add(getJTabbedPane(), BorderLayout.CENTER);
 		}
 		return jDesktopPaneHaut;
 	}
@@ -130,7 +126,7 @@ public class Main extends JFrame {
 			jDesktopPaneGauche.setMinimumSize(new Dimension(
 					EnNomComposant.PANEL_TREE.getLargeurInitiale(),
 					EnNomComposant.PANEL_TREE.getHauteurInitiale()));
-			jDesktopPaneGauche.add(getJTree(), BorderLayout.CENTER);
+			jDesktopPaneGauche.add(getJScrollPane2(), BorderLayout.CENTER);
 		}
 		return jDesktopPaneGauche;
 	}
@@ -184,14 +180,13 @@ public class Main extends JFrame {
 	 * This method initializes jButton
 	 * @return javax.swing.JButton
 	 */
-	private JButton getJButton() {
+	private JButton getJButtonNewMessage() {
 		if (btNewMessage == null) {
 			btNewMessage = new JButton();
-			btNewMessage.setLocation(new Point(1, 1));
 			btNewMessage.setText("");
+			btNewMessage.setBounds(new Rectangle(150, 0, 50, 50));
 			btNewMessage.setIcon(new ImageIcon(getClass().getResource(
 					"/nouveau_message.png")));
-			btNewMessage.setSize(new Dimension(75, 50));
 		}
 		return btNewMessage;
 	}
@@ -200,15 +195,14 @@ public class Main extends JFrame {
 	 * This method initializes btSupprMessage
 	 * @return javax.swing.JButton
 	 */
-	private JButton getJButton1() {
+	private JButton getJButtonSupprMessage() {
 		if (btSupprMessage == null) {
 			btSupprMessage = new JButton();
-			btSupprMessage.setLocation(new Point(75, 1));
 			btSupprMessage.setText("");
 			btSupprMessage.setActionCommand(EnActionMain.SUPPRIMER.getLib());
+			btSupprMessage.setBounds(new Rectangle(200, 0, 50, 50));
 			btSupprMessage.setIcon(new ImageIcon(getClass().getResource(
 					"/supprimer.png")));
-			btSupprMessage.setSize(new Dimension(75, 50));
 		}
 		return btSupprMessage;
 	}
@@ -217,14 +211,13 @@ public class Main extends JFrame {
 	 * This method initializes btEnvoyerRecevoir
 	 * @return javax.swing.JButton
 	 */
-	private JButton getJButton2() {
+	private JButton getJButtonEnvoyer_Recevoir() {
 		if (btEnvoyerRecevoir == null) {
 			btEnvoyerRecevoir = new JButton();
-			btEnvoyerRecevoir.setLocation(new Point(149, 0));
 			btEnvoyerRecevoir.setText("");
 			btEnvoyerRecevoir.setIcon(new ImageIcon(getClass().getResource(
 					"/envoyer_recevoir.png")));
-			btEnvoyerRecevoir.setSize(new Dimension(75, 50));
+			btEnvoyerRecevoir.setBounds(new Rectangle(0, 0, 50, 50));
 			btEnvoyerRecevoir.setActionCommand(EnActionMain.ENVOYER_RECEVOIR
 					.getLib());
 		}
@@ -240,7 +233,6 @@ public class Main extends JFrame {
 			new BDAcces();
 			ArborescenceBoiteMail arbo = new ArborescenceBoiteMail();
 			jTree = new JTree(arbo);
-			jTree.setBounds(new Rectangle(3, 5, 290, 255));
 			jTree.setShowsRootHandles(true);
 			jTree.setRootVisible(false);
 			jTree.setToggleClickCount(1);
@@ -373,10 +365,9 @@ public class Main extends JFrame {
 	private JButton getJButtonRecevoir() {
 		if (btRecevoir == null) {
 			btRecevoir = new JButton();
-			btRecevoir.setLocation(new Point(224, 0));
 			btRecevoir.setIcon(new ImageIcon(getClass().getResource(
 					"/recevoir.png")));
-			btRecevoir.setSize(new Dimension(75, 50));
+			btRecevoir.setBounds(new Rectangle(50, 0, 50, 50));
 			btRecevoir.setActionCommand(EnActionMain.ENVOYER_RECEVOIR.getLib());
 
 		}
@@ -390,13 +381,58 @@ public class Main extends JFrame {
 	private JButton getJButtonEnvoyer() {
 		if (btEnvoyer == null) {
 			btEnvoyer = new JButton();
-			btEnvoyer.setLocation(new Point(301, 0));
 			btEnvoyer.setIcon(new ImageIcon(getClass().getResource(
 					"/envoyer.png")));
-			btEnvoyer.setSize(new Dimension(75, 50));
+			btEnvoyer.setBounds(new Rectangle(100, 0, 50, 50));
 			btEnvoyer.setActionCommand(EnActionMain.ENVOYER.getLib());
 		}
 		return btEnvoyer;
+	}
+
+	/**
+	 * This method initializes jScrollPane2
+	 * @return javax.swing.JScrollPane
+	 */
+	private JScrollPane getJScrollPane2() {
+		if (jScrollPane2 == null) {
+			jScrollPane2 = new JScrollPane();
+			jScrollPane2.setViewportView(getJTree());
+		}
+		return jScrollPane2;
+	}
+
+	/**
+	 * This method initializes jTabbedPane
+	 * @return javax.swing.JTabbedPane
+	 */
+	private JTabbedPane getJTabbedPane() {
+		if (jTabbedPane == null) {
+			jTabbedPane = new JTabbedPane();
+			jTabbedPane.setBounds(new Rectangle(0, 0,
+					EnNomComposant.PANEL_BOUTON.getLargeurInitiale() / 3,
+					EnNomComposant.PANEL_BOUTON.getHauteurInitiale()));
+			jTabbedPane
+					.addTab("Gestion Messages", null, getJPanel(),
+							"Acces aux fonction d'envoi, reception, synchronisation...");
+		}
+		return jTabbedPane;
+	}
+
+	/**
+	 * This method initializes jPanel
+	 * @return javax.swing.JPanel
+	 */
+	private JPanel getJPanel() {
+		if (jPanel == null) {
+			jPanel = new JPanel();
+			jPanel.setLayout(null);
+			jPanel.add(getJButtonEnvoyer_Recevoir(), null);
+			jPanel.add(getJButtonSupprMessage(), null);
+			jPanel.add(getJButtonRecevoir(), null);
+			jPanel.add(getJButtonEnvoyer(), null);
+			jPanel.add(getJButtonNewMessage(), null);
+		}
+		return jPanel;
 	}
 
 	/**

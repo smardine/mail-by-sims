@@ -4,7 +4,7 @@ import java.awt.Dimension;
 
 public enum EnNomComposant {
 	PANEL_HTML("panelHtml", 800, 300), //
-	PANEL_BOUTON("panelBouton", 800, 50), //
+	PANEL_BOUTON("panelBouton", 800, 75), //
 	PANEL_TREE("panelTree", 250, 200), //
 	PANEL_TABLE_ET_LISTE("panelTableEtListe", 525, 200);
 

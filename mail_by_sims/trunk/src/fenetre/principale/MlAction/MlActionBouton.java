@@ -2,7 +2,6 @@ package fenetre.principale.MlAction;
 
 import imap.util.REPONSE;
 import imap.util.messageUtilisateur;
-import importMail.MlListeMessage;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,8 +9,10 @@ import java.awt.event.ActionListener;
 import javax.swing.JTable;
 import javax.swing.tree.TreePath;
 
+import mdl.MlListeMessage;
 import bdd.BDRequette;
 import fenetre.principale.Main;
+import fenetre.principale.MlAction.EnActionMain;
 import fenetre.principale.jTable.MyTableModel;
 
 public class MlActionBouton implements ActionListener {
@@ -39,9 +40,8 @@ public class MlActionBouton implements ActionListener {
 				String dossierChoisi = (String) treePath.getLastPathComponent();
 
 				if (!BDRequette.getListeDeComptes().contains(dossierChoisi)) {
-					String idCompte = BDRequette.getIdComptes(Main
-							.getNomCompte());
-					String idDossierChoisi = BDRequette.getIdDossier(
+					int idCompte = BDRequette.getIdComptes(Main.getNomCompte());
+					int idDossierChoisi = BDRequette.getIdDossier(
 							dossierChoisi, idCompte);
 					MlListeMessage listeMessage = BDRequette.getListeDeMessage(
 							idCompte, idDossierChoisi);

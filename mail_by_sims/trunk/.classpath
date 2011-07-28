@@ -5,7 +5,7 @@
 	<classpathentry kind="src" path="lib"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/mail.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/jaybird-full-2.1.6.jar" sourcepath="lib/jaybird-2.1.6-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/activation.jar"/>
+	<classpathentry kind="lib" path="lib/jaybird_full_2_1_6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

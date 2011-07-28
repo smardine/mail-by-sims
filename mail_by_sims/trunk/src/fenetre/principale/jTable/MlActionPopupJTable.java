@@ -1,6 +1,6 @@
 package fenetre.principale.jTable;
 
-import imap.thread_ReleveImap;
+import imap.thread_SynchroImap;
 import imap.util.REPONSE;
 import imap.util.messageUtilisateur;
 
@@ -75,8 +75,7 @@ public class MlActionPopupJTable implements ActionListener {
 				}
 
 			}
-			thread_ReleveImap t = new thread_ReleveImap(null, null, null);
-			t.SupprMessage(lst, Main.getNomCompte());
+			thread_SynchroImap.SupprMessage(lst, Main.getNomCompte());
 
 			TreePath treePath = Main.getTreePath();
 			String dossierChoisi = (String) treePath.getLastPathComponent();

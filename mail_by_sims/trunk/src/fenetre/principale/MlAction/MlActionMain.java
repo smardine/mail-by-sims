@@ -56,10 +56,10 @@ public class MlActionMain implements ActionListener {
 			t.start();
 		}
 		if (e.getActionCommand().equals(EnActionMain.ENVOYER_RECEVOIR.getLib())) {
-			new ReleveMessagerie();
+			new ReleveMessagerie(true);
 		}
 		if (e.getActionCommand().equals(EnActionMain.RECEVOIR.getLib())) {
-
+			new ReleveMessagerie(false);
 		}
 
 	}

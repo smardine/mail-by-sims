@@ -33,16 +33,18 @@ public class ReleveGmail {
 	private static String user;
 	private static String password;
 	private static String host;
+	private static boolean isSynchro;
 
 	public ReleveGmail(int p_idCompte, String p_user, String p_password,
 			String p_host, JProgressBar progress, JTextArea textArea,
-			JLabel label) {
+			JLabel label, boolean p_isSynchro) {
 
 		ReleveGmail.user = p_user;
 		ReleveGmail.password = p_password;
 		ReleveGmail.host = p_host;
 		this.idCompte = p_idCompte;
 		this.progressBar = progress;
+		ReleveGmail.isSynchro = p_isSynchro;
 		ReleveGmail.textArea = textArea;
 		ReleveGmail.label = label;
 		ReleveGmail.go(idCompte, progressBar);
@@ -62,13 +64,16 @@ public class ReleveGmail {
 		props.setProperty("mail.imap.socketFactory.fallback", "false");
 		props.setProperty("mail.imaps.partialfetch", "false");
 
-		// on commence par verifier les messages suprrimés car sinon, on pert du
-		// temp a le faire apres une releve de la BAL
-		methodeImap.afficheText(textArea, "Mise a jour de la boite Gmail");
-		methodeImap.afficheText(textArea,
-				"Synchronisation des messages supprimés");
-		methodeImap.miseAJourMessage(props, p_idCompte, p_progress, host, user,
-				password, textArea, label);
+		if (isSynchro) {
+			// on commence par verifier les messages suprrimés car sinon, on
+			// pert du
+			// temp a le faire apres une releve de la BAL
+			methodeImap.afficheText(textArea, "Mise a jour de la boite Gmail");
+			methodeImap.afficheText(textArea,
+					"Synchronisation des messages supprimés");
+			methodeImap.miseAJourMessage(props, p_idCompte, p_progress, host,
+					user, password, textArea, label);
+		}
 
 		Session session = Session.getInstance(props);
 

@@ -12,17 +12,19 @@ import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import bdd.BDRequette;
 
-public class thread_ReleveImap extends Thread {
+public class thread_SynchroImap extends Thread {
 
-	private final JProgressBar progress;
+	private static JProgressBar progress;
 	private final JTextArea textArea;
 	private final JLabel label;
+	private final boolean isSynchro;
 
-	public thread_ReleveImap(JProgressBar p_progressBar, JTextArea jTextArea,
-			JLabel jLabel) {// ,
+	public thread_SynchroImap(JProgressBar p_progressBar, JTextArea jTextArea,
+			JLabel jLabel, boolean p_isSynchro) {// ,
 		this.label = jLabel;
 		this.textArea = jTextArea;
-		this.progress = p_progressBar;
+		thread_SynchroImap.progress = p_progressBar;
+		this.isSynchro = p_isSynchro;
 
 	}
 
@@ -46,12 +48,13 @@ public class thread_ReleveImap extends Thread {
 					methodeImap.afficheText(textArea, "Releve du compte " + s);
 					new ReleveGmail(idCpt, cpt.getUserName(),
 							cpt.getPassword(), cpt.getServeurReception(),
-							progress, textArea, label);
+							progress, textArea, label, isSynchro);
 				}
 
 				else {
 					new ReleveAutreImap(idCpt, cpt.getUserName(), cpt
-							.getPassword(), cpt.getServeurReception(), progress);
+							.getPassword(), cpt.getServeurReception(),
+							progress, isSynchro);
 				}
 			}
 
@@ -59,7 +62,7 @@ public class thread_ReleveImap extends Thread {
 
 	}
 
-	public void SupprMessage(MlListeMessage p_listeMessageASupprimer,
+	public static void SupprMessage(MlListeMessage p_listeMessageASupprimer,
 			String nomCompte) {
 
 		int idCpt = BDRequette.getIdComptes(nomCompte);

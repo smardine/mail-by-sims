@@ -726,22 +726,35 @@ public class BDRequette {
 		return messageCount > 0;
 	}
 
-	public static File getContenuFromId(int p_idMessage) {
+	public static File getContenuFromId(int p_idMessage, boolean p_pleinecran) {
 		String requette = "SELECT CONTENU FROM MAIL_RECU WHERE ID_MESSAGE_RECU='"
 				+ p_idMessage + "'";
-		return writeBlobToFile(requette);
+		File contenuHTML;
+		if (p_pleinecran) {
+			contenuHTML = new File(GestionRepertoire.RecupRepTravail()
+					+ "/tempo/contenu_p.html");
+		} else {
+			contenuHTML = new File(GestionRepertoire.RecupRepTravail()
+					+ "/tempo/contenu.html");
+		}
+		if (contenuHTML.exists()) {
+			contenuHTML.delete();
+		}
+
+		contenuHTML.deleteOnExit();
+
+		return writeBlobToFile(requette, contenuHTML);
 	}
 
-	private static File writeBlobToFile(String requette) {
-		File contenuHMTL = new File(GestionRepertoire.RecupRepTravail()
-				+ "/tempo/contenu.html");
+	private static File writeBlobToFile(String requette, File p_file) {
+
 		try {
 			PreparedStatement stmt = laConnexion.prepareStatement(requette);
 			ResultSet resultSet = stmt.executeQuery();
 			while (resultSet.next()) {
 				// String name = resultSet.getString(1);
 
-				FileOutputStream fos = new FileOutputStream(contenuHMTL);
+				FileOutputStream fos = new FileOutputStream(p_file);
 
 				byte[] buffer = new byte[256];
 
@@ -756,17 +769,18 @@ public class BDRequette {
 				fos.close();
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			messageUtilisateur.affMessageException(e,
+					"Erreur Affichage du message");
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			messageUtilisateur.affMessageException(e,
+					"Impossible d'afficher le message");
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			messageUtilisateur.affMessageException(e,
+					"Impossible d'afficher le message");
 		} finally {
 
 		}
-		return contenuHMTL;
+		return p_file;
 
 	}
 
@@ -857,6 +871,12 @@ public class BDRequette {
 		String requete = "DELETE FROM COMPTES WHERE ID_COMPTE=" + p_idCompte;
 		return executeRequete(requete);
 
+	}
+
+	public static String getSujetFromId(int p_idMessage) {
+		String requette = "SELECT SUJET FROM MAIL_RECU WHERE ID_MESSAGE_RECU="
+				+ p_idMessage;
+		return get1Champ(requette);
 	}
 
 }

@@ -32,8 +32,8 @@ public class thread_ReleveImap extends Thread {
 		ArrayList<String> lst = BDRequette.getListeDeComptes();
 
 		for (String s : lst) {
-			String idCpt = BDRequette.getIdComptes(s);
-			MlCompteMail cpt = new MlCompteMail(Integer.parseInt(idCpt));
+			int idCpt = BDRequette.getIdComptes(s);
+			MlCompteMail cpt = new MlCompteMail(idCpt);
 			// String user = BDRequette.getUserFromIdCompte(idCpt);
 			// String pass = BDRequette.getPasswordFromIdCompte(idCpt);
 			// String serveur = BDRequette.getHostFromIdCompte(idCpt);
@@ -62,7 +62,7 @@ public class thread_ReleveImap extends Thread {
 	public void SupprMessage(MlListeMessage p_listeMessageASupprimer,
 			String nomCompte) {
 
-		String idCpt = BDRequette.getIdComptes(nomCompte);
+		int idCpt = BDRequette.getIdComptes(nomCompte);
 		String user = BDRequette.getUserFromIdCompte(idCpt);
 		String pass = BDRequette.getPasswordFromIdCompte(idCpt);
 		String serveur = BDRequette.getHostFromIdCompte(idCpt);

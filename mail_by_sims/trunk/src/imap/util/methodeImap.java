@@ -19,7 +19,6 @@ import javax.swing.JTextArea;
 
 import mdl.MlListeMessage;
 import mdl.MlMessage;
-
 import tools.GestionRepertoire;
 import bdd.BDRequette;
 
@@ -69,7 +68,7 @@ public class methodeImap {
 		return listFldr;
 	}
 
-	public static void miseAJourMessage(Properties props, String pIdCompte,
+	public static void miseAJourMessage(Properties props, int pIdCompte,
 			JProgressBar p_progress, String host, String user, String password,
 			JTextArea textArea, JLabel label) {
 
@@ -181,8 +180,8 @@ public class methodeImap {
 
 	}
 
-	public static void releveImap(Properties props, String p_idCompte,
-			JProgressBar p_progress, String p_idDossier, IMAPFolder folder,
+	public static void releveImap(Properties props, int p_idCompte,
+			JProgressBar p_progress, int p_idDossier, IMAPFolder folder,
 			JTextArea textArea, JLabel p_label) {
 
 		MlListeMessage lstMessage = new MlListeMessage();
@@ -202,7 +201,7 @@ public class methodeImap {
 	 * @throws MessagingException
 	 * @throws IOException
 	 */
-	private static void releveDossier(String p_idCompte, String p_idDossier,
+	private static void releveDossier(int p_idCompte, int p_idDossier,
 			JProgressBar p_progress, MlListeMessage lstMessage,
 			IMAPFolder imapFolder, JTextArea textArea, JLabel p_label) {
 		afficheText(textArea, "Releve du dossier " + imapFolder.getFullName());
@@ -288,11 +287,11 @@ public class methodeImap {
 		p_textArea.setCaretPosition(p_textArea.getDocument().getLength());
 	}
 
-	private static String verifieRegle(String expediteur, String p_idDossier) {
-		if (p_idDossier != null) {
+	private static int verifieRegle(String expediteur, int p_idDossier) {
+		if (p_idDossier != 0) {
 			return p_idDossier;
 		}
-		return "7";
+		return 7;
 	}
 
 }

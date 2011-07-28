@@ -65,18 +65,19 @@ public class MlActionCreationComptes implements ActionListener {
 			sb
 					.append("Insert into "
 							+ EnTable.COMPTES.getNomTable()
-							+ " (NOM_COMPTE, SERVEUR_POP, PORT_POP, SERVEUR_SMTP, PORT_SMTP, USERNAME, PWD)");
+							+ " (NOM_COMPTE, SERVEUR_POP, PORT_POP, SERVEUR_SMTP, PORT_SMTP, USERNAME, PWD,TYPE_COMPTE)");
 			sb.append(" Values ");
 			sb.append("( '" + nomCompte.getText() + "',");
 			sb.append("'" + pop.getText() + "',110,");
 			sb.append("'" + smtp.getText() + "',25,");
 			sb.append("'" + user.getText() + "',");
-			sb.append("'" + password.getText() + "')");
+			sb.append("'" + password.getText() + "',");
+			sb.append("'imap')");
 
 			boolean result = BDRequette.executeRequete(sb.toString());
 			// creation des dossiers de base (boite de reception, message
 			// envoyé, corbeille, spam) avec un id Dossierparent=0
-			String idCpt = BDRequette.getIdComptes(nomCompte.getText());
+			int idCpt = BDRequette.getIdComptes(nomCompte.getText());
 
 			List<String> lstDossierBase = new ArrayList<String>();
 

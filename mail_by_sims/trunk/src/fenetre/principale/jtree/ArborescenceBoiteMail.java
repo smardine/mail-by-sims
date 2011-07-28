@@ -53,7 +53,7 @@ public class ArborescenceBoiteMail implements TreeModel {
 				return list.get(index);
 			}
 		}
-		String idCompte = BDRequette.getIdComptes(getCompte());
+		int idCompte = BDRequette.getIdComptes(getCompte());
 		ArrayList<String> list = BDRequette.getListeSousDossier(BDRequette
 				.getIdDossier((String) parent, idCompte));
 		return list.get(index);
@@ -72,7 +72,7 @@ public class ArborescenceBoiteMail implements TreeModel {
 			}
 		}
 
-		String idCompte = BDRequette.getIdComptes(getCompte());
+		int idCompte = BDRequette.getIdComptes(getCompte());
 
 		return BDRequette.getnbSousDossier(BDRequette.getIdDossier(
 				(String) parent, idCompte));
@@ -89,12 +89,12 @@ public class ArborescenceBoiteMail implements TreeModel {
 
 		for (String compte : lstCpt) {
 			if (compte.equals(parent)) {
-				String idDossier = BDRequette.getIdDossier((String) child,
+				int idDossier = BDRequette.getIdDossier((String) child,
 						BDRequette.getIdComptes(compte));
 				if ("".equals(idDossier)) {
 					return -1;
 				}
-				return Integer.parseInt(idDossier);
+				return idDossier;
 			}
 		}
 
@@ -137,6 +137,9 @@ public class ArborescenceBoiteMail implements TreeModel {
 					fireTreeNodesRemoved(new TreeModelEvent(this, path));
 					fireTreeStructureChanged(new TreeModelEvent(this, path
 							.getParentPath()));
+					break;
+				case RAFFRAICHIR:
+					fireTreeStructureChanged(new TreeModelEvent(this, path));
 					break;
 			}
 		} catch (Exception e) {

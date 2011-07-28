@@ -20,7 +20,7 @@ import com.sun.mail.imap.IMAPFolder;
 
 public class MajServeurGmail {
 
-	private final String idCpt;
+	private final int idCpt;
 	private final String user;
 	private final String pass;
 	private final String serveur;
@@ -28,7 +28,7 @@ public class MajServeurGmail {
 	private final MlListeMessage listeMessageASupprimer;
 
 	public MajServeurGmail(MlListeMessage p_listeMessageASupprimer,
-			String p_idCpt, String p_user, String p_pass, String p_serveur,
+			int p_idCpt, String p_user, String p_pass, String p_serveur,
 			JProgressBar p_progress) {
 		this.listeMessageASupprimer = p_listeMessageASupprimer;
 		this.idCpt = p_idCpt;

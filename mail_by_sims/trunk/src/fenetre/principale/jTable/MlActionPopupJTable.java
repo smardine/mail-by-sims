@@ -14,7 +14,6 @@ import javax.swing.tree.TreePath;
 
 import mdl.MlListeMessage;
 import mdl.MlMessage;
-
 import bdd.BDRequette;
 import fenetre.principale.Main;
 import fenetre.principale.MlAction.EnActionMain;
@@ -83,8 +82,8 @@ public class MlActionPopupJTable implements ActionListener {
 			String dossierChoisi = (String) treePath.getLastPathComponent();
 
 			if (!BDRequette.getListeDeComptes().contains(dossierChoisi)) {
-				String idCompte = BDRequette.getIdComptes(Main.getNomCompte());
-				String idDossierChoisi = BDRequette.getIdDossier(dossierChoisi,
+				int idCompte = BDRequette.getIdComptes(Main.getNomCompte());
+				int idDossierChoisi = BDRequette.getIdDossier(dossierChoisi,
 						idCompte);
 				MlListeMessage listeMessage = BDRequette.getListeDeMessage(
 						idCompte, idDossierChoisi);

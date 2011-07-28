@@ -37,14 +37,14 @@ public class MlActionPopupJTree implements ActionListener {
 			String dossierParent = (String) selectionPath
 					.getLastPathComponent();
 
-			String idCompte = BDRequette.getIdComptes((String) selectionPath
+			int idCompte = BDRequette.getIdComptes((String) selectionPath
 					.getPathComponent(1));
 
-			String idDossierParent = BDRequette.getIdDossier(dossierParent,
+			int idDossierParent = BDRequette.getIdDossier(dossierParent,
 					idCompte);
 
 			if ("".equals(idDossierParent)) {
-				idDossierParent = "0";
+				idDossierParent = 0;
 			}
 			if (BDRequette.createNewDossier(idCompte, idDossierParent,
 					nomNewDossier)) {
@@ -63,10 +63,10 @@ public class MlActionPopupJTree implements ActionListener {
 			String dossierASupprimer = (String) selectionPath
 					.getLastPathComponent();
 
-			String idCompte = BDRequette.getIdComptes((String) selectionPath
+			int idCompte = BDRequette.getIdComptes((String) selectionPath
 					.getPathComponent(1));
-			String idDossier = BDRequette.getIdDossier(dossierASupprimer,
-					idCompte);
+			int idDossier = BDRequette
+					.getIdDossier(dossierASupprimer, idCompte);
 
 			REPONSE rep = messageUtilisateur
 					.affMessageQuestionOuiNon(

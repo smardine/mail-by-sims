@@ -6,8 +6,8 @@ import java.util.Date;
 
 public class MlMessage {
 	private String NomDossier;
-	private String idDossier;
-	private String idCompte;
+	private int idDossier;
+	private int idCompte;
 	private String cheminPhysique;
 	private String expediteur;
 	private ArrayList<String> destinataire;
@@ -23,30 +23,30 @@ public class MlMessage {
 	}
 
 	/**
-	 * @param idCompte the idCompte to set
+	 * @param p_idCompte the idCompte to set
 	 */
-	public void setIdCompte(String idCompte) {
-		this.idCompte = idCompte;
+	public void setIdCompte(int p_idCompte) {
+		this.idCompte = p_idCompte;
 	}
 
 	/**
 	 * @return the idCompte
 	 */
-	public String getIdCompte() {
+	public int getIdCompte() {
 		return idCompte;
 	}
 
 	/**
-	 * @param idDossier the idDossier to set
+	 * @param p_i the idDossier to set
 	 */
-	public void setIdDossier(String idDossier) {
-		this.idDossier = idDossier;
+	public void setIdDossier(int p_i) {
+		this.idDossier = p_i;
 	}
 
 	/**
 	 * @return the idDossier
 	 */
-	public String getIdDossier() {
+	public int getIdDossier() {
 		return idDossier;
 	}
 

@@ -26,7 +26,7 @@ import com.sun.mail.imap.IMAPFolder;
  */
 public class ReleveGmail {
 
-	private final String idCompte;
+	private final int idCompte;
 	private final JProgressBar progressBar;
 	private static JLabel label;
 	private static JTextArea textArea;
@@ -34,7 +34,7 @@ public class ReleveGmail {
 	private static String password;
 	private static String host;
 
-	public ReleveGmail(String p_idCompte, String p_user, String p_password,
+	public ReleveGmail(int p_idCompte, String p_user, String p_password,
 			String p_host, JProgressBar progress, JTextArea textArea,
 			JLabel label) {
 
@@ -52,7 +52,7 @@ public class ReleveGmail {
 	 * @param args
 	 */
 
-	public static void go(String p_idCompte, JProgressBar p_progress) {
+	public static void go(int p_idCompte, JProgressBar p_progress) {
 
 		Properties props = System.getProperties();
 
@@ -94,7 +94,7 @@ public class ReleveGmail {
 			messageUtilisateur.affMessageException(e1,
 					"Impossible d'acceder à la boite de reception");
 		}
-		String id_Dossier;
+		int id_Dossier;
 		if (inbox != null) {
 			id_Dossier = BDRequette.getIdDossier(EnDossierBase.RECEPTION
 					.getLib(), p_idCompte);
@@ -106,9 +106,9 @@ public class ReleveGmail {
 					inbox.getFullName());
 
 			for (IMAPFolder folder : lstFolder) {
-				String idSousDossier = BDRequette.getIdDossier(
-						folder.getName(), p_idCompte);
-				if (idSousDossier.equals("")) {// si le sous dossier est inconnu
+				int idSousDossier = BDRequette.getIdDossier(folder.getName(),
+						p_idCompte);
+				if (idSousDossier == (-1)) {// si le sous dossier est inconnu
 					// de la base, on en créer un
 					BDRequette.createNewDossier(p_idCompte, id_Dossier, folder
 							.getName());

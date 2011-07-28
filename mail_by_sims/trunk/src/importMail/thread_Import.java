@@ -29,7 +29,6 @@ import javax.swing.tree.TreePath;
 
 import mdl.MlListeMessage;
 import mdl.MlMessage;
-
 import tools.GestionRepertoire;
 import tools.ReadFile;
 import bdd.BDAcces;
@@ -38,7 +37,7 @@ import bdd.BDRequette;
 public class thread_Import extends Thread {
 
 	private final JTree tree;
-	private String idCompte;
+	private int idCompte;
 
 	public thread_Import(JTree p_tree) {
 		this.tree = p_tree;
@@ -394,8 +393,7 @@ public class thread_Import extends Thread {
 		// + ", " + nomDossier);
 
 		String dossierParent = (String) p_treePath.getLastPathComponent();
-		String idDossierParent = BDRequette.getIdDossier(dossierParent,
-				idCompte);
+		int idDossierParent = BDRequette.getIdDossier(dossierParent, idCompte);
 		BDRequette.createNewDossier(idCompte, idDossierParent, nomDossier);
 		tree.getModel().valueForPathChanged(newTp, ActionTree.AJOUTER);
 		// tree.setSelectionPath(newTp);
@@ -405,7 +403,7 @@ public class thread_Import extends Thread {
 	}
 
 	private boolean isDossierDejaExistant(String nomDossier, String pCompte) {
-		String idCpt = BDRequette.getIdComptes(pCompte);
+		int idCpt = BDRequette.getIdComptes(pCompte);
 		return BDRequette.getListeDossier(idCpt).contains(nomDossier);
 
 	}

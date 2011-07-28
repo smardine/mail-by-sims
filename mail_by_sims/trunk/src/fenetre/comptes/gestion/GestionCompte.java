@@ -26,7 +26,7 @@ public class GestionCompte extends JFrame {
 	private JButton btModifier = null;
 	private JButton btSupprimer = null;
 	private DefaultListModel modelList = null;
-	private JList jList = null;
+	public static JList jList = null;
 	private JScrollPane jScrollPane = null;
 
 	/**

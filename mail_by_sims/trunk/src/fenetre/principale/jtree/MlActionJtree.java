@@ -1,6 +1,5 @@
 package fenetre.principale.jtree;
 
-
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
@@ -16,7 +15,6 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import mdl.MlListeMessage;
-
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.Main;
@@ -151,9 +149,8 @@ public class MlActionJtree implements TreeSelectionListener,
 						.getLastPathComponent();
 
 				if (!BDRequette.getListeDeComptes().contains(dossierChoisi)) {
-					String idCompte = BDRequette.getIdComptes(Main
-							.getNomCompte());
-					String idDossierChoisi = BDRequette.getIdDossier(
+					int idCompte = BDRequette.getIdComptes(Main.getNomCompte());
+					int idDossierChoisi = BDRequette.getIdDossier(
 							dossierChoisi, idCompte);
 					MlListeMessage listeMessage = BDRequette.getListeDeMessage(
 							idCompte, idDossierChoisi);

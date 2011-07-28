@@ -202,14 +202,18 @@ public class BDRequette {
 	 * @param p_nomCompte
 	 * @return
 	 */
-	public static String getIdComptes(String p_nomCompte) {
+	public static int getIdComptes(String p_nomCompte) {
 
 		String requete = "Select " + EnStructureTable.COMPTES_ID.getNomChamp()
 				+ " from " + EnTable.COMPTES.getNomTable() + " where "
 				+ EnStructureTable.COMPTES_NOM.getNomChamp() + " ='"
 				+ p_nomCompte + "'";
+		if ("".equals(get1Champ(requete))) {
+			return -1;
+		} else {
+			return Integer.parseInt(get1Champ(requete));
+		}
 
-		return get1Champ(requete);
 	}
 
 	/**
@@ -218,7 +222,7 @@ public class BDRequette {
 	 * @param p_idCompte
 	 * @return
 	 */
-	public static String getIdDossier(String p_nomDossier, String p_idCompte) {
+	public static int getIdDossier(String p_nomDossier, int p_idCompte) {
 
 		String requete = "Select " + EnStructureTable.DOSSIER_ID.getNomChamp()
 				+ " from " + EnTable.DOSSIER.getNomTable() + " where "
@@ -227,7 +231,12 @@ public class BDRequette {
 				+ EnStructureTable.COMPTES_ID.getNomChamp() + "='" + p_idCompte
 				+ "'";
 
-		return get1Champ(requete);
+		if ("".equals(get1Champ(requete))) {
+			return -1;
+		} else {
+			return Integer.parseInt(get1Champ(requete));
+		}
+
 	}
 
 	/**
@@ -236,7 +245,7 @@ public class BDRequette {
 	 * @param p_idCompte
 	 * @return
 	 */
-	public static ArrayList<String> getListeSousDossierBase(String p_idCompte) {
+	public static ArrayList<String> getListeSousDossierBase(int p_idCompte) {
 		String requete = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_COMPTE='"
 				+ p_idCompte
 				+ "' and a.ID_DOSSIER_PARENT=0 ORDER BY a.NOM_DOSSIER";
@@ -249,19 +258,19 @@ public class BDRequette {
 	 * @param p_idCompte
 	 * @return
 	 */
-	public static int getnbSousDossierBase(String p_idCompte) {
+	public static int getnbSousDossierBase(int p_idCompte) {
 		return getListeSousDossierBase(p_idCompte).size();
 
 	}
 
 	/**
 	 * obtenir la liste des sous dossier a partir du nom d'un dossier racine
-	 * @param p_idDossierracine
+	 * @param p_idDossier
 	 * @return
 	 */
-	public static ArrayList<String> getListeSousDossier(String p_idDossierracine) {
+	public static ArrayList<String> getListeSousDossier(int p_idDossier) {
 		String requete = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_DOSSIER_PARENT='"
-				+ p_idDossierracine + "' ORDER BY a.NOM_DOSSIER";
+				+ p_idDossier + "' ORDER BY a.NOM_DOSSIER";
 		return getListeDeChamp(requete);
 
 	}
@@ -271,7 +280,7 @@ public class BDRequette {
 	 * @param p_idDossierracine
 	 * @return
 	 */
-	public static ArrayList<String> getListeMessage(String p_idDossierracine) {
+	public static ArrayList<String> getListeMessage(int p_idDossierracine) {
 		String requete = "SELECT a.ID_MESSAGE_RECU FROM MAIL_RECU a where a.ID_DOSSIER_STOCKAGE='"
 				+ p_idDossierracine + "'";
 		return getListeDeChamp(requete);
@@ -283,7 +292,7 @@ public class BDRequette {
 	 * @param p_idDossierracine
 	 * @return
 	 */
-	public static int getnbSousDossier(String p_idDossierracine) {
+	public static int getnbSousDossier(int p_idDossierracine) {
 		return getListeSousDossier(p_idDossierracine).size();
 	}
 
@@ -292,7 +301,7 @@ public class BDRequette {
 	 * @param p_idDossierracine
 	 * @return
 	 */
-	public static int getnbMessage(String p_idDossierracine) {
+	public static int getnbMessage(int p_idDossierracine) {
 		return getListeMessage(p_idDossierracine).size();
 	}
 
@@ -301,7 +310,7 @@ public class BDRequette {
 	 * @param p_idCpt
 	 * @return
 	 */
-	public static String getUserFromIdCompte(String p_idCpt) {
+	public static String getUserFromIdCompte(int p_idCpt) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Select " + EnStructureTable.COMPTES_USERNAME.getNomChamp()
 				+ " from ");
@@ -317,7 +326,7 @@ public class BDRequette {
 	 * @param p_idCpt
 	 * @return
 	 */
-	public static String getPasswordFromIdCompte(String p_idCpt) {
+	public static String getPasswordFromIdCompte(int p_idCpt) {
 		String requete = "Select " + EnStructureTable.COMPTES_PWD.getNomChamp()
 				+ " from " + EnTable.COMPTES.getNomTable() + " where "
 				+ EnStructureTable.COMPTES_ID.getNomChamp() + " ='" + p_idCpt
@@ -331,7 +340,7 @@ public class BDRequette {
 	 * @param p_idCpt
 	 * @return
 	 */
-	public static String getHostFromIdCompte(String p_idCpt) {
+	public static String getHostFromIdCompte(int p_idCpt) {
 		String requete = "Select "
 				+ EnStructureTable.COMPTES_SERVEURPOP.getNomChamp() + " from "
 				+ EnTable.COMPTES.getNomTable() + " where "
@@ -348,8 +357,8 @@ public class BDRequette {
 	 * @param p_nomNewDossier - String le nom du nouveau dossier
 	 * @return true ou false
 	 */
-	public static boolean createNewDossier(String p_idCompte,
-			String p_idDossierParent, String p_nomNewDossier) {
+	public static boolean createNewDossier(int p_idCompte,
+			int p_idDossierParent, String p_nomNewDossier) {
 		String requette = "INSERT "
 				+ "INTO DOSSIER (ID_COMPTE,  ID_DOSSIER_PARENT, NOM_DOSSIER) "
 				+ " VALUES (" //
@@ -458,7 +467,7 @@ public class BDRequette {
 	 * @param p_idDossier
 	 * @return
 	 */
-	public static boolean deleteDossier(String p_idCompte, String p_idDossier) {
+	public static boolean deleteDossier(int p_idCompte, int p_idDossier) {
 
 		ArrayList<String> lstSousDossier = getListeSousDossier(p_idDossier);
 		for (String dossier : lstSousDossier) {
@@ -480,9 +489,9 @@ public class BDRequette {
 
 	}
 
-	public static boolean deleteMessageRecu(int idMessage) {
+	public static boolean deleteMessageRecu(int p_idMessage) {
 		// on commence par effacer les piece jointe associées au message.
-		ArrayList<String> lstPieceJointe = getListeIdPieceJointe(idMessage);
+		ArrayList<String> lstPieceJointe = getListeIdPieceJointe(p_idMessage);
 		for (String pieceJointe : lstPieceJointe) {
 			String requete = "DELETE FROM PIECE_JOINTE WHERE ID_PIECE_JOINTE='"
 					+ pieceJointe + "'";
@@ -491,7 +500,7 @@ public class BDRequette {
 
 		// on peut ensuite supprimer les messages
 		String requetteMessage = "DELETE FROM MAIL_RECU WHERE ID_MESSAGE_RECU='"
-				+ idMessage + "'";
+				+ p_idMessage + "'";
 		return executeRequete(requetteMessage);
 
 	}
@@ -508,16 +517,16 @@ public class BDRequette {
 		return getListeDeChamp(requette);
 	}
 
-	public static ArrayList<String> getListeDossier(String p_idCompte) {
+	public static ArrayList<String> getListeDossier(int p_idComptes) {
 		String requette = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_COMPTE='"
-				+ p_idCompte + "' ORDER BY a.NOM_DOSSIER";
+				+ p_idComptes + "' ORDER BY a.NOM_DOSSIER";
 		return getListeDeChamp(requette);
 
 	}
 
 	public static void createNewMessage(MlMessage m) {
-		String idCompte = m.getIdCompte();
-		String idDossierStockage = m.getIdDossier();
+		int idCompte = m.getIdCompte();
+		int idDossierStockage = m.getIdDossier();
 		String uidMessage = m.getUIDMessage();
 		String expediteur = encodeHTMLforBase(m.getExpediteur());
 		ArrayList<String> listeDestinataire = m.getDestinataire();
@@ -534,10 +543,8 @@ public class BDRequette {
 
 		String dateReception = RecupDate.getTimeStamp(m.getDateReception());
 
-		int tailleStringBuilder = idCompte.length()
-				+ idDossierStockage.length() + uidMessage.length()
-				+ expediteur.length() + destinataires.length() + sujet.length()
-				+ 500;
+		int tailleStringBuilder = uidMessage.length() + expediteur.length()
+				+ destinataires.length() + sujet.length() + 500;
 		// on construit la requette
 		StringBuilder requette = new StringBuilder(tailleStringBuilder);
 		requette.ensureCapacity(tailleStringBuilder);
@@ -676,14 +683,14 @@ public class BDRequette {
 				.replaceAll("&amp;", "&");
 	}
 
-	public static MlListeMessage getListeDeMessage(String idCompte,
-			String idDossierChoisi) {
+	public static MlListeMessage getListeDeMessage(int p_idCompte,
+			int p_idDossierChoisi) {
 		MlListeMessage lstMessage = new MlListeMessage();
 		String requette = "SELECT " + "a.ID_MESSAGE_RECU, " + "a.UID_MESSAGE, "
 				+ "a.EXPEDITEUR, " + "a.DESTINATAIRE, " + "a.SUJET, "
 				+ "a.CONTENU, " + "a.DATE_RECEPTION " + "FROM MAIL_RECU a "
-				+ "where a.ID_COMPTE='" + idCompte
-				+ "' and a.ID_DOSSIER_STOCKAGE='" + idDossierChoisi
+				+ "where a.ID_COMPTE='" + p_idCompte
+				+ "' and a.ID_DOSSIER_STOCKAGE='" + p_idDossierChoisi
 				+ "' ORDER BY a.DATE_RECEPTION DESC";
 		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(requette);
 		for (int i = 0; i < lstResultat.size(); i++) {
@@ -711,17 +718,17 @@ public class BDRequette {
 		// return null;
 	}
 
-	public static boolean messageHavePieceJointe(int idMessage) {
+	public static boolean messageHavePieceJointe(int p_idMessage) {
 		String requette = "SELECT COUNT (*) FROM PIECE_JOINTE WHERE ID_MESSAGE='"
-				+ idMessage + "'";
+				+ p_idMessage + "'";
 		int messageCount = Integer.parseInt(get1Champ(requette));
 
 		return messageCount > 0;
 	}
 
-	public static File getContenuFromId(Integer idMessage) {
+	public static File getContenuFromId(int p_idMessage) {
 		String requette = "SELECT CONTENU FROM MAIL_RECU WHERE ID_MESSAGE_RECU='"
-				+ idMessage + "'";
+				+ p_idMessage + "'";
 		return writeBlobToFile(requette);
 	}
 
@@ -776,9 +783,9 @@ public class BDRequette {
 
 	}
 
-	public static boolean isMessageLu(int i) {
+	public static boolean isMessageLu(int p_idMessageRecu) {
 		String script = "SELECT a.STATUT FROM MAIL_RECU a where a.ID_MESSAGE_RECU='"
-				+ i + "'";
+				+ p_idMessageRecu + "'";
 		if ("1".equals(get1Champ(script))) {
 			return true;
 		}
@@ -786,14 +793,14 @@ public class BDRequette {
 
 	}
 
-	public static boolean setStatusLecture(Integer p_idMessage) {
+	public static boolean setStatusLecture(int p_idMessage) {
 		String script = "UPDATE MAIL_RECU a SET STATUT=1 WHERE a.ID_MESSAGE_RECU="
 				+ p_idMessage;
 		return executeRequete(script);
 
 	}
 
-	public static MlMessage getMessageById(Integer p_idMessage) {
+	public static MlMessage getMessageById(int p_idMessage) {
 		String script = "SELECT a.ID_MESSAGE_RECU, a.UID_MESSAGE, a.EXPEDITEUR, a.DESTINATAIRE, "
 				+ "a.SUJET, a.CONTENU, a.DATE_RECEPTION, a.ID_DOSSIER_STOCKAGE"
 				+ " FROM MAIL_RECU a WHERE a.ID_MESSAGE_RECU=" + p_idMessage;
@@ -816,13 +823,14 @@ public class BDRequette {
 			m.setContenu(unEnregistrement.get(5));
 			m.setDateReception(RecupDate.getdateFromTimeStamp((unEnregistrement
 					.get(6))));
-			m.setNomDossier(BDRequette.getNomDossier(unEnregistrement.get(7)));
+			m.setNomDossier(BDRequette.getNomDossier(Integer
+					.parseInt(unEnregistrement.get(7))));
 
 		}
 		return m;
 	}
 
-	public static String getNomDossier(String p_idDossierStockage) {
+	public static String getNomDossier(int p_idDossierStockage) {
 		String script = "SELECT a.NOM_DOSSIER FROM DOSSIER a WHERE a.ID_DOSSIER="
 				+ p_idDossierStockage;
 		return get1Champ(script);
@@ -838,6 +846,16 @@ public class BDRequette {
 		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(script);
 
 		return lstResultat.get(0);
+
+	}
+
+	public static boolean deleteCompte(int p_idCompte) {
+		ArrayList<String> lsiteDossier = getListeDossier(p_idCompte);
+		for (String unDossier : lsiteDossier) {
+			deleteDossier(p_idCompte, getIdDossier(unDossier, p_idCompte));
+		}
+		String requete = "DELETE FROM COMPTES WHERE ID_COMPTE=" + p_idCompte;
+		return executeRequete(requete);
 
 	}
 

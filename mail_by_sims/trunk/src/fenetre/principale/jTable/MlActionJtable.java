@@ -18,6 +18,7 @@ import javax.swing.JTable;
 import javax.swing.text.Document;
 
 import bdd.BDRequette;
+import fenetre.LectureMessagePleinEcran;
 import fenetre.principale.MlAction.EnActionMain;
 
 public class MlActionJtable implements MouseListener, ActionListener {
@@ -65,7 +66,22 @@ public class MlActionJtable implements MouseListener, ActionListener {
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
+		if (e.getClickCount() == 2) {// double click sur la ligne
+			// on recupere la ligne selectionnée
+			Point p = e.getPoint();
+			// get the row index that contains that coordinate
+			// int rowNumber = table.rowAtPoint(p);
+			int selectedLine = table.getSelectedRow();
+			int idMessage = (Integer) table.getModel().getValueAt(selectedLine,
+					0);
+
+			// on clear le panelHTML de la page d'acceuil
+			// Document doc = editor.getDocument();
+			// doc.putProperty(Document.StreamDescriptionProperty, null);
+			// editor.setDocument(doc);
+			new LectureMessagePleinEcran(idMessage);
+
+		}
 
 	}
 
@@ -122,14 +138,14 @@ public class MlActionJtable implements MouseListener, ActionListener {
 
 	}
 
-	protected static void afficheContenuMail(JTable table, JList jList) {
+	public static void afficheContenuMail(JTable table, JList jList) {
 		int selectedLine = table.getSelectedRow();
 
 		Integer idMessage = (Integer) table.getModel().getValueAt(selectedLine,
 				0);
 		// le n° du message (meme si il est caché).
 
-		File contenu = BDRequette.getContenuFromId(idMessage);
+		File contenu = BDRequette.getContenuFromId(idMessage, false);
 
 		// on RAZ le contenu du panelEditor
 		Document doc = editor.getDocument();

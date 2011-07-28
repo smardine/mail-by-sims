@@ -368,7 +368,7 @@ public class Main extends JFrame {
 			btRecevoir.setIcon(new ImageIcon(getClass().getResource(
 					"/recevoir.png")));
 			btRecevoir.setBounds(new Rectangle(50, 0, 50, 50));
-			btRecevoir.setActionCommand(EnActionMain.ENVOYER_RECEVOIR.getLib());
+			btRecevoir.setActionCommand(EnActionMain.RECEVOIR.getLib());
 
 		}
 		return btRecevoir;

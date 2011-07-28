@@ -1,6 +1,6 @@
 package fenetre;
 
-import imap.thread_ReleveImap;
+import imap.thread_SynchroImap;
 
 import java.awt.Color;
 import java.awt.Rectangle;
@@ -24,12 +24,12 @@ public class ReleveMessagerie extends JFrame {
 	/**
 	 * This is the default constructor
 	 */
-	public ReleveMessagerie() {
+	public ReleveMessagerie(boolean p_isSynchro) {
 		super();
 		initialize();
 		this.setVisible(true);
-		thread_ReleveImap t = new thread_ReleveImap(jProgressBar, jTextArea,
-				jLabel);
+		thread_SynchroImap t = new thread_SynchroImap(jProgressBar, jTextArea,
+				jLabel, p_isSynchro);
 		t.start();
 	}
 

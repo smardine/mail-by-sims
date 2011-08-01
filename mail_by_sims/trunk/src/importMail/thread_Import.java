@@ -92,11 +92,9 @@ public class thread_Import extends Thread {
 		Session mailSession = Session.getDefaultInstance(props, null);
 		/***/
 		int messNumber = 1;
-		for (MlMessage m : listeDeMessage) {
-			String cheminPhysique = m.getCheminPhysique();
-			// String idCpt = m.getIdCompte();
-			// String idDossier = m.getIdDossier();
-			// String nomDossier = m.getNomDossier();
+		for (MlMessage messagePourBase : listeDeMessage) {
+			String cheminPhysique = messagePourBase.getCheminPhysique();
+
 			System.out.println("importation du message " + messNumber++
 					+ "sur " + listeDeMessage.size());
 			InputStream source;
@@ -106,24 +104,32 @@ public class thread_Import extends Thread {
 				MimeMessage mime;
 
 				mime = new MimeMessage(mailSession, source);
-				m.setSujet(mime.getSubject());
-				m.setDateReception(mime.getSentDate());
-				m.setExpediteur(mime.getFrom()[0].toString());
+				messagePourBase.setSujet(mime.getSubject());
+				messagePourBase.setDateReception(mime.getSentDate());
+				messagePourBase.setExpediteur(mime.getFrom()[0].toString());
 				// ******************************//
 				ArrayList<String> listeDestinataires = new ArrayList<String>(
 						mime.getAllRecipients().length);
 				for (Address uneAdresse : mime.getAllRecipients()) {
 					listeDestinataires.add(uneAdresse.toString());
 				}
-				m.setDestinataire(listeDestinataires);
-				m.setUIDMessage("" + System.currentTimeMillis());// getMessageID());
+				messagePourBase.setDestinataire(listeDestinataires);
+				if (messagePourBase.getUIDMessage() == null) {
+					if (mime.getContentID() != null) {
+						messagePourBase.setUIDMessage(mime.getContentID());
+					} else {
+						messagePourBase.setUIDMessage(""
+								+ System.currentTimeMillis());// getMessageID());
+					}
+				}
 
 				/**
 				 * il faut decoder le message de maniere a voir si il y a des
 				 * piece jointe
 				 */
 
-				m.setContenu(recupContenuMail(m, mime, new JTextArea()));// ,
+				messagePourBase.setContenu(recupContenuMail(messagePourBase,
+						mime, new JTextArea()));// ,
 				// m.getDateReception()
 				// .getTime()));
 
@@ -139,7 +145,7 @@ public class thread_Import extends Thread {
 				messageUtilisateur.affMessageException(e,
 						"impossible d'acceder au fichier " + cheminPhysique);
 			}
-			BDRequette.createNewMessage(m);
+			BDRequette.createNewMessage(messagePourBase);
 
 		}
 
@@ -247,7 +253,8 @@ public class thread_Import extends Thread {
 
 		System.out.println("**C'est une piece jointe dont le nom est :"
 				+ fileName);
-		if (fileName.contains("ISO") || fileName.contains("UTF")) {
+		if (fileName.contains("ISO") || fileName.contains("UTF")
+				|| fileName.contains("iso") || fileName.contains("utf")) {
 			fileName = decodeurIso(fileName);
 		}
 		methodeImap
@@ -303,10 +310,11 @@ public class thread_Import extends Thread {
 
 	public static String decodeurIso(String fileName) {
 
-		fileName = fileName.replaceAll("=?ISO-8859-1?Q?", "").replace("?", "")
-				.replace(",", "").replaceAll("=?UTF-8?Q?", "").replace("=5F",
-						"_").replace("=E9", "é").replace("=Q", "").replace(
-						"=CC=81e", "é").replace("=", "");
+		fileName = fileName.replaceAll("=?ISO-8859-1?Q?", "").replaceAll(
+				"=?iso-8859-1?Q?", "").replace("?", "").replace(",", "")
+				.replaceAll("=?UTF-8?Q?", "").replaceAll("=?utf-8?Q?", "")
+				.replace("=5F", "_").replace("=E9", "é").replace("=Q", "")
+				.replace("=CC=81e", "é").replace("=", "").replace("2E", ".");
 
 		return fileName;
 	}

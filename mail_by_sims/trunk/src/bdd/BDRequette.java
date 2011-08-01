@@ -569,6 +569,12 @@ public class BDRequette {
 		boolean succes = executeRequeteWithBlob(requette.toString(),
 				fileToBlobContenu, fileToBlobDestinataires);
 		if (succes) {
+			File f = new File(m.getCheminPhysique());
+			if (f.exists()) {
+				if (!f.delete()) {
+					f.deleteOnExit();
+				}
+			}
 			// on recupere le nouvel id du message que l'on vient d'enregistrer
 			String getMaxId = "SELECT max (ID_MESSAGE_RECU) FROM MAIL_RECU a";
 			String maxId = get1Champ(getMaxId);
@@ -580,9 +586,9 @@ public class BDRequette {
 			// on insere le contenu en base
 			// si des pieces jointe sont presente, on enregistre leur chemin en
 			// base avec l'id du message
-			for (File f : m.getListePieceJointe()) {
-				if (enregistrePieceJointe(maxId, f)) {
-					f.delete();
+			for (File f1 : m.getListePieceJointe()) {
+				if (enregistrePieceJointe(maxId, f1)) {
+					f1.delete();
 				}
 			}
 
@@ -593,7 +599,10 @@ public class BDRequette {
 	private static boolean enregistrePieceJointe(String maxId,
 			File p_PieceJointe) {
 		String requette = "INSERT INTO PIECE_JOINTE (CONTENU_PIECE_JOINTE,NOM_PIECE_JOINTE, ID_MESSAGE) VALUES ("
-				+ "?,'" + p_PieceJointe.getName() + "','" + maxId + "')";
+				+ "?,'"
+				+ p_PieceJointe.getName().replace("'", "_")
+				+ "','"
+				+ maxId + "')";
 		PreparedStatement ps = null;
 		FileInputStream inPieceJointe = null;
 		try {
@@ -618,8 +627,10 @@ public class BDRequette {
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(e,
 						"Erreur à l'insertion d'un blob");
+				return false;
 			} catch (IOException e) {
 				messageUtilisateur.affMessageException(e, "fichier non trouvé");
+				return false;
 
 			}
 		}
@@ -784,11 +795,16 @@ public class BDRequette {
 
 	}
 
-	public static boolean verifieAbscenceUID(long uid) {
-		String requete = "SELECT count (*) from MAIL_RECU a where a.UID_MESSAGE="
-				+ uid;
+	public static boolean verifieAbscenceUID(String uid) {
+		String requete = "SELECT count (*) from MAIL_RECU a where a.UID_MESSAGE='"
+				+ uid.trim() + "'";
 		return ("0".equals(get1Champ(requete)));
 
+	}
+
+	public static boolean verifieAbscenceUID(long p_uid) {
+		// TODO Auto-generated method stub
+		return verifieAbscenceUID("" + p_uid);
 	}
 
 	public static String getVersionBase() {

@@ -14,9 +14,12 @@ public class messageUtilisateur {
 		if (p_exception == null) {
 			JOptionPane.showMessageDialog(null, null, p_titre,
 					JOptionPane.ERROR_MESSAGE);
+		} else {
+			JOptionPane.showMessageDialog(null, p_exception.getClass()
+					+ p_exception.getMessage(), p_titre,
+					JOptionPane.ERROR_MESSAGE);
 		}
-		JOptionPane.showMessageDialog(null, p_exception.getMessage(), p_titre,
-				JOptionPane.ERROR_MESSAGE);
+
 	}
 
 	public static void affMessageErreur(String p_message) {

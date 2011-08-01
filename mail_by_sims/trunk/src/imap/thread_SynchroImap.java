@@ -53,9 +53,9 @@ public class thread_SynchroImap extends Thread {
 
 				if (cpt.getServeurReception().contains("live")) {
 					methodeImap.afficheText(textArea, "Releve du compte " + s);
-					new ReleveHotmail(idCpt, cpt.getUserName(), cpt
-							.getPassword(), cpt.getServeurReception(),
-							progress, textArea, label, isSynchro);
+					// new ReleveHotmail(idCpt, cpt.getUserName(), cpt
+					// .getPassword(), cpt.getServeurReception(),
+					// progress, textArea, label, isSynchro);
 				}
 
 				else {

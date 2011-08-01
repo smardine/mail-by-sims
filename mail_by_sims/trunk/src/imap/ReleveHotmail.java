@@ -55,7 +55,8 @@ public class ReleveHotmail {
 			// on commence par verifier les messages suprrimés car sinon, on
 			// pert du
 			// temp a le faire apres une releve de la BAL
-			methodeImap.afficheText(textArea, "Mise a jour de la boite Gmail");
+			methodeImap
+					.afficheText(textArea, "Mise a jour de la boite hotmail");
 			methodeImap.afficheText(textArea,
 					"Synchronisation des messages supprimés");
 			methodeImap.miseAJourMessage(props, p_idCompte, progressBar, host,

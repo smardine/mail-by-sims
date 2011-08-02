@@ -19,6 +19,7 @@ import javax.swing.JTextArea;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.GestionRepertoire;
+import tools.Historique;
 import bdd.BDRequette;
 
 import com.sun.mail.imap.IMAPFolder;
@@ -291,6 +292,7 @@ public class methodeImap {
 
 		p_textArea.append(p_text + "\n");
 		p_textArea.setCaretPosition(p_textArea.getDocument().getLength());
+		Historique.ecrire(p_text);
 	}
 
 	private static int verifieRegle(String expediteur, int p_idDossier) {

@@ -13,7 +13,6 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
-import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
@@ -70,7 +69,7 @@ public class methodeImap {
 
 	public static void miseAJourMessage(Properties props, int pIdCompte,
 			JProgressBar p_progress, String host, String user, String password,
-			JTextArea textArea, JLabel label) {
+			JTextArea textArea) {
 
 		Session session = Session.getInstance(props);
 		// Get a Store object
@@ -82,8 +81,8 @@ public class methodeImap {
 			messageUtilisateur.affMessageException(e, "Erreur connexion");
 			return;
 		}
-
-		ArrayList<String> listeDossier = BDRequette.getListeDossier(pIdCompte);
+		BDRequette bd = new BDRequette();
+		ArrayList<String> listeDossier = bd.getListeDossier(pIdCompte);
 		for (String dossier : listeDossier) {
 			IMAPFolder fldr;
 			try {
@@ -116,8 +115,8 @@ public class methodeImap {
 					}
 
 				} else {
-					ArrayList<String> lstSousDossierInbox = BDRequette
-							.getListeSousDossier(BDRequette
+					ArrayList<String> lstSousDossierInbox = bd
+							.getListeSousDossier(bd
 									.getIdDossier(EnDossierBase.RECEPTION
 											.getLib(), pIdCompte));
 					if (lstSousDossierInbox.contains(dossier)) {
@@ -136,8 +135,8 @@ public class methodeImap {
 			}
 			afficheText(textArea, "Parcours des messages sur le serveur");
 			afficheText(textArea, "à la recherche des messages supprimés");
-			MlListeMessage listeMessage = BDRequette.getListeDeMessage(
-					pIdCompte, BDRequette.getIdDossier(dossier, pIdCompte));
+			MlListeMessage listeMessage = bd.getListeDeMessage(pIdCompte, bd
+					.getIdDossier(dossier, pIdCompte));
 			int nbActu = 0;
 			for (MlMessage m : listeMessage) {
 				nbActu++;
@@ -145,15 +144,15 @@ public class methodeImap {
 				p_progress.setValue(pourcent);
 				p_progress.setString("Mise a jour messagerie: " + pourcent
 						+ " %");
-				label.setText("Message traité n° " + nbActu
-						+ " sur un total de " + listeMessage.size());
+				// label.setText("Message traité n° " + nbActu
+				// + " sur un total de " + listeMessage.size());
 				try {
 					Message messageImap = fldr.getMessageByUID(Long.parseLong(m
 							.getUIDMessage()));
 					if (messageImap == null) {
 						afficheText(textArea,
 								"Message supprimé sur le serveur, mise a jour de la base");
-						BDRequette.deleteMessageRecu(m.getIdMessage());
+						bd.deleteMessageRecu(m.getIdMessage());
 					}
 				} catch (NumberFormatException e) {
 					messageUtilisateur.affMessageException(e,
@@ -178,16 +177,18 @@ public class methodeImap {
 			messageUtilisateur.affMessageException(e, "Erreur connexion");
 		}
 
+		bd.closeConnexion();
+
 	}
 
 	public static void releveImap(Properties props, int p_idCompte,
-			JProgressBar p_progress, int p_idDossier, IMAPFolder folder,
-			JTextArea textArea, JLabel p_label) {
+			JProgressBar p_progress, JProgressBar p_progressPJ,
+			int p_idDossier, IMAPFolder folder, JTextArea textArea) {
 
 		MlListeMessage lstMessage = new MlListeMessage();
 
-		releveDossier(p_idCompte, p_idDossier, p_progress, lstMessage, folder,
-				textArea, p_label);
+		releveDossier(p_idCompte, p_idDossier, p_progress, p_progressPJ,
+				lstMessage, folder, textArea);
 
 	}
 
@@ -195,6 +196,7 @@ public class methodeImap {
 	 * @param p_idCompte
 	 * @param p_idDossier
 	 * @param p_progress
+	 * @param p_progressPJ
 	 * @param lstMessage
 	 * @param imapFolder
 	 * @param textArea
@@ -202,21 +204,22 @@ public class methodeImap {
 	 * @throws IOException
 	 */
 	private static void releveDossier(int p_idCompte, int p_idDossier,
-			JProgressBar p_progress, MlListeMessage lstMessage,
-			IMAPFolder imapFolder, JTextArea textArea, JLabel p_label) {
+			JProgressBar p_progress, JProgressBar p_progressPJ,
+			MlListeMessage lstMessage, IMAPFolder imapFolder, JTextArea textArea) {
 		afficheText(textArea, "Releve du dossier " + imapFolder.getFullName());
+		BDRequette bd = new BDRequette();
 		try {
 			imapFolder.open(Folder.READ_WRITE);
 			int count = imapFolder.getMessageCount();
 
 			afficheText(textArea, "Nombre de messages: " + count);
 			// Message numbers start at 1
-			int nbActu = 0;
+			int nbActu = 1;
 			for (Message m : imapFolder.getMessages()) {
-				p_label.setText("Message traité n° " + nbActu++
-						+ " sur un total de " + count);
+				// p_label.setText("Message traité n° " + nbActu++
+				// + " sur un total de " + count);
 
-				int pourcent = (nbActu * 100) / count;
+				int pourcent = (nbActu++ * 100) / count;
 				p_progress.setValue(pourcent);
 				p_progress.setString("Releve de " + imapFolder.getFullName()
 						+ " :" + pourcent + " %");
@@ -225,7 +228,7 @@ public class methodeImap {
 				// pour cela, comme on est en IMAp,
 				// on se base sur l'UID du message.
 
-				if (BDRequette.verifieAbscenceUID(imapFolder.getUID(m))) {
+				if (bd.verifieAbscenceUID(imapFolder.getUID(m))) {
 					MlMessage messPourBase = new MlMessage();
 
 					messPourBase.setCheminPhysique(GestionRepertoire
@@ -233,7 +236,7 @@ public class methodeImap {
 							+ "/tempo/" + System.currentTimeMillis() + ".eml");
 
 					messPourBase.setContenu(thread_Import.recupContenuMail(
-							messPourBase, m, textArea));
+							messPourBase, p_progressPJ, m, textArea));
 					messPourBase.setDateReception(m.getReceivedDate());
 					ArrayList<String> listeDestinataires;
 					if (null != m.getAllRecipients()) {// si on connait la
@@ -259,7 +262,7 @@ public class methodeImap {
 					lstMessage.add(messPourBase);
 					afficheText(textArea,
 							"Enregistrement du message dans la base");
-					BDRequette.createNewMessage(messPourBase);
+					bd.createNewMessage(messPourBase);
 
 				}
 
@@ -270,9 +273,12 @@ public class methodeImap {
 					+ imapFolder.getFullName());
 
 			imapFolder.close(false);
+
 		} catch (MessagingException e) {
 			messageUtilisateur.affMessageException(e,
 					"Erreur a la releve des messages");
+		} finally {
+			bd.closeConnexion();
 		}
 
 	}

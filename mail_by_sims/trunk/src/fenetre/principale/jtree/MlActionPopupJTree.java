@@ -36,18 +36,16 @@ public class MlActionPopupJTree implements ActionListener {
 			}
 			String dossierParent = (String) selectionPath
 					.getLastPathComponent();
-
-			int idCompte = BDRequette.getIdComptes((String) selectionPath
+			BDRequette bd = new BDRequette();
+			int idCompte = bd.getIdComptes((String) selectionPath
 					.getPathComponent(1));
 
-			int idDossierParent = BDRequette.getIdDossier(dossierParent,
-					idCompte);
+			int idDossierParent = bd.getIdDossier(dossierParent, idCompte);
 
 			if ("".equals(idDossierParent)) {
 				idDossierParent = 0;
 			}
-			if (BDRequette.createNewDossier(idCompte, idDossierParent,
-					nomNewDossier)) {
+			if (bd.createNewDossier(idCompte, idDossierParent, nomNewDossier)) {
 				TreePath newTreePath = new TreePath(selectionPath.toString()
 						.replace("[", "").replace("]", "")
 						+ ", " + nomNewDossier);
@@ -57,16 +55,16 @@ public class MlActionPopupJTree implements ActionListener {
 				tree.setSelectionPath(newTreePath);
 
 			}
+			bd.closeConnexion();
 
 		}
 		if ("SUPPRIMER".equals(actionCommand)) {
 			String dossierASupprimer = (String) selectionPath
 					.getLastPathComponent();
-
-			int idCompte = BDRequette.getIdComptes((String) selectionPath
+			BDRequette bd = new BDRequette();
+			int idCompte = bd.getIdComptes((String) selectionPath
 					.getPathComponent(1));
-			int idDossier = BDRequette
-					.getIdDossier(dossierASupprimer, idCompte);
+			int idDossier = bd.getIdDossier(dossierASupprimer, idCompte);
 
 			REPONSE rep = messageUtilisateur
 					.affMessageQuestionOuiNon(
@@ -77,7 +75,7 @@ public class MlActionPopupJTree implements ActionListener {
 
 			switch (rep) {
 				case OUI:// on supprime le dossier
-					BDRequette.deleteDossier(idCompte, idDossier);
+					bd.deleteDossier(idCompte, idDossier);
 					Main.setTreePath(selectionPath.getParentPath());
 					tree.getModel().valueForPathChanged(selectionPath,
 							ActionTree.SUPPRIMER);
@@ -87,6 +85,7 @@ public class MlActionPopupJTree implements ActionListener {
 					break;
 
 			}
+			bd.closeConnexion();
 
 		}
 

@@ -93,7 +93,9 @@ public class MlActionJtree implements TreeSelectionListener,
 	 * @param p_event
 	 */
 	private void valoriseTreeEtNomCompte(TreePath p_path) {
-		ArrayList<String> lstCpt = BDRequette.getListeDeComptes();
+		BDRequette bd = new BDRequette();
+		ArrayList<String> lstCpt = bd.getListeDeComptes();
+		bd.closeConnexion();
 		if (null != p_path) {
 			if (lstCpt.contains(p_path.getLastPathComponent())) {
 				// on est dans le cas [superroot,gmail]
@@ -123,10 +125,11 @@ public class MlActionJtree implements TreeSelectionListener,
 		TreePath newPath = Main.getTreePath();
 		if (null != newPath) {
 			String nomDossierRacine = newPath.getLastPathComponent().toString();
-			ArrayList<String> lstSousDossier = BDRequette
-					.getListeSousDossier(BDRequette.getIdDossier(
-							nomDossierRacine, BDRequette.getIdComptes(Main
-									.getNomCompte())));
+			BDRequette bd = new BDRequette();
+			ArrayList<String> lstSousDossier = bd.getListeSousDossier(bd
+					.getIdDossier(nomDossierRacine, bd.getIdComptes(Main
+							.getNomCompte())));
+			bd.closeConnexion();
 			if (lstSousDossier.size() > 0) {
 				TreePath un = new TreePath(newPath.toString().replace("[", "")
 						.replace("]", "")
@@ -141,18 +144,19 @@ public class MlActionJtree implements TreeSelectionListener,
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (!BDRequette.getListeDeComptes().contains(getPathFromEvent(e))) {
+		BDRequette bd = new BDRequette();
+		if (!bd.getListeDeComptes().contains(getPathFromEvent(e))) {
 			// affiche le contenu de la base correspondant a ce que l'on a
 			// cliqué
 			if (null != getPathFromEvent(e)) {
 				String dossierChoisi = (String) getPathFromEvent(e)
 						.getLastPathComponent();
 
-				if (!BDRequette.getListeDeComptes().contains(dossierChoisi)) {
-					int idCompte = BDRequette.getIdComptes(Main.getNomCompte());
-					int idDossierChoisi = BDRequette.getIdDossier(
-							dossierChoisi, idCompte);
-					MlListeMessage listeMessage = BDRequette.getListeDeMessage(
+				if (!bd.getListeDeComptes().contains(dossierChoisi)) {
+					int idCompte = bd.getIdComptes(Main.getNomCompte());
+					int idDossierChoisi = bd.getIdDossier(dossierChoisi,
+							idCompte);
+					MlListeMessage listeMessage = bd.getListeDeMessage(
 							idCompte, idDossierChoisi);
 
 					MyTableModel modelDetable = (MyTableModel) table.getModel();
@@ -164,7 +168,7 @@ public class MlActionJtree implements TreeSelectionListener,
 			}
 
 		}
-
+		bd.closeConnexion();
 	}
 
 	@Override
@@ -193,14 +197,14 @@ public class MlActionJtree implements TreeSelectionListener,
 			if (e.isPopupTrigger()) {
 
 				Object lastPathComponent = selPath.getLastPathComponent();
-
+				BDRequette bd = new BDRequette();
 				if (getListeDossierdeBase().contains(lastPathComponent)//
-						|| BDRequette.getListeDeComptes().contains(
-								lastPathComponent)) {
+						|| bd.getListeDeComptes().contains(lastPathComponent)) {
 					Supprimer.setEnabled(false);
 				} else {
 					Supprimer.setEnabled(true);
 				}
+				bd.closeConnexion();
 
 				popUpMenu.show(e.getComponent(), e.getX(), e.getY());
 

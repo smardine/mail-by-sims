@@ -1,23 +1,30 @@
 package fenetre.principale.MlAction;
 
+import imap.thread_SynchroImap;
 import importMail.thread_Import;
 
 import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTree;
 
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.OpenWithDefaultViewer;
-import fenetre.ReleveMessagerie;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class MlActionMain implements ActionListener {
 
 	private Window fenetre;
 	private JTree tree;
+	private JProgressBar pbReleve;
+	private JProgressBar pbPieceJointe;
+	private JTextArea text;
+	private JScrollPane scrollPane;
 
 	public MlActionMain(Window p_fenetre) {
 		this.fenetre = p_fenetre;
@@ -27,8 +34,14 @@ public class MlActionMain implements ActionListener {
 
 	}
 
-	public MlActionMain(JTree p_tree) {
+	public MlActionMain(JTree p_tree, JProgressBar p_jProgressBarReleve,
+			JProgressBar p_jProgressBarPieceJointe, JTextArea p_jTextArea,
+			JScrollPane p_scroll) {
 		this.tree = p_tree;
+		this.pbReleve = p_jProgressBarReleve;
+		this.pbPieceJointe = p_jProgressBarPieceJointe;
+		this.text = p_jTextArea;
+		this.scrollPane = p_scroll;
 
 	}
 
@@ -52,16 +65,21 @@ public class MlActionMain implements ActionListener {
 
 		}
 		if (e.getActionCommand().equals(EnActionMain.IMPORTER.getLib())) {
-			thread_Import t = new thread_Import(tree);
+			thread_Import t = new thread_Import(tree, pbPieceJointe);
 			t.start();
 		}
 		if (e.getActionCommand().equals(EnActionMain.ENVOYER_RECEVOIR.getLib())) {
-			new ReleveMessagerie(true);
+			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
+					pbPieceJointe, text, scrollPane, true);
+			t.start();
+			// new ReleveMessagerie(true);
 		}
 		if (e.getActionCommand().equals(EnActionMain.RECEVOIR.getLib())) {
-			new ReleveMessagerie(false);
+			// new ReleveMessagerie(false);
+			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
+					pbPieceJointe, text, scrollPane, false);
+			t.start();
 		}
 
 	}
-
 }

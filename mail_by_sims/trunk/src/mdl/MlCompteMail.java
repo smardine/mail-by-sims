@@ -3,17 +3,16 @@ package mdl;
 import java.util.ArrayList;
 
 import bdd.BDRequette;
+import fenetre.comptes.EnDossierBase;
 
 public class MlCompteMail {
 
 	private final int idCompte;
-	private String nomCompte;
-	private String serveurReception;
-	private long portPop;
-	private String serveurSMTP;
-	private long portSMTP;
-	private String userName;
-	private String password;
+	private int idInbox, idBrouillons, idSpam, idCorbeille, idEnvoye;
+	private long portPop, portSMTP;
+	private String userName, password, serveurSMTP, serveurReception,
+			nomCompte;
+
 	private boolean isImap;
 
 	public MlCompteMail(int p_idCompte) {
@@ -22,7 +21,9 @@ public class MlCompteMail {
 	}
 
 	private void initialiseCompte(int p_idCompte) {
-		ArrayList<String> defCompte = BDRequette.getCompteByID(p_idCompte);
+		BDRequette bd = new BDRequette();
+		ArrayList<String> defCompte = bd.getCompteByID(p_idCompte);
+
 		for (int i = 0; i < defCompte.size(); i++) {
 			switch (i) {
 				case 0:
@@ -55,7 +56,32 @@ public class MlCompteMail {
 					break;
 
 			}
+		}// fin de for
+
+		EnDossierBase[] lstDossierBase = EnDossierBase.values();
+		for (EnDossierBase unDossier : lstDossierBase) {
+			switch (unDossier) {
+				case RECEPTION:
+					setIdInbox(bd.getIdDossier(unDossier.getLib(), idCompte));
+					break;
+				case BROUILLON:
+					setIdBrouillons(bd.getIdDossier(unDossier.getLib(),
+							idCompte));
+					break;
+				case SPAM:
+					setIdSpam(bd.getIdDossier(unDossier.getLib(), idCompte));
+					break;
+				case CORBEILLE:
+					setIdCorbeille(bd
+							.getIdDossier(unDossier.getLib(), idCompte));
+					break;
+				case ENVOYES:
+					setIdEnvoye(bd.getIdDossier(unDossier.getLib(), idCompte));
+					break;
+			}
 		}
+
+		bd.closeConnexion();
 
 	}
 
@@ -176,6 +202,76 @@ public class MlCompteMail {
 	 */
 	public int getIdCompte() {
 		return this.idCompte;
+	}
+
+	/**
+	 * @return the idInbox
+	 */
+	public int getIdInbox() {
+		return this.idInbox;
+	}
+
+	/**
+	 * @return the idBrouillons
+	 */
+	public int getIdBrouillons() {
+		return this.idBrouillons;
+	}
+
+	/**
+	 * @return the idSpam
+	 */
+	public int getIdSpam() {
+		return this.idSpam;
+	}
+
+	/**
+	 * @return the idCorbeille
+	 */
+	public int getIdCorbeille() {
+		return this.idCorbeille;
+	}
+
+	/**
+	 * @return the idEnvoye
+	 */
+	public int getIdEnvoye() {
+		return this.idEnvoye;
+	}
+
+	/**
+	 * @param p_idInbox the idInbox to set
+	 */
+	public void setIdInbox(int p_idInbox) {
+		this.idInbox = p_idInbox;
+	}
+
+	/**
+	 * @param p_idBrouillons the idBrouillons to set
+	 */
+	public void setIdBrouillons(int p_idBrouillons) {
+		this.idBrouillons = p_idBrouillons;
+	}
+
+	/**
+	 * @param p_idSpam the idSpam to set
+	 */
+	public void setIdSpam(int p_idSpam) {
+		this.idSpam = p_idSpam;
+	}
+
+	/**
+	 * @param p_idCorbeille the idCorbeille to set
+	 */
+	public void setIdCorbeille(int p_idCorbeille) {
+		this.idCorbeille = p_idCorbeille;
+	}
+
+	/**
+	 * @param p_idEnvoye the idEnvoye to set
+	 */
+	public void setIdEnvoye(int p_idEnvoye) {
+		this.idEnvoye = p_idEnvoye;
 	}
 
 }

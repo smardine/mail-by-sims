@@ -23,6 +23,7 @@ import javax.mail.Multipart;
 import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
+import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
@@ -31,34 +32,36 @@ import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.GestionRepertoire;
 import tools.ReadFile;
-import bdd.BDAcces;
 import bdd.BDRequette;
 
 public class thread_Import extends Thread {
 
 	private final JTree tree;
 	private int idCompte;
+	private final JProgressBar progress;
 
-	public thread_Import(JTree p_tree) {
+	public thread_Import(JTree p_tree, JProgressBar p_progressPJ) {
 		this.tree = p_tree;
-		new BDAcces();
+		this.progress = p_progressPJ;
+		// new BDAcces();
 	}
 
 	@Override
 	public void run() {
+		BDRequette bd = new BDRequette();
 		String chemin = GestionRepertoire
 				.OpenFolder("Veuillez indiquer l'emplacement de vos mails Windows Mail");
 		// messageUtilisateur.affMessageInfo("Vous avez choisi: " + chemin);
 
 		String choixCompte = messageUtilisateur.afficheChoixMultiple(
 				"Choix du compte",
-				"dans quel comptes souhaitez vous importer les messages?",
-				BDRequette.getListeDeComptes());
+				"dans quel comptes souhaitez vous importer les messages?", bd
+						.getListeDeComptes());
 
 		// parcour du repertoire de facon recursive
 		// les fichiers avec l'extension ".fol"contienne le nom du repertoire
 		System.out.println(choixCompte);
-		idCompte = BDRequette.getIdComptes(choixCompte);
+		idCompte = bd.getIdComptes(choixCompte);
 
 		Object[] path = new Object[3];
 		path[0] = tree.getModel().getRoot();
@@ -75,15 +78,17 @@ public class thread_Import extends Thread {
 		// messageUtilisateur.affMessageInfo("il y a au total "
 		// + listeDeMessage.size() + " message(s)");
 
-		enregistreMessageEnBase(listeDeMessage);
+		enregistreMessageEnBase(listeDeMessage, progress);
 
 		System.out.println("fin de l'enregistrement des message en base");
+		bd.closeConnexion();
 
 	}
 
 	@SuppressWarnings("hiding")
-	public static void enregistreMessageEnBase(MlListeMessage listeDeMessage) {
-
+	public static void enregistreMessageEnBase(MlListeMessage listeDeMessage,
+			JProgressBar p_progressPJ) {
+		BDRequette bd = new BDRequette();
 		/** On simule la reception d'un message */
 		Properties props = System.getProperties();
 		props.put("mail.host", "smtp.dummydomain.com");
@@ -129,7 +134,7 @@ public class thread_Import extends Thread {
 				 */
 
 				messagePourBase.setContenu(recupContenuMail(messagePourBase,
-						mime, new JTextArea()));// ,
+						null, mime, new JTextArea()));// ,
 				// m.getDateReception()
 				// .getTime()));
 
@@ -145,14 +150,16 @@ public class thread_Import extends Thread {
 				messageUtilisateur.affMessageException(e,
 						"impossible d'acceder au fichier " + cheminPhysique);
 			}
-			BDRequette.createNewMessage(messagePourBase);
+			bd.createNewMessage(messagePourBase);
 
 		}
+		bd.closeConnexion();
 
 	}
 
 	public static String recupContenuMail(MlMessage p_mlMessage,
-			Message p_messageJavaMail, JTextArea textArea)// , long
+			JProgressBar p_progressPJ, Message p_messageJavaMail,
+			JTextArea textArea)// , long
 	// p_prefixeNomFichier)//
 	{
 		StringBuilder sb = new StringBuilder();
@@ -166,7 +173,7 @@ public class thread_Import extends Thread {
 				sb.append((String) o);
 			} else if (o instanceof Multipart) {
 				Multipart mp = (Multipart) o;
-				decodeMultipart(p_mlMessage, mp, sb, textArea);// ,
+				decodeMultipart(p_mlMessage, mp, sb, textArea, p_progressPJ);// ,
 				// p_prefixeNomFichier);
 
 			} else if (o instanceof InputStream) {
@@ -185,7 +192,9 @@ public class thread_Import extends Thread {
 	}
 
 	public static void decodeMultipart(MlMessage p_mlMessage, Multipart mp,
-			StringBuilder sb, JTextArea textArea) // , long p_prefixeNomFichier)
+			StringBuilder sb, JTextArea textArea, JProgressBar p_progressPJ) // ,
+	// long
+	// p_prefixeNomFichier)
 	{
 		try {
 			for (int j = 0; j < mp.getCount(); j++) {
@@ -202,13 +211,14 @@ public class thread_Import extends Thread {
 				} else if (o2 instanceof Multipart) {
 					System.out.print("**MultiPart Imbriqué.  ");
 					Multipart mp2 = (Multipart) o2;
-					decodeMultipart(p_mlMessage, mp2, sb, textArea);// ,
+					decodeMultipart(p_mlMessage, mp2, sb, textArea,
+							p_progressPJ);// ,
 					// p_prefixeNomFichier);
 
 				} else if (o2 instanceof InputStream) {
 
 					recuperePieceJointe(p_mlMessage,// p_prefixeNomFichier,//
-							b, o2, textArea);
+							b, o2, textArea, p_progressPJ);
 
 				}
 
@@ -232,14 +242,16 @@ public class thread_Import extends Thread {
 	 * @param p_bodyPart
 	 * @param p_inputStream
 	 * @param textArea
+	 * @param p_progressPJ
 	 * @throws MessagingException
 	 * @throws FileNotFoundException
 	 * @throws IOException
 	 */
 	public static void recuperePieceJointe(MlMessage p_mlMessage,
-	// long p_prefixeNomFichier, //
-			BodyPart p_bodyPart, Object p_inputStream, JTextArea textArea)
-			throws MessagingException, FileNotFoundException {
+			// long p_prefixeNomFichier, //
+			BodyPart p_bodyPart, Object p_inputStream, JTextArea textArea,
+			JProgressBar p_progressPJ) throws MessagingException,
+			FileNotFoundException {
 
 		InputStream input = (InputStream) p_inputStream;
 		String fileName = p_bodyPart.getFileName();
@@ -271,14 +283,21 @@ public class thread_Import extends Thread {
 		File fichier = new File(repPieceJointe.getAbsolutePath() + "/"
 				+ fileName);
 		if (!fichier.exists()) {
+			p_progressPJ.setVisible(true);
 			FileOutputStream writeFile = new FileOutputStream(fichier);
-			byte[] buffer = new byte[p_bodyPart.getSize()];
-			int read;
 
+			byte[] buffer = new byte[256 * 1024];// par segment de 256Ko
+			int read;
+			final long tailleTotale = p_bodyPart.getSize();
 			try {
 				while ((read = input.read(buffer)) != -1) {
 					writeFile.write(buffer, 0, read);
-
+					long tailleEnCours = fichier.length();
+					long PourcentEnCours = ((100 * (tailleEnCours + 1)) / tailleTotale);
+					int Pourcent = (int) PourcentEnCours;
+					p_progressPJ.setValue(Pourcent);
+					p_progressPJ.setString("Releve pièce jointe: " + Pourcent
+							+ " %");
 				}
 				writeFile.flush();
 				writeFile.close();
@@ -293,6 +312,7 @@ public class thread_Import extends Thread {
 						writeFile.close();
 						input.close();
 						p_mlMessage.getListePieceJointe().add(fichier);
+						p_progressPJ.setVisible(false);
 					} catch (IOException e) {
 						JOptionPane
 								.showMessageDialog(
@@ -321,6 +341,7 @@ public class thread_Import extends Thread {
 
 	private MlListeMessage parcoursDossier(String p_chemin, String p_compte,
 			TreePath p_treePath) {
+		BDRequette bd = new BDRequette();
 		TreePath newTp = null;
 		String nomDossier = null;
 		File dossier = new File(p_chemin);
@@ -365,7 +386,7 @@ public class thread_Import extends Thread {
 		for (MlMessage m : lstMessage) {
 			m.setNomDossier(nomDossier);
 			m.setIdCompte(idCompte);
-			m.setIdDossier(BDRequette.getIdDossier(nomDossier, idCompte));
+			m.setIdDossier(bd.getIdDossier(nomDossier, idCompte));
 		}
 		for (File f : lstSousDossier) {
 			System.out.println("creation du dossier:" + f.getName());
@@ -385,6 +406,7 @@ public class thread_Import extends Thread {
 			}
 			lstMessage.addAll(lstMessge);
 		}
+		bd.closeConnexion();
 		return lstMessage;
 	}
 
@@ -399,20 +421,24 @@ public class thread_Import extends Thread {
 		// TreePath newTp = new TreePath(p_treePath.toString().replace("[", "")
 		// .replace("]", "")
 		// + ", " + nomDossier);
-
+		BDRequette bd = new BDRequette();
 		String dossierParent = (String) p_treePath.getLastPathComponent();
-		int idDossierParent = BDRequette.getIdDossier(dossierParent, idCompte);
-		BDRequette.createNewDossier(idCompte, idDossierParent, nomDossier);
+		int idDossierParent = bd.getIdDossier(dossierParent, idCompte);
+		bd.createNewDossier(idCompte, idDossierParent, nomDossier);
 		tree.getModel().valueForPathChanged(newTp, ActionTree.AJOUTER);
 		// tree.setSelectionPath(newTp);
 		Main.setTreePath(newTp);
+		bd.closeConnexion();
 		return newTp;
 		// tree.setSelectionPath(newTp.getParentPath());
 	}
 
 	private boolean isDossierDejaExistant(String nomDossier, String pCompte) {
-		int idCpt = BDRequette.getIdComptes(pCompte);
-		return BDRequette.getListeDossier(idCpt).contains(nomDossier);
+		BDRequette bd = new BDRequette();
+		int idCpt = bd.getIdComptes(pCompte);
+		boolean retour = bd.getListeDossier(idCpt).contains(nomDossier);
+		bd.closeConnexion();
+		return retour;
 
 	}
 

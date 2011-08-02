@@ -8,7 +8,6 @@ import javax.swing.table.TableColumn;
 
 import mdl.MlListeMessage;
 import mdl.MlMessage;
-
 import tools.RecupDate;
 import bdd.BDRequette;
 import fenetre.principale.EnNomComposant;
@@ -126,7 +125,7 @@ public class MyTableModel extends AbstractTableModel {
 
 	public void valorisetable(MlListeMessage p_liste) {
 		data = new Object[p_liste.size()][columnNames.length];
-
+		BDRequette bd = new BDRequette();
 		for (int i = 0; i < p_liste.size(); i++) {// on parcour la liste des
 			// messages
 			MlMessage m = p_liste.get(i);
@@ -139,20 +138,20 @@ public class MyTableModel extends AbstractTableModel {
 			// sujet
 			data[i][3] = m.getSujet();
 
-			if (BDRequette.messageHavePieceJointe(m.getIdMessage())) {
+			if (bd.messageHavePieceJointe(m.getIdMessage())) {
 				data[i][4] = new ImageIcon(getClass().getResource(
 						"/piece_jointe16.png"));
 			} else {
 				data[i][4] = null;
 			}
-			if (BDRequette.isMessageLu(m.getIdMessage())) {
+			if (bd.isMessageLu(m.getIdMessage())) {
 				data[i][5] = Boolean.TRUE;
 			} else {
 				data[i][5] = Boolean.FALSE;
 			}
 
 		}
-
+		bd.closeConnexion();
 		fireTableDataChanged();
 
 	}

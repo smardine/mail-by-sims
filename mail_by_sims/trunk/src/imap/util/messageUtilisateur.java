@@ -15,7 +15,7 @@ public class messageUtilisateur {
 			JOptionPane.showMessageDialog(null, null, p_titre,
 					JOptionPane.ERROR_MESSAGE);
 		} else {
-			JOptionPane.showMessageDialog(null, p_exception.getClass()
+			JOptionPane.showMessageDialog(null, p_exception.getClass() + " "
 					+ p_exception.getMessage(), p_titre,
 					JOptionPane.ERROR_MESSAGE);
 		}

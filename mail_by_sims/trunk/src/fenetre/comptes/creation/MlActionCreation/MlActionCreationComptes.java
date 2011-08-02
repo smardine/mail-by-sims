@@ -73,11 +73,11 @@ public class MlActionCreationComptes implements ActionListener {
 			sb.append("'" + user.getText() + "',");
 			sb.append("'" + password.getText() + "',");
 			sb.append("'imap')");
-
-			boolean result = BDRequette.executeRequete(sb.toString());
+			BDRequette bd = new BDRequette();
+			boolean result = bd.executeRequete(sb.toString());
 			// creation des dossiers de base (boite de reception, message
 			// envoyé, corbeille, spam) avec un id Dossierparent=0
-			int idCpt = BDRequette.getIdComptes(nomCompte.getText());
+			int idCpt = bd.getIdComptes(nomCompte.getText());
 
 			List<String> lstDossierBase = new ArrayList<String>();
 
@@ -96,7 +96,7 @@ public class MlActionCreationComptes implements ActionListener {
 				sb.append("'" + idCpt + "',");
 				sb.append(0 + ",");
 				sb.append("'" + nomDossier + "')");
-				if (!BDRequette.executeRequete(sb.toString())) {
+				if (!bd.executeRequete(sb.toString())) {
 					messageUtilisateur
 							.affMessageErreur("Erreur a la creation du dossier "
 									+ nomDossier
@@ -115,6 +115,8 @@ public class MlActionCreationComptes implements ActionListener {
 				fenetre.dispose();
 				new GestionCompte();
 			}
+
+			bd.closeConnexion();
 
 		}
 		if (EnActionCreationComptes.ANNULER.getLib().equals(

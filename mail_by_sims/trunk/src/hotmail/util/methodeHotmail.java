@@ -90,8 +90,8 @@ public class methodeHotmail {
 			messageUtilisateur.affMessageException(e, "Erreur connexion");
 			return;
 		}
-
-		ArrayList<String> listeDossier = BDRequette.getListeDossier(pIdCompte);
+		BDRequette bd = new BDRequette();
+		ArrayList<String> listeDossier = bd.getListeDossier(pIdCompte);
 		for (String dossier : listeDossier) {
 			Folder fldr;
 			try {
@@ -121,8 +121,8 @@ public class methodeHotmail {
 					}
 
 				} else {
-					ArrayList<String> lstSousDossierInbox = BDRequette
-							.getListeSousDossier(BDRequette
+					ArrayList<String> lstSousDossierInbox = bd
+							.getListeSousDossier(bd
 									.getIdDossier(EnDossierBase.RECEPTION
 											.getLib(), pIdCompte));
 					if (lstSousDossierInbox.contains(dossier)) {
@@ -141,8 +141,8 @@ public class methodeHotmail {
 			}
 			afficheText(textArea, "Parcours des messages sur le serveur");
 			afficheText(textArea, "à la recherche des messages supprimés");
-			MlListeMessage listeMessage = BDRequette.getListeDeMessage(
-					pIdCompte, BDRequette.getIdDossier(dossier, pIdCompte));
+			MlListeMessage listeMessage = bd.getListeDeMessage(pIdCompte, bd
+					.getIdDossier(dossier, pIdCompte));
 			int nbActu = 0;
 			for (MlMessage m : listeMessage) {
 				nbActu++;
@@ -182,19 +182,21 @@ public class methodeHotmail {
 			store.close();
 		} catch (MessagingException e) {
 			messageUtilisateur.affMessageException(e, "Erreur connexion");
+		} finally {
+			bd.closeConnexion();
 		}
 
 	}
 
 	public static void releveHotmail(int p_idCompte, JProgressBar p_progress,
-			int p_idDossier, Message[] p_messages,
+			JProgressBar p_progressPJ, int p_idDossier, Message[] p_messages,
 			com.googlecode.jdeltasync.Folder p_Folder,
-			DeltaSyncClientHelper p_client, JTextArea textArea, JLabel p_label) {
+			DeltaSyncClientHelper p_client, JTextArea textArea) {
 
 		MlListeMessage lstMessage = new MlListeMessage();
 
-		releveDossier(p_idCompte, p_idDossier, p_progress, lstMessage,
-				p_messages, p_Folder, p_client, textArea, p_label);
+		releveDossier(p_idCompte, p_idDossier, p_progress, p_progressPJ,
+				lstMessage, p_messages, p_Folder, p_client, textArea);
 
 	}
 
@@ -210,21 +212,21 @@ public class methodeHotmail {
 	 * @throws IOException
 	 */
 	private static void releveDossier(int p_idCompte, int p_idDossier,
-			JProgressBar p_progress, MlListeMessage lstMessage,
-			Message[] p_tableauMessage,
+			JProgressBar p_progress, JProgressBar p_progressPJ,
+			MlListeMessage lstMessage, Message[] p_tableauMessage,
 			com.googlecode.jdeltasync.Folder p_folder,
-			DeltaSyncClientHelper p_client, JTextArea textArea, JLabel p_label) {
+			DeltaSyncClientHelper p_client, JTextArea textArea) {
 		afficheText(textArea, "Releve du dossier " + p_folder.getName());
 		int count = p_tableauMessage.length;
 
 		afficheText(textArea, "Nombre de messages: " + count);
 		// Message numbers start at 1
-		int nbActu = 0;
+		int nbActu = 1;
 		for (Message messageHotmail : p_tableauMessage) {
-			p_label.setText("Message traité n° " + nbActu++
-					+ " sur un total de " + count);
+			// p_label.setText("Message traité n° " + nbActu++
+			// + " sur un total de " + count);
 
-			int pourcent = (nbActu * 100) / count;
+			int pourcent = (nbActu++ * 100) / count;
 			p_progress.setValue(pourcent);
 			p_progress.setString("Releve de " + p_folder.getName() + " :"
 					+ pourcent + " %");
@@ -232,8 +234,8 @@ public class methodeHotmail {
 			// dans la base
 			// pour cela, comme on est en IMAp,
 			// on se base sur l'UID du message.
-
-			if (BDRequette.verifieAbscenceUID(messageHotmail.getId())) {
+			BDRequette bd = new BDRequette();
+			if (bd.verifieAbscenceUID(messageHotmail.getId())) {
 				MlMessage messPourBase = new MlMessage();
 				messPourBase.setUIDMessage(messageHotmail.getId());
 				messPourBase.setCheminPhysique(GestionRepertoire
@@ -241,7 +243,7 @@ public class methodeHotmail {
 						+ "/tempo/" + messageHotmail.getId() + ".eml");
 
 				messPourBase = recupContenuMail(p_client, messPourBase,
-						messageHotmail, textArea);
+						messageHotmail, textArea, p_progressPJ);
 				// messPourBase.setDateReception(messageHotmail.getDateReceived());
 				// ArrayList<String> listeDestinataires;
 				// if (null != m.getFrom()getAllRecipients()) {// si on
@@ -267,9 +269,10 @@ public class methodeHotmail {
 				// messPourBase.setSujet(messageHotmail.getSubject());
 				// lstMessage.add(messPourBase);
 				afficheText(textArea, "Enregistrement du message dans la base");
-				BDRequette.createNewMessage(messPourBase);
+				bd.createNewMessage(messPourBase);
 
 			}
+			bd.closeConnexion();
 
 		}
 
@@ -296,7 +299,8 @@ public class methodeHotmail {
 	}
 
 	public static MlMessage recupContenuMail(DeltaSyncClientHelper client,
-			MlMessage p_mlMessage, Message p_messageHotmail, JTextArea textArea)// ,
+			MlMessage p_mlMessage, Message p_messageHotmail,
+			JTextArea textArea, JProgressBar p_progressPJ)// ,
 	// long
 	// p_prefixeNomFichier)//
 	{
@@ -320,13 +324,13 @@ public class methodeHotmail {
 					"Erreur a la recuperation du mail");
 		}
 
-		p_mlMessage = getMessagePourBase(p_mlMessage, textArea);
+		p_mlMessage = getMessagePourBase(p_mlMessage, textArea, p_progressPJ);
 
 		return p_mlMessage;
 	}
 
 	public static MlMessage getMessagePourBase(MlMessage p_messagePourBase,
-			JTextArea p_textArea) {
+			JTextArea p_textArea, JProgressBar p_progressPJ) {
 
 		/** On simule la reception d'un message */
 		Properties props = System.getProperties();
@@ -370,7 +374,7 @@ public class methodeHotmail {
 			 */
 
 			p_messagePourBase.setContenu(thread_Import.recupContenuMail(
-					p_messagePourBase, mime, p_textArea));
+					p_messagePourBase, p_progressPJ, mime, p_textArea));
 		} catch (FileNotFoundException e) {
 			messageUtilisateur.affMessageException(e,
 					"Erreur a la récupération du message");

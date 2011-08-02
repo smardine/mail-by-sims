@@ -38,7 +38,9 @@ public class GestionCompte extends JFrame {
 		modelList = new DefaultListModel();
 		jList.setModel(modelList);
 		// on recupere la liste des comptes et on l'affiche
-		ArrayList<String> lst = BDRequette.getListeDeComptes();
+		BDRequette bd = new BDRequette();
+		ArrayList<String> lst = bd.getListeDeComptes();
+		bd.closeConnexion();
 		for (String s : lst) {
 			modelList.addElement(s);
 		}

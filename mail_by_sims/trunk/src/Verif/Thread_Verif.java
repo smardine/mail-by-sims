@@ -18,8 +18,10 @@ public class Thread_Verif extends Thread {
 
 	@Override
 	public void run() {
-		int nbRecord = BDRequette.getNbEnregistrementFromTable(EnTable.COMPTES,
+		BDRequette bd = new BDRequette();
+		int nbRecord = bd.getNbEnregistrementFromTable(EnTable.COMPTES,
 				EnStructureTable.COMPTES_NOM);
+		bd.closeConnexion();
 		if (nbRecord == 0) {
 			final int creerCompte = JOptionPane.showConfirmDialog(null,
 					"Aucun comptes n'est actuellement configuré\n\r"

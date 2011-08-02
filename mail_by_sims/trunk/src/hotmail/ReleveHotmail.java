@@ -7,7 +7,6 @@ import imap.util.methodeImap;
 
 import java.io.IOException;
 
-import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
@@ -29,11 +28,12 @@ public class ReleveHotmail {
 	private final JProgressBar progressBar;
 	private final boolean isSynchro;
 	private final JTextArea textArea;
-	private final JLabel label;
+	private final JProgressBar progressPJ;
 
 	public ReleveHotmail(int p_idCpt, String p_user, String p_password,
-			String p_host, JProgressBar progress, JTextArea p_textArea,
-			JLabel p_label, boolean p_isSynchro) {
+			String p_host, JProgressBar progress,
+			JProgressBar p_progressPieceJointe, JTextArea p_textArea,
+			boolean p_isSynchro) {
 
 		this.user = p_user;
 		this.password = p_password;
@@ -41,13 +41,15 @@ public class ReleveHotmail {
 		this.idCompte = p_idCpt;
 		this.progressBar = progress;
 		this.textArea = p_textArea;
-		this.label = p_label;
+		this.progressPJ = p_progressPieceJointe;
 		this.isSynchro = p_isSynchro;
-		this.main(idCompte, progressBar);
+
+		this.main(idCompte, progressBar, progressPJ);
 
 	}
 
-	private void main(int p_idCompte, JProgressBar p_progressBar) {
+	private void main(int p_idCompte, JProgressBar p_progressBar,
+			JProgressBar p_progressBarPJ) {
 
 		// props.setProperty("mail.store.protocol", "davmail");
 
@@ -74,10 +76,13 @@ public class ReleveHotmail {
 			Message[] messages = client.getMessages(inbox);
 			int id_Dossier;
 			if (inbox != null) {
-				id_Dossier = BDRequette.getIdDossier(EnDossierBase.RECEPTION
-						.getLib(), p_idCompte);
+				BDRequette bd = new BDRequette();
+				id_Dossier = bd.getIdDossier(EnDossierBase.RECEPTION.getLib(),
+						p_idCompte);
+				bd.closeConnexion();
 				methodeHotmail.releveHotmail(p_idCompte, progressBar,
-						id_Dossier, messages, inbox, client, textArea, label);
+						progressPJ, id_Dossier, messages, inbox, client,
+						textArea);
 			}
 
 		} catch (AuthenticationException e) {

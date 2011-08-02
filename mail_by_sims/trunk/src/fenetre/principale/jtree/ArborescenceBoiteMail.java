@@ -11,7 +11,6 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
-import bdd.BDAcces;
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.Main;
@@ -24,10 +23,11 @@ public class ArborescenceBoiteMail implements TreeModel {
 	private final ArrayList<String> lstCpt;
 
 	public ArborescenceBoiteMail() {
-		new BDAcces();
+		BDRequette bd = new BDRequette();
 		root = EnDossierBase.ROOT.getLib();
 		listeners = new Vector<TreeModelListener>();
-		lstCpt = BDRequette.getListeDeComptes();
+		lstCpt = bd.getListeDeComptes();
+		bd.closeConnexion();
 		UIManager.put("Tree.openIcon", new ImageIcon(
 				"Images/dossier-ouvert-16.png"));
 		UIManager.put("Tree.closedIcon", new ImageIcon(
@@ -42,20 +42,23 @@ public class ArborescenceBoiteMail implements TreeModel {
 	}
 
 	public Object getChild(Object parent, int index) {
+		BDRequette bd = new BDRequette();
 		if (root.equals(parent)) {
+			bd.closeConnexion();
 			return lstCpt.get(index);
 		}
 		for (String compte : lstCpt) {
 			if (compte.equals(parent)) {
-				ArrayList<String> list = BDRequette
-						.getListeSousDossierBase(BDRequette
-								.getIdComptes(compte));
+				ArrayList<String> list = bd.getListeSousDossierBase(bd
+						.getIdComptes(compte));
+				bd.closeConnexion();
 				return list.get(index);
 			}
 		}
-		int idCompte = BDRequette.getIdComptes(getCompte());
-		ArrayList<String> list = BDRequette.getListeSousDossier(BDRequette
-				.getIdDossier((String) parent, idCompte));
+		int idCompte = bd.getIdComptes(getCompte());
+		ArrayList<String> list = bd.getListeSousDossier(bd.getIdDossier(
+				(String) parent, idCompte));
+		bd.closeConnexion();
 		return list.get(index);
 
 	}
@@ -67,15 +70,18 @@ public class ArborescenceBoiteMail implements TreeModel {
 
 		for (String compte : lstCpt) {
 			if (compte.equals(parent)) {
-				return BDRequette.getnbSousDossierBase(BDRequette
-						.getIdComptes(compte));
+				BDRequette bd = new BDRequette();
+				int retour = bd.getnbSousDossierBase(bd.getIdComptes(compte));
+				bd.closeConnexion();
+				return retour;
 			}
 		}
-
-		int idCompte = BDRequette.getIdComptes(getCompte());
-
-		return BDRequette.getnbSousDossier(BDRequette.getIdDossier(
-				(String) parent, idCompte));
+		BDRequette bd = new BDRequette();
+		int idCompte = bd.getIdComptes(getCompte());
+		int retour = bd.getnbSousDossier(bd.getIdDossier((String) parent,
+				idCompte));
+		bd.closeConnexion();
+		return retour;
 
 	}
 
@@ -89,8 +95,10 @@ public class ArborescenceBoiteMail implements TreeModel {
 
 		for (String compte : lstCpt) {
 			if (compte.equals(parent)) {
-				int idDossier = BDRequette.getIdDossier((String) child,
-						BDRequette.getIdComptes(compte));
+				BDRequette bd = new BDRequette();
+				int idDossier = bd.getIdDossier((String) child, bd
+						.getIdComptes(compte));
+				bd.closeConnexion();
 				if ("".equals(idDossier)) {
 					return -1;
 				}

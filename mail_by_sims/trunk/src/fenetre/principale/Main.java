@@ -21,9 +21,11 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -33,7 +35,6 @@ import javax.swing.tree.TreePath;
 
 import mdl.MlListeMessage;
 import Verif.Thread_Verif;
-import bdd.BDAcces;
 import fenetre.EnTitreFenetre;
 import fenetre.principale.MlAction.EnActionMain;
 import fenetre.principale.MlAction.MlActionMain;
@@ -85,6 +86,10 @@ public class Main extends JFrame {
 	private JScrollPane jScrollPane2 = null;
 	private JTabbedPane jTabbedPane = null;
 	private JPanel jPanel = null;
+	private JProgressBar jProgressBarReleve = null;
+	private JProgressBar jProgressBarPieceJointe = null;
+	private JTextArea jTextArea = null;
+	private JScrollPane jScrollPane3 = null;
 
 	/**
 	 * This method initializes jDesktopPaneHaut
@@ -104,6 +109,9 @@ public class Main extends JFrame {
 					EnNomComposant.PANEL_BOUTON.getHauteurInitiale()));
 			jDesktopPaneHaut.setName(EnNomComposant.PANEL_BOUTON.getLib());
 			jDesktopPaneHaut.add(getJTabbedPane(), BorderLayout.CENTER);
+			jDesktopPaneHaut.add(getJProgressBar(), null);
+			jDesktopPaneHaut.add(getJProgressBarPieceJointe(), null);
+			jDesktopPaneHaut.add(getJScrollPane3(), null);
 		}
 		return jDesktopPaneHaut;
 	}
@@ -230,7 +238,7 @@ public class Main extends JFrame {
 	 */
 	private JTree getJTree() {
 		if (jTree == null) {
-			new BDAcces();
+			// new BDAcces();
 			ArborescenceBoiteMail arbo = new ArborescenceBoiteMail();
 			jTree = new JTree(arbo);
 			jTree.setShowsRootHandles(true);
@@ -435,6 +443,68 @@ public class Main extends JFrame {
 	}
 
 	/**
+	 * This method initializes jProgressBarReleve
+	 * @return javax.swing.JProgressBar
+	 */
+	private JProgressBar getJProgressBar() {
+		if (jProgressBarReleve == null) {
+			jProgressBarReleve = new JProgressBar();
+			jProgressBarReleve.setBounds(new Rectangle(255, 8, 238, 23));
+			jProgressBarReleve.setStringPainted(true);
+			jProgressBarReleve.setBackground(new Color(238, 238, 238));
+			jProgressBarReleve.setForeground(Color.blue);
+			jProgressBarReleve.setVisible(false);
+		}
+		return jProgressBarReleve;
+	}
+
+	/**
+	 * This method initializes jProgressBarPieceJointe
+	 * @return javax.swing.JProgressBar
+	 */
+	private JProgressBar getJProgressBarPieceJointe() {
+		if (jProgressBarPieceJointe == null) {
+			jProgressBarPieceJointe = new JProgressBar();
+			jProgressBarPieceJointe.setBounds(new Rectangle(255, 41, 239, 24));
+			jProgressBarPieceJointe.setStringPainted(true);
+
+			jProgressBarPieceJointe.setVisible(false);
+			jProgressBarPieceJointe.setBackground(new Color(238, 238, 238));
+			jProgressBarPieceJointe.setForeground(Color.blue);
+		}
+		return jProgressBarPieceJointe;
+	}
+
+	/**
+	 * This method initializes jTextArea
+	 * @return javax.swing.JTextArea
+	 */
+	private JTextArea getJTextArea() {
+		if (jTextArea == null) {
+			jTextArea = new JTextArea();
+			jTextArea.setWrapStyleWord(true);
+			jTextArea.setLineWrap(true);
+			jTextArea.setVisible(false);
+
+		}
+		return jTextArea;
+	}
+
+	/**
+	 * This method initializes jScrollPane3
+	 * @return javax.swing.JScrollPane
+	 */
+	private JScrollPane getJScrollPane3() {
+		if (jScrollPane3 == null) {
+			jScrollPane3 = new JScrollPane();
+			jScrollPane3.setBounds(new Rectangle(496, 2, 283, 70));
+			jScrollPane3.setVisible(false);
+			jScrollPane3.setViewportView(getJTextArea());
+		}
+		return jScrollPane3;
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -453,7 +523,7 @@ public class Main extends JFrame {
 	 */
 	public Main() {
 		super();
-		new BDAcces();
+		// new BDAcces();
 		initialize();
 		this.addComponentListener(new MlComposantListener(jContentPane));
 		Thread_Verif verif = new Thread_Verif(jTree);
@@ -471,11 +541,20 @@ public class Main extends JFrame {
 		jTree.addMouseListener(new MlActionJtree(jTree, jTable));
 		jTree.addTreeSelectionListener(new MlActionJtree(jTree, jTable));
 		jTree.addTreeExpansionListener(new MlActionJtree(jTree, jTable));
-		jMenuItemImporter.addActionListener(new MlActionMain(jTree));
-		jMenuItemReleve.addActionListener(new MlActionMain(jTree));
-		btEnvoyerRecevoir.addActionListener(new MlActionMain(jTree));
-		btRecevoir.addActionListener(new MlActionMain(jTree));
-		btEnvoyer.addActionListener(new MlActionMain(jTree));
+		jMenuItemImporter.addActionListener(new MlActionMain(jTree,
+				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
+				jScrollPane3));
+		jMenuItemReleve.addActionListener(new MlActionMain(jTree,
+				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
+				jScrollPane3));
+		btEnvoyerRecevoir.addActionListener(new MlActionMain(jTree,
+				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
+				jScrollPane3));
+		btRecevoir.addActionListener(new MlActionMain(jTree,
+				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
+				jScrollPane3));
+		btEnvoyer.addActionListener(new MlActionMain(jTree, jProgressBarReleve,
+				jProgressBarPieceJointe, jTextArea, jScrollPane3));
 		btSupprMessage
 				.addActionListener(new MlActionPopupJTable(jTable, jList));
 	}

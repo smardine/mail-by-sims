@@ -1,5 +1,9 @@
 package fenetre;
 
+import fenetre.principale.EnNomComposant;
+import fenetre.principale.MlActionHtmlPane;
+import imap.util.messageUtilisateur;
+
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -20,8 +24,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.text.Document;
 
 import bdd.BDRequette;
-import fenetre.principale.EnNomComposant;
-import fenetre.principale.MlActionHtmlPane;
 
 public class LectureMessagePleinEcran extends JFrame {
 
@@ -46,11 +48,14 @@ public class LectureMessagePleinEcran extends JFrame {
 		modelList = new DefaultListModel();
 		jList.setModel(modelList);
 		afficheContenuMail(p_idMessage, jList);
-		this.setTitle(BDRequette.getSujetFromId(p_idMessage));
+		BDRequette bd = new BDRequette();
+		this.setTitle(bd.getSujetFromId(p_idMessage));
+		bd.closeConnexion();
 	}
 
 	private void afficheContenuMail(int p_idMessage, JList p_jList) {
-		File contenu = BDRequette.getContenuFromId(p_idMessage, true);
+		BDRequette bd = new BDRequette();
+		File contenu = bd.getContenuFromId(p_idMessage, true);
 
 		// on RAZ le contenu du panelEditor
 		Document doc = htmlPane.getDocument();
@@ -58,12 +63,13 @@ public class LectureMessagePleinEcran extends JFrame {
 		try {
 			htmlPane.setPage("file:///" + contenu.getAbsolutePath());
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			messageUtilisateur.affMessageException(e,
+					"impossible d'afficher le mail");
 		}
 
 		// affichage des piece jointe dans la liste (si il y en a)
-		ArrayList<String> lstPj = BDRequette.getListNomPieceJointe(p_idMessage);
+		ArrayList<String> lstPj = bd.getListNomPieceJointe(p_idMessage);
+		bd.closeConnexion();
 		DefaultListModel model = (DefaultListModel) jList.getModel();
 		int nbLigne = model.getSize();
 		if (nbLigne > 0) {// si la liste est deja repli, on la vide

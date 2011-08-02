@@ -68,9 +68,11 @@ public class MlActionPopupJTable implements ActionListener {
 				// message
 
 				if (reponse == REPONSE.OUI) {
-					MlMessage m = BDRequette.getMessageById(idMessage);
+					BDRequette bd = new BDRequette();
+					MlMessage m = bd.getMessageById(idMessage);
 					lst.add(m);
-					BDRequette.deleteMessageRecu(idMessage);
+					bd.deleteMessageRecu(idMessage);
+					bd.closeConnexion();
 
 				}
 
@@ -79,16 +81,16 @@ public class MlActionPopupJTable implements ActionListener {
 
 			TreePath treePath = Main.getTreePath();
 			String dossierChoisi = (String) treePath.getLastPathComponent();
-
-			if (!BDRequette.getListeDeComptes().contains(dossierChoisi)) {
-				int idCompte = BDRequette.getIdComptes(Main.getNomCompte());
-				int idDossierChoisi = BDRequette.getIdDossier(dossierChoisi,
-						idCompte);
-				MlListeMessage listeMessage = BDRequette.getListeDeMessage(
-						idCompte, idDossierChoisi);
+			BDRequette bd = new BDRequette();
+			if (!bd.getListeDeComptes().contains(dossierChoisi)) {
+				int idCompte = bd.getIdComptes(Main.getNomCompte());
+				int idDossierChoisi = bd.getIdDossier(dossierChoisi, idCompte);
+				MlListeMessage listeMessage = bd.getListeDeMessage(idCompte,
+						idDossierChoisi);
 
 				MyTableModel modelDetable = (MyTableModel) table.getModel();
 				modelDetable.valorisetable(listeMessage);
+				bd.closeConnexion();
 
 			}
 			table.setRowSelectionInterval(0, 0);

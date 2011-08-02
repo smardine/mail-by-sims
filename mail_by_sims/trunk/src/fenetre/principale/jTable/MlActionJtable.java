@@ -68,7 +68,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 	public void mouseClicked(MouseEvent e) {
 		if (e.getClickCount() == 2) {// double click sur la ligne
 			// on recupere la ligne selectionnée
-			Point p = e.getPoint();
+			// Point p = e.getPoint();
 			// get the row index that contains that coordinate
 			// int rowNumber = table.rowAtPoint(p);
 			int selectedLine = table.getSelectedRow();
@@ -126,8 +126,10 @@ public class MlActionJtable implements MouseListener, ActionListener {
 				// lecture uniquement
 				// si une seule ligne est selectionnée
 				afficheContenuMail(table, jList);
-				boolean succes = BDRequette.setStatusLecture((Integer) table
+				BDRequette bd = new BDRequette();
+				boolean succes = bd.setStatusLecture((Integer) table
 						.getValueAt(rowNumber, 0));
+				bd.closeConnexion();
 				if (succes) {
 					table.getModel().setValueAt(true, rowNumber,
 							table.getModel().getColumnCount() - 1);
@@ -144,8 +146,8 @@ public class MlActionJtable implements MouseListener, ActionListener {
 		Integer idMessage = (Integer) table.getModel().getValueAt(selectedLine,
 				0);
 		// le n° du message (meme si il est caché).
-
-		File contenu = BDRequette.getContenuFromId(idMessage, false);
+		BDRequette bd = new BDRequette();
+		File contenu = bd.getContenuFromId(idMessage, false);
 
 		// on RAZ le contenu du panelEditor
 		Document doc = editor.getDocument();
@@ -158,7 +160,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 		}
 
 		// affichage des piece jointe dans la liste (si il y en a)
-		ArrayList<String> lstPj = BDRequette.getListNomPieceJointe(idMessage);
+		ArrayList<String> lstPj = bd.getListNomPieceJointe(idMessage);
 		DefaultListModel model = (DefaultListModel) jList.getModel();
 		int nbLigne = model.getSize();
 		if (nbLigne > 0) {// si la liste est deja repli, on la vide
@@ -170,6 +172,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			}
 
 		}
+		bd.closeConnexion();
 	}
 
 	@Override
@@ -179,9 +182,10 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			// lecture uniquement
 			// si une seule ligne est selectionnée
 			afficheContenuMail(table, jList);
-
-			boolean succes = BDRequette.setStatusLecture((Integer) table
-					.getValueAt(table.getSelectedRow(), 0));
+			BDRequette bd = new BDRequette();
+			boolean succes = bd.setStatusLecture((Integer) table.getValueAt(
+					table.getSelectedRow(), 0));
+			bd.closeConnexion();
 			if (succes) {
 				table.getModel().setValueAt(true, table.getSelectedRow(),
 						table.getModel().getColumnCount() - 1);

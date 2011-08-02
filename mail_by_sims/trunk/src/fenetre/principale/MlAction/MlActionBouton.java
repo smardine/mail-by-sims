@@ -12,7 +12,6 @@ import javax.swing.tree.TreePath;
 import mdl.MlListeMessage;
 import bdd.BDRequette;
 import fenetre.principale.Main;
-import fenetre.principale.MlAction.EnActionMain;
 import fenetre.principale.jTable.MyTableModel;
 
 public class MlActionBouton implements ActionListener {
@@ -35,21 +34,23 @@ public class MlActionBouton implements ActionListener {
 					"Suppression de message",
 					"Voulez vous vraiment supprimer ce message?");
 			if (reponse == REPONSE.OUI) {
-				BDRequette.deleteMessageRecu(idMessage);
+				BDRequette bd = new BDRequette();
+				bd.deleteMessageRecu(idMessage);
 				TreePath treePath = Main.getTreePath();
 				String dossierChoisi = (String) treePath.getLastPathComponent();
 
-				if (!BDRequette.getListeDeComptes().contains(dossierChoisi)) {
-					int idCompte = BDRequette.getIdComptes(Main.getNomCompte());
-					int idDossierChoisi = BDRequette.getIdDossier(
-							dossierChoisi, idCompte);
-					MlListeMessage listeMessage = BDRequette.getListeDeMessage(
+				if (!bd.getListeDeComptes().contains(dossierChoisi)) {
+					int idCompte = bd.getIdComptes(Main.getNomCompte());
+					int idDossierChoisi = bd.getIdDossier(dossierChoisi,
+							idCompte);
+					MlListeMessage listeMessage = bd.getListeDeMessage(
 							idCompte, idDossierChoisi);
 
 					MyTableModel modelDetable = (MyTableModel) table.getModel();
 					modelDetable.valorisetable(listeMessage);
 
 				}
+				bd.closeConnexion();
 
 			}
 

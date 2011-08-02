@@ -5,7 +5,10 @@ import imap.util.messageUtilisateur;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
@@ -20,10 +23,10 @@ import tools.Historique;
  */
 public class BDAcces {
 	private final BDParam parametres;
-	static boolean etatConnexion;
-	static Connection connexion;
-	static FBManager firebirdManager;
-	static final String VERSION_BASE = "3";
+	private boolean etatConnexion;
+	private Connection connexion;
+	private FBManager firebirdManager;
+	final String VERSION_BASE = "3";
 
 	/**
 	 * constructeur
@@ -90,8 +93,8 @@ public class BDAcces {
 			try {
 				verifVersionBDD(exist);
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				messageUtilisateur.affMessageException(e,
+						"Erreur a la vérification de la BDD");
 			}
 
 		}
@@ -115,7 +118,8 @@ public class BDAcces {
 			LanceMiseAJour(se, version2);
 
 		} else {
-			String versionActuelle = BDRequette.getVersionBase();
+
+			String versionActuelle = getVersionActuelle();
 			if (!VERSION_BASE.equals(versionActuelle)) {
 				ScriptExecutor se = new ScriptExecutor();
 				BDScripts scripts = new BDScripts();
@@ -172,6 +176,68 @@ public class BDAcces {
 
 	public boolean getEtatConnexion() {
 		return etatConnexion;
+	}
+
+	/**
+	 * @return the parametres
+	 */
+	public BDParam getParametres() {
+		return this.parametres;
+	}
+
+	/**
+	 * @return the connexion
+	 */
+	public Connection getConnexion() {
+		return this.connexion;
+	}
+
+	/**
+	 * @return the firebirdManager
+	 */
+	public FBManager getFirebirdManager() {
+		return this.firebirdManager;
+	}
+
+	/**
+	 * @return the vERSION_BASE
+	 */
+	public String getVERSION_BASE() {
+		return this.VERSION_BASE;
+	}
+
+	public String getVersionActuelle() {
+		String script = "SELECT a.VERSION_BASE FROM PARAM a";
+
+		String chaine_champ = "";
+		try {
+			Statement state = connexion.createStatement();
+			final ResultSet jeuEnregistrements = state.executeQuery(script);
+			final ResultSetMetaData infojeuEnregistrements = jeuEnregistrements
+					.getMetaData();
+
+			while (jeuEnregistrements.next()) {
+				for (int i = 1; i <= infojeuEnregistrements.getColumnCount(); i++) {
+					chaine_champ = jeuEnregistrements.getString(i);
+				}
+			}
+
+			jeuEnregistrements.close();
+			state.close();
+		} catch (SQLException e) {
+			Historique.ecrire("Erreur SQL :" + e);
+			messageUtilisateur.affMessageException(e, "Erreur SQL");
+		} finally {
+			try {
+				connexion.rollback();
+
+			} catch (SQLException e) {
+				messageUtilisateur.affMessageException(e,
+						"Impossible de fermer la transaction");
+			}
+
+		}
+		return chaine_champ;
 	}
 
 }

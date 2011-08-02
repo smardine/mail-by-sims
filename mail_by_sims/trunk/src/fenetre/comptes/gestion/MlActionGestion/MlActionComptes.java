@@ -35,14 +35,14 @@ public class MlActionComptes implements ActionListener {
 			if (reponse == REPONSE.OUI) {
 				String nomCompte = (String) GestionCompte.jList
 						.getSelectedValue();
-				;
-				boolean result = BDRequette.deleteCompte(BDRequette
-						.getIdComptes(nomCompte));
+
+				BDRequette bd = new BDRequette();
+				boolean result = bd.deleteCompte(bd.getIdComptes(nomCompte));
 				if (result) {
 					messageUtilisateur
 							.affMessageInfo("Suppression du compte réussie");
 					// on recupere la liste des comptes et on l'affiche
-					ArrayList<String> lst = BDRequette.getListeDeComptes();
+					ArrayList<String> lst = bd.getListeDeComptes();
 					DefaultListModel model = (DefaultListModel) GestionCompte.jList
 							.getModel();
 					model.clear();
@@ -53,6 +53,7 @@ public class MlActionComptes implements ActionListener {
 					messageUtilisateur
 							.affMessageErreur("Erreur lors de la suppression du compte");
 				}
+				bd.closeConnexion();
 
 			}
 		}

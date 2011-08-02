@@ -74,6 +74,9 @@ public class RecupDate {
 	 *         10:47:29.318'
 	 */
 	public static String getTimeStamp(Date p_date) {
+		if (p_date == null) {
+			p_date = new Date();
+		}
 		return formatTimeStamp.format(p_date);
 	}
 

@@ -4,6 +4,8 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import tools.Historique;
+
 public class messageUtilisateur {
 
 	private messageUtilisateur() {
@@ -14,10 +16,15 @@ public class messageUtilisateur {
 		if (p_exception == null) {
 			JOptionPane.showMessageDialog(null, null, p_titre,
 					JOptionPane.ERROR_MESSAGE);
+			Historique.ecrire("Exception relevée: \n" + p_titre);
 		} else {
 			JOptionPane.showMessageDialog(null, p_exception.getClass() + " "
 					+ p_exception.getMessage(), p_titre,
 					JOptionPane.ERROR_MESSAGE);
+			Historique.ecrire("Titre: " + p_titre);
+			Historique.ecrire("Exception dans la class "
+					+ p_exception.getClass());
+			Historique.ecrire("Cause de l'erreur: " + p_exception.getMessage());
 		}
 
 	}

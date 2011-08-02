@@ -11,6 +11,7 @@ import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import mdl.MlListeMessage;
+import Pop3.ClientMail;
 import bdd.BDRequette;
 
 public class thread_SynchroImap extends Thread {
@@ -48,9 +49,9 @@ public class thread_SynchroImap extends Thread {
 			// String user = BDRequette.getUserFromIdCompte(idCpt);
 			// String pass = BDRequette.getPasswordFromIdCompte(idCpt);
 			// String serveur = BDRequette.getHostFromIdCompte(idCpt);
-			if (!cpt.isImap()) {
-				System.out.println("not yet implemented");
-				// new ClientMail(user, pass, serveur);
+			if (!cpt.isImap()) {// si !imap , forcement pop3
+				methodeImap.afficheText(textArea, "Releve du compte " + s);
+				new ClientMail(cpt, progress, progressPieceJointe, textArea);
 			}
 			if (cpt.isImap()) {
 				if (cpt.getServeurReception().contains("gmail")) {

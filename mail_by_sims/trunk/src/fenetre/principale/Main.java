@@ -294,6 +294,7 @@ public class Main extends JFrame {
 			jTable.setShowHorizontalLines(false);
 
 			jTable.setShowVerticalLines(false);
+			jTable.setAutoCreateRowSorter(true);
 		}
 		return jTable;
 	}

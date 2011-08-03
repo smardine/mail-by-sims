@@ -8,9 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JTextField;
+import javax.swing.JTree;
 
+import mdl.MlCompteMail;
 import bdd.BDRequette;
-import bdd.EnTable;
 import fenetre.comptes.EnDossierBase;
 import fenetre.comptes.creation.CreationComptes;
 import fenetre.comptes.gestion.GestionCompte;
@@ -23,6 +24,7 @@ public class MlActionCreationComptes implements ActionListener {
 	private JTextField password;
 	private JTextField nomCompte;
 	private final CreationComptes fenetre;
+	private JTree tree;
 
 	/**
 	 * Constructeur par defaut
@@ -42,7 +44,8 @@ public class MlActionCreationComptes implements ActionListener {
 	 */
 	public MlActionCreationComptes(CreationComptes p_fenetre,
 			JTextField p_nomCompte, JTextField p_adresse, JTextField p_pop,
-			JTextField p_smtp, JTextField p_user, JTextField p_password) {
+			JTextField p_smtp, JTextField p_user, JTextField p_password,
+			JTree p_treeCompte) {
 		this.fenetre = p_fenetre;
 		this.nomCompte = p_nomCompte;
 		this.adresse = p_adresse;
@@ -50,6 +53,7 @@ public class MlActionCreationComptes implements ActionListener {
 		this.smtp = p_smtp;
 		this.user = p_user;
 		this.password = p_password;
+		this.tree = p_treeCompte;
 	}
 
 	@Override
@@ -60,50 +64,33 @@ public class MlActionCreationComptes implements ActionListener {
 			if (!verifChamp()) {
 				return;
 			}
-			// enregistrement du compte dans la base
-			StringBuilder sb = new StringBuilder();
-			sb
-					.append("Insert into "
-							+ EnTable.COMPTES.getNomTable()
-							+ " (NOM_COMPTE, SERVEUR_POP, PORT_POP, SERVEUR_SMTP, PORT_SMTP, USERNAME, PWD,TYPE_COMPTE)");
-			sb.append(" Values ");
-			sb.append("( '" + nomCompte.getText() + "',");
-			sb.append("'" + pop.getText() + "',110,");
-			sb.append("'" + smtp.getText() + "',25,");
-			sb.append("'" + user.getText() + "',");
-			sb.append("'" + password.getText() + "',");
-			sb.append("'imap')");
+
+			MlCompteMail compteMail = new MlCompteMail();
+			compteMail.setNomCompte(nomCompte.getText());
+			compteMail.setServeurReception(pop.getText());
+			compteMail.setPortPop(110);
+			compteMail.setServeurSMTP(smtp.getText());
+			compteMail.setPortSMTP(25);
+			compteMail.setUserName(user.getText());
+			compteMail.setPassword(password.getText());
+			compteMail.setImap(true);
 			BDRequette bd = new BDRequette();
-			boolean result = bd.executeRequete(sb.toString());
-			// creation des dossiers de base (boite de reception, message
-			// envoyé, corbeille, spam) avec un id Dossierparent=0
-			int idCpt = bd.getIdComptes(nomCompte.getText());
-
-			List<String> lstDossierBase = new ArrayList<String>();
-
-			EnDossierBase[] lstEnum = EnDossierBase.values();
-			for (EnDossierBase dossier : lstEnum) {
-				if (dossier != EnDossierBase.ROOT) {
-					lstDossierBase.add(dossier.getLib());
+			boolean result = bd.createNewCompte(compteMail);
+			if (result) {
+				int idCpt = bd.getIdComptes(nomCompte.getText());
+				compteMail.setIdCompte(idCpt);
+				// creation des dossiers de base (boite de reception, message
+				// envoyé, corbeille, spam) avec un id Dossierparent=0
+				List<String> lstDossierBase = new ArrayList<String>();
+				EnDossierBase[] lstEnum = EnDossierBase.values();
+				for (EnDossierBase dossier : lstEnum) {
+					if (dossier != EnDossierBase.ROOT) {
+						lstDossierBase.add(dossier.getLib());
+					}
 				}
 
-			}
-
-			for (String nomDossier : lstDossierBase) {
-				sb = new StringBuilder();
-				sb
-						.append("INSERT INTO DOSSIER (ID_COMPTE, ID_DOSSIER_PARENT, NOM_DOSSIER) VALUES (");
-				sb.append("'" + idCpt + "',");
-				sb.append(0 + ",");
-				sb.append("'" + nomDossier + "')");
-				if (!bd.executeRequete(sb.toString())) {
-					messageUtilisateur
-							.affMessageErreur("Erreur a la creation du dossier "
-									+ nomDossier
-									+ " pour le compte "
-									+ nomCompte.getText());
-				}
-
+				result = bd
+						.createListeDossierDeBase(compteMail, lstDossierBase);
 			}
 
 			if (!result) {
@@ -113,7 +100,10 @@ public class MlActionCreationComptes implements ActionListener {
 				messageUtilisateur
 						.affMessageInfo("Le compte à été créer correctement");
 				fenetre.dispose();
-				new GestionCompte();
+				// MlActionJtree actionTree = new MlActionJtree(tree, null);
+				// actionTree.valueChanged(null);
+
+				new GestionCompte(tree);
 			}
 
 			bd.closeConnexion();
@@ -135,7 +125,7 @@ public class MlActionCreationComptes implements ActionListener {
 				user.getText() == null || user.getText().equals("") || //
 				password.getText() == null || password.getText().equals("")) {
 			messageUtilisateur
-					.affMessageErreur("Veuillez verifier votre saisie");
+					.affMessageErreur("Veuillez vérifier votre saisie");
 			return false;
 		}
 		return true;

@@ -28,7 +28,7 @@ public class Thread_Verif extends Thread {
 							+ "Voulez-vous en ajouter un maintenant?",
 					"Information", JOptionPane.YES_NO_OPTION);
 			if (creerCompte == 0) {// on accepte
-				new GestionCompte();
+				new GestionCompte(jTree);
 			}// sinon, on ne fait rien
 		}
 

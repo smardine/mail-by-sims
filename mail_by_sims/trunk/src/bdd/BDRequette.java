@@ -17,7 +17,9 @@ import java.sql.Statement;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
+import java.util.List;
 
+import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.GestionRepertoire;
@@ -66,10 +68,16 @@ public class BDRequette {
 				if (resultatRequete) {
 					laConnexion.commit();
 				} else {
-					laConnexion.rollback();
+					if (state.getUpdateCount() > 0) {
+						laConnexion.commit();
+					} else {
+						laConnexion.rollback();
+					}
+
 				}
+
 				state.close();
-				;
+
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(e,
 						"erreur a l'execution d'une requete");
@@ -965,6 +973,46 @@ public class BDRequette {
 					"Impossible de fermer la base");
 		}
 
+	}
+
+	public boolean createNewCompte(MlCompteMail p_compte) {
+		StringBuilder sb = new StringBuilder();
+		sb
+				.append("Insert into "
+						+ EnTable.COMPTES.getNomTable()
+						+ " (NOM_COMPTE, SERVEUR_POP, PORT_POP, SERVEUR_SMTP, PORT_SMTP, USERNAME, PWD,TYPE_COMPTE)");
+		sb.append(" Values ");
+		sb.append("( '" + p_compte.getNomCompte() + "',");
+		sb.append("'" + p_compte.getServeurReception() + "',");
+		sb.append("'" + p_compte.getPortPop() + "',");
+		sb.append("'" + p_compte.getServeurSMTP() + "',");
+		sb.append("'" + p_compte.getPortSMTP() + "',");
+		sb.append("'" + p_compte.getUserName() + "',");
+		sb.append("'" + p_compte.getPassword() + "',");
+		sb.append("'imap')");
+
+		return executeRequete(sb.toString());
+	}
+
+	public boolean createListeDossierDeBase(MlCompteMail p_compte,
+			List<String> p_lstDossierBase) {
+		for (String nomDossier : p_lstDossierBase) {
+			StringBuilder sb = new StringBuilder();
+			sb
+					.append("INSERT INTO DOSSIER (ID_COMPTE, ID_DOSSIER_PARENT, NOM_DOSSIER) VALUES (");
+			sb.append("'" + p_compte.getIdCompte() + "',");
+			sb.append(0 + ",");
+			sb.append("'" + nomDossier + "')");
+			if (!executeRequete(sb.toString())) {
+				messageUtilisateur
+						.affMessageErreur("Erreur a la creation du dossier "
+								+ nomDossier + " pour le compte "
+								+ p_compte.getNomCompte());
+				return false;
+			}
+
+		}
+		return true;
 	}
 
 }

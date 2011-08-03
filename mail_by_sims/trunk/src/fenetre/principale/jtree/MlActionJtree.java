@@ -80,7 +80,13 @@ public class MlActionJtree implements TreeSelectionListener,
 
 	@Override
 	public void valueChanged(TreeSelectionEvent p_event) {
-		TreePath newPath = p_event.getNewLeadSelectionPath();
+		TreePath newPath = null;
+		if (null != p_event) {
+			newPath = p_event.getNewLeadSelectionPath();
+		}
+		if (null == p_event) {
+			newPath = Main.getTreePath();
+		}
 		if (null != newPath) {
 			valoriseTreeEtNomCompte(newPath);
 		} else {

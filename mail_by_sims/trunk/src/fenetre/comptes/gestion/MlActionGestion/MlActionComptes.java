@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+import javax.swing.JTree;
 
 import bdd.BDRequette;
 import fenetre.comptes.creation.CreationComptes;
@@ -15,16 +16,18 @@ import fenetre.comptes.gestion.GestionCompte;
 
 public class MlActionComptes implements ActionListener {
 	private final GestionCompte fenetre;
+	private final JTree tree;
 
-	public MlActionComptes(GestionCompte p_fenetre) {
+	public MlActionComptes(GestionCompte p_fenetre, JTree p_treeCompte) {
 		this.fenetre = p_fenetre;
+		this.tree = p_treeCompte;
 	}
 
 	@Override
 	public void actionPerformed(ActionEvent p_arg0) {
 		if (EnActionComptes.CREER.getLib().equals(p_arg0.getActionCommand())) {
 			fenetre.dispose();
-			new CreationComptes();
+			new CreationComptes(tree);
 		}
 		if (EnActionComptes.SUPPRIMER.getLib()
 				.equals(p_arg0.getActionCommand())) {

@@ -4,14 +4,14 @@ import java.awt.Rectangle;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+import javax.swing.JTree;
 
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.creation.MlActionCreation.EnActionCreationComptes;
 import fenetre.comptes.creation.MlActionCreation.MlActionCreationComptes;
-
-import javax.swing.JLabel;
 
 public class CreationComptes extends JFrame {
 
@@ -31,16 +31,18 @@ public class CreationComptes extends JFrame {
 	private JLabel jLabel3 = null;
 	private JLabel jLabel4 = null;
 	private JLabel jLabel5 = null;
+	private final JTree tree;
 
 	/**
 	 * This is the default constructor
 	 */
-	public CreationComptes() {
+	public CreationComptes(JTree p_treeCompte) {
 		super();
+		this.tree = p_treeCompte;
 		initialize();
-		btValider
-				.addActionListener(new MlActionCreationComptes(this, nomCompte,
-						adresseMail, serveurPOP, serveurSMTP, user, password));
+		btValider.addActionListener(new MlActionCreationComptes(this,
+				nomCompte, adresseMail, serveurPOP, serveurSMTP, user,
+				password, tree));
 	}
 
 	/**
@@ -108,6 +110,7 @@ public class CreationComptes extends JFrame {
 		if (adresseMail == null) {
 			adresseMail = new JTextField();
 			adresseMail.setBounds(new Rectangle(269, 48, 202, 26));
+			adresseMail.setText("equinox.simon@laposte.net");
 			adresseMail.setToolTipText("adresse mail complete");
 		}
 		return adresseMail;
@@ -121,6 +124,7 @@ public class CreationComptes extends JFrame {
 		if (serveurPOP == null) {
 			serveurPOP = new JTextField();
 			serveurPOP.setBounds(new Rectangle(37, 122, 202, 26));
+			serveurPOP.setText("pop.laposte.net");
 			serveurPOP.setToolTipText("serveur POP");
 		}
 		return serveurPOP;
@@ -134,6 +138,7 @@ public class CreationComptes extends JFrame {
 		if (serveurSMTP == null) {
 			serveurSMTP = new JTextField();
 			serveurSMTP.setBounds(new Rectangle(269, 122, 202, 26));
+			serveurSMTP.setText("smtp.laposte.net");
 			serveurSMTP.setToolTipText("serveur SMTP");
 		}
 		return serveurSMTP;
@@ -147,6 +152,7 @@ public class CreationComptes extends JFrame {
 		if (user == null) {
 			user = new JTextField();
 			user.setBounds(new Rectangle(37, 196, 202, 26));
+			user.setText("equinox.simon");
 			user.setToolTipText("nom d'utilisateur");
 		}
 		return user;
@@ -160,6 +166,7 @@ public class CreationComptes extends JFrame {
 		if (password == null) {
 			password = new JTextField();
 			password.setBounds(new Rectangle(269, 196, 202, 26));
+			password.setText("gouranga");
 			password.setToolTipText("mot de passe");
 		}
 		return password;
@@ -205,6 +212,7 @@ public class CreationComptes extends JFrame {
 		if (nomCompte == null) {
 			nomCompte = new JTextField();
 			nomCompte.setBounds(new Rectangle(37, 48, 202, 26));
+			nomCompte.setText("la poste");
 		}
 		return nomCompte;
 	}

@@ -26,8 +26,9 @@ public class MlActionMain implements ActionListener {
 	private JTextArea text;
 	private JScrollPane scrollPane;
 
-	public MlActionMain(Window p_fenetre) {
+	public MlActionMain(Window p_fenetre, JTree p_treeCompte) {
 		this.fenetre = p_fenetre;
+		this.tree = p_treeCompte;
 	}
 
 	public MlActionMain() {
@@ -51,7 +52,7 @@ public class MlActionMain implements ActionListener {
 			System.exit(0);
 		}
 		if (e.getActionCommand().equals(EnActionMain.GESTION_COMPTE.getLib())) {
-			new GestionCompte();
+			new GestionCompte(tree);
 		}
 		if (e.getActionCommand().equals(EnActionMain.EXPLORER.getLib())) {
 			String Explorer = GestionRepertoire.RecupRepTravail();

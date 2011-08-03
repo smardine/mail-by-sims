@@ -7,7 +7,7 @@ import fenetre.comptes.EnDossierBase;
 
 public class MlCompteMail {
 
-	private final int idCompte;
+	private int idCompte;
 	private int idInbox, idBrouillons, idSpam, idCorbeille, idEnvoye;
 	private long portPop, portSMTP;
 	private String userName, password, serveurSMTP, serveurReception,
@@ -15,9 +15,21 @@ public class MlCompteMail {
 
 	private boolean isImap;
 
+	/**
+	 * Constructeur d'object, si on connait son Id, l'initialisation se charge
+	 * d'aller en base pour recuperer ses infos.
+	 * @param p_idCompte - int - l'id du compte
+	 */
 	public MlCompteMail(int p_idCompte) {
 		this.idCompte = p_idCompte;
 		initialiseCompte(idCompte);
+	}
+
+	/**
+	 * Constructeur par defaut, utilisé sur la fenetre de création de compte
+	 */
+	public MlCompteMail() {
+
 	}
 
 	private void initialiseCompte(int p_idCompte) {
@@ -272,6 +284,13 @@ public class MlCompteMail {
 	 */
 	public void setIdEnvoye(int p_idEnvoye) {
 		this.idEnvoye = p_idEnvoye;
+	}
+
+	/**
+	 * @param p_idCompte the idCompte to set
+	 */
+	public void setIdCompte(int p_idCompte) {
+		this.idCompte = p_idCompte;
 	}
 
 }

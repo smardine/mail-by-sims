@@ -36,6 +36,7 @@ import javax.swing.tree.TreePath;
 import mdl.MlListeMessage;
 import Verif.Thread_Verif;
 import fenetre.EnTitreFenetre;
+import fenetre.comptes.EnDossierBase;
 import fenetre.principale.MlAction.EnActionMain;
 import fenetre.principale.MlAction.MlActionMain;
 import fenetre.principale.jTable.DateTimeCellRenderer;
@@ -557,6 +558,7 @@ public class Main extends JFrame {
 				jProgressBarPieceJointe, jTextArea, jScrollPane3));
 		btSupprMessage
 				.addActionListener(new MlActionPopupJTable(jTable, jList));
+		jMenuCompte.addActionListener(new MlActionMain(this, jTree));
 	}
 
 	/**
@@ -687,7 +689,7 @@ public class Main extends JFrame {
 			jMenuCompte = new JMenuItem();
 			jMenuCompte.setText(EnActionMain.GESTION_COMPTE.getLib());
 			jMenuCompte.setActionCommand(EnActionMain.GESTION_COMPTE.getLib());
-			jMenuCompte.addActionListener(new MlActionMain(this));
+
 		}
 		return jMenuCompte;
 	}
@@ -767,6 +769,9 @@ public class Main extends JFrame {
 	 * @return the treePath
 	 */
 	public static TreePath getTreePath() {
+		if (treePath == null) {
+			return new TreePath(EnDossierBase.ROOT.getLib());
+		}
 		return treePath;
 	}
 

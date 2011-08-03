@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 
@@ -17,6 +18,7 @@ import bdd.BDRequette;
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.gestion.MlActionGestion.EnActionComptes;
 import fenetre.comptes.gestion.MlActionGestion.MlActionComptes;
+import fenetre.principale.jtree.utiljTree;
 
 public class GestionCompte extends JFrame {
 
@@ -28,12 +30,14 @@ public class GestionCompte extends JFrame {
 	private DefaultListModel modelList = null;
 	public static JList jList = null;
 	private JScrollPane jScrollPane = null;
+	private final JTree tree;
 
 	/**
 	 * This is the default constructor
 	 */
-	public GestionCompte() {
+	public GestionCompte(JTree p_treeCompte) {
 		super();
+		this.tree = p_treeCompte;
 		initialize();
 		modelList = new DefaultListModel();
 		jList.setModel(modelList);
@@ -64,7 +68,7 @@ public class GestionCompte extends JFrame {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent e) {
 				dispose();
-
+				utiljTree.reloadJtree(tree);
 			}
 		});
 
@@ -96,7 +100,7 @@ public class GestionCompte extends JFrame {
 			btCreer.setText(EnActionComptes.CREER.getLib());
 			btCreer.setBounds(new Rectangle(387, 34, 99, 41));
 			btCreer.setActionCommand(EnActionComptes.CREER.getLib());
-			btCreer.addActionListener(new MlActionComptes(this));
+			btCreer.addActionListener(new MlActionComptes(this, tree));
 		}
 		return btCreer;
 	}
@@ -111,7 +115,7 @@ public class GestionCompte extends JFrame {
 			btModifier.setText(EnActionComptes.MODIFIER.getLib());
 			btModifier.setBounds(new Rectangle(387, 109, 99, 41));
 			btModifier.setActionCommand(EnActionComptes.MODIFIER.getLib());
-			btModifier.addActionListener(new MlActionComptes(this));
+			btModifier.addActionListener(new MlActionComptes(this, tree));
 		}
 		return btModifier;
 	}
@@ -126,7 +130,7 @@ public class GestionCompte extends JFrame {
 			btSupprimer.setText(EnActionComptes.SUPPRIMER.getLib());
 			btSupprimer.setBounds(new Rectangle(387, 184, 99, 41));
 			btSupprimer.setActionCommand(EnActionComptes.SUPPRIMER.getLib());
-			btSupprimer.addActionListener(new MlActionComptes(this));
+			btSupprimer.addActionListener(new MlActionComptes(this, tree));
 		}
 		return btSupprimer;
 	}

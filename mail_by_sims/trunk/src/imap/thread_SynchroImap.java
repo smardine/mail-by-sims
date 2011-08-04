@@ -76,16 +76,15 @@ public class thread_SynchroImap extends Thread {
 
 	}
 
-	public static void SupprMessage(MlListeMessage p_listeMessageASupprimer,
-			String nomCompte) {
-		BDRequette bd = new BDRequette();
-		int idCpt = bd.getIdComptes(nomCompte);
-		String user = bd.getUserFromIdCompte(idCpt);
-		String pass = bd.getPasswordFromIdCompte(idCpt);
-		String serveur = bd.getHostFromIdCompte(idCpt);
-		new MajServeurGmail(p_listeMessageASupprimer, idCpt, user, pass,
-				serveur, progress);
-		bd.closeConnexion();
+	public static void SupprMessage(MlListeMessage p_listeMessageASupprimer) {
+		MlCompteMail cpt = new MlCompteMail(p_listeMessageASupprimer.get(0)
+				.getIdCompte());
+		new MajServeurGmail(p_listeMessageASupprimer, cpt, progress, true);
+	}
+
+	public static void DeplaceMessage(MlListeMessage p_listMess) {
+		MlCompteMail cpt = new MlCompteMail(p_listMess.get(0).getIdCompte());
+		new MajServeurGmail(p_listMess, cpt, progress, false);
 
 	}
 }

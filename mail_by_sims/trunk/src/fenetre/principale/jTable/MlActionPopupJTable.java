@@ -49,35 +49,48 @@ public class MlActionPopupJTable implements ActionListener {
 									"Voulez vous vraiment supprimer tous ces messages?");
 				}
 			}
-			MlListeMessage lst = new MlListeMessage();
-			for (int i = 0; i < nbDeLigneSelectionnee.length; i++) {
-				int selectedLine = nbDeLigneSelectionnee[i];
-				Integer idMessage = (Integer) table.getModel().getValueAt(
-						selectedLine, 0);
-				// le n° du message (meme si il est caché).
-				Date dateReception = (Date) table.getModel().getValueAt(
-						selectedLine, 1);// la date de reception
+			if (reponse == REPONSE.OUI) {
+				MlListeMessage lstASuppr = new MlListeMessage();
+				MlListeMessage lstADepl = new MlListeMessage();
+				BDRequette bd = new BDRequette();
 
-				String expediteur = (String) table.getModel().getValueAt(
-						selectedLine, 2);// l'expediteur
+				for (int i = 0; i < nbDeLigneSelectionnee.length; i++) {
+					int selectedLine = nbDeLigneSelectionnee[i];
+					Integer idMessage = (Integer) table.getModel().getValueAt(
+							selectedLine, 0);
+					// le n° du message (meme si il est caché).
+					Date dateReception = (Date) table.getModel().getValueAt(
+							selectedLine, 1);// la date de reception
 
-				String sujet = (String) table.getModel().getValueAt(
-						selectedLine, 3);// le
-				// sujet
-				// du
-				// message
+					String expediteur = (String) table.getModel().getValueAt(
+							selectedLine, 2);// l'expediteur
 
-				if (reponse == REPONSE.OUI) {
-					BDRequette bd = new BDRequette();
-					MlMessage m = bd.getMessageById(idMessage);
-					lst.add(m);
-					bd.deleteMessageRecu(idMessage);
-					bd.closeConnexion();
+					String sujet = (String) table.getModel().getValueAt(
+							selectedLine, 3);// le
+
+					boolean isDeplacementVersCorbeille = bd
+							.verifieNecessiteDeplacementCorbeille(idMessage);
+					if (isDeplacementVersCorbeille) {
+						lstADepl.add(bd.getMessageById(idMessage));
+
+					} else {
+						lstASuppr.add(bd.getMessageById(idMessage));
+
+					}
+
+				}// fin de for
+				if (lstADepl.size() > 0) {
+					thread_SynchroImap.DeplaceMessage(lstADepl);
+					bd.deplaceMessageVersCorbeille(lstADepl);
 
 				}
-
+				if (lstASuppr.size() > 0) {
+					thread_SynchroImap.SupprMessage(lstASuppr);
+					for (MlMessage m : lstASuppr) {
+						bd.deleteMessageRecu(m.getIdMessage());
+					}
+				}
 			}
-			thread_SynchroImap.SupprMessage(lst, Main.getNomCompte());
 
 			TreePath treePath = Main.getTreePath();
 			String dossierChoisi = (String) treePath.getLastPathComponent();
@@ -93,7 +106,10 @@ public class MlActionPopupJTable implements ActionListener {
 				bd.closeConnexion();
 
 			}
-			table.setRowSelectionInterval(0, 0);
+			if (table.getRowCount() > 0) {
+				table.setRowSelectionInterval(0, 0);
+			}
+
 			MlActionJtable.afficheContenuMail(table, list);
 		}
 

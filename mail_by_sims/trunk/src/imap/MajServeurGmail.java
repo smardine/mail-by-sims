@@ -2,6 +2,7 @@ package imap;
 
 import fenetre.comptes.EnDossierBase;
 import imap.util.messageUtilisateur;
+import imap.util.methodeImap;
 
 import java.util.Properties;
 
@@ -9,44 +10,47 @@ import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.swing.JProgressBar;
 
+import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
+import bdd.BDRequette;
 
 import com.sun.mail.imap.IMAPFolder;
 
 public class MajServeurGmail {
 
-	private final int idCpt;
-	private final String user;
-	private final String pass;
-	private final String serveur;
 	private final JProgressBar progressBar;
-	private final MlListeMessage listeMessageASupprimer;
+	private MlListeMessage listeMessageASupprimer;
+	private final boolean isSuppr;
+	private final MlCompteMail compteMail;
 
 	public MajServeurGmail(MlListeMessage p_listeMessageASupprimer,
-			int p_idCpt, String p_user, String p_pass, String p_serveur,
-			JProgressBar p_progress) {
+			MlCompteMail p_compteMail, JProgressBar p_progress,
+			boolean p_SupprOuDepl) {
 		this.listeMessageASupprimer = p_listeMessageASupprimer;
-		this.idCpt = p_idCpt;
-		this.user = p_user;
-		this.pass = p_pass;
-		this.serveur = p_serveur;
+		this.compteMail = p_compteMail;
 		this.progressBar = p_progress;
-		try {
-			Go();
-		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e,
-					"Erreur a la suppression des messages sur le serveur ");
+		this.isSuppr = p_SupprOuDepl;
+		if (isSuppr) {
+			try {
+				LanceSuppression();
+			} catch (MessagingException e) {
+				messageUtilisateur.affMessageException(e,
+						"Erreur a la suppression des messages sur le serveur ");
+			}
+		} else {
+			LanceDeplacementVersCorbeille();
 		}
+
 	}
 
-	public void Go() throws MessagingException {
+	public void LanceSuppression() throws MessagingException {
 		Properties props = System.getProperties();
-
 		props.setProperty("mail.store.protocol", "imaps");
 		props.setProperty("mail.imap.socketFactory.class",
 				"javax.net.ssl.SSLSocketFactory");
@@ -58,10 +62,11 @@ public class MajServeurGmail {
 		Store store = null;
 
 		store = session.getStore("imaps");
-		store.connect(serveur, user, pass);
-
+		store.connect(compteMail.getServeurReception(), compteMail
+				.getUserName(), compteMail.getPassword());
+		IMAPFolder fldr = null;
 		for (MlMessage m : listeMessageASupprimer) {
-			IMAPFolder fldr = null;
+
 			if (EnDossierBase.RECEPTION.getLib().equals(m.getNomDossier())) {
 				// on ouvre le repertoire "INBOX"
 				fldr = (IMAPFolder) store.getFolder("INBOX");
@@ -69,18 +74,72 @@ public class MajServeurGmail {
 					m.getNomDossier())) {
 				fldr = (IMAPFolder) store.getFolder("[Gmail]/Corbeille");
 			}
-			fldr.open(Folder.READ_WRITE);
+			if (!fldr.isOpen()) {
+				fldr.open(Folder.READ_WRITE);
+			}
+
 			Message messageServeur = fldr.getMessageByUID(Long.parseLong(m
 					.getUIDMessage()));
 
 			if (messageServeur != null) {
 				messageServeur.setFlag(Flags.Flag.DELETED, true);
 			}
-			fldr.expunge();
-			fldr.close(true);
 		}
+
+		fldr.expunge();
+		fldr.close(true);
+
 		store.close();
 
 	}
 
+	public void LanceDeplacementVersCorbeille() {
+		Properties props = System.getProperties();
+		props.setProperty("mail.store.protocol", "imaps");
+		props.setProperty("mail.imap.socketFactory.class",
+				"javax.net.ssl.SSLSocketFactory");
+		props.setProperty("mail.imap.socketFactory.fallback", "false");
+		props.setProperty("mail.imaps.partialfetch", "false");
+
+		Session session = Session.getInstance(props);
+		// Get a Store object
+		Store store = null;
+
+		try {
+			store = session.getStore("imaps");
+			store.connect(compteMail.getServeurReception(), compteMail
+					.getUserName(), compteMail.getPassword());
+
+			MlMessage unMessage = listeMessageASupprimer.get(0);
+			String nomDossierStockage = unMessage.getNomDossier();
+			EnDossierBase dossierBase;
+			IMAPFolder src = null;
+			if (EnDossierBase.isDossierBase(nomDossierStockage)) {
+				dossierBase = EnDossierBase.getDossierbase(nomDossierStockage);
+				if (dossierBase != null) {
+					src = EnDossierBase.getDossierGmail(dossierBase, store);
+				} else {
+					src = EnDossierBase.getSousDossierInbox(nomDossierStockage,
+							unMessage.getIdCompte(), store);
+
+				}
+
+			}
+
+			IMAPFolder dest = (IMAPFolder) store.getFolder("[Gmail]/Corbeille");
+			listeMessageASupprimer = methodeImap.deplaceMessage(
+					listeMessageASupprimer, src, dest);
+			for (MlMessage m : listeMessageASupprimer) {
+				BDRequette bd = new BDRequette();
+				bd.updateUIDMessage(m);
+			}
+		} catch (NoSuchProviderException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
 }

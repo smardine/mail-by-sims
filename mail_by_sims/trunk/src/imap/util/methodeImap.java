@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Properties;
 
 import javax.mail.Address;
+import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -22,6 +23,7 @@ import tools.GestionRepertoire;
 import tools.Historique;
 import bdd.BDRequette;
 
+import com.sun.mail.imap.AppendUID;
 import com.sun.mail.imap.IMAPFolder;
 
 public class methodeImap {
@@ -85,47 +87,15 @@ public class methodeImap {
 		BDRequette bd = new BDRequette();
 		ArrayList<String> listeDossier = bd.getListeDossier(pIdCompte);
 		for (String dossier : listeDossier) {
-			IMAPFolder fldr;
+			IMAPFolder fldr = null;
 			try {
-				if (EnDossierBase.RECEPTION.getLib().equals(dossier)) {
-					fldr = (IMAPFolder) store.getFolder("INBOX");
-				} else if (EnDossierBase.BROUILLON.getLib().equals(dossier)) {
-					if (store.getFolder("[Gmail]/Drafts").exists()) {
-						fldr = (IMAPFolder) store.getFolder("[Gmail]/Drafts");
-					} else {
-						fldr = (IMAPFolder) store
-								.getFolder("[Gmail]/Brouillons");
-					}
-				} else if (EnDossierBase.ENVOYES.getLib().equals(dossier)) {
-					if (store.getFolder("[Gmail]/Sent Mail").exists()) {
-						fldr = (IMAPFolder) store
-								.getFolder("[Gmail]/Sent Mail");
-					} else {
-						fldr = (IMAPFolder) store
-								.getFolder("[Gmail]/Messages envoyés");
-					}
-
-				} else if (EnDossierBase.SPAM.getLib().equals(dossier)) {
-					fldr = (IMAPFolder) store.getFolder("[Gmail]/Spam");
-				} else if (EnDossierBase.CORBEILLE.getLib().equals(dossier)) {
-					if (store.getFolder("[Gmail]/Trash").exists()) {
-						fldr = (IMAPFolder) store.getFolder("[Gmail]/Trash");
-					} else {
-						fldr = (IMAPFolder) store
-								.getFolder("[Gmail]/Corbeille");
-					}
-
+				EnDossierBase dossierBase = EnDossierBase
+						.getDossierbase(dossier);
+				if (dossierBase != null) {
+					fldr = EnDossierBase.getDossierGmail(dossierBase, store);
 				} else {
-					ArrayList<String> lstSousDossierInbox = bd
-							.getListeSousDossier(bd
-									.getIdDossier(EnDossierBase.RECEPTION
-											.getLib(), pIdCompte));
-					if (lstSousDossierInbox.contains(dossier)) {
-						fldr = (IMAPFolder) store.getFolder("INBOX/" + dossier);
-					} else {
-						fldr = (IMAPFolder) store.getFolder(dossier);
-					}
-
+					fldr = EnDossierBase.getSousDossierInbox(dossier,
+							pIdCompte, store);
 				}
 
 				afficheText(textArea, "Ouverture de " + fldr.getFullName());
@@ -300,6 +270,52 @@ public class methodeImap {
 			return p_idDossier;
 		}
 		return 7;
+	}
+
+	public static MlListeMessage deplaceMessage(
+			MlListeMessage p_listeMessageASupprimer, IMAPFolder p_src,
+			IMAPFolder p_dest) {
+		try {
+			p_src.open(Folder.READ_WRITE);
+			p_dest.open(Folder.READ_WRITE);
+			Message[] tabMessIMAP = new Message[p_listeMessageASupprimer.size()];
+			for (int i = 0; i < p_listeMessageASupprimer.size(); i++) {
+				Message messImap = p_src.getMessageByUID(Long
+						.parseLong(p_listeMessageASupprimer.get(i)
+								.getUIDMessage()));
+				tabMessIMAP[i] = messImap;
+			}
+
+			AppendUID[] tabNewUId = p_dest.appendUIDMessages(tabMessIMAP);
+			for (int i = 0; i < tabNewUId.length; i++) {
+				// on recupere les nouveaux uid et on met a jour les message
+				Message messImapOriginial = p_src.getMessageByUID(Long
+						.parseLong(p_listeMessageASupprimer.get(i)
+								.getUIDMessage()));
+				messImapOriginial.setFlag(Flags.Flag.DELETED, true);
+				p_listeMessageASupprimer.get(i).setUIDMessage(
+						"" + tabNewUId[i].uid);
+			}
+
+		} catch (MessagingException e) {
+			messageUtilisateur.affMessageException(e,
+					"Impossible de copier le message depuis " + p_src.getName()
+							+ " vers " + p_dest.getName());
+		} finally {
+			try {
+				p_src.expunge();
+				p_src.close(true);// on confirme la suppression des messages du
+				// dossier d'origine
+				p_dest.close(false);
+
+			} catch (MessagingException e) {
+				messageUtilisateur.affMessageException(e,
+						"Impossible de fermer le dossier");
+			}
+
+		}
+		return p_listeMessageASupprimer;
+
 	}
 
 }

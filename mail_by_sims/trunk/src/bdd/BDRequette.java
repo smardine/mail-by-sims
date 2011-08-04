@@ -902,7 +902,7 @@ public class BDRequette {
 
 	public MlMessage getMessageById(int p_idMessage) {
 		String script = "SELECT a.ID_MESSAGE_RECU, a.UID_MESSAGE, a.EXPEDITEUR, a.DESTINATAIRE, "
-				+ "a.SUJET, a.CONTENU, a.DATE_RECEPTION, a.ID_DOSSIER_STOCKAGE"
+				+ "a.SUJET, a.CONTENU, a.DATE_RECEPTION, a.ID_DOSSIER_STOCKAGE,a.ID_COMPTE"
 				+ " FROM MAIL_RECU a WHERE a.ID_MESSAGE_RECU=" + p_idMessage;
 
 		MlMessage m = new MlMessage();
@@ -925,8 +925,10 @@ public class BDRequette {
 					.get(6))));
 			m.setNomDossier(getNomDossier(Integer.parseInt(unEnregistrement
 					.get(7))));
+			m.setIdCompte(Integer.parseInt(unEnregistrement.get(8)));
 
 		}
+
 		return m;
 	}
 
@@ -1013,6 +1015,50 @@ public class BDRequette {
 
 		}
 		return true;
+	}
+
+	public boolean verifieNecessiteDeplacementCorbeille(int p_idMessage) {
+		String requete = "SELECT a.ID_DOSSIER_STOCKAGE FROM MAIL_RECU a WHERE a.ID_MESSAGE_RECU="
+				+ p_idMessage;
+		int idDossierStock = Integer.parseInt(get1Champ(requete));
+		MlCompteMail cpt = getMlCompteFromIdMessage(p_idMessage);
+
+		if (idDossierStock != cpt.getIdCorbeille()) {
+			return true;
+		}
+		return false;
+	}
+
+	public MlCompteMail getMlCompteFromIdMessage(int p_idMessage) {
+		String Requete = "SELECT a.ID_COMPTE FROM MAIL_RECU a where a.ID_MESSAGE_RECU="
+				+ p_idMessage;
+		int idCpt = Integer.parseInt(get1Champ(Requete));
+		return new MlCompteMail(idCpt);
+	}
+
+	public boolean deplaceMessageVersCorbeille(MlListeMessage p_list) {
+
+		for (MlMessage m : p_list) {
+			MlCompteMail cpt = getMlCompteFromIdMessage(m.getIdMessage());
+
+			String requete = "UPDATE MAIL_RECU a SET ID_DOSSIER_STOCKAGE="
+					+ cpt.getIdCorbeille() + " WHERE a.ID_MESSAGE_RECU="
+					+ m.getIdMessage();
+			boolean succes = executeRequete(requete);
+			if (!succes) {
+				return false;
+			}
+		}
+
+		return true;// si tout s'est bien passé ou si la liste etait vide
+	}
+
+	public boolean updateUIDMessage(MlMessage p_m) {
+		String requete = "UPDATE MAIL_RECU a set a.UID_MESSAGE='"
+				+ p_m.getUIDMessage() + "' where ID_MESSAGE_RECU="
+				+ p_m.getIdMessage();
+		return executeRequete(requete);
+
 	}
 
 }

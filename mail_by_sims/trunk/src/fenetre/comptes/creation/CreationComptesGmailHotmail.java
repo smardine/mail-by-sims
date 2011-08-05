@@ -12,9 +12,9 @@ import javax.swing.JTree;
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.EnDefFournisseur;
 import fenetre.comptes.creation.MlActionCreation.EnActionCreationComptes;
-import fenetre.comptes.creation.MlActionCreation.MlActionCreationCompteGmail;
+import fenetre.comptes.creation.MlActionCreation.MlActionCreationCompteGmailHotmail;
 
-public class CreationComptesGmail extends JFrame {
+public class CreationComptesGmailHotmail extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
@@ -32,13 +32,14 @@ public class CreationComptesGmail extends JFrame {
 	/**
 	 * This is the default constructor
 	 */
-	public CreationComptesGmail(EnDefFournisseur p_enumChoisi, JTree p_tree) {
+	public CreationComptesGmailHotmail(EnDefFournisseur p_enumChoisi,
+			JTree p_tree) {
 		super();
 		this.defFournisseur = p_enumChoisi;
 		this.tree = p_tree;
 		initialize();
 
-		btValider.addActionListener(new MlActionCreationCompteGmail(this,
+		btValider.addActionListener(new MlActionCreationCompteGmailHotmail(this,
 				defFournisseur, nomCompte, adresseMail, password, tree));
 	}
 
@@ -47,7 +48,7 @@ public class CreationComptesGmail extends JFrame {
 	 * @return void
 	 */
 	private void initialize() {
-		this.setSize(513, 311);
+		this.setSize(269, 311);
 		this.setResizable(false);
 		this.setContentPane(getJContentPane());
 		this.setTitle(EnTitreFenetre.CREATION_COMPTE.getLib());
@@ -62,14 +63,14 @@ public class CreationComptesGmail extends JFrame {
 	private JPanel getJContentPane() {
 		if (jContentPane == null) {
 			jLabel5 = new JLabel();
-			jLabel5.setBounds(new Rectangle(35, 156, 202, 26));
+			jLabel5.setBounds(new Rectangle(35, 160, 202, 26));
 			jLabel5.setText("Votre mot de passe");
 			jLabel1 = new JLabel();
-			jLabel1.setBounds(new Rectangle(36, 89, 202, 26));
+			jLabel1.setBounds(new Rectangle(36, 84, 202, 26));
 			jLabel1.setText(" Votre adresse mail complete");
 			jLabel = new JLabel();
-			jLabel.setBounds(new Rectangle(37, 11, 202, 22));
-			jLabel.setText("Donnez un nom à votre compte");
+			jLabel.setBounds(new Rectangle(37, 12, 202, 22));
+			jLabel.setText(" Donnez un nom à votre compte");
 			jContentPane = new JPanel();
 			jContentPane.setLayout(null);
 			jContentPane.add(getNomCompte(), null);
@@ -91,7 +92,7 @@ public class CreationComptesGmail extends JFrame {
 	private JTextField getAdresseMail() {
 		if (adresseMail == null) {
 			adresseMail = new JTextField();
-			adresseMail.setBounds(new Rectangle(36, 126, 202, 26));
+			adresseMail.setBounds(new Rectangle(36, 122, 202, 26));
 
 			adresseMail.setToolTipText("adresse mail complete");
 		}
@@ -105,7 +106,7 @@ public class CreationComptesGmail extends JFrame {
 	private JTextField getPassword() {
 		if (password == null) {
 			password = new JTextField();
-			password.setBounds(new Rectangle(35, 193, 202, 26));
+			password.setBounds(new Rectangle(35, 198, 202, 26));
 
 			password.setToolTipText("mot de passe");
 		}
@@ -119,7 +120,7 @@ public class CreationComptesGmail extends JFrame {
 	private JButton getBtValider() {
 		if (btValider == null) {
 			btValider = new JButton();
-			btValider.setBounds(new Rectangle(90, 233, 97, 32));
+			btValider.setBounds(new Rectangle(29, 236, 88, 32));
 			btValider.setText(EnActionCreationComptes.VALIDER.getLib());
 			btValider
 					.setActionCommand(EnActionCreationComptes.VALIDER.getLib());
@@ -135,11 +136,11 @@ public class CreationComptesGmail extends JFrame {
 	private JButton getBtAnnuler() {
 		if (btAnnuler == null) {
 			btAnnuler = new JButton();
-			btAnnuler.setBounds(new Rectangle(322, 233, 97, 32));
+			btAnnuler.setBounds(new Rectangle(146, 236, 88, 32));
 			btAnnuler.setText(EnActionCreationComptes.ANNULER.getLib());
 			btAnnuler
 					.setActionCommand(EnActionCreationComptes.ANNULER.getLib());
-			btAnnuler.addActionListener(new MlActionCreationCompteGmail(this));
+			btAnnuler.addActionListener(new MlActionCreationCompteGmailHotmail(this));
 		}
 		return btAnnuler;
 	}
@@ -151,7 +152,7 @@ public class CreationComptesGmail extends JFrame {
 	private JTextField getNomCompte() {
 		if (nomCompte == null) {
 			nomCompte = new JTextField();
-			nomCompte.setBounds(new Rectangle(37, 48, 202, 26));
+			nomCompte.setBounds(new Rectangle(37, 46, 202, 26));
 
 		}
 		return nomCompte;

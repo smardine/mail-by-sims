@@ -207,7 +207,7 @@ public class BDScripts {
 
 	public ArrayList<String> getVersion3() {
 		version3 = new ArrayList<String>();
-		version3.add("ALTER TABLE COMPTES " + "ADD TYPE_COMPTE Varchar(4) "
+		version3.add("ALTER TABLE COMPTES " + "ADD TYPE_COMPTE Varchar(7) "
 				+ "CHARACTER SET ISO8859_1 NOT NULL " + "COLLATE FR_FR; ");
 		version3.add("UPDATE COMPTES SET TYPE_COMPTE = 'pop' "
 				+ "WHERE TYPE_COMPTE IS NULL;");

@@ -1,5 +1,6 @@
 package fenetre.comptes.creation.MlActionCreation;
 
+import hotmail.util.methodeHotmail;
 import imap.util.messageUtilisateur;
 import imap.util.methodeImap;
 
@@ -15,18 +16,14 @@ import mdl.MlCompteMail;
 import bdd.BDRequette;
 import fenetre.comptes.EnDefFournisseur;
 import fenetre.comptes.EnDossierBase;
-import fenetre.comptes.EnTypeCompte;
-import fenetre.comptes.creation.CreationComptesGmail;
+import fenetre.comptes.creation.CreationComptesGmailHotmail;
 import fenetre.comptes.gestion.GestionCompte;
 
-public class MlActionCreationCompteGmail implements ActionListener {
+public class MlActionCreationCompteGmailHotmail implements ActionListener {
 	private JTextField adresse;
-	private JTextField pop;
-	private JTextField smtp;
-	private JTextField user;
 	private JTextField password;
 	private JTextField nomCompte;
-	private final CreationComptesGmail fenetre;
+	private final CreationComptesGmailHotmail fenetre;
 
 	private JTree tree;
 	private EnDefFournisseur defFournisseur;
@@ -34,7 +31,8 @@ public class MlActionCreationCompteGmail implements ActionListener {
 	/**
 	 * Constructeur par defaut
 	 */
-	public MlActionCreationCompteGmail(CreationComptesGmail p_fenetre) {
+	public MlActionCreationCompteGmailHotmail(
+			CreationComptesGmailHotmail p_fenetre) {
 		this.fenetre = p_fenetre;
 	}
 
@@ -46,11 +44,11 @@ public class MlActionCreationCompteGmail implements ActionListener {
 	 * @param p_pop
 	 * @param p_tree
 	 */
-	public MlActionCreationCompteGmail(
-			CreationComptesGmail p_creationComptesGmail,
+	public MlActionCreationCompteGmailHotmail(
+			CreationComptesGmailHotmail p_creationComptesGmailHotmail,
 			EnDefFournisseur p_defFournisseur, JTextField p_nomCompte,
 			JTextField p_adresse, JTextField p_password, JTree p_tree) {
-		this.fenetre = p_creationComptesGmail;
+		this.fenetre = p_creationComptesGmailHotmail;
 		this.defFournisseur = p_defFournisseur;
 		this.nomCompte = p_nomCompte;
 		this.adresse = p_adresse;
@@ -75,11 +73,19 @@ public class MlActionCreationCompteGmail implements ActionListener {
 			compteMail.setPortSMTP(defFournisseur.getPortSMTP());
 			compteMail.setUserName(adresse.getText().replace("@gmail.com", ""));
 			compteMail.setPassword(password.getText());
-			compteMail.setTypeCompte(EnTypeCompte.GMAIL);
-
-			if (!methodeImap.testBalIMAP(compteMail)) {
+			compteMail.setTypeCompte(defFournisseur.getTypeCompte());
+			boolean resultConnexion = false;
+			switch (defFournisseur.getTypeCompte()) {
+				case GMAIL:
+					resultConnexion = methodeImap.testBalIMAP(compteMail);
+					break;
+				case HOTMAIL:
+					resultConnexion = methodeHotmail.testBalHotmail(compteMail);
+					break;
+			}
+			if (!resultConnexion) {
 				messageUtilisateur
-						.affMessageErreur("Le test de connexion a votre boite aux lettres à échoué.\r\nVeuillez vérifier voter saisie");
+						.affMessageErreur("Le test de connexion a votre boite aux lettres à échoué.\r\nMerci de vérifier voter saisie");
 				return;
 			} else {
 				BDRequette bd = new BDRequette();

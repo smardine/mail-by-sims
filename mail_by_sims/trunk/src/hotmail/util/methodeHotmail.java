@@ -23,11 +23,14 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
+import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.GestionRepertoire;
 import bdd.BDRequette;
 
+import com.googlecode.jdeltasync.AuthenticationException;
+import com.googlecode.jdeltasync.DeltaSyncClient;
 import com.googlecode.jdeltasync.DeltaSyncClientHelper;
 import com.googlecode.jdeltasync.DeltaSyncException;
 import com.googlecode.jdeltasync.Message;
@@ -57,23 +60,57 @@ public class methodeHotmail {
 		return fldr;
 	}
 
-	public static Folder[] getSousDossierHotmail(Store p_store,
-			String p_fldrName) {
-		Folder[] listFldr = null;
+	public static ArrayList<com.googlecode.jdeltasync.Folder> getSousDossierHotmail(
+			DeltaSyncClientHelper p_client) {
+		ArrayList<com.googlecode.jdeltasync.Folder> sousDossier = new ArrayList<com.googlecode.jdeltasync.Folder>();
+		com.googlecode.jdeltasync.Folder[] listFldr;
 		try {
-			listFldr = (Folder[]) p_store.getFolder(p_fldrName).list();
-		} catch (MessagingException e) {
-			if (e instanceof javax.mail.FolderNotFoundException) {
-				messageUtilisateur.affMessageException(e,
-						"Pas de sous dossier a ce repertoire " + p_fldrName);
-				return null;
-			}
-			messageUtilisateur.affMessageException(e,
-					"Impossible d'obtenir la liste des sous dossiers du repertoire "
-							+ p_fldrName);
+			listFldr = p_client.getFolders();
+			for (com.googlecode.jdeltasync.Folder f : listFldr) {
 
+				if (!f.getName().equals("Junk")
+						&& !f.getName().equals("Drafts")
+						&& !f.getName().equals("Sent")
+						&& !f.getName().equals("Deleted")) {
+					sousDossier.add(f);
+				}
+			}
+		} catch (DeltaSyncException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur a la recuperation des sous dossiers");
+		} catch (IOException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur a la recuperation des sous dossiers");
 		}
-		return listFldr;
+
+		return sousDossier;
+	}
+
+	public static ArrayList<com.googlecode.jdeltasync.Folder> getDossierPrincipaux(
+			DeltaSyncClientHelper p_client) {
+		ArrayList<com.googlecode.jdeltasync.Folder> dossierPrincipaux = new ArrayList<com.googlecode.jdeltasync.Folder>();
+		com.googlecode.jdeltasync.Folder[] listFldr;
+		try {
+			listFldr = p_client.getFolders();
+			for (com.googlecode.jdeltasync.Folder f : listFldr) {
+
+				if (f.getName().equals("Junk")// 
+						|| f.getName().equals("Drafts")
+						|| f.getName().equals("Sent")
+						|| f.getName().equals("Deleted")
+						|| f.getName().equals("Inbox")) {
+					dossierPrincipaux.add(f);
+				}
+			}
+		} catch (DeltaSyncException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur a la recuperation des dossiers principaux");
+		} catch (IOException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur a la recuperation des dossiers principaux");
+		}
+
+		return dossierPrincipaux;
 	}
 
 	public static void miseAJourMessage(Properties props, int pIdCompte,
@@ -383,6 +420,31 @@ public class methodeHotmail {
 					"Erreur a la récupération du message");
 		}
 		return p_messagePourBase;
+
+	}
+
+	public static boolean testBalHotmail(MlCompteMail p_compte) {
+		DeltaSyncClientHelper client = new DeltaSyncClientHelper(
+				new DeltaSyncClient(), p_compte.getUserName(), p_compte
+						.getPassword());
+		try {
+			client.login();
+			client.getInbox();
+
+		} catch (AuthenticationException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur au test de connexion");
+			return false;
+		} catch (DeltaSyncException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur au test de connexion");
+			return false;
+		} catch (IOException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur au test de connexion");
+			return false;
+		}
+		return true;
 
 	}
 

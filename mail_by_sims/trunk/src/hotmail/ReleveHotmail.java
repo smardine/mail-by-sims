@@ -1,15 +1,16 @@
 package hotmail;
 
-import fenetre.comptes.EnDossierBase;
 import hotmail.util.methodeHotmail;
 import imap.util.messageUtilisateur;
 import imap.util.methodeImap;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
+import mdl.MlCompteMail;
 import bdd.BDRequette;
 
 import com.googlecode.jdeltasync.AuthenticationException;
@@ -72,17 +73,43 @@ public class ReleveHotmail {
 		// lance la connexion
 		try {
 			client.login();
-			Folder inbox = client.getInbox();
-			Message[] messages = client.getMessages(inbox);
-			int id_Dossier;
-			if (inbox != null) {
-				BDRequette bd = new BDRequette();
-				id_Dossier = bd.getIdDossier(EnDossierBase.RECEPTION.getLib(),
-						p_idCompte);
-				bd.closeConnexion();
+			ArrayList<Folder> dossierDeBase = methodeHotmail
+					.getDossierPrincipaux(client);
+			MlCompteMail cpt = new MlCompteMail(p_idCompte);
+			for (Folder unDossier : dossierDeBase) {
+				int idDossier = 0;
+				if ("Inbox".equals(unDossier.getName())) {
+					idDossier = cpt.getIdInbox();
+				} else if ("Junk".equals(unDossier.getName())) {
+					idDossier = cpt.getIdSpam();
+				} else if ("Drafts".equals(unDossier.getName())) {
+					idDossier = cpt.getIdBrouillons();
+				} else if ("Sent".equals(unDossier.getName())) {
+					idDossier = cpt.getIdEnvoye();
+				} else if ("Deleted".equals(unDossier.getName())) {
+					idDossier = cpt.getIdCorbeille();
+				}
+				Message[] messages = client.getMessages(unDossier);
 				methodeHotmail.releveHotmail(p_idCompte, progressBar,
-						progressPJ, id_Dossier, messages, inbox, client,
+						progressPJ, idDossier, messages, unDossier, client,
 						textArea);
+			}
+
+			ArrayList<Folder> sousDossier = methodeHotmail
+					.getSousDossierHotmail(client);
+			BDRequette bd = new BDRequette();
+			for (Folder f : sousDossier) {
+				int idDossier = bd.getIdDossier(f.getName(), p_idCompte);
+				if (idDossier == -1) {// le dossier n'existe pas, on le crée
+					bd.createNewDossier(p_idCompte, cpt.getIdInbox(), f
+							.getName());
+					idDossier = bd.getIdDossier(f.getName(), p_idCompte);
+				}
+				Message[] messages = client.getMessages(f);
+				methodeHotmail.releveHotmail(p_idCompte, p_progressBar,
+						p_progressBarPJ, idDossier, messages, f, client,
+						textArea);
+
 			}
 
 		} catch (AuthenticationException e) {
@@ -94,44 +121,6 @@ public class ReleveHotmail {
 		} catch (IOException e) {
 			messageUtilisateur.affMessageException(e, "Erreur E/S");
 		}
-
-		// releve de la boite de reception
-
-		// IMAPFolder inbox = null;
-		// try {
-		// methodeHotmail.afficheText(textArea,
-		// "Ouverture de la boite de reception");
-		// inbox = (IMAPFolder) store.getFolder("INBOX");
-		// } catch (MessagingException e1) {
-		// messageUtilisateur.affMessageException(e1,
-		// "Impossible d'acceder à la boite de reception");
-		// }
-		// int id_Dossier;
-		// if (inbox != null) {
-		// id_Dossier = BDRequette.getIdDossier(EnDossierBase.RECEPTION
-		// .getLib(), p_idCompte);
-		//
-		// methodeHotmail.releveImap(props, p_idCompte, progressBar, id_Dossier,
-		// inbox, textArea, label);
-		// // on recupere ensuite les sous dossiers de la boite de reception
-		// IMAPFolder[] lstFolder = methodeHotmail.getSousDossierIMAP(store,
-		// inbox.getFullName());
-		//
-		// for (IMAPFolder folder : lstFolder) {
-		// int idSousDossier = BDRequette.getIdDossier(folder.getName(),
-		// p_idCompte);
-		// if (idSousDossier == (-1)) {// si le sous dossier est inconnu
-		// // de la base, on en créer un
-		// BDRequette.createNewDossier(p_idCompte, id_Dossier, folder
-		// .getName());
-		// idSousDossier = BDRequette.getIdDossier(folder.getName(),
-		// p_idCompte);
-		// }
-		// methodeHotmail.releveImap(props, p_idCompte, progressBar,
-		// idSousDossier, folder, textArea, label);
-		//
-		// }
-		// }
 
 	}
 

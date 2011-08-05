@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JTree;
 
 import fenetre.comptes.EnDefFournisseur;
-import fenetre.comptes.creation.CreationComptesGmail;
+import fenetre.comptes.creation.CreationComptesGmailHotmail;
 import fenetre.comptes.creation.CreationComptesPop;
 import fenetre.comptes.creation.choixFAI;
 
@@ -28,12 +28,11 @@ public class MlChoixDuCompte implements ActionListener {
 				.getActionCommand());
 		switch (enumChoisi) {
 			case GMAIL:
-				new CreationComptesGmail(enumChoisi, tree);
+				new CreationComptesGmailHotmail(enumChoisi, tree);
 				break;
 
 			case HOTMAIL:
-				new CreationComptesPop(enumChoisi, tree);
-				fenetre.dispose();
+				new CreationComptesGmailHotmail(enumChoisi, tree);
 				break;
 			default:
 				new CreationComptesPop(enumChoisi, tree);

@@ -4,10 +4,15 @@ import imap.util.methodeImap;
 import importMail.thread_Import;
 
 import java.util.ArrayList;
+import java.util.Properties;
 
 import javax.mail.Address;
+import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
+import javax.mail.Session;
+import javax.mail.Store;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
@@ -21,10 +26,12 @@ import com.sun.mail.pop3.POP3Folder;
 
 public class methodePop {
 
+	@SuppressWarnings("unused")
 	private static MlCompteMail comptePop;
 	private static POP3Folder folder;
 	private static JTextArea text;
 	private static JProgressBar progressReleve;
+	@SuppressWarnings("unused")
 	private static JProgressBar progressPJ;
 
 	private methodePop() {
@@ -107,5 +114,37 @@ public class methodePop {
 			return p_idDossier;
 		}
 		return 7;
+	}
+
+	public static boolean testBalPop(MlCompteMail p_compte) {
+		Properties prop = System.getProperties();
+		Session sess = Session.getDefaultInstance(prop, null);
+		sess.setDebug(true);
+		Store st = null;
+		try {
+			st = sess.getStore("pop3");
+			st.connect(p_compte.getServeurReception(), p_compte.getUserName(),
+					p_compte.getPassword());
+			System.out.println("st=:" + st);
+			System.out.println("Obtention d'un folder");
+			POP3Folder f = (POP3Folder) st.getFolder("INBOX");
+			f.open(Folder.READ_ONLY);
+			// int nbMessageDansInbox = f.getMessageCount();
+			f.close(false);
+		} catch (NoSuchProviderException e) {
+			// erreur de protocle
+			return false;
+		} catch (MessagingException e) {
+			// erreur de connexion
+			return false;
+		} finally {
+			try {
+				st.close();
+			} catch (MessagingException e) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

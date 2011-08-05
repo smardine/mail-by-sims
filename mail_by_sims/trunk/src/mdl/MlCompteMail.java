@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
+import fenetre.comptes.EnTypeCompte;
 
 public class MlCompteMail {
 
@@ -13,7 +14,7 @@ public class MlCompteMail {
 	private String userName, password, serveurSMTP, serveurReception,
 			nomCompte;
 
-	private boolean isImap;
+	private EnTypeCompte typeCompte;
 
 	/**
 	 * Constructeur d'object, si on connait son Id, l'initialisation se charge
@@ -61,9 +62,13 @@ public class MlCompteMail {
 					break;
 				case 7:
 					if ("imap".equals(defCompte.get(7))) {
-						setImap(true);
-					} else {
-						setImap(false);
+						setTypeCompte(EnTypeCompte.IMAP);
+					} else if ("pop".equals(defCompte.get(7))) {
+						setTypeCompte(EnTypeCompte.POP);
+					} else if ("gmail".equals(defCompte.get(7))) {
+						setTypeCompte(EnTypeCompte.GMAIL);
+					} else if ("hotmail".equals(defCompte.get(7))) {
+						setTypeCompte(EnTypeCompte.HOTMAIL);
 					}
 					break;
 
@@ -196,17 +201,17 @@ public class MlCompteMail {
 	}
 
 	/**
-	 * @return the isImap
+	 * @return the typeCompte
 	 */
-	public boolean isImap() {
-		return this.isImap;
+	public EnTypeCompte getTypeCompte() {
+		return this.typeCompte;
 	}
 
 	/**
-	 * @param p_isImap the isImap to set
+	 * @param p_isImap the typeCompte to set
 	 */
-	public void setImap(boolean p_isImap) {
-		this.isImap = p_isImap;
+	public void setTypeCompte(EnTypeCompte p_isImap) {
+		this.typeCompte = p_isImap;
 	}
 
 	/**

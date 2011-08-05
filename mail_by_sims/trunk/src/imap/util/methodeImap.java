@@ -12,11 +12,13 @@ import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
+import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
+import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.GestionRepertoire;
@@ -316,6 +318,44 @@ public class methodeImap {
 		}
 		return p_listeMessageASupprimer;
 
+	}
+
+	public static boolean testBalIMAP(MlCompteMail p_compte) {
+		Properties props = System.getProperties();
+		props.setProperty("mail.store.protocol", "imaps");
+		props.setProperty("mail.imap.socketFactory.class",
+				"javax.net.ssl.SSLSocketFactory");
+		props.setProperty("mail.imap.socketFactory.fallback", "false");
+		props.setProperty("mail.imaps.partialfetch", "false");
+
+		Session session = Session.getInstance(props);
+
+		// Get a Store object
+		Store store = null;
+
+		try {
+			store = session.getStore("imaps");
+			store.connect(p_compte.getServeurReception(), p_compte
+					.getUserName(), p_compte.getPassword());
+
+			IMAPFolder inbox = (IMAPFolder) store.getFolder("INBOX");
+			// int nbMessageDansInbox = f.getMessageCount();
+			inbox.close(false);
+		} catch (NoSuchProviderException e) {
+			// erreur de protocole
+			return false;
+		} catch (MessagingException e) {
+			// erreur de connexion
+			return false;
+		} finally {
+			try {
+				store.close();
+			} catch (MessagingException e) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 
 }

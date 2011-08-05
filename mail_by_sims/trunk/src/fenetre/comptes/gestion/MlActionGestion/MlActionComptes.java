@@ -11,7 +11,7 @@ import javax.swing.DefaultListModel;
 import javax.swing.JTree;
 
 import bdd.BDRequette;
-import fenetre.comptes.creation.CreationComptes;
+import fenetre.comptes.creation.choixFAI;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class MlActionComptes implements ActionListener {
@@ -27,7 +27,8 @@ public class MlActionComptes implements ActionListener {
 	public void actionPerformed(ActionEvent p_arg0) {
 		if (EnActionComptes.CREER.getLib().equals(p_arg0.getActionCommand())) {
 			fenetre.dispose();
-			new CreationComptes(tree);
+			new choixFAI(tree);
+			// new CreationComptesPop(tree);
 		}
 		if (EnActionComptes.SUPPRIMER.getLib()
 				.equals(p_arg0.getActionCommand())) {

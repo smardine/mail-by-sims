@@ -991,7 +991,7 @@ public class BDRequette {
 		sb.append("'" + p_compte.getPortSMTP() + "',");
 		sb.append("'" + p_compte.getUserName() + "',");
 		sb.append("'" + p_compte.getPassword() + "',");
-		sb.append("'imap')");
+		sb.append("'" + p_compte.getTypeCompte().getLib() + "')");
 
 		return executeRequete(sb.toString());
 	}

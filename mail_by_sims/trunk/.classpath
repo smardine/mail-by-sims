@@ -2,11 +2,27 @@
 <classpath>
 	<classpathentry excluding="fenetre/TreeExpandRowAndMakeRowVisible.java|JTree/TreeExpandRowAndMakeRowVisible.java|layout/BoxLayoutDemo2.java|html/gui.java|html/fetchMail.java|fenetre/test.java|fenetre/test1.java|fenetre/test2.java|fenetre/test3.java|fenetre/test4.java|jseparator/|Mail/|fenetre/principale/RightClick.java|fenetre/principale/DocumentViewer.java|fenetre/principale/Main_old.java|fenetre/principale/test.java|fenetre/ReleveMessagerie.java|fenetre/principale/MlAction/MlActionBouton.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="Images"/>
-	<classpathentry excluding="libdeltasync/|libdeltasync/" kind="src" path="lib"/>
+	<classpathentry excluding="libdeltasync/" kind="src" path="lib"/>
+	<classpathentry kind="src" path="lib/libdeltasync"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/activation.jar"/>
 	<classpathentry kind="lib" path="lib/jaybird_full_2_1_6.jar"/>
 	<classpathentry kind="lib" path="lib/mail.jar"/>
 	<classpathentry kind="lib" path="lib/deltasync.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/apache-mime4j-0.5.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/commons-codec-1.5-javadoc.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/commons-codec-1.5-sources.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/commons-codec-1.5.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/commons-logging-1.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/httpclient-4.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/httpclient-cache-4.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/httpcore-4.1.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/httpmime-4.1.1.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/logback-classic-0.9.29-sources.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/logback-classic-0.9.29.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/logback-core-0.9.29-sources.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/logback-core-0.9.29.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/slf4j-api-1.6.1-sources.jar"/>
+	<classpathentry kind="lib" path="lib/libdeltasync/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

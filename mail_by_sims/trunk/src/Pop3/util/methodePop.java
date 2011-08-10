@@ -60,8 +60,9 @@ public class methodePop {
 
 				int pourcent = (nbActu++ * 100) / count;
 				progressReleve.setValue(pourcent);
-				progressReleve.setString("Releve de " + folder.getFullName()
-						+ " :" + pourcent + " %");
+				progressReleve.setString(p_comptePop.getNomCompte()
+						+ ": Releve de " + folder.getFullName() + " :"
+						+ pourcent + " %");
 
 				if (bd.verifieAbscenceUID(folder.getUID(m))) {
 					MlMessage messPourBase = new MlMessage();

@@ -184,6 +184,7 @@ public class methodeImap {
 		try {
 			imapFolder.open(Folder.READ_WRITE);
 			int count = imapFolder.getMessageCount();
+			MlCompteMail compteMail = new MlCompteMail(p_idCompte);
 
 			afficheText(textArea, "Nombre de messages: " + count);
 			// Message numbers start at 1
@@ -194,8 +195,8 @@ public class methodeImap {
 
 				int pourcent = (nbActu++ * 100) / count;
 				p_progress.setValue(pourcent);
-				p_progress.setString("Releve de " + imapFolder.getFullName()
-						+ " :" + pourcent + " %");
+				p_progress.setString(compteMail.getNomCompte() + ": Releve de "
+						+ imapFolder.getFullName() + " :" + pourcent + " %");
 				// on commence par verifier si le message est deja enregistré
 				// dans la base
 				// pour cela, comme on est en IMAp,

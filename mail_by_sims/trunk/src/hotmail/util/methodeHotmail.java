@@ -255,7 +255,7 @@ public class methodeHotmail {
 			DeltaSyncClientHelper p_client, JTextArea textArea) {
 		afficheText(textArea, "Releve du dossier " + p_folder.getName());
 		int count = p_tableauMessage.length;
-
+		MlCompteMail compteMail = new MlCompteMail(p_idCompte);
 		afficheText(textArea, "Nombre de messages: " + count);
 		// Message numbers start at 1
 		int nbActu = 1;
@@ -265,8 +265,8 @@ public class methodeHotmail {
 
 			int pourcent = (nbActu++ * 100) / count;
 			p_progress.setValue(pourcent);
-			p_progress.setString("Releve de " + p_folder.getName() + " :"
-					+ pourcent + " %");
+			p_progress.setString(compteMail.getNomCompte() + ": Releve de "
+					+ p_folder.getName() + " :" + pourcent + " %");
 			// on commence par verifier si le message est deja enregistré
 			// dans la base
 			// pour cela, comme on est en IMAp,

@@ -24,6 +24,7 @@ import javax.mail.Session;
 import javax.mail.internet.MimeMessage;
 import javax.swing.JOptionPane;
 import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
@@ -38,11 +39,19 @@ public class thread_Import extends Thread {
 
 	private final JTree tree;
 	private int idCompte;
-	private final JProgressBar progress;
+	private final JProgressBar progressPJ;
+	private final JTextArea jTextArea;
+	private final JProgressBar progressBar;
+	private final JScrollPane scrollPane;
 
-	public thread_Import(JTree p_tree, JProgressBar p_progressPJ) {
+	public thread_Import(JTree p_tree, JProgressBar p_progressBar,
+			JProgressBar p_progressPieceJointe, JTextArea p_jTextArea,
+			JScrollPane p_scroll) {
 		this.tree = p_tree;
-		this.progress = p_progressPJ;
+		this.progressBar = p_progressBar;
+		this.progressPJ = p_progressPieceJointe;
+		this.jTextArea = p_jTextArea;
+		this.scrollPane = p_scroll;
 		// new BDAcces();
 	}
 
@@ -72,22 +81,32 @@ public class thread_Import extends Thread {
 		Main.setNomCompte(choixCompte);
 		Main.setTreePath(treePathInitial);
 		// tree.setSelectionPath(treePathInitial);
+		scrollPane.setVisible(true);
+		jTextArea.setVisible(true);
+		progressBar.setVisible(true);
+		progressPJ.setVisible(true);
 
 		MlListeMessage listeDeMessage = parcoursDossier(chemin, choixCompte,
-				treePathInitial);
+				treePathInitial, jTextArea);
 		// messageUtilisateur.affMessageInfo("il y a au total "
 		// + listeDeMessage.size() + " message(s)");
 
-		enregistreMessageEnBase(listeDeMessage, progress);
+		enregistreMessageEnBase(listeDeMessage, progressBar, progressPJ,
+				jTextArea);
 
 		System.out.println("fin de l'enregistrement des message en base");
 		bd.closeConnexion();
+		scrollPane.setVisible(false);
+		jTextArea.setVisible(false);
+		progressBar.setVisible(false);
+		progressPJ.setVisible(false);
 
 	}
 
 	@SuppressWarnings("hiding")
 	public static void enregistreMessageEnBase(MlListeMessage listeDeMessage,
-			JProgressBar p_progressPJ) {
+			JProgressBar p_progressBar, JProgressBar p_progressPJ,
+			JTextArea p_jTextArea) {
 		BDRequette bd = new BDRequette();
 		/** On simule la reception d'un message */
 		Properties props = System.getProperties();
@@ -96,12 +115,18 @@ public class thread_Import extends Thread {
 
 		Session mailSession = Session.getDefaultInstance(props, null);
 		/***/
+		p_progressBar.setVisible(true);
+
 		int messNumber = 1;
 		for (MlMessage messagePourBase : listeDeMessage) {
 			String cheminPhysique = messagePourBase.getCheminPhysique();
-
-			System.out.println("importation du message " + messNumber++
-					+ "sur " + listeDeMessage.size());
+			methodeImap.afficheText(p_jTextArea, "importation du message "
+					+ messNumber++ + "sur " + listeDeMessage.size());
+			// System.out.println("importation du message " + messNumber++
+			// + "sur " + listeDeMessage.size());
+			p_progressBar.setString("Message " + messNumber + "/"
+					+ listeDeMessage.size());
+			p_progressBar.setValue((100 * messNumber) / listeDeMessage.size());
 			InputStream source;
 			try {
 				source = new FileInputStream(cheminPhysique);
@@ -134,7 +159,7 @@ public class thread_Import extends Thread {
 				 */
 
 				messagePourBase.setContenu(recupContenuMail(messagePourBase,
-						null, mime, new JTextArea()));// ,
+						p_progressPJ, mime, p_jTextArea));// ,
 				// m.getDateReception()
 				// .getTime()));
 
@@ -154,6 +179,9 @@ public class thread_Import extends Thread {
 
 		}
 		bd.closeConnexion();
+		p_progressBar.setValue(0);
+		p_progressBar.setString("");
+		p_progressBar.setVisible(false);
 
 	}
 
@@ -340,7 +368,7 @@ public class thread_Import extends Thread {
 	}
 
 	private MlListeMessage parcoursDossier(String p_chemin, String p_compte,
-			TreePath p_treePath) {
+			TreePath p_treePath, JTextArea p_jTextArea) {
 		BDRequette bd = new BDRequette();
 		TreePath newTp = null;
 		String nomDossier = null;
@@ -369,8 +397,10 @@ public class thread_Import extends Thread {
 						try {
 							message.setCheminPhysique(f.getCanonicalPath());
 							lstMessage.add(message);
-							System.out.println(lstMessage.size()
+							methodeImap.afficheText(p_jTextArea, lstMessage
+									.size()
 									+ " message(s) trouvé(s)");
+
 						} catch (IOException e) {
 							messageUtilisateur.affMessageException(e,
 									"impossible d'acceder au repertoire :\n\r");
@@ -389,20 +419,22 @@ public class thread_Import extends Thread {
 			m.setIdDossier(bd.getIdDossier(nomDossier, idCompte));
 		}
 		for (File f : lstSousDossier) {
-			System.out.println("creation du dossier:" + f.getName());
+			methodeImap.afficheText(p_jTextArea, "creation du dossier:"
+					+ f.getName());
+
 			MlListeMessage lstMessge = null;
 			try {
 				if (newTp != null) {
 					lstMessge = parcoursDossier(f.getCanonicalPath(), p_compte,
-							newTp);
+							newTp, p_jTextArea);
 				} else {
 					lstMessge = parcoursDossier(f.getCanonicalPath(), p_compte,
-							p_treePath);
+							p_treePath, p_jTextArea);
 				}
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				messageUtilisateur.affMessageException(e,
+						"Erreur pendant le parcoursdes sous dossiers");
 			}
 			lstMessage.addAll(lstMessge);
 		}

@@ -70,7 +70,7 @@ public class messageUtilisateur {
 			tabObj[i] = p_valeurPossible.get(i);
 		}
 
-		return (String) JOptionPane.showInputDialog(null, "message", "titre",
+		return (String) JOptionPane.showInputDialog(null, p_message, p_titre,
 				JOptionPane.QUESTION_MESSAGE, null, tabObj, tabObj[0]);
 
 	}

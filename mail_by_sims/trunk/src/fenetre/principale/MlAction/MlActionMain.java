@@ -66,7 +66,8 @@ public class MlActionMain implements ActionListener {
 
 		}
 		if (e.getActionCommand().equals(EnActionMain.IMPORTER.getLib())) {
-			thread_Import t = new thread_Import(tree, pbPieceJointe);
+			thread_Import t = new thread_Import(tree, pbReleve, pbPieceJointe,
+					text, scrollPane);
 			t.start();
 		}
 		if (e.getActionCommand().equals(EnActionMain.ENVOYER_RECEVOIR.getLib())) {

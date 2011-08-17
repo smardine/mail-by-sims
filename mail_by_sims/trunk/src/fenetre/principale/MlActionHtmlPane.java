@@ -12,8 +12,6 @@ public class MlActionHtmlPane implements HyperlinkListener {
 		if (event.getEventType() == HyperlinkEvent.EventType.ACTIVATED) {
 			OpenWithDefaultViewer
 					.launchBrowser(event.getURL().toExternalForm());
-			// htmlPane.setPage(event.getURL());
-			// urlField.setText(event.getURL().toExternalForm());
 
 		}
 

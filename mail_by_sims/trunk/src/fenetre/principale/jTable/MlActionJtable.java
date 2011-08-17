@@ -14,7 +14,10 @@ import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+import javax.swing.JProgressBar;
+import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextArea;
 import javax.swing.text.Document;
 
 import bdd.BDRequette;
@@ -24,17 +27,29 @@ import fenetre.principale.MlAction.EnActionMain;
 public class MlActionJtable implements MouseListener, ActionListener {
 
 	private JPopupMenu popUpMenu;
-
+	private JMenuItem CreerRegle;
 	private JMenuItem Supprimer;
 	private final JTable table;
 	private final JList jList;
+
+	private final JProgressBar progressBar;
+
+	private final JTextArea textArea;
+
+	private final JScrollPane scroll;
+	private JMenuItem MarquerSpam;
+
 	private static JEditorPane editor;
 
-	public MlActionJtable(JTable p_table, JEditorPane jEditorPane, JList jList) {
+	public MlActionJtable(JTable p_table, JEditorPane jEditorPane, JList jList,
+			JProgressBar p_progress, JTextArea p_text, JScrollPane p_scroll) {
 		this.table = p_table;
 		this.popUpMenu = getJPopupMenu();
 		MlActionJtable.editor = jEditorPane;
 		this.jList = jList;
+		this.progressBar = p_progress;
+		this.textArea = p_text;
+		this.scroll = p_scroll;
 	}
 
 	/**
@@ -45,6 +60,8 @@ public class MlActionJtable implements MouseListener, ActionListener {
 		if (popUpMenu == null) {
 			popUpMenu = new JPopupMenu();
 			popUpMenu.add(getSupprimer());
+			popUpMenu.add(getCreerRegle());
+			popUpMenu.add(getMarquerSpam());
 
 		}
 		return popUpMenu;
@@ -59,9 +76,32 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			Supprimer = new JMenuItem();
 			Supprimer.setText(EnActionMain.SUPPRIMER.getLib());
 			Supprimer.setActionCommand(EnActionMain.SUPPRIMER.getLib());
-			Supprimer.addActionListener(new MlActionPopupJTable(table, jList));
+			Supprimer.addActionListener(new MlActionPopupJTable(table, jList,
+					progressBar, textArea, scroll));
 		}
 		return Supprimer;
+	}
+
+	private JMenuItem getCreerRegle() {
+		if (CreerRegle == null) {
+			CreerRegle = new JMenuItem();
+			CreerRegle.setText(EnActionMain.CREER_REGLE.getLib());
+			CreerRegle.setActionCommand(EnActionMain.CREER_REGLE.getLib());
+			CreerRegle.addActionListener(new MlActionPopupJTable(table, jList,
+					progressBar, textArea, scroll));
+		}
+		return CreerRegle;
+	}
+
+	private JMenuItem getMarquerSpam() {
+		if (MarquerSpam == null) {
+			MarquerSpam = new JMenuItem();
+			MarquerSpam.setText(EnActionMain.MARQUER_SPAM.getLib());
+			MarquerSpam.setActionCommand(EnActionMain.MARQUER_SPAM.getLib());
+			MarquerSpam.addActionListener(new MlActionPopupJTable(table, jList,
+					progressBar, textArea, scroll));
+		}
+		return MarquerSpam;
 	}
 
 	@Override

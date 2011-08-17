@@ -52,11 +52,11 @@ public class Main extends JFrame {
 	private static final long serialVersionUID = 1L;
 	private static TreePath treePath;
 	private static String nomCompte;
-	private JPanel jContentPane = null;
-	private JDesktopPane jDesktopPaneHaut = null;
-	private JDesktopPane jDesktopPaneGauche = null;
-	private JDesktopPane jDesktopPaneDroite = null;
-	private JDesktopPane jDesktopPaneBas = null;
+	private JPanel panelPrincipal = null;
+	private JDesktopPane panelBouton = null;
+	private JDesktopPane panelTree = null;
+	private JDesktopPane panelTableEtListe = null;
+	private JDesktopPane panelHTML = null;
 	private JButton btNewMessage = null;
 	private JButton btSupprMessage = null;
 	private JButton btEnvoyerRecevoir = null;
@@ -93,96 +93,96 @@ public class Main extends JFrame {
 	private JScrollPane jScrollPane3 = null;
 
 	/**
-	 * This method initializes jDesktopPaneHaut
+	 * This method initializes panelBouton
 	 * @return javax.swing.JDesktopPane
 	 */
 	private JDesktopPane getJDesktopPaneHaut() {
-		if (jDesktopPaneHaut == null) {
-			jDesktopPaneHaut = new JDesktopPane();
+		if (panelBouton == null) {
+			panelBouton = new JDesktopPane();
 
-			jDesktopPaneHaut
+			panelBouton
 					.setComponentOrientation(ComponentOrientation.LEFT_TO_RIGHT);
-			jDesktopPaneHaut.setPreferredSize(new Dimension(
+			panelBouton.setPreferredSize(new Dimension(
 					EnNomComposant.PANEL_BOUTON.getLargeurInitiale(),
 					EnNomComposant.PANEL_BOUTON.getHauteurInitiale()));
-			jDesktopPaneHaut.setMinimumSize(new Dimension(
+			panelBouton.setMinimumSize(new Dimension(
 					EnNomComposant.PANEL_BOUTON.getLargeurInitiale(),
 					EnNomComposant.PANEL_BOUTON.getHauteurInitiale()));
-			jDesktopPaneHaut.setName(EnNomComposant.PANEL_BOUTON.getLib());
-			jDesktopPaneHaut.add(getJTabbedPane(), BorderLayout.CENTER);
-			jDesktopPaneHaut.add(getJProgressBar(), null);
-			jDesktopPaneHaut.add(getJProgressBarPieceJointe(), null);
-			jDesktopPaneHaut.add(getJScrollPane3(), null);
+			panelBouton.setName(EnNomComposant.PANEL_BOUTON.getLib());
+			panelBouton.add(getJTabbedPane(), BorderLayout.CENTER);
+			panelBouton.add(getJProgressBar(), null);
+			panelBouton.add(getJProgressBarPieceJointe(), null);
+			panelBouton.add(getJScrollPane3(), null);
 		}
-		return jDesktopPaneHaut;
+		return panelBouton;
 	}
 
 	/**
-	 * This method initializes jDesktopPaneGauche
+	 * This method initializes panelTree
 	 * @return javax.swing.JDesktopPane
 	 */
 	private JDesktopPane getJDesktopPaneGauche() {
-		if (jDesktopPaneGauche == null) {
+		if (panelTree == null) {
 			BorderLayout borderLayout = new BorderLayout();
 			borderLayout.setHgap(1);
 			borderLayout.setVgap(1);
-			jDesktopPaneGauche = new JDesktopPane();
-			jDesktopPaneGauche.setName(EnNomComposant.PANEL_TREE.getLib());
-			jDesktopPaneGauche.setLayout(borderLayout);
-			jDesktopPaneGauche.setPreferredSize(new Dimension(
-					EnNomComposant.PANEL_TREE.getLargeurInitiale(),
-					EnNomComposant.PANEL_TREE.getHauteurInitiale()));
-			jDesktopPaneGauche.setMinimumSize(new Dimension(
-					EnNomComposant.PANEL_TREE.getLargeurInitiale(),
-					EnNomComposant.PANEL_TREE.getHauteurInitiale()));
-			jDesktopPaneGauche.add(getJScrollPane2(), BorderLayout.CENTER);
+			panelTree = new JDesktopPane();
+			panelTree.setName(EnNomComposant.PANEL_TREE.getLib());
+			panelTree.setLayout(borderLayout);
+			panelTree.setPreferredSize(new Dimension(EnNomComposant.PANEL_TREE
+					.getLargeurInitiale(), EnNomComposant.PANEL_TREE
+					.getHauteurInitiale()));
+			panelTree.setMinimumSize(new Dimension(EnNomComposant.PANEL_TREE
+					.getLargeurInitiale(), EnNomComposant.PANEL_TREE
+					.getHauteurInitiale()));
+			panelTree.add(getJScrollPane2(), BorderLayout.CENTER);
 		}
-		return jDesktopPaneGauche;
+		return panelTree;
 	}
 
 	/**
-	 * This method initializes jDesktopPaneDroite
+	 * This method initializes panelTableEtListe
 	 * @return javax.swing.JDesktopPane
 	 */
 	private JDesktopPane getJDesktopPaneDroite() {
-		if (jDesktopPaneDroite == null) {
-			jDesktopPaneDroite = new JDesktopPane();
-			jDesktopPaneDroite.setPreferredSize(new Dimension(
+		if (panelTableEtListe == null) {
+			panelTableEtListe = new JDesktopPane();
+			panelTableEtListe.setPreferredSize(new Dimension(
 					EnNomComposant.PANEL_TABLE_ET_LISTE.getLargeurInitiale(),
 					EnNomComposant.PANEL_TABLE_ET_LISTE.getHauteurInitiale()));
-			jDesktopPaneDroite.setMinimumSize(new Dimension(
+			panelTableEtListe.setMinimumSize(new Dimension(
 					EnNomComposant.PANEL_TABLE_ET_LISTE.getLargeurInitiale(),
 					EnNomComposant.PANEL_TABLE_ET_LISTE.getHauteurInitiale()));
-			jDesktopPaneDroite.setLayout(new BorderLayout());
-			jDesktopPaneDroite.setName(EnNomComposant.PANEL_TABLE_ET_LISTE
+			panelTableEtListe.setLayout(new BorderLayout());
+			panelTableEtListe.setName(EnNomComposant.PANEL_TABLE_ET_LISTE
 					.getLib());
-			jDesktopPaneDroite.add(getJScrollPane(), BorderLayout.CENTER);
-			jDesktopPaneDroite.add(getJList(), BorderLayout.SOUTH);
+			panelTableEtListe.add(getJScrollPane(), BorderLayout.CENTER);
+			panelTableEtListe.add(getJList(), BorderLayout.SOUTH);
 		}
-		return jDesktopPaneDroite;
+		return panelTableEtListe;
 	}
 
 	/**
-	 * This method initializes jDesktopPaneBas
+	 * This method initializes panelHTML
 	 * @return javax.swing.JDesktopPane
 	 */
 	private JDesktopPane getJDesktopPaneBas() {
-		if (jDesktopPaneBas == null) {
+		if (panelHTML == null) {
 			BorderLayout borderLayout = new BorderLayout();
 			borderLayout.setHgap(1);
 			borderLayout.setVgap(1);
-			jDesktopPaneBas = new JDesktopPane();
-			jDesktopPaneBas.setPreferredSize(new Dimension(
-					EnNomComposant.PANEL_HTML.getLargeurInitiale(),
-					EnNomComposant.PANEL_HTML.getHauteurInitiale()));
-			jDesktopPaneBas.setMinimumSize(new Dimension(
-					EnNomComposant.PANEL_HTML.getLargeurInitiale(),
-					EnNomComposant.PANEL_HTML.getHauteurInitiale()));
-			jDesktopPaneBas.setName(EnNomComposant.PANEL_HTML.getLib());
-			jDesktopPaneBas.setLayout(borderLayout);
-			jDesktopPaneBas.add(getJScrollPane1(), BorderLayout.CENTER);
+			panelHTML = new JDesktopPane();
+			panelHTML.setPreferredSize(new Dimension(EnNomComposant.PANEL_HTML
+					.getLargeurInitiale(), EnNomComposant.PANEL_HTML
+					.getHauteurInitiale()));
+			panelHTML.setMinimumSize(new Dimension(EnNomComposant.PANEL_HTML
+					.getLargeurInitiale(), EnNomComposant.PANEL_HTML
+					.getHauteurInitiale()));
+			panelHTML.setName(EnNomComposant.PANEL_HTML.getLib());
+			panelHTML.setLayout(borderLayout);
+			panelHTML.add(getJScrollPane1(), BorderLayout.CENTER);
 		}
-		return jDesktopPaneBas;
+		return panelHTML;
 	}
 
 	/**
@@ -306,7 +306,6 @@ public class Main extends JFrame {
 	private JList getJList() {
 		if (jList == null) {
 			jList = new JList();
-
 			jList.setBackground(Color.LIGHT_GRAY);
 			jList.setPreferredSize(new Dimension(50, 50));
 		}
@@ -527,7 +526,7 @@ public class Main extends JFrame {
 		super();
 		// new BDAcces();
 		initialize();
-		this.addComponentListener(new MlComposantListener(jContentPane));
+		this.addComponentListener(new MlComposantListener(panelPrincipal));
 		Thread_Verif verif = new Thread_Verif(jTree);
 		verif.start();
 		modelList = new DefaultListModel();
@@ -537,7 +536,8 @@ public class Main extends JFrame {
 		jTable.setDefaultRenderer(Date.class, new DateTimeCellRenderer());
 		tableModel = new MyTableModel(new MlListeMessage(), ColoneModel);
 		jTable.setModel(tableModel);
-		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jList));
+		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jList,
+				jProgressBarReleve, jTextArea, jScrollPane3));
 
 		jMenuContact.addActionListener(new MlActionMain());
 		jTree.addMouseListener(new MlActionJtree(jTree, jTable));
@@ -557,8 +557,8 @@ public class Main extends JFrame {
 				jScrollPane3));
 		btEnvoyer.addActionListener(new MlActionMain(jTree, jProgressBarReleve,
 				jProgressBarPieceJointe, jTextArea, jScrollPane3));
-		btSupprMessage
-				.addActionListener(new MlActionPopupJTable(jTable, jList));
+		btSupprMessage.addActionListener(new MlActionPopupJTable(jTable, jList,
+				jProgressBarReleve, jTextArea, jScrollPane3));
 		jMenuCompte.addActionListener(new MlActionMain(this, jTree));
 	}
 
@@ -594,22 +594,22 @@ public class Main extends JFrame {
 	}
 
 	/**
-	 * This method initializes jContentPane
+	 * This method initializes panelPrincipal
 	 * @return javax.swing.JPanel
 	 */
 	private JPanel getJContentPane() {
-		if (jContentPane == null) {
+		if (panelPrincipal == null) {
 			BorderLayout borderLayout1 = new BorderLayout();
 			borderLayout1.setHgap(3);
 			borderLayout1.setVgap(3);
-			jContentPane = new JPanel();
-			jContentPane.setLayout(borderLayout1);
-			jContentPane.add(getJDesktopPaneHaut(), BorderLayout.NORTH);
-			jContentPane.add(getJDesktopPaneGauche(), BorderLayout.WEST);
-			jContentPane.add(getJDesktopPaneDroite(), BorderLayout.CENTER);
-			jContentPane.add(getJDesktopPaneBas(), BorderLayout.SOUTH);
+			panelPrincipal = new JPanel();
+			panelPrincipal.setLayout(borderLayout1);
+			panelPrincipal.add(getJDesktopPaneHaut(), BorderLayout.NORTH);
+			panelPrincipal.add(getJDesktopPaneGauche(), BorderLayout.WEST);
+			panelPrincipal.add(getJDesktopPaneDroite(), BorderLayout.CENTER);
+			panelPrincipal.add(getJDesktopPaneBas(), BorderLayout.SOUTH);
 		}
-		return jContentPane;
+		return panelPrincipal;
 	}
 
 	private JMenuBar getJJMenuBar() {

@@ -76,15 +76,39 @@ public class thread_SynchroImap extends Thread {
 
 	}
 
-	public static void SupprMessage(MlListeMessage p_listeMessageASupprimer) {
+	public void SupprMessage(MlListeMessage p_listeMessageASupprimer) {
 		MlCompteMail cpt = new MlCompteMail(p_listeMessageASupprimer.get(0)
 				.getIdCompte());
-		new MajServeurGmail(p_listeMessageASupprimer, cpt, progress, true);
+		switch (cpt.getTypeCompte()) {
+			case GMAIL:
+				new MajServeurGmail(p_listeMessageASupprimer, cpt, progress,
+						textArea, true);
+				break;
+			case HOTMAIL:
+				break;
+			case IMAP:
+				break;
+			case POP:
+				break;
+		}
+
 	}
 
-	public static void DeplaceMessage(MlListeMessage p_listMess) {
+	public void DeplaceMessageVersCorbeille(MlListeMessage p_listMess) {
 		MlCompteMail cpt = new MlCompteMail(p_listMess.get(0).getIdCompte());
-		new MajServeurGmail(p_listMess, cpt, progress, false);
+		switch (cpt.getTypeCompte()) {
+			case GMAIL:
+				new MajServeurGmail(p_listMess, cpt, progress, textArea, false);
+				break;
+
+			case HOTMAIL:
+				break;
+			case POP:
+				break;
+			case IMAP:
+
+				break;
+		}
 
 	}
 }

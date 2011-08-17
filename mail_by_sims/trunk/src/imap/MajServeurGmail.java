@@ -14,6 +14,7 @@ import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.swing.JProgressBar;
+import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import mdl.MlListeMessage;
@@ -28,14 +29,16 @@ public class MajServeurGmail {
 	private MlListeMessage listeMessageASupprimer;
 	private final boolean isSuppr;
 	private final MlCompteMail compteMail;
+	private final JTextArea text;
 
 	public MajServeurGmail(MlListeMessage p_listeMessageASupprimer,
 			MlCompteMail p_compteMail, JProgressBar p_progress,
-			boolean p_SupprOuDepl) {
+			JTextArea p_text, boolean p_SupprOuDepl) {
 		this.listeMessageASupprimer = p_listeMessageASupprimer;
 		this.compteMail = p_compteMail;
 		this.progressBar = p_progress;
 		this.isSuppr = p_SupprOuDepl;
+		this.text = p_text;
 		if (isSuppr) {
 			try {
 				LanceSuppression();
@@ -65,8 +68,14 @@ public class MajServeurGmail {
 		store.connect(compteMail.getServeurReception(), compteMail
 				.getUserName(), compteMail.getPassword());
 		IMAPFolder fldr = null;
+		int nbMessage = 0;
 		for (MlMessage m : listeMessageASupprimer) {
-
+			progressBar.setValue((100 * nbMessage++)
+					/ listeMessageASupprimer.size());
+			progressBar.setString((100 * nbMessage)
+					/ listeMessageASupprimer.size() + " %");
+			methodeImap.afficheText(text, "supression du message " + nbMessage
+					+ " sur " + listeMessageASupprimer.size());
 			if (EnDossierBase.RECEPTION.getLib().equals(m.getNomDossier())) {
 				// on ouvre le repertoire "INBOX"
 				fldr = (IMAPFolder) store.getFolder("INBOX");

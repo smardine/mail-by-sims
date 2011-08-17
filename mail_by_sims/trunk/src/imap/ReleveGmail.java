@@ -75,104 +75,109 @@ public class ReleveGmail {
 					"Synchronisation des messages supprimés");
 			methodeImap.miseAJourMessage(props, p_idCompte, p_progress, host,
 					user, password, textArea);
-		}
+		} else {
+			Session session = Session.getInstance(props);
 
-		Session session = Session.getInstance(props);
+			// Get a Store object
+			Store store = null;
+			try {
+				store = session.getStore("imaps");
+				store.connect(host, user, password);
+			} catch (NoSuchProviderException e) {
+				messageUtilisateur
+						.affMessageException(e, "Erreur de connexion");
+				return;
+			} catch (MessagingException e) {
+				messageUtilisateur
+						.affMessageException(e, "Erreur de connexion");
+				return;
+			}
+			// releve de la boite de reception
+			IMAPFolder inbox = null;
+			try {
+				methodeImap.afficheText(textArea,
+						"Ouverture de la boite de reception");
+				inbox = (IMAPFolder) store.getFolder("INBOX");
+			} catch (MessagingException e1) {
+				messageUtilisateur.affMessageException(e1,
+						"Impossible d'acceder à la boite de reception");
+			}
+			int id_Dossier;
+			if (inbox != null) {
 
-		// Get a Store object
-		Store store = null;
-		try {
-			store = session.getStore("imaps");
-			store.connect(host, user, password);
-		} catch (NoSuchProviderException e) {
-			messageUtilisateur.affMessageException(e, "Erreur de connexion");
-			return;
-		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e, "Erreur de connexion");
-			return;
-		}
-		// releve de la boite de reception
-		IMAPFolder inbox = null;
-		try {
-			methodeImap.afficheText(textArea,
-					"Ouverture de la boite de reception");
-			inbox = (IMAPFolder) store.getFolder("INBOX");
-		} catch (MessagingException e1) {
-			messageUtilisateur.affMessageException(e1,
-					"Impossible d'acceder à la boite de reception");
-		}
-		int id_Dossier;
-		if (inbox != null) {
+				id_Dossier = bd.getIdDossier(EnDossierBase.RECEPTION.getLib(),
+						p_idCompte);
 
-			id_Dossier = bd.getIdDossier(EnDossierBase.RECEPTION.getLib(),
-					p_idCompte);
+				methodeImap.releveImap(props, p_idCompte, p_progress,
+						p_progressPJ, id_Dossier, inbox, textArea);
+				// on recupere ensuite les sous dossiers de la boite de
+				// reception
+				IMAPFolder[] lstFolder = methodeImap.getSousDossierIMAP(store,
+						inbox.getFullName());
 
-			methodeImap.releveImap(props, p_idCompte, p_progress, p_progressPJ,
-					id_Dossier, inbox, textArea);
-			// on recupere ensuite les sous dossiers de la boite de reception
+				for (IMAPFolder folder : lstFolder) {
+					int idSousDossier = bd.getIdDossier(folder.getName(),
+							p_idCompte);
+					if (idSousDossier == (-1)) {// si le sous dossier est
+												// inconnu
+						// de la base, on en créer un
+						bd.createNewDossier(p_idCompte, id_Dossier, folder
+								.getName());
+						idSousDossier = bd.getIdDossier(folder.getName(),
+								p_idCompte);
+					}
+					methodeImap.releveImap(props, p_idCompte, p_progress,
+							p_progressPJ, idSousDossier, folder, textArea);
+
+				}
+
+			}
+
+			// recuperation des autres dossiers:envoyé, brouillons, spam,
+			// corbeille
 			IMAPFolder[] lstFolder = methodeImap.getSousDossierIMAP(store,
-					inbox.getFullName());
+					"[Gmail]");
 
 			for (IMAPFolder folder : lstFolder) {
-				int idSousDossier = bd.getIdDossier(folder.getName(),
-						p_idCompte);
-				if (idSousDossier == (-1)) {// si le sous dossier est inconnu
-					// de la base, on en créer un
-					bd.createNewDossier(p_idCompte, id_Dossier, folder
-							.getName());
-					idSousDossier = bd.getIdDossier(folder.getName(),
+				if (folder.getFullName().equals("[Gmail]/Drafts") || //
+						folder.getFullName().equals("[Gmail]/Brouillons")) {
+					id_Dossier = bd.getIdDossier(EnDossierBase.BROUILLON
+							.getLib(), p_idCompte);
+					methodeImap.releveImap(props, p_idCompte, p_progress,
+							p_progressPJ, id_Dossier, folder, textArea);
+				} else if (folder.getFullName().equals("[Gmail]/Sent Mail") || //
+						folder.getFullName().equals("[Gmail]/Messages envoyés")) {
+					id_Dossier = bd.getIdDossier(
+							EnDossierBase.ENVOYES.getLib(), p_idCompte);
+					methodeImap.releveImap(props, p_idCompte, p_progress,
+							p_progressPJ, id_Dossier, folder, textArea);
+				} else if (folder.getFullName().equals("[Gmail]/Spam")) {
+					id_Dossier = bd.getIdDossier(EnDossierBase.SPAM.getLib(),
 							p_idCompte);
+					methodeImap.releveImap(props, p_idCompte, p_progress,
+							p_progressPJ, id_Dossier, folder, textArea);
+				} else if (folder.getFullName().equals("[Gmail]/Trash") || //
+						folder.getFullName().equals("[Gmail]/Corbeille")) {
+					id_Dossier = bd.getIdDossier(EnDossierBase.CORBEILLE
+							.getLib(), p_idCompte);
+					methodeImap.releveImap(props, p_idCompte, p_progress,
+							p_progressPJ, id_Dossier, folder, textArea);
 				}
-				methodeImap.releveImap(props, p_idCompte, p_progress,
-						p_progressPJ, idSousDossier, folder, textArea);
 
 			}
 
-		}
-
-		// recuperation des autres dossiers:envoyé, brouillons, spam, corbeille
-		IMAPFolder[] lstFolder = methodeImap.getSousDossierIMAP(store,
-				"[Gmail]");
-
-		for (IMAPFolder folder : lstFolder) {
-			if (folder.getFullName().equals("[Gmail]/Drafts") || //
-					folder.getFullName().equals("[Gmail]/Brouillons")) {
-				id_Dossier = bd.getIdDossier(EnDossierBase.BROUILLON.getLib(),
-						p_idCompte);
-				methodeImap.releveImap(props, p_idCompte, p_progress,
-						p_progressPJ, id_Dossier, folder, textArea);
-			} else if (folder.getFullName().equals("[Gmail]/Sent Mail") || //
-					folder.getFullName().equals("[Gmail]/Messages envoyés")) {
-				id_Dossier = bd.getIdDossier(EnDossierBase.ENVOYES.getLib(),
-						p_idCompte);
-				methodeImap.releveImap(props, p_idCompte, p_progress,
-						p_progressPJ, id_Dossier, folder, textArea);
-			} else if (folder.getFullName().equals("[Gmail]/Spam")) {
-				id_Dossier = bd.getIdDossier(EnDossierBase.SPAM.getLib(),
-						p_idCompte);
-				methodeImap.releveImap(props, p_idCompte, p_progress,
-						p_progressPJ, id_Dossier, folder, textArea);
-			} else if (folder.getFullName().equals("[Gmail]/Trash") || //
-					folder.getFullName().equals("[Gmail]/Corbeille")) {
-				id_Dossier = bd.getIdDossier(EnDossierBase.CORBEILLE.getLib(),
-						p_idCompte);
-				methodeImap.releveImap(props, p_idCompte, p_progress,
-						p_progressPJ, id_Dossier, folder, textArea);
+			try {
+				methodeImap.afficheText(textArea,
+						"Releve de la boite Gmail terminée");
+				store.close();
+			} catch (MessagingException e) {
+				messageUtilisateur.affMessageException(e, "Erreur connexion");
 			}
 
-		}
-
-		try {
 			methodeImap.afficheText(textArea,
-					"Releve de la boite Gmail terminée");
-			store.close();
-		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e, "Erreur connexion");
+					"Fin des opérations sur la boite GMAIL");
+			bd.closeConnexion();
 		}
-
-		methodeImap.afficheText(textArea,
-				"Fin des opérations sur la boite GMAIL");
-		bd.closeConnexion();
 
 	}
 

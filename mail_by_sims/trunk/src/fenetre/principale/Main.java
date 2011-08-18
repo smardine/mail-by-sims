@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.util.Date;
@@ -39,6 +40,7 @@ import fenetre.EnTitreFenetre;
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.MlAction.EnActionMain;
 import fenetre.principale.MlAction.MlActionMain;
+import fenetre.principale.MlAction.MlActionMainCombo;
 import fenetre.principale.jTable.DateTimeCellRenderer;
 import fenetre.principale.jTable.MlActionJtable;
 import fenetre.principale.jTable.MlActionPopupJTable;
@@ -91,6 +93,8 @@ public class Main extends JFrame {
 	private JProgressBar jProgressBarPieceJointe = null;
 	private JTextArea jTextArea = null;
 	private JScrollPane jScrollPane3 = null;
+	private JButton jButton = null;
+	private JButton jButton1 = null;
 
 	/**
 	 * This method initializes panelBouton
@@ -193,7 +197,7 @@ public class Main extends JFrame {
 		if (btNewMessage == null) {
 			btNewMessage = new JButton();
 			btNewMessage.setText("");
-			btNewMessage.setBounds(new Rectangle(150, 0, 50, 50));
+			btNewMessage.setBounds(new Rectangle(190, 0, 50, 50));
 			btNewMessage.setIcon(new ImageIcon(getClass().getResource(
 					"/nouveau_message.png")));
 		}
@@ -209,7 +213,7 @@ public class Main extends JFrame {
 			btSupprMessage = new JButton();
 			btSupprMessage.setText("");
 			btSupprMessage.setActionCommand(EnActionMain.SUPPRIMER.getLib());
-			btSupprMessage.setBounds(new Rectangle(200, 0, 50, 50));
+			btSupprMessage.setBounds(new Rectangle(240, 0, 50, 50));
 			btSupprMessage.setIcon(new ImageIcon(getClass().getResource(
 					"/supprimer.png")));
 		}
@@ -244,7 +248,7 @@ public class Main extends JFrame {
 			jTree = new JTree(arbo);
 			jTree.setShowsRootHandles(true);
 			jTree.setRootVisible(false);
-			jTree.setToggleClickCount(1);
+			jTree.setToggleClickCount(2);
 			jTree.setFont(new Font("Perpetua", Font.BOLD, 12));
 			jTree.setExpandsSelectedPaths(true);
 		}
@@ -376,7 +380,7 @@ public class Main extends JFrame {
 			btRecevoir = new JButton();
 			btRecevoir.setIcon(new ImageIcon(getClass().getResource(
 					"/recevoir.png")));
-			btRecevoir.setBounds(new Rectangle(50, 0, 50, 50));
+			btRecevoir.setBounds(new Rectangle(70, 0, 50, 50));
 			btRecevoir.setActionCommand(EnActionMain.RECEVOIR.getLib());
 
 		}
@@ -392,7 +396,7 @@ public class Main extends JFrame {
 			btEnvoyer = new JButton();
 			btEnvoyer.setIcon(new ImageIcon(getClass().getResource(
 					"/envoyer.png")));
-			btEnvoyer.setBounds(new Rectangle(100, 0, 50, 50));
+			btEnvoyer.setBounds(new Rectangle(140, 0, 50, 50));
 			btEnvoyer.setActionCommand(EnActionMain.ENVOYER.getLib());
 		}
 		return btEnvoyer;
@@ -417,8 +421,8 @@ public class Main extends JFrame {
 	private JTabbedPane getJTabbedPane() {
 		if (jTabbedPane == null) {
 			jTabbedPane = new JTabbedPane();
-			jTabbedPane.setBounds(new Rectangle(0, 0, 5 * 50,
-					EnNomComposant.PANEL_BOUTON.getHauteurInitiale()));
+			jTabbedPane.setLocation(new Point(0, 0));
+			jTabbedPane.setSize(new Dimension(290, 75));
 			jTabbedPane
 					.addTab("Gestion Messages", null, getJPanel(),
 							"Acces aux fonction d'envoi, reception, synchronisation...");
@@ -439,6 +443,8 @@ public class Main extends JFrame {
 			jPanel.add(getJButtonRecevoir(), null);
 			jPanel.add(getJButtonEnvoyer(), null);
 			jPanel.add(getJButtonNewMessage(), null);
+			jPanel.add(getJButton(), null);
+			jPanel.add(getJButton1(), null);
 		}
 		return jPanel;
 	}
@@ -450,7 +456,7 @@ public class Main extends JFrame {
 	private JProgressBar getJProgressBar() {
 		if (jProgressBarReleve == null) {
 			jProgressBarReleve = new JProgressBar();
-			jProgressBarReleve.setBounds(new Rectangle(255, 8, 238, 23));
+			jProgressBarReleve.setBounds(new Rectangle(296, 2, 238, 23));
 			jProgressBarReleve.setStringPainted(true);
 			jProgressBarReleve.setBackground(new Color(238, 238, 238));
 			jProgressBarReleve.setForeground(Color.blue);
@@ -466,7 +472,7 @@ public class Main extends JFrame {
 	private JProgressBar getJProgressBarPieceJointe() {
 		if (jProgressBarPieceJointe == null) {
 			jProgressBarPieceJointe = new JProgressBar();
-			jProgressBarPieceJointe.setBounds(new Rectangle(255, 41, 239, 24));
+			jProgressBarPieceJointe.setBounds(new Rectangle(294, 47, 239, 24));
 			jProgressBarPieceJointe.setStringPainted(true);
 
 			jProgressBarPieceJointe.setVisible(false);
@@ -498,11 +504,39 @@ public class Main extends JFrame {
 	private JScrollPane getJScrollPane3() {
 		if (jScrollPane3 == null) {
 			jScrollPane3 = new JScrollPane();
-			jScrollPane3.setBounds(new Rectangle(496, 2, 283, 70));
+			jScrollPane3.setBounds(new Rectangle(534, 2, 245, 70));
 			jScrollPane3.setVisible(false);
 			jScrollPane3.setViewportView(getJTextArea());
 		}
 		return jScrollPane3;
+	}
+
+	/**
+	 * This method initializes jButton
+	 * @return javax.swing.JButton
+	 */
+	private JButton getJButton() {
+		if (jButton == null) {
+			jButton = new JButton();
+			jButton.setBounds(new Rectangle(50, 0, 20, 50));
+			jButton.setIcon(new ImageIcon(getClass().getResource(
+					"/img_fleche_bas.png")));
+		}
+		return jButton;
+	}
+
+	/**
+	 * This method initializes jButton1
+	 * @return javax.swing.JButton
+	 */
+	private JButton getJButton1() {
+		if (jButton1 == null) {
+			jButton1 = new JButton();
+			jButton1.setBounds(new Rectangle(120, 0, 20, 50));
+			jButton1.setIcon(new ImageIcon(getClass().getResource(
+					"/img_fleche_bas.png")));
+		}
+		return jButton1;
 	}
 
 	/**
@@ -529,6 +563,7 @@ public class Main extends JFrame {
 		this.addComponentListener(new MlComposantListener(panelPrincipal));
 		Thread_Verif verif = new Thread_Verif(jTree);
 		verif.start();
+
 		modelList = new DefaultListModel();
 		jList.setModel(modelList);
 		ColoneModel = new XTableColumnModel();
@@ -559,7 +594,14 @@ public class Main extends JFrame {
 				jProgressBarPieceJointe, jTextArea, jScrollPane3));
 		btSupprMessage.addActionListener(new MlActionPopupJTable(jTable, jList,
 				jProgressBarReleve, jTextArea, jScrollPane3));
-		jMenuCompte.addActionListener(new MlActionMain(this, jTree));
+		jMenuCompte.addActionListener(new MlActionMain(jTree));
+		jButton.addMouseListener(new MlActionMainCombo(false,
+				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
+				jScrollPane3));
+		jButton1.addMouseListener(new MlActionMainCombo(true,
+				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
+				jScrollPane3));
+
 	}
 
 	/**

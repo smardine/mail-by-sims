@@ -6,6 +6,7 @@ import imap.util.messageUtilisateur;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JList;
 import javax.swing.JProgressBar;
@@ -37,18 +38,58 @@ public class MlActionPopupJTable implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		String actionCommand = e.getActionCommand();
+
 		EnActionMain actionMain = EnActionMain.getEnumFromLib(actionCommand);
 		switch (actionMain) {
 			case SUPPRIMER:
 				traiteSupprimer();
 				break;
 			case CREER_REGLE:
+				traiteCreerRegle();
 				break;
 			case MARQUER_SPAM:
+				traiteMarquerSpam();
 				break;
 
 			default:
 				break;
+		}
+
+	}
+
+	private void traiteCreerRegle() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private void traiteMarquerSpam() {
+		ArrayList<String> lst = new ArrayList<String>();
+		int idRow = table.getSelectedRow();
+
+		Integer idMessage = (Integer) table.getModel().getValueAt(idRow, 0);
+		// le n° du message (meme si il est caché).
+		// Date dateReception = (Date) table.getModel().getValueAt(
+		// idRow, 1);// la date de reception
+
+		String expediteur = (String) table.getModel().getValueAt(idRow, 2);// l'expediteur
+
+		// String sujet = (String) table.getModel()
+		// .getValueAt(idRow, 3);// le
+
+		lst.add("traiter l'expediteur " + expediteur + " comme indésirable");
+		lst.add("Traiter le nom de dommaine "
+				+ expediteur.substring(expediteur.lastIndexOf("@"))
+				+ " comme indésirable");
+		String choix = messageUtilisateur.afficheChoixMultiple(
+				"Courrier indésirable", "Que voulez-vous faire", lst);
+
+		if (("traiter l'expediteur " + expediteur + " comme indésirable")
+				.equals(choix)) {
+
+		} else if (("Traiter le nom de dommaine "
+				+ expediteur.substring(expediteur.lastIndexOf("@")) + " comme indésirable")
+				.equals(choix)) {
+
 		}
 
 	}

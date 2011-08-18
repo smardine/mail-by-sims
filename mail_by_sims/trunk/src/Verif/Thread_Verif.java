@@ -14,6 +14,7 @@ public class Thread_Verif extends Thread {
 
 	public Thread_Verif(JTree p_jTree) {
 		this.jTree = p_jTree;
+
 	}
 
 	@Override
@@ -21,7 +22,7 @@ public class Thread_Verif extends Thread {
 		BDRequette bd = new BDRequette();
 		int nbRecord = bd.getNbEnregistrementFromTable(EnTable.COMPTES,
 				EnStructureTable.COMPTES_NOM);
-		bd.closeConnexion();
+
 		if (nbRecord == 0) {
 			final int creerCompte = JOptionPane.showConfirmDialog(null,
 					"Aucun comptes n'est actuellement configuré\n\r"
@@ -31,6 +32,8 @@ public class Thread_Verif extends Thread {
 				new GestionCompte(jTree);
 			}// sinon, on ne fait rien
 		}
+
+		bd.closeConnexion();
 
 	}
 

@@ -3,7 +3,6 @@ package fenetre.principale.MlAction;
 import imap.thread_SynchroImap;
 import importMail.thread_Import;
 
-import java.awt.Window;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -15,19 +14,19 @@ import javax.swing.JTree;
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.OpenWithDefaultViewer;
+import bdd.BDRequette;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class MlActionMain implements ActionListener {
 
-	private Window fenetre;
 	private JTree tree;
 	private JProgressBar pbReleve;
 	private JProgressBar pbPieceJointe;
 	private JTextArea text;
 	private JScrollPane scrollPane;
 
-	public MlActionMain(Window p_fenetre, JTree p_treeCompte) {
-		this.fenetre = p_fenetre;
+	public MlActionMain(JTree p_treeCompte) {
+
 		this.tree = p_treeCompte;
 	}
 
@@ -71,16 +70,22 @@ public class MlActionMain implements ActionListener {
 			t.start();
 		}
 		if (e.getActionCommand().equals(EnActionMain.ENVOYER_RECEVOIR.getLib())) {
+			BDRequette bd = new BDRequette();
+
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, true);
+					pbPieceJointe, text, scrollPane, true, bd
+							.getListeDeComptes());
 			t.start();
-			// new ReleveMessagerie(true);
+			bd.closeConnexion();
+
 		}
 		if (e.getActionCommand().equals(EnActionMain.RECEVOIR.getLib())) {
-			// new ReleveMessagerie(false);
+			BDRequette bd = new BDRequette();
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, false);
+					pbPieceJointe, text, scrollPane, false, bd
+							.getListeDeComptes());
 			t.start();
+			bd.closeConnexion();
 		}
 
 	}

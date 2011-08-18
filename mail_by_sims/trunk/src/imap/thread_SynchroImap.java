@@ -21,59 +21,86 @@ public class thread_SynchroImap extends Thread {
 	private final boolean isSynchro;
 	private final JProgressBar progressPieceJointe;
 	private final JScrollPane scrollPane;
+	private final ArrayList<String> listeDeCompte;
 
 	public thread_SynchroImap(JProgressBar p_progressBarReleve,
 			JProgressBar p_progressPieceJointe, JTextArea jTextArea,
-			JScrollPane p_scroll, boolean p_isSynchro) {// ,
+			JScrollPane p_scroll, boolean p_isSynchro,
+			ArrayList<String> p_listDeCompte) {// ,
 
 		this.textArea = jTextArea;
 		thread_SynchroImap.progress = p_progressBarReleve;
 		this.progressPieceJointe = p_progressPieceJointe;
 		this.isSynchro = p_isSynchro;
 		this.scrollPane = p_scroll;
+		this.listeDeCompte = p_listDeCompte;
 
 	}
 
 	@Override
 	public void run() {
-		textArea.setText("");
-		textArea.setVisible(true);
-		scrollPane.setVisible(true);
-		progress.setVisible(true);
+		initComposantVisuel(true);
 		BDRequette bd = new BDRequette();
-		ArrayList<String> lst = bd.getListeDeComptes();
 
-		for (String s : lst) {
+		for (String s : listeDeCompte) {
 			int idCpt = bd.getIdComptes(s);
 			MlCompteMail cpt = new MlCompteMail(idCpt);
-
-			switch (cpt.getTypeCompte()) {
-				case POP:
-					methodeImap.afficheText(textArea, "Releve du compte " + s);
-					new ClientMail(cpt, progress, progressPieceJointe, textArea);
-					break;
-				case GMAIL:
-					methodeImap.afficheText(textArea, "Releve du compte " + s);
-					new ReleveGmail(idCpt, cpt.getUserName(),
-							cpt.getPassword(), cpt.getServeurReception(),
-							progress, progressPieceJointe, textArea, isSynchro);
-					break;
-				case HOTMAIL:
-					methodeImap.afficheText(textArea, "Releve du compte " + s);
-					new ReleveHotmail(idCpt, cpt.getUserName(), cpt
-							.getPassword(), cpt.getServeurReception(),
-							progress, progressPieceJointe, textArea, isSynchro);
-					break;
-				case IMAP:
-					break;
-			}
+			definiCompteARelever(cpt);
 
 		}
 		bd.closeConnexion();
-		progress.setVisible(false);
-		textArea.setVisible(false);
-		scrollPane.setVisible(false);
+		initComposantVisuel(false);
 
+	}
+
+	/**
+	 * @param cpt
+	 */
+	private void definiCompteARelever(MlCompteMail cpt) {
+		switch (cpt.getTypeCompte()) {
+			case POP:
+				methodeImap.afficheText(textArea, "Releve du compte "
+						+ cpt.getNomCompte());
+				new ClientMail(cpt, progress, progressPieceJointe, textArea);
+				break;
+			case GMAIL:
+				methodeImap.afficheText(textArea, "Releve du compte "
+						+ cpt.getNomCompte());
+				new ReleveGmail(cpt.getIdCompte(), cpt.getUserName(), cpt
+						.getPassword(), cpt.getServeurReception(), progress,
+						progressPieceJointe, textArea, isSynchro);
+				break;
+			case HOTMAIL:
+				methodeImap.afficheText(textArea, "Releve du compte "
+						+ cpt.getNomCompte());
+				new ReleveHotmail(cpt.getIdCompte(), cpt.getUserName(), cpt
+						.getPassword(), cpt.getServeurReception(), progress,
+						progressPieceJointe, textArea, isSynchro);
+				break;
+			case IMAP:
+				break;
+		}
+	}
+
+	public void ReleveOuSynchroParticulier(MlCompteMail p_compteMail) {
+		initComposantVisuel(true);
+
+		definiCompteARelever(p_compteMail);
+
+		initComposantVisuel(false);
+
+	}
+
+	/**
+	 * 
+	 */
+	private void initComposantVisuel(boolean p_visible) {
+		textArea.setText("");
+		progress.setValue(0);
+		progress.setString("");
+		textArea.setVisible(p_visible);
+		scrollPane.setVisible(p_visible);
+		progress.setVisible(p_visible);
 	}
 
 	public void SupprMessage(MlListeMessage p_listeMessageASupprimer) {

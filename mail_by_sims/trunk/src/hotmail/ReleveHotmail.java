@@ -23,7 +23,7 @@ public class ReleveHotmail {
 
 	private final String user;
 	private final String password;
-	private final String host;
+	// private final String host;
 	private final int idCompte;
 	private final JProgressBar progressBar;
 	private final boolean isSynchro;
@@ -31,13 +31,13 @@ public class ReleveHotmail {
 	private final JProgressBar progressPJ;
 
 	public ReleveHotmail(int p_idCpt, String p_user, String p_password,
-			String p_host, JProgressBar progress,
+	/* String p_host, */JProgressBar progress,
 			JProgressBar p_progressPieceJointe, JTextArea p_textArea,
 			boolean p_isSynchro) {
 
 		this.user = p_user;
 		this.password = p_password;
-		this.host = p_host;
+		// this.host = p_host;
 		this.idCompte = p_idCpt;
 		this.progressBar = progress;
 		this.textArea = p_textArea;

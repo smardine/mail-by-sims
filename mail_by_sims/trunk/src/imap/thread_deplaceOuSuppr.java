@@ -5,8 +5,6 @@ import fenetre.principale.jTable.MlActionJtable;
 import fenetre.principale.jTable.MyTableModel;
 import imap.util.methodeImap;
 
-import java.util.Date;
-
 import javax.swing.JList;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -79,14 +77,14 @@ public class thread_deplaceOuSuppr extends Thread {
 			Integer idMessage = (Integer) table.getModel().getValueAt(
 					selectedLine, 0);
 			// le n° du message (meme si il est caché).
-			Date dateReception = (Date) table.getModel().getValueAt(
-					selectedLine, 1);// la date de reception
+			// Date dateReception = (Date) table.getModel().getValueAt(
+			// selectedLine, 1);// la date de reception
 
-			String expediteur = (String) table.getModel().getValueAt(
-					selectedLine, 2);// l'expediteur
+			// String expediteur = (String) table.getModel().getValueAt(
+			// selectedLine, 2);// l'expediteur
 
-			String sujet = (String) table.getModel()
-					.getValueAt(selectedLine, 3);// le
+			// String sujet = (String) table.getModel()
+			// .getValueAt(selectedLine, 3);// le
 
 			boolean isDeplacementVersCorbeille = bd
 					.verifieNecessiteDeplacementCorbeille(idMessage);

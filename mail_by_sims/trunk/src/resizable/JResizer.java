@@ -29,6 +29,11 @@ import javax.swing.event.MouseInputListener;
  */
 public class JResizer extends JComponent {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1270756471569126273L;
+
 	public JResizer(Component comp) {
 		this(comp, new ResizableBorder(6));
 	}
@@ -39,6 +44,7 @@ public class JResizer extends JComponent {
 		setBorder(border);
 	}
 
+	@Override
 	public void setBorder(Border border) {
 		removeMouseListener(resizeListener);
 		removeMouseMotionListener(resizeListener);
@@ -58,11 +64,13 @@ public class JResizer extends JComponent {
 	}
 
 	MouseInputListener resizeListener = new MouseInputAdapter() {
+		@Override
 		public void mouseMoved(MouseEvent me) {
 			ResizableBorder border = (ResizableBorder) getBorder();
 			setCursor(Cursor.getPredefinedCursor(border.getCursor(me)));
 		}
 
+		@Override
 		public void mouseExited(MouseEvent mouseEvent) {
 			setCursor(Cursor.getDefaultCursor());
 		}
@@ -70,12 +78,14 @@ public class JResizer extends JComponent {
 		private int cursor;
 		private Point startPos = null;
 
+		@Override
 		public void mousePressed(MouseEvent me) {
 			ResizableBorder border = (ResizableBorder) getBorder();
 			cursor = border.getCursor(me);
 			startPos = me.getPoint();
 		}
 
+		@Override
 		public void mouseDragged(MouseEvent me) {
 			if (startPos != null) {
 				int dx = me.getX() - startPos.x;
@@ -136,6 +146,7 @@ public class JResizer extends JComponent {
 			}
 		}
 
+		@Override
 		public void mouseReleased(MouseEvent mouseEvent) {
 			startPos = null;
 		}

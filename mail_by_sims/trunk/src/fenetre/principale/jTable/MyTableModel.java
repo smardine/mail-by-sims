@@ -10,7 +10,6 @@ import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.RecupDate;
 import bdd.BDRequette;
-import fenetre.principale.EnNomComposant;
 
 public class MyTableModel extends AbstractTableModel {
 	/**
@@ -43,8 +42,8 @@ public class MyTableModel extends AbstractTableModel {
 		TableColumn columnPieceJointe = coloneModel.getColumn(4);
 		TableColumn columnStatus = coloneModel.getColumn(5);
 
-		int largeurJTable = EnNomComposant.PANEL_TABLE_ET_LISTE
-				.getLargeurInitiale();
+		// int largeurJTable = EnNomComposant.PANEL_TABLE_ET_LISTE
+		// .getLargeurInitiale();
 
 		columnId.setMinWidth(0);
 		columnId.setMaxWidth(0);

@@ -10,8 +10,12 @@ import javax.swing.JPanel;
 
 public class ResizableComponent extends JFrame {
 
-	private JPanel panel = new JPanel(null);
-	private JResizer resizer;
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4461353426862165077L;
+	private final JPanel panel = new JPanel(null);
+	private final JResizer resizer;
 
 	public ResizableComponent() {
 
@@ -29,6 +33,7 @@ public class ResizableComponent extends JFrame {
 		setLocationRelativeTo(null);
 
 		addMouseListener(new MouseAdapter() {
+			@Override
 			public void mousePressed(MouseEvent me) {
 
 				requestFocus();

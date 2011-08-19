@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry excluding="fenetre/TreeExpandRowAndMakeRowVisible.java|JTree/TreeExpandRowAndMakeRowVisible.java|layout/BoxLayoutDemo2.java|html/gui.java|html/fetchMail.java|fenetre/test.java|fenetre/test1.java|fenetre/test2.java|fenetre/test3.java|fenetre/test4.java|jseparator/|Mail/|fenetre/principale/RightClick.java|fenetre/principale/DocumentViewer.java|fenetre/principale/Main_old.java|fenetre/principale/test.java|fenetre/ReleveMessagerie.java|fenetre/principale/MlAction/MlActionBouton.java" kind="src" path="src"/>
+	<classpathentry excluding="fenetre/TreeExpandRowAndMakeRowVisible.java|JTree/TreeExpandRowAndMakeRowVisible.java|layout/BoxLayoutDemo2.java|html/gui.java|html/fetchMail.java|fenetre/test.java|fenetre/test1.java|fenetre/test2.java|fenetre/test3.java|fenetre/test4.java|jseparator/|Mail/|fenetre/principale/RightClick.java|fenetre/principale/DocumentViewer.java|fenetre/principale/Main_old.java|fenetre/principale/test.java|fenetre/ReleveMessagerie.java|fenetre/principale/MlAction/MlActionBouton.java|resizable/ComponentEventDemo.java" kind="src" path="src"/>
 	<classpathentry kind="src" path="Images"/>
-	<classpathentry excluding="libdeltasync/" kind="src" path="lib"/>
-	<classpathentry kind="src" path="lib/libdeltasync"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/activation.jar"/>
 	<classpathentry kind="lib" path="lib/jaybird_full_2_1_6.jar"/>

@@ -66,7 +66,7 @@ public class MlActionPopupJTable implements ActionListener {
 		ArrayList<String> lst = new ArrayList<String>();
 		int idRow = table.getSelectedRow();
 
-		Integer idMessage = (Integer) table.getModel().getValueAt(idRow, 0);
+		// Integer idMessage = (Integer) table.getModel().getValueAt(idRow, 0);
 		// le n° du message (meme si il est caché).
 		// Date dateReception = (Date) table.getModel().getValueAt(
 		// idRow, 1);// la date de reception

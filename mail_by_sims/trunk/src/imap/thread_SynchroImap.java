@@ -74,8 +74,8 @@ public class thread_SynchroImap extends Thread {
 				methodeImap.afficheText(textArea, "Releve du compte "
 						+ cpt.getNomCompte());
 				new ReleveHotmail(cpt.getIdCompte(), cpt.getUserName(), cpt
-						.getPassword(), cpt.getServeurReception(), progress,
-						progressPieceJointe, textArea, isSynchro);
+						.getPassword(), /* cpt.getServeurReception(), */
+						progress, progressPieceJointe, textArea, isSynchro);
 				break;
 			case IMAP:
 				break;

@@ -54,10 +54,11 @@ public class Historique {
 		OpenWithDefaultViewer.open(repTravail + "/historique.txt");
 	}
 
-	public static String getCheminEmail() {
-		final String repTravail = GestionRepertoire.RecupRepTravail();
-		return "file:///E:/Mes%20documents/wrkspace%20VE/Mail%20by%20sims/mail%20windows%20mail/Club-intern%208f1/Inbox/0A0F638A-00000268.eml";
-	}
+	// public static String getCheminEmail() {
+	// final String repTravail = GestionRepertoire.RecupRepTravail();
+	// return
+	// "file:///E:/Mes%20documents/wrkspace%20VE/Mail%20by%20sims/mail%20windows%20mail/Club-intern%208f1/Inbox/0A0F638A-00000268.eml";
+	// }
 
 	public static String readEmail() {
 		final String repTravail = GestionRepertoire.RecupRepTravail();

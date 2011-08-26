@@ -249,6 +249,16 @@
           </reportPlugins>
         </configuration>
       </plugin>
+      <plugin>
+        <groupId>org.codehaus.sonar-plugins.pdf-report</groupId>
+        <artifactId>maven-pdfreport-plugin</artifactId>
+        <version>1.2</version>
+        <configuration>
+          <reportType>workbook</reportType>
+          <username></username>
+          <password></password>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
   <reporting>

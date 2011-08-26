@@ -74,8 +74,9 @@ public class thread_deplaceOuSuppr extends Thread {
 					+ p_tabIdLigneSelectionnee.length);
 
 			int selectedLine = p_tabIdLigneSelectionnee[i];
-			Integer idMessage = (Integer) table.getModel().getValueAt(
-					selectedLine, 0);
+			int row = table.convertRowIndexToModel(selectedLine);
+
+			Integer idMessage = (Integer) table.getModel().getValueAt(row, 0);
 			// le n° du message (meme si il est caché).
 			// Date dateReception = (Date) table.getModel().getValueAt(
 			// selectedLine, 1);// la date de reception

@@ -18,7 +18,7 @@ import fenetre.principale.MlAction.EnActionMain;
 
 public class MlActionPopupJTable implements ActionListener {
 
-	private final JTable table;
+	private static JTable table;
 	private final JList list;
 	private final JProgressBar progressBar;
 	private final JTextArea textArea;
@@ -26,7 +26,7 @@ public class MlActionPopupJTable implements ActionListener {
 
 	public MlActionPopupJTable(JTable p_table, JList jList,
 			JProgressBar p_progress, JTextArea p_text, JScrollPane p_scroll) {
-		this.table = p_table;
+		MlActionPopupJTable.table = p_table;
 		this.list = jList;
 		this.progressBar = p_progress;
 		this.textArea = p_text;
@@ -70,6 +70,8 @@ public class MlActionPopupJTable implements ActionListener {
 		// le n° du message (meme si il est caché).
 		// Date dateReception = (Date) table.getModel().getValueAt(
 		// idRow, 1);// la date de reception
+
+		Integer idMessage = getReelIdMessage(idRow);
 
 		String expediteur = (String) table.getModel().getValueAt(idRow, 2);// l'expediteur
 
@@ -118,6 +120,11 @@ public class MlActionPopupJTable implements ActionListener {
 			t.start();
 
 		}
+	}
+
+	public static Integer getReelIdMessage(int p_selectedIndexLine) {
+		int row = table.convertRowIndexToModel(p_selectedIndexLine);
+		return (Integer) table.getModel().getValueAt(row, 0);
 	}
 
 }

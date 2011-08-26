@@ -44,12 +44,13 @@ public class MlActionJtable implements MouseListener, ActionListener {
 	public MlActionJtable(JTable p_table, JEditorPane jEditorPane, JList jList,
 			JProgressBar p_progress, JTextArea p_text, JScrollPane p_scroll) {
 		this.table = p_table;
-		this.popUpMenu = getJPopupMenu();
+
 		MlActionJtable.editor = jEditorPane;
 		this.jList = jList;
 		this.progressBar = p_progress;
 		this.textArea = p_text;
 		this.scroll = p_scroll;
+		this.popUpMenu = getJPopupMenu();
 	}
 
 	/**
@@ -111,9 +112,8 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			// Point p = e.getPoint();
 			// get the row index that contains that coordinate
 			// int rowNumber = table.rowAtPoint(p);
-			int selectedLine = table.getSelectedRow();
-			int idMessage = (Integer) table.getModel().getValueAt(selectedLine,
-					0);
+			int idMessage = MlActionPopupJTable.getReelIdMessage(table
+					.getSelectedRow());
 
 			// on clear le panelHTML de la page d'acceuil
 			// Document doc = editor.getDocument();
@@ -167,8 +167,8 @@ public class MlActionJtable implements MouseListener, ActionListener {
 				// si une seule ligne est selectionnée
 				afficheContenuMail(table, jList);
 				BDRequette bd = new BDRequette();
-				boolean succes = bd.setStatusLecture((Integer) table
-						.getValueAt(rowNumber, 0));
+				boolean succes = bd.setStatusLecture(MlActionPopupJTable
+						.getReelIdMessage(rowNumber));
 				bd.closeConnexion();
 				if (succes) {
 					table.getModel().setValueAt(true, rowNumber,
@@ -183,8 +183,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 	public static void afficheContenuMail(JTable table, JList jList) {
 		int selectedLine = table.getSelectedRow();
 
-		Integer idMessage = (Integer) table.getModel().getValueAt(selectedLine,
-				0);
+		Integer idMessage = MlActionPopupJTable.getReelIdMessage(selectedLine);
 		// le n° du message (meme si il est caché).
 		BDRequette bd = new BDRequette();
 		File contenu = bd.getContenuFromId(idMessage, false);
@@ -225,8 +224,8 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			// si une seule ligne est selectionnée
 			afficheContenuMail(table, jList);
 			BDRequette bd = new BDRequette();
-			boolean succes = bd.setStatusLecture((Integer) table.getValueAt(
-					table.getSelectedRow(), 0));
+			boolean succes = bd.setStatusLecture(MlActionPopupJTable
+					.getReelIdMessage(table.getSelectedRow()));
 			bd.closeConnexion();
 			if (succes) {
 				table.getModel().setValueAt(true, table.getSelectedRow(),

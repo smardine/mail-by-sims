@@ -106,7 +106,7 @@ public class BDAcces {
 	}
 
 	public boolean verifVersionBDD(boolean p_exist) throws SQLException {
-		if (p_exist == false) {// la base n'existait pas quand on s'y est
+		if (!p_exist) {// la base n'existait pas quand on s'y est
 			// connecté, il faut passer les scripts de
 			// creation
 			BDScripts scripts = new BDScripts();

@@ -1,4 +1,4 @@
-package importMail;
+package import_mail;
 
 import java.util.Date;
 

@@ -1,4 +1,4 @@
-package importMail;
+package import_mail;
 
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.Main;
@@ -291,12 +291,14 @@ public class thread_Import extends Thread {
 			fileName = "inconnu";
 		}
 
+		fileName = decodeurIso(fileName);
+
 		System.out.println("**C'est une piece jointe dont le nom est :"
 				+ fileName);
-		if (fileName.contains("ISO") || fileName.contains("UTF")
-				|| fileName.contains("iso") || fileName.contains("utf")) {
-			fileName = decodeurIso(fileName);
-		}
+		// if (fileName.contains("ISO") || fileName.contains("UTF")
+		// || fileName.contains("iso") || fileName.contains("utf")) {
+		// fileName = decodeurIso(fileName);
+		// }
 		methodeImap
 				.afficheText(textArea,
 						"Recuperation d'une piece jointe dont le nom est \n"
@@ -380,33 +382,28 @@ public class thread_Import extends Thread {
 
 			if (f.isDirectory()) {
 				lstSousDossier.add(f);
-			} else {
-				if (f.isFile()) {
+			} else if (f.isFile()) {
 
-					if (f.getName().endsWith("wlmail.fol")) {
-						// on recupere le nom du dossier a ajouter dans le jTree
-						nomDossier = ReadFile.getContenuCaractere(f
-								.getAbsolutePath());
-						if (!isDossierDejaExistant(nomDossier, p_compte)) {
-							newTp = createNewDossierAndRefreshTree(p_treePath,
-									nomDossier);
-						}
+				if (f.getName().endsWith("wlmail.fol")) {
+					// on recupere le nom du dossier a ajouter dans le jTree
+					nomDossier = ReadFile.getContenuCaractere(f
+							.getAbsolutePath());
+					if (!isDossierDejaExistant(nomDossier, p_compte)) {
+						newTp = createNewDossierAndRefreshTree(p_treePath,
+								nomDossier);
 					}
-					if (f.getName().endsWith(".eml")) {
-						MlMessage message = new MlMessage();
-						try {
-							message.setCheminPhysique(f.getCanonicalPath());
-							lstMessage.add(message);
-							methodeImap.afficheText(p_jTextArea, lstMessage
-									.size()
-									+ " message(s) trouvé(s)");
+				} else if (f.getName().endsWith(".eml")) {
+					MlMessage message = new MlMessage();
+					try {
+						message.setCheminPhysique(f.getCanonicalPath());
+						lstMessage.add(message);
+						methodeImap.afficheText(p_jTextArea, lstMessage.size()
+								+ " message(s) trouvé(s)");
 
-						} catch (IOException e) {
-							messageUtilisateur.affMessageException(e,
-									"impossible d'acceder au repertoire :\n\r");
-						}
+					} catch (IOException e) {
+						messageUtilisateur.affMessageException(e,
+								"impossible d'acceder au repertoire :\n\r");
 					}
-
 				}
 
 			}
@@ -422,24 +419,39 @@ public class thread_Import extends Thread {
 			methodeImap.afficheText(p_jTextArea, "creation du dossier:"
 					+ f.getName());
 
-			MlListeMessage lstMessge = null;
-			try {
-				if (newTp != null) {
-					lstMessge = parcoursDossier(f.getCanonicalPath(), p_compte,
-							newTp, p_jTextArea);
-				} else {
-					lstMessge = parcoursDossier(f.getCanonicalPath(), p_compte,
-							p_treePath, p_jTextArea);
-				}
-
-			} catch (IOException e) {
-				messageUtilisateur.affMessageException(e,
-						"Erreur pendant le parcoursdes sous dossiers");
-			}
-			lstMessage.addAll(lstMessge);
+			traiteSousDossier(p_compte, p_treePath, p_jTextArea, newTp,
+					lstMessage, f);
 		}
 		bd.closeConnexion();
 		return lstMessage;
+	}
+
+	/**
+	 * @param p_compte
+	 * @param p_treePath
+	 * @param p_jTextArea
+	 * @param newTp
+	 * @param lstMessage
+	 * @param f
+	 */
+	private void traiteSousDossier(String p_compte, TreePath p_treePath,
+			JTextArea p_jTextArea, TreePath newTp, MlListeMessage lstMessage,
+			File f) {
+		MlListeMessage lstMessge = null;
+		try {
+			if (newTp != null) {
+				lstMessge = parcoursDossier(f.getCanonicalPath(), p_compte,
+						newTp, p_jTextArea);
+			} else {
+				lstMessge = parcoursDossier(f.getCanonicalPath(), p_compte,
+						p_treePath, p_jTextArea);
+			}
+
+		} catch (IOException e) {
+			messageUtilisateur.affMessageException(e,
+					"Erreur pendant le parcoursdes sous dossiers");
+		}
+		lstMessage.addAll(lstMessge);
 	}
 
 	/**

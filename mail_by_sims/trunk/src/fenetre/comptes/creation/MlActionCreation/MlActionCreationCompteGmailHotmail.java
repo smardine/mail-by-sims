@@ -65,63 +65,14 @@ public class MlActionCreationCompteGmailHotmail implements ActionListener {
 			if (!verifChamp()) {
 				return;
 			}
-			MlCompteMail compteMail = new MlCompteMail();
-			compteMail.setNomCompte(nomCompte.getText());
-			compteMail.setServeurReception(defFournisseur.getServeurPop());
-			compteMail.setPortPop(defFournisseur.getPortPop());
-			compteMail.setServeurSMTP(defFournisseur.getServeurSMTP());
-			compteMail.setPortSMTP(defFournisseur.getPortSMTP());
-			compteMail.setUserName(adresse.getText().replace("@gmail.com", ""));
-			compteMail.setPassword(password.getText());
-			compteMail.setTypeCompte(defFournisseur.getTypeCompte());
-			boolean resultConnexion = false;
-			switch (defFournisseur.getTypeCompte()) {
-				case GMAIL:
-					resultConnexion = methodeImap.testBalIMAP(compteMail);
-					break;
-				case HOTMAIL:
-					resultConnexion = methodeHotmail.testBalHotmail(compteMail);
-					break;
-			}
+			MlCompteMail compteMail = valorisationMlCompte();
+			boolean resultConnexion = testConnexionMlCompte(compteMail);
 			if (!resultConnexion) {
 				messageUtilisateur
-						.affMessageErreur("Le test de connexion a votre boite aux lettres à échoué.\r\nMerci de vérifier voter saisie");
+						.affMessageErreur("Le test de connexion a votre boite aux lettres à échoué.\r\nMerci de vérifier votre saisie");
 				return;
 			} else {
-				BDRequette bd = new BDRequette();
-				boolean result = bd.createNewCompte(compteMail);
-				if (result) {
-					int idCpt = bd.getIdComptes(nomCompte.getText());
-					compteMail.setIdCompte(idCpt);
-					// creation des dossiers de base (boite de reception,
-					// message
-					// envoyé, corbeille, spam) avec un id Dossierparent=0
-					List<String> lstDossierBase = new ArrayList<String>();
-					EnDossierBase[] lstEnum = EnDossierBase.values();
-					for (EnDossierBase dossier : lstEnum) {
-						if (dossier != EnDossierBase.ROOT) {
-							lstDossierBase.add(dossier.getLib());
-						}
-					}
-
-					result = bd.createListeDossierDeBase(compteMail,
-							lstDossierBase);
-				}
-
-				if (!result) {
-					messageUtilisateur
-							.affMessageErreur("le compte n'a pas été correctement enregistré");
-				} else {
-					messageUtilisateur
-							.affMessageInfo("Le compte à été créer correctement");
-					fenetre.dispose();
-					// MlActionJtree actionTree = new MlActionJtree(tree, null);
-					// actionTree.valueChanged(null);
-
-					new GestionCompte(tree);
-				}
-
-				bd.closeConnexion();
+				enregistrementMlCompte(compteMail);
 			}
 
 		}
@@ -133,10 +84,82 @@ public class MlActionCreationCompteGmailHotmail implements ActionListener {
 
 	}
 
+	/**
+	 * @param compteMail
+	 */
+	private void enregistrementMlCompte(MlCompteMail compteMail) {
+		BDRequette bd = new BDRequette();
+		boolean result = bd.createNewCompte(compteMail);
+		if (result) {
+			int idCpt = bd.getIdComptes(nomCompte.getText());
+			compteMail.setIdCompte(idCpt);
+			// creation des dossiers de base (boite de reception,
+			// message
+			// envoyé, corbeille, spam) avec un id Dossierparent=0
+			List<String> lstDossierBase = new ArrayList<String>();
+			EnDossierBase[] lstEnum = EnDossierBase.values();
+			for (EnDossierBase dossier : lstEnum) {
+				if (dossier != EnDossierBase.ROOT) {
+					lstDossierBase.add(dossier.getLib());
+				}
+			}
+
+			result = bd.createListeDossierDeBase(compteMail,
+					lstDossierBase);
+		}
+
+		if (!result) {
+			messageUtilisateur
+					.affMessageErreur("le compte n'a pas été correctement enregistré");
+		} else {
+			messageUtilisateur
+					.affMessageInfo("Le compte à été créer correctement");
+			fenetre.dispose();
+			// MlActionJtree actionTree = new MlActionJtree(tree, null);
+			// actionTree.valueChanged(null);
+
+			new GestionCompte(tree);
+		}
+
+		bd.closeConnexion();
+	}
+
+	/**
+	 * @param compteMail
+	 * @return
+	 */
+	private boolean testConnexionMlCompte(MlCompteMail compteMail) {
+		boolean resultConnexion = false;
+		switch (defFournisseur.getTypeCompte()) {
+			case GMAIL:
+				resultConnexion = methodeImap.testBalIMAP(compteMail);
+				break;
+			case HOTMAIL:
+				resultConnexion = methodeHotmail.testBalHotmail(compteMail);
+				break;
+		}
+		return resultConnexion;
+	}
+
+	/**
+	 * @return
+	 */
+	private MlCompteMail valorisationMlCompte() {
+		MlCompteMail compteMail = new MlCompteMail();
+		compteMail.setNomCompte(nomCompte.getText());
+		compteMail.setServeurReception(defFournisseur.getServeurPop());
+		compteMail.setPortPop(defFournisseur.getPortPop());
+		compteMail.setServeurSMTP(defFournisseur.getServeurSMTP());
+		compteMail.setPortSMTP(defFournisseur.getPortSMTP());
+		compteMail.setUserName(adresse.getText().replace("@gmail.com", ""));
+		compteMail.setPassword(password.getText());
+		compteMail.setTypeCompte(defFournisseur.getTypeCompte());
+		return compteMail;
+	}
+
 	private boolean verifChamp() {
-		if (adresse.getText() == null || adresse.getText().equals("") || //
-				nomCompte.getText() == null || nomCompte.getText().equals("") || //
-				password.getText() == null || password.getText().equals("")) {
+		if (utilityCreation.verifAdresseEtNom(adresse, nomCompte) || //
+				utilityCreation.verifChampPassword(password)) {
 			messageUtilisateur
 					.affMessageErreur("Veuillez vérifier votre saisie");
 			return false;

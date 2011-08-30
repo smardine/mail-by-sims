@@ -10,7 +10,11 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-public class WriteFile {
+public final class WriteFile {
+
+	private WriteFile() {
+
+	}
 
 	/**
 	 * 
@@ -65,18 +69,18 @@ public class WriteFile {
 	/**
 	 * Ecrire une ligne dans un fichier
 	 * @param ligneAEcrire -String ce qu'il faut ecrire
-	 * @param CheminDuFichier -String le chemin du fichier
+	 * @param p_cheminDuFichier -String le chemin du fichier
 	 */
-	public static void WriteList(ArrayList<String> ListeEcrire,
-			String CheminDuFichier) {
+	public static void WriteList(ArrayList<String> p_listeEcrire,
+			String p_cheminDuFichier) {
 		FileWriter writer = null;
 		try {
-			writer = new FileWriter(CheminDuFichier, false);
+			writer = new FileWriter(p_cheminDuFichier, false);
 		} catch (IOException e1) {
 			System.out.println("IO Exception");
 		}
 
-		for (String ligne : ListeEcrire) {
+		for (String ligne : p_listeEcrire) {
 			String texte = (ligne + "\n");
 			try {
 				writer.write(texte, 0, texte.length());

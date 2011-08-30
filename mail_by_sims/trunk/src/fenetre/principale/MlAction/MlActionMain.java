@@ -1,7 +1,7 @@
 package fenetre.principale.MlAction;
 
 import imap.thread_SynchroImap;
-import importMail.thread_Import;
+import import_mail.thread_Import;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

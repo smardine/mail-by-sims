@@ -1,7 +1,7 @@
 package imap.util;
 
 import fenetre.comptes.EnDossierBase;
-import importMail.thread_Import;
+import import_mail.thread_Import;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -28,7 +28,7 @@ import bdd.BDRequette;
 import com.sun.mail.imap.AppendUID;
 import com.sun.mail.imap.IMAPFolder;
 
-public class methodeImap {
+public final class methodeImap {
 
 	private methodeImap() {
 
@@ -112,28 +112,8 @@ public class methodeImap {
 					.getIdDossier(dossier, pIdCompte));
 			int nbActu = 0;
 			for (MlMessage m : listeMessage) {
-				nbActu++;
-				int pourcent = (nbActu * 100) / listeMessage.size();
-				p_progress.setValue(pourcent);
-				p_progress.setString("Mise a jour messagerie: " + pourcent
-						+ " %");
-				// label.setText("Message traité n° " + nbActu
-				// + " sur un total de " + listeMessage.size());
-				try {
-					Message messageImap = fldr.getMessageByUID(Long.parseLong(m
-							.getUIDMessage()));
-					if (messageImap == null) {
-						afficheText(textArea,
-								"Message supprimé sur le serveur, mise a jour de la base");
-						bd.deleteMessageRecu(m.getIdMessage());
-					}
-				} catch (NumberFormatException e) {
-					messageUtilisateur.affMessageException(e,
-							"Erreur conversion UID");
-				} catch (MessagingException e) {
-					messageUtilisateur.affMessageException(e,
-							"Erreur connexion");
-				}
+				majMessagerie(p_progress, textArea, bd, fldr, listeMessage,
+						nbActu, m);
 			}
 			try {
 				afficheText(textArea, "Fin de la verification des messages");
@@ -152,6 +132,39 @@ public class methodeImap {
 
 		bd.closeConnexion();
 
+	}
+
+	/**
+	 * @param p_progress
+	 * @param textArea
+	 * @param bd
+	 * @param fldr
+	 * @param listeMessage
+	 * @param nbActu
+	 * @param m
+	 */
+	private static void majMessagerie(JProgressBar p_progress,
+			JTextArea textArea, BDRequette bd, IMAPFolder fldr,
+			MlListeMessage listeMessage, int nbActu, MlMessage m) {
+		nbActu++;
+		int pourcent = (nbActu * 100) / listeMessage.size();
+		p_progress.setValue(pourcent);
+		p_progress.setString("Mise a jour messagerie: " + pourcent + " %");
+		// label.setText("Message traité n° " + nbActu
+		// + " sur un total de " + listeMessage.size());
+		try {
+			Message messageImap = fldr.getMessageByUID(Long.parseLong(m
+					.getUIDMessage()));
+			if (messageImap == null) {
+				afficheText(textArea,
+						"Message supprimé sur le serveur, mise a jour de la base");
+				bd.deleteMessageRecu(m.getIdMessage());
+			}
+		} catch (NumberFormatException e) {
+			messageUtilisateur.affMessageException(e, "Erreur conversion UID");
+		} catch (MessagingException e) {
+			messageUtilisateur.affMessageException(e, "Erreur connexion");
+		}
 	}
 
 	public static void releveImap(Properties props, int p_idCompte,

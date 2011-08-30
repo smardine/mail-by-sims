@@ -2,7 +2,7 @@ package fenetre.principale.jtree;
 
 import javax.swing.JTree;
 
-public class utiljTree {
+public final class utiljTree {
 
 	private utiljTree() {
 

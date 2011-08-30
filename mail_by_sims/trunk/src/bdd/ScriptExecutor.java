@@ -28,7 +28,7 @@ public class ScriptExecutor {
 					sql.append(' ');
 					continue;
 				}
-				if (comment == false) {
+				if (!comment) {
 					if (p_script.charAt(i) == terminator) {
 						onesql = sql.toString().trim();
 						if (onesql.length() > 0) {

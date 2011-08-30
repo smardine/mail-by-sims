@@ -4,7 +4,11 @@ import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
 
-public class OpenWithDefaultViewer {
+public final class OpenWithDefaultViewer {
+
+	private OpenWithDefaultViewer() {
+
+	}
 
 	/**
 	 * Ouvre un fichier avec le programme par defaut du systeme.

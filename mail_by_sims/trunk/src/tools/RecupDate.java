@@ -11,20 +11,23 @@ import java.util.Locale;
 public class RecupDate {
 	// * Choix de la langue francaise
 	Locale locale = Locale.getDefault();
-	static Date actuelle = new Date();
+	private static Date actuelle = new Date();
 
 	// * Definition du format utilise pour les dates
-	static DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-	static DateFormat dateEtHeure = new SimpleDateFormat("yyyy_MM_dd_HH_mm");
-	static DateFormat dateEtHeureArchive = new SimpleDateFormat(
+	private static final DateFormat dateFormat = new SimpleDateFormat(
+			"yyyy-MM-dd HH:mm:ss");
+	private static final DateFormat dateEtHeure = new SimpleDateFormat(
+			"yyyy_MM_dd_HH_mm");
+	private static final DateFormat dateEtHeureArchive = new SimpleDateFormat(
 			"yyyy_MM_dd_HH_mm_ss");
-	static DateFormat dateSeulement = new SimpleDateFormat("dd-MM-yyyy");
-	static SimpleDateFormat formatTimeStamp = new SimpleDateFormat(
+	private static final DateFormat dateSeulement = new SimpleDateFormat(
+			"dd-MM-yyyy");
+	private static final SimpleDateFormat formatTimeStamp = new SimpleDateFormat(
 			"yyyy-MM-dd, HH:mm:ss.S");
-	static DateFormat formatTimeStampToDate = new SimpleDateFormat(
+	private static final DateFormat formatTimeStampToDate = new SimpleDateFormat(
 			"yyyy-MM-dd HH:mm:ss.S");
 
-	public static DateFormat formatPourTable = new SimpleDateFormat(
+	private static final DateFormat formatPourTable = new SimpleDateFormat(
 			"dd-MM-yyyy HH:mm:ss");
 
 	// * Donne la date au format "aaaa-mm-jj"
@@ -102,5 +105,12 @@ public class RecupDate {
 					"impossible de recuperer la date au bon format");
 		}
 		return date;
+	}
+
+	/**
+	 * @return the formatPourTable
+	 */
+	public static DateFormat getFormatPourTable() {
+		return formatPourTable;
 	}
 }

@@ -354,6 +354,7 @@ public final class methodeImap {
 					.getUserName(), p_compte.getPassword());
 
 			IMAPFolder inbox = (IMAPFolder) store.getFolder("INBOX");
+			inbox.open(Folder.READ_ONLY);
 			// int nbMessageDansInbox = f.getMessageCount();
 			inbox.close(false);
 		} catch (NoSuchProviderException e) {

@@ -10,9 +10,8 @@ import java.util.List;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 
-import pop.util.methodePop;
-
 import mdl.MlCompteMail;
+import Pop3.util.methodePop;
 import bdd.BDRequette;
 import fenetre.comptes.EnDefFournisseur;
 import fenetre.comptes.EnDossierBase;

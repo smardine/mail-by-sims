@@ -1,7 +1,7 @@
 package imap.util;
 
 import fenetre.comptes.EnDossierBase;
-import import_mail.thread_Import;
+import importmail.thread_Import;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -112,6 +112,7 @@ public final class methodeImap {
 					.getIdDossier(dossier, pIdCompte));
 			int nbActu = 0;
 			for (MlMessage m : listeMessage) {
+				nbActu++;
 				majMessagerie(p_progress, textArea, bd, fldr, listeMessage,
 						nbActu, m);
 			}
@@ -146,7 +147,7 @@ public final class methodeImap {
 	private static void majMessagerie(JProgressBar p_progress,
 			JTextArea textArea, BDRequette bd, IMAPFolder fldr,
 			MlListeMessage listeMessage, int nbActu, MlMessage m) {
-		nbActu++;
+
 		int pourcent = (nbActu * 100) / listeMessage.size();
 		p_progress.setValue(pourcent);
 		p_progress.setString("Mise a jour messagerie: " + pourcent + " %");

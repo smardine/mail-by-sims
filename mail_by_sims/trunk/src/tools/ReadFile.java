@@ -63,11 +63,11 @@ public final class ReadFile {
 	/**
 	 * Trouver une chaine de caracteres dans un fichier
 	 * @param cheminFichier -String le chemin du fichier
-	 * @param OccurToFind -String la chaine a trouver ex "abc@hotmail.com"
+	 * @param p_occurToFind -String la chaine a trouver ex "abc@hotmail.com"
 	 * @return result -boolean vrai si on trouve la chaine de caracteres.
 	 */
 	public static boolean FindOccurInFile(String cheminFichier,
-			String OccurToFind) {
+			String p_occurToFind) {
 
 		String line = null;
 		boolean result = false;
@@ -78,7 +78,7 @@ public final class ReadFile {
 
 			int i = 1; // initialisation du numero de ligne
 			while ((line = br.readLine()) != null) {
-				if (line.indexOf(OccurToFind) != -1) {
+				if (line.indexOf(p_occurToFind) != -1) {
 					System.out.println("Mot trouve a la ligne " + i);
 					result = true;
 					return result;

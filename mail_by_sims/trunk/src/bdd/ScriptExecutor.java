@@ -1,6 +1,7 @@
 package bdd;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 public class ScriptExecutor {
@@ -17,7 +18,7 @@ public class ScriptExecutor {
 		boolean comment, hassql = false;
 		StringBuilder sql;
 		String onesql;
-		Statement stmt;
+		Statement stmt = null;
 		try {
 			comment = false;
 			sql = new StringBuilder();
@@ -78,6 +79,13 @@ public class ScriptExecutor {
 		} catch (Exception e) {
 			e.printStackTrace();
 			return false;
+		} finally {
+			try {
+				stmt.close();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }

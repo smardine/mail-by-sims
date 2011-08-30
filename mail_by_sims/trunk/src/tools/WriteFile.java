@@ -97,13 +97,13 @@ public final class WriteFile {
 		}
 	}
 
-	public static void WriteLineVector(Vector<String> ligneAEcrire,
-			String CheminDuFichier) throws IOException {
+	public static void WriteLineVector(Vector<String> p_ligneAEcrire,
+			String p_cheminDuFichier) throws IOException {
 		FileWriter writer = null;
-		String texte = (ligneAEcrire + "\n");
+		String texte = (p_ligneAEcrire + "\n");
 
 		try {
-			writer = new FileWriter(CheminDuFichier, true);
+			writer = new FileWriter(p_cheminDuFichier, true);
 			writer.write(texte, 0, texte.length());
 
 		} catch (IOException ex) {

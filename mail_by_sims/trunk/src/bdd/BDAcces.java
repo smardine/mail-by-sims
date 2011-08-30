@@ -210,9 +210,11 @@ public class BDAcces {
 		String script = "SELECT a.VERSION_BASE FROM PARAM a";
 
 		String chaine_champ = "";
+		Statement state = null;
+		ResultSet jeuEnregistrements = null;
 		try {
-			Statement state = connexion.createStatement();
-			final ResultSet jeuEnregistrements = state.executeQuery(script);
+			state = connexion.createStatement();
+			jeuEnregistrements = state.executeQuery(script);
 			final ResultSetMetaData infojeuEnregistrements = jeuEnregistrements
 					.getMetaData();
 
@@ -222,13 +224,13 @@ public class BDAcces {
 				}
 			}
 
-			jeuEnregistrements.close();
-			state.close();
 		} catch (SQLException e) {
 			Historique.ecrire("Erreur SQL :" + e);
 			messageUtilisateur.affMessageException(e, "Erreur SQL");
 		} finally {
 			try {
+				jeuEnregistrements.close();
+				state.close();
 				connexion.rollback();
 
 			} catch (SQLException e) {

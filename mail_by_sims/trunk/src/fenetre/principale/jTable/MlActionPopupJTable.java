@@ -71,7 +71,7 @@ public class MlActionPopupJTable implements ActionListener {
 		// Date dateReception = (Date) table.getModel().getValueAt(
 		// idRow, 1);// la date de reception
 
-		Integer idMessage = getReelIdMessage(idRow);
+		// Integer idMessage = getReelIdMessage(idRow);
 
 		String expediteur = (String) table.getModel().getValueAt(idRow, 2);// l'expediteur
 

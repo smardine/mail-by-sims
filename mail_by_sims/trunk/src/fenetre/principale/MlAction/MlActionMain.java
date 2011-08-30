@@ -1,7 +1,7 @@
 package fenetre.principale.MlAction;
 
 import imap.thread_SynchroImap;
-import importmail.thread_Import;
+import importMail.thread_Import;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -65,8 +65,8 @@ public class MlActionMain implements ActionListener {
 
 		}
 		if (e.getActionCommand().equals(EnActionMain.IMPORTER.getLib())) {
-			thread_Import t = new thread_Import(tree, pbReleve, pbPieceJointe,
-					text, scrollPane);
+			thread_Import t = new importMail.thread_Import(tree, pbReleve,
+					pbPieceJointe, text, scrollPane);
 			t.start();
 		}
 		if (e.getActionCommand().equals(EnActionMain.ENVOYER_RECEVOIR.getLib())) {

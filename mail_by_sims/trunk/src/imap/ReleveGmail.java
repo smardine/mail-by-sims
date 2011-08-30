@@ -151,33 +151,33 @@ public class ReleveGmail {
 	 * @param p_progressPJ
 	 * @param bd
 	 * @param props
-	 * @param id_Dossier
+	 * @param p_idDossier
 	 * @param folder
 	 * @return
 	 */
 	private int traiteListeDossier(int p_idCompte, JProgressBar p_progress,
 			JProgressBar p_progressPJ, BDRequette bd, Properties props,
-			int id_Dossier, IMAPFolder folder) {
+			int p_idDossier, IMAPFolder folder) {
 		if (isBrouillon(folder)) {
-			id_Dossier = bd.getIdDossier(EnDossierBase.BROUILLON
+			p_idDossier = bd.getIdDossier(EnDossierBase.BROUILLON
 					.getLib(), p_idCompte);
 
 		} else if (isEnvoye(folder)) {
-			id_Dossier = bd.getIdDossier(EnDossierBase.ENVOYES
+			p_idDossier = bd.getIdDossier(EnDossierBase.ENVOYES
 					.getLib(), p_idCompte);
 
 		} else if (folder.getFullName().equals("[Gmail]/Spam")) {
-			id_Dossier = bd.getIdDossier(EnDossierBase.SPAM
+			p_idDossier = bd.getIdDossier(EnDossierBase.SPAM
 					.getLib(), p_idCompte);
 
 		} else if (isCorbeille(folder)) {
-			id_Dossier = bd.getIdDossier(EnDossierBase.CORBEILLE
+			p_idDossier = bd.getIdDossier(EnDossierBase.CORBEILLE
 					.getLib(), p_idCompte);
 
 		}
 		methodeImap.releveImap(props, p_idCompte, p_progress,
-				p_progressPJ, id_Dossier, folder, textArea);
-		return id_Dossier;
+				p_progressPJ, p_idDossier, folder, textArea);
+		return p_idDossier;
 	}
 
 	/**

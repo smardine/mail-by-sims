@@ -207,22 +207,31 @@ public class BDRequette {
 		String requete = "Select " + p_champ.getNomChamp() + " from "
 				+ p_table.getNomTable();
 
-		Statement state;
+		Statement state = null;
+		ResultSet jeuEnregistrements = null;
 		try {
 			state = laConnexion.createStatement();
-			ResultSet jeuEnregistrements = state.executeQuery(requete);
+			jeuEnregistrements = state.executeQuery(requete);
 			while (jeuEnregistrements.next()) {
 				nbRecords++;
 			}
-			jeuEnregistrements.close();
-			state.close();
-			laConnexion.rollback();// on ne fait que de la lecture, donc on peut
-			// faire un rollback
-			;
+
 		} catch (SQLException e) {
 			messageUtilisateur.affMessageException(e,
 					"Impossible de recuperer le nombre de champ dans la table "
 							+ p_table.getNomTable());
+		} finally {
+			try {
+				jeuEnregistrements.close();
+				state.close();
+				laConnexion.rollback();// on ne fait que de la lecture, donc on
+				// peut
+				// faire un rollback
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
 		}
 
 		return nbRecords;
@@ -419,9 +428,11 @@ public class BDRequette {
 	private String get1Champ(String requete) {
 
 		String chaine_champ = "";
+		ResultSet jeuEnregistrements = null;
+		Statement state = null;
 		try {
-			Statement state = laConnexion.createStatement();
-			final ResultSet jeuEnregistrements = state.executeQuery(requete);
+			state = laConnexion.createStatement();
+			jeuEnregistrements = state.executeQuery(requete);
 			final ResultSetMetaData infojeuEnregistrements = jeuEnregistrements
 					.getMetaData();
 
@@ -431,13 +442,13 @@ public class BDRequette {
 				}
 			}
 
-			jeuEnregistrements.close();
-			state.close();
 		} catch (SQLException e) {
 			Historique.ecrire("Erreur SQL :" + e);
 			messageUtilisateur.affMessageException(e, "Erreur SQL");
 		} finally {
 			try {
+				jeuEnregistrements.close();
+				state.close();
 				laConnexion.rollback();
 
 			} catch (SQLException e) {
@@ -455,11 +466,12 @@ public class BDRequette {
 	 * @return
 	 */
 	private ArrayList<String> getListeDeChamp(String p_requete) {
-		Statement state;
+		Statement state = null;
+		ResultSet jeuEnregistrements = null;
 		ArrayList<String> lst = new ArrayList<String>();
 		try {
 			state = laConnexion.createStatement();
-			final ResultSet jeuEnregistrements = state.executeQuery(p_requete);
+			jeuEnregistrements = state.executeQuery(p_requete);
 			final ResultSetMetaData infojeuEnregistrements = jeuEnregistrements
 					.getMetaData();
 
@@ -471,15 +483,13 @@ public class BDRequette {
 				}
 			}
 
-			jeuEnregistrements.close();
-			state.close();
-
 		} catch (SQLException e) {
 			Historique.ecrire("Erreur SQL :" + e);
 		} finally {
 			try {
 				laConnexion.rollback();
-				;
+				jeuEnregistrements.close();
+				state.close();
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(e,
 						"Impossible de fermer la transaction");
@@ -496,11 +506,12 @@ public class BDRequette {
 	 */
 	private ArrayList<ArrayList<String>> getListeDenregistrement(
 			String p_requete) {
-		Statement state;
+		Statement state = null;
+		ResultSet jeuEnregistrements = null;
 		ArrayList<ArrayList<String>> lstRetour = new ArrayList<ArrayList<String>>();
 		try {
 			state = laConnexion.createStatement();
-			final ResultSet jeuEnregistrements = state.executeQuery(p_requete);
+			jeuEnregistrements = state.executeQuery(p_requete);
 			final ResultSetMetaData infojeuEnregistrements = jeuEnregistrements
 					.getMetaData();
 
@@ -513,14 +524,13 @@ public class BDRequette {
 				lstRetour.add(lstintermediaire);
 			}
 
-			jeuEnregistrements.close();
-			state.close();
 		} catch (SQLException e) {
 			Historique.ecrire("Erreur SQL :" + e);
 		} finally {
 			try {
 				laConnexion.rollback();
-				;
+				jeuEnregistrements.close();
+				state.close();
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(e,
 						"Impossible de fermer la transaction");
@@ -834,10 +844,10 @@ public class BDRequette {
 	}
 
 	private File writeBlobToFile(String requette, File p_file) {
-
+		ResultSet resultSet = null;
 		try {
 			PreparedStatement stmt = laConnexion.prepareStatement(requette);
-			ResultSet resultSet = stmt.executeQuery();
+			resultSet = stmt.executeQuery();
 			while (resultSet.next()) {
 				FileOutputStream fos = new FileOutputStream(p_file);
 				byte[] buffer = new byte[256];
@@ -859,8 +869,9 @@ public class BDRequette {
 					"Impossible d'afficher le message");
 		} finally {
 			try {
+				resultSet.close();
 				laConnexion.rollback();
-				;
+
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(e,
 						"Impossible de fermer la transaction");

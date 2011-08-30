@@ -1,9 +1,8 @@
 package hotmail.util;
 
-import fenetre.comptes.EnDossierBase;
 import imap.util.messageUtilisateur;
 import imap.util.methodeImap;
-import import_mail.thread_Import;
+import importmail.thread_Import;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -19,7 +18,6 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.mail.internet.MimeMessage;
-import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
@@ -115,117 +113,63 @@ public final class methodeHotmail {
 		return dossierPrincipaux;
 	}
 
-	public static void miseAJourMessage(Properties props, int pIdCompte,
-			JProgressBar p_progress, String host, String user, String password,
-			JTextArea textArea, JLabel label) {
-
-		Session session = Session.getInstance(props);
-		// Get a Store object
-		Store store = null;
-		try {
-			store = session.getStore("imaps");
-			store.connect(host, user, password);
-		} catch (Exception e) {
-			messageUtilisateur.affMessageException(e, "Erreur connexion");
-			return;
-		}
-		BDRequette bd = new BDRequette();
-		ArrayList<String> listeDossier = bd.getListeDossier(pIdCompte);
-		for (String dossier : listeDossier) {
-			Folder fldr;
-			try {
-				if (EnDossierBase.RECEPTION.getLib().equals(dossier)) {
-					fldr = (Folder) store.getFolder("INBOX");
-				} else if (EnDossierBase.BROUILLON.getLib().equals(dossier)) {
-					if (store.getFolder("[Gmail]/Drafts").exists()) {
-						fldr = (Folder) store.getFolder("[Gmail]/Drafts");
-					} else {
-						fldr = (Folder) store.getFolder("[Gmail]/Brouillons");
-					}
-				} else if (EnDossierBase.ENVOYES.getLib().equals(dossier)) {
-					if (store.getFolder("[Gmail]/Sent Mail").exists()) {
-						fldr = (Folder) store.getFolder("[Gmail]/Sent Mail");
-					} else {
-						fldr = (Folder) store
-								.getFolder("[Gmail]/Messages envoyés");
-					}
-
-				} else if (EnDossierBase.SPAM.getLib().equals(dossier)) {
-					fldr = (Folder) store.getFolder("[Gmail]/Spam");
-				} else if (EnDossierBase.CORBEILLE.getLib().equals(dossier)) {
-					if (store.getFolder("[Gmail]/Trash").exists()) {
-						fldr = (Folder) store.getFolder("[Gmail]/Trash");
-					} else {
-						fldr = (Folder) store.getFolder("[Gmail]/Corbeille");
-					}
-
-				} else {
-					ArrayList<String> lstSousDossierInbox = bd
-							.getListeSousDossier(bd
-									.getIdDossier(EnDossierBase.RECEPTION
-											.getLib(), pIdCompte));
-					if (lstSousDossierInbox.contains(dossier)) {
-						fldr = (Folder) store.getFolder("INBOX/" + dossier);
-					} else {
-						fldr = (Folder) store.getFolder(dossier);
-					}
-
-				}
-
-				afficheText(textArea, "Ouverture de " + fldr.getFullName());
-				fldr.open(Folder.READ_WRITE);
-			} catch (MessagingException e) {
-				messageUtilisateur.affMessageException(e, "Erreur connexion");
-				return;
-			}
-			afficheText(textArea, "Parcours des messages sur le serveur");
-			afficheText(textArea, "à la recherche des messages supprimés");
-			MlListeMessage listeMessage = bd.getListeDeMessage(pIdCompte, bd
-					.getIdDossier(dossier, pIdCompte));
-			int nbActu = 0;
-			for (MlMessage m : listeMessage) {
-				nbActu++;
-				int pourcent = (nbActu * 100) / listeMessage.size();
-				p_progress.setValue(pourcent);
-				p_progress.setString("Mise a jour messagerie: " + pourcent
-						+ " %");
-				label.setText("Message traité n° " + nbActu
-						+ " sur un total de " + listeMessage.size());
-				try {
-					// Message messageImap =
-					// fldr.getMessageByUID(Long.parseLong(m
-					// .getUIDMessage()));
-					// if (messageImap == null) {
-					// afficheText(textArea,
-					// "Message supprimé sur le serveur, mise a jour de la base");
-					// BDRequette.deleteMessageRecu(m.getIdMessage());
-					// }
-				} catch (NumberFormatException e) {
-					messageUtilisateur.affMessageException(e,
-							"Erreur conversion UID");
-				}// catch (MessagingException e) {
-				// messageUtilisateur.affMessageException(e,
-				// "Erreur connexion");
-				// }
-			}
-			try {
-				afficheText(textArea, "Fin de la verification des messages");
-				afficheText(textArea, "pour le dossier " + fldr.getFullName());
-				fldr.close(false);
-			} catch (MessagingException e) {
-				messageUtilisateur.affMessageException(e, "Erreur connexion");
-			}
-
-		}
-		try {
-			store.close();
-		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e, "Erreur connexion");
-		} finally {
-			bd.closeConnexion();
-		}
-
-	}
+	/**
+	 * public static void miseAJourMessage(Properties props, int pIdCompte,
+	 * JProgressBar p_progress, String host, String user, String password,
+	 * JTextArea textArea, JLabel label) { Session session =
+	 * Session.getInstance(props); // Get a Store object Store store = null; try
+	 * { store = session.getStore("imaps"); store.connect(host, user, password);
+	 * } catch (Exception e) { messageUtilisateur.affMessageException(e,
+	 * "Erreur connexion"); return; } BDRequette bd = new BDRequette();
+	 * ArrayList<String> listeDossier = bd.getListeDossier(pIdCompte); for
+	 * (String dossier : listeDossier) { Folder fldr; try { if
+	 * (EnDossierBase.RECEPTION.getLib().equals(dossier)) { fldr = (Folder)
+	 * store.getFolder("INBOX"); } else if
+	 * (EnDossierBase.BROUILLON.getLib().equals(dossier)) { if
+	 * (store.getFolder("[Gmail]/Drafts").exists()) { fldr = (Folder)
+	 * store.getFolder("[Gmail]/Drafts"); } else { fldr = (Folder)
+	 * store.getFolder("[Gmail]/Brouillons"); } } else if
+	 * (EnDossierBase.ENVOYES.getLib().equals(dossier)) { if
+	 * (store.getFolder("[Gmail]/Sent Mail").exists()) { fldr = (Folder)
+	 * store.getFolder("[Gmail]/Sent Mail"); } else { fldr = (Folder) store
+	 * .getFolder("[Gmail]/Messages envoyés"); } } else if
+	 * (EnDossierBase.SPAM.getLib().equals(dossier)) { fldr = (Folder)
+	 * store.getFolder("[Gmail]/Spam"); } else if
+	 * (EnDossierBase.CORBEILLE.getLib().equals(dossier)) { if
+	 * (store.getFolder("[Gmail]/Trash").exists()) { fldr = (Folder)
+	 * store.getFolder("[Gmail]/Trash"); } else { fldr = (Folder)
+	 * store.getFolder("[Gmail]/Corbeille"); } } else { ArrayList<String>
+	 * lstSousDossierInbox = bd .getListeSousDossier(bd
+	 * .getIdDossier(EnDossierBase.RECEPTION .getLib(), pIdCompte)); if
+	 * (lstSousDossierInbox.contains(dossier)) { fldr = (Folder)
+	 * store.getFolder("INBOX/" + dossier); } else { fldr = (Folder)
+	 * store.getFolder(dossier); } } afficheText(textArea, "Ouverture de " +
+	 * fldr.getFullName()); fldr.open(Folder.READ_WRITE); } catch
+	 * (MessagingException e) { messageUtilisateur.affMessageException(e,
+	 * "Erreur connexion"); return; } afficheText(textArea,
+	 * "Parcours des messages sur le serveur"); afficheText(textArea,
+	 * "à la recherche des messages supprimés"); MlListeMessage listeMessage =
+	 * bd.getListeDeMessage(pIdCompte, bd .getIdDossier(dossier, pIdCompte));
+	 * int nbActu = 0; for (MlMessage m : listeMessage) { nbActu++; int pourcent
+	 * = (nbActu * 100) / listeMessage.size(); p_progress.setValue(pourcent);
+	 * p_progress.setString("Mise a jour messagerie: " + pourcent + " %");
+	 * label.setText("Message traité n° " + nbActu + " sur un total de " +
+	 * listeMessage.size()); try { // Message messageImap = //
+	 * fldr.getMessageByUID(Long.parseLong(m // .getUIDMessage())); // if
+	 * (messageImap == null) { // afficheText(textArea, //
+	 * "Message supprimé sur le serveur, mise a jour de la base"); //
+	 * BDRequette.deleteMessageRecu(m.getIdMessage()); // } } catch
+	 * (NumberFormatException e) { messageUtilisateur.affMessageException(e,
+	 * "Erreur conversion UID"); }// catch (MessagingException e) { //
+	 * messageUtilisateur.affMessageException(e, // "Erreur connexion"); // } }
+	 * try { afficheText(textArea, "Fin de la verification des messages");
+	 * afficheText(textArea, "pour le dossier " + fldr.getFullName());
+	 * fldr.close(false); } catch (MessagingException e) {
+	 * messageUtilisateur.affMessageException(e, "Erreur connexion"); } } try {
+	 * store.close(); } catch (MessagingException e) {
+	 * messageUtilisateur.affMessageException(e, "Erreur connexion"); } finally
+	 * { bd.closeConnexion(); } }
+	 */
 
 	public static void releveHotmail(int p_idCompte, JProgressBar p_progress,
 			JProgressBar p_progressPJ, int p_idDossier, Message[] p_messages,
@@ -378,7 +322,7 @@ public final class methodeHotmail {
 
 		Session mailSession = Session.getDefaultInstance(props, null);
 		/***/
-		int messNumber = 1;
+		// int messNumber = 1;
 
 		String cheminPhysique = p_messagePourBase.getCheminPhysique();
 		InputStream source;

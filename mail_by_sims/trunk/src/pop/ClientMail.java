@@ -1,4 +1,4 @@
-package Pop3;
+package pop;
 
 /**
  * ClientMail.java Client simple pour serveur pop3
@@ -18,8 +18,9 @@ import javax.mail.Store;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
+import pop.util.methodePop;
+
 import mdl.MlCompteMail;
-import Pop3.util.methodePop;
 
 import com.sun.mail.pop3.POP3Folder;
 

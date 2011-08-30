@@ -34,8 +34,9 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.TreePath;
 
+import verification.Thread_Verif;
+
 import mdl.MlListeMessage;
-import Verif.Thread_Verif;
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.MlAction.EnActionMain;

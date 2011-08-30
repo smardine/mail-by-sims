@@ -9,9 +9,10 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import pop.ClientMail;
+
 import mdl.MlCompteMail;
 import mdl.MlListeMessage;
-import Pop3.ClientMail;
 import bdd.BDRequette;
 
 public class thread_SynchroImap extends Thread {

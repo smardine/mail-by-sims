@@ -1,7 +1,6 @@
 package imap.util;
 
 import fenetre.comptes.EnDossierBase;
-import importmail.thread_Import;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -223,8 +222,9 @@ public final class methodeImap {
 							.RecupRepTravail()
 							+ "/tempo/" + System.currentTimeMillis() + ".eml");
 
-					messPourBase.setContenu(thread_Import.recupContenuMail(
-							messPourBase, p_progressPJ, m, textArea));
+					messPourBase.setContenu(importMail.thread_Import
+							.recupContenuMail(messPourBase, p_progressPJ, m,
+									textArea));
 					messPourBase.setDateReception(m.getReceivedDate());
 					ArrayList<String> listeDestinataires;
 					if (null != m.getAllRecipients()) {// si on connait la

@@ -2,7 +2,6 @@ package hotmail.util;
 
 import imap.util.messageUtilisateur;
 import imap.util.methodeImap;
-import importmail.thread_Import;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -356,8 +355,9 @@ public final class methodeHotmail {
 			 * jointe
 			 */
 
-			p_messagePourBase.setContenu(thread_Import.recupContenuMail(
-					p_messagePourBase, p_progressPJ, mime, p_textArea));
+			p_messagePourBase.setContenu(importMail.thread_Import
+					.recupContenuMail(p_messagePourBase, p_progressPJ, mime,
+							p_textArea));
 		} catch (FileNotFoundException e) {
 			messageUtilisateur.affMessageException(e,
 					"Erreur a la récupération du message");

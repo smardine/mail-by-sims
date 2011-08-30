@@ -24,7 +24,7 @@ import bdd.BDRequette;
 
 import com.sun.mail.pop3.POP3Folder;
 
-public class methodePop {
+public final class methodePop {
 
 	@SuppressWarnings("unused")
 	private static MlCompteMail comptePop;

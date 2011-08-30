@@ -18,8 +18,6 @@ import javax.mail.Store;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
-import pop.util.methodePop;
-
 import mdl.MlCompteMail;
 
 import com.sun.mail.pop3.POP3Folder;
@@ -69,8 +67,8 @@ public class ClientMail {
 			POP3Folder f = (POP3Folder) st.getFolder("INBOX");
 			methodeImap.afficheText(text, "Ouverture de la boite de reception");
 			f.open(Folder.READ_ONLY);// ouverture de INBOX
-			methodePop.releveCompte(comptePop, f, text, progressReleve,
-					progressPieceJointe);
+			Pop3.util.methodePop.releveCompte(comptePop, f, text,
+					progressReleve, progressPieceJointe);
 
 			f.close(false);
 			st.close();

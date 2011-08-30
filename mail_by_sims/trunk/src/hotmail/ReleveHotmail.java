@@ -76,17 +76,7 @@ public class ReleveHotmail {
 				MlCompteMail cpt = new MlCompteMail(p_idCompte);
 				for (Folder unDossier : dossierDeBase) {
 					int idDossier = 0;
-					if ("Inbox".equals(unDossier.getName())) {
-						idDossier = cpt.getIdInbox();
-					} else if ("Junk".equals(unDossier.getName())) {
-						idDossier = cpt.getIdSpam();
-					} else if ("Drafts".equals(unDossier.getName())) {
-						idDossier = cpt.getIdBrouillons();
-					} else if ("Sent".equals(unDossier.getName())) {
-						idDossier = cpt.getIdEnvoye();
-					} else if ("Deleted".equals(unDossier.getName())) {
-						idDossier = cpt.getIdCorbeille();
-					}
+					idDossier = getIdDossier(cpt, unDossier, idDossier);
 					Message[] messages = client.getMessages(unDossier);
 					methodeHotmail.releveHotmail(p_idCompte, progressBar,
 							progressPJ, idDossier, messages, unDossier, client,
@@ -97,16 +87,8 @@ public class ReleveHotmail {
 						.getSousDossierHotmail(client);
 				BDRequette bd = new BDRequette();
 				for (Folder f : sousDossier) {
-					int idDossier = bd.getIdDossier(f.getName(), p_idCompte);
-					if (idDossier == -1) {// le dossier n'existe pas, on le crée
-						bd.createNewDossier(p_idCompte, cpt.getIdInbox(), f
-								.getName());
-						idDossier = bd.getIdDossier(f.getName(), p_idCompte);
-					}
-					Message[] messages = client.getMessages(f);
-					methodeHotmail.releveHotmail(p_idCompte, p_progressBar,
-							p_progressBarPJ, idDossier, messages, f, client,
-							textArea);
+					traiteSousDossier(p_idCompte, p_progressBar,
+							p_progressBarPJ, client, cpt, bd, f);
 
 				}
 
@@ -122,6 +104,54 @@ public class ReleveHotmail {
 			}
 		}
 
+	}
+
+	/**
+	 * @param cpt
+	 * @param unDossier
+	 * @param idDossier
+	 * @return
+	 */
+	private int getIdDossier(MlCompteMail cpt, Folder unDossier, int idDossier) {
+		if ("Inbox".equals(unDossier.getName())) {
+			idDossier = cpt.getIdInbox();
+		} else if ("Junk".equals(unDossier.getName())) {
+			idDossier = cpt.getIdSpam();
+		} else if ("Drafts".equals(unDossier.getName())) {
+			idDossier = cpt.getIdBrouillons();
+		} else if ("Sent".equals(unDossier.getName())) {
+			idDossier = cpt.getIdEnvoye();
+		} else if ("Deleted".equals(unDossier.getName())) {
+			idDossier = cpt.getIdCorbeille();
+		}
+		return idDossier;
+	}
+
+	/**
+	 * @param p_idCompte
+	 * @param p_progressBar
+	 * @param p_progressBarPJ
+	 * @param client
+	 * @param cpt
+	 * @param bd
+	 * @param f
+	 * @throws DeltaSyncException
+	 * @throws IOException
+	 */
+	private void traiteSousDossier(int p_idCompte, JProgressBar p_progressBar,
+			JProgressBar p_progressBarPJ, DeltaSyncClientHelper client,
+			MlCompteMail cpt, BDRequette bd, Folder f)
+			throws DeltaSyncException, IOException {
+		int idDossier = bd.getIdDossier(f.getName(), p_idCompte);
+		if (idDossier == -1) {// le dossier n'existe pas, on le crée
+			bd.createNewDossier(p_idCompte, cpt.getIdInbox(), f
+					.getName());
+			idDossier = bd.getIdDossier(f.getName(), p_idCompte);
+		}
+		Message[] messages = client.getMessages(f);
+		methodeHotmail.releveHotmail(p_idCompte, p_progressBar,
+				p_progressBarPJ, idDossier, messages, f, client,
+				textArea);
 	}
 
 }

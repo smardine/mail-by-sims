@@ -1,7 +1,7 @@
 package Pop3.util;
 
 import imap.util.methodeImap;
-import importMail.thread_Import;
+import import_mail.thread_Import;
 
 import java.util.ArrayList;
 import java.util.Properties;
@@ -24,7 +24,7 @@ import bdd.BDRequette;
 
 import com.sun.mail.pop3.POP3Folder;
 
-public class methodePop {
+public final class methodePop {
 
 	@SuppressWarnings("unused")
 	private static MlCompteMail comptePop;

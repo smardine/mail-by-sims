@@ -13,7 +13,7 @@ public class DateTimeCellRenderer extends DefaultTableCellRenderer {
 	 * 
 	 */
 	private static final long serialVersionUID = 4938643150850316302L;
-	final static DateFormat format = RecupDate.formatPourTable;
+	final static DateFormat format = RecupDate.getFormatPourTable();
 
 	public DateTimeCellRenderer() {
 		super();

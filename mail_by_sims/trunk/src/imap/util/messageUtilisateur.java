@@ -6,7 +6,7 @@ import javax.swing.JOptionPane;
 
 import tools.Historique;
 
-public class messageUtilisateur {
+public final class messageUtilisateur {
 
 	private messageUtilisateur() {
 

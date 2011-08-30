@@ -4,7 +4,11 @@ import java.util.Enumeration;
 
 import javax.swing.UIManager;
 
-public class SwingProperties {
+public final class SwingProperties {
+	private SwingProperties() {
+
+	}
+
 	public static void main(String[] args) {
 		Enumeration<?> e = UIManager.getDefaults().keys();
 		while (e.hasMoreElements()) {

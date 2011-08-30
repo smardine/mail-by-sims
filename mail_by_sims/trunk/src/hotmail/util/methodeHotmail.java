@@ -3,7 +3,7 @@ package hotmail.util;
 import fenetre.comptes.EnDossierBase;
 import imap.util.messageUtilisateur;
 import imap.util.methodeImap;
-import importMail.thread_Import;
+import import_mail.thread_Import;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -35,7 +35,7 @@ import com.googlecode.jdeltasync.DeltaSyncClientHelper;
 import com.googlecode.jdeltasync.DeltaSyncException;
 import com.googlecode.jdeltasync.Message;
 
-public class methodeHotmail {
+public final class methodeHotmail {
 
 	private methodeHotmail() {
 
@@ -94,11 +94,13 @@ public class methodeHotmail {
 			listFldr = p_client.getFolders();
 			for (com.googlecode.jdeltasync.Folder f : listFldr) {
 
-				if (f.getName().equals("Junk")// 
-						|| f.getName().equals("Drafts")
-						|| f.getName().equals("Sent")
-						|| f.getName().equals("Deleted")
-						|| f.getName().equals("Inbox")) {
+				if ("Junk".equals(f.getName())// 
+						|| "Drafts".equals(f.getName())
+						|| "Sent".equals(f.getName())
+						|| "Deleted".equals(f.getName())) {
+					dossierPrincipaux.add(f);
+				}
+				if ("Inbox".equals(f.getName())) {
 					dossierPrincipaux.add(f);
 				}
 			}

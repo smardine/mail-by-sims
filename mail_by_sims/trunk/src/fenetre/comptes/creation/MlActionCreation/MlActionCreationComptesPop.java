@@ -132,12 +132,9 @@ public class MlActionCreationComptesPop implements ActionListener {
 	}
 
 	private boolean verifChamp() {
-		if (adresse.getText() == null || adresse.getText().equals("") || //
-				nomCompte.getText() == null || nomCompte.getText().equals("") || //
-				pop.getText() == null || pop.getText().equals("") || //
-				smtp.getText() == null || smtp.getText().equals("") || //
-				user.getText() == null || user.getText().equals("") || //
-				password.getText() == null || password.getText().equals("")) {
+		if (utilityCreation.verifAdresseEtNom(adresse, nomCompte)
+				|| utilityCreation.verifPopSmtp(pop, smtp)
+				|| utilityCreation.verifUserPassword(user, password)) {
 			messageUtilisateur
 					.affMessageErreur("Veuillez vérifier votre saisie");
 			return false;

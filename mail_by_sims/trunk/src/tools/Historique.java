@@ -11,7 +11,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-public class Historique {
+public final class Historique {
+
+	private Historique() {
+
+	}
+
 	/**
 	 * ecrire une info dans le fichier historique.txt
 	 * @param p_text -String L'info souhaitée.

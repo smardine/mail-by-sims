@@ -8,7 +8,11 @@ import java.io.IOException;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
-public class GestionRepertoire {
+public final class GestionRepertoire {
+
+	private GestionRepertoire() {
+
+	}
 
 	/**
 	 * Recupere le repertoire de travail de l'application

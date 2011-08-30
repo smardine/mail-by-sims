@@ -13,7 +13,11 @@ import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 
-public class ReadFile {
+public final class ReadFile {
+
+	private ReadFile() {
+
+	}
 
 	private static final long serialVersionUID = 1L;
 

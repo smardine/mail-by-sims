@@ -119,7 +119,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			// Document doc = editor.getDocument();
 			// doc.putProperty(Document.StreamDescriptionProperty, null);
 			// editor.setDocument(doc);
-			new LectureMessagePleinEcran(idMessage);
+			new LectureMessagePleinEcran(table, idMessage);
 
 		}
 

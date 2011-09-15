@@ -843,6 +843,21 @@ public class BDRequette {
 		return writeBlobToFile(requette, contenuHTML);
 	}
 
+	public File getPieceJointeFromIDMessage(int p_idMessage, String p_nameFile) {
+		String requette = "SELECT CONTENU_PIECE_JOINTE FROM PIECE_JOINTE WHERE ID_MESSAGE="
+				+ p_idMessage
+				+ " and NOM_PIECE_JOINTE='"
+				+ p_nameFile.trim()
+				+ "'";
+		File contenuPieceJointe = new File(GestionRepertoire.RecupRepTravail()
+				+ "/tempo/" + p_nameFile);
+		if (contenuPieceJointe.exists()) {
+			contenuPieceJointe.delete();
+		}
+		return writeBlobToFile(requette, contenuPieceJointe);
+
+	}
+
 	private File writeBlobToFile(String requette, File p_file) {
 		ResultSet resultSet = null;
 		try {

@@ -176,10 +176,18 @@ public class ReleveGmail {
 			idDossier = p_compteMail.getIdCorbeille();
 		}
 		if (idDossier == -1) {// le dossier n'existe pas encore, on le créé
-			bd.createNewDossier(p_compteMail.getIdCompte(), p_compteMail
-					.getIdInbox(), folder.getName());
+			if (folder.getName().contains("INBOX")) {
+				bd.createNewDossier(p_compteMail.getIdCompte(), p_compteMail
+						.getIdInbox(), folder.getName());
+
+			} else {
+				bd.createNewDossier(p_compteMail.getIdCompte(), 0, folder
+						.getName());
+
+			}
 			idDossier = bd.getIdDossier(folder.getName(), p_compteMail
 					.getIdCompte());
+
 		}
 
 		methodeImap.releveImap(props, p_compteMail.getIdCompte(), p_progress,

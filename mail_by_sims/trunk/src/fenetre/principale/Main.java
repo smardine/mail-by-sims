@@ -34,14 +34,14 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.TreePath;
 
-import verification.Thread_Verif;
-
 import mdl.MlListeMessage;
+import verification.Thread_Verif;
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.MlAction.EnActionMain;
 import fenetre.principale.MlAction.MlActionMain;
 import fenetre.principale.MlAction.MlActionMainCombo;
+import fenetre.principale.jList.MlActionjList;
 import fenetre.principale.jTable.DateTimeCellRenderer;
 import fenetre.principale.jTable.MlActionJtable;
 import fenetre.principale.jTable.MlActionPopupJTable;
@@ -567,6 +567,7 @@ public class Main extends JFrame {
 
 		modelList = new DefaultListModel();
 		jList.setModel(modelList);
+		jList.addMouseListener(new MlActionjList(jTable, jList));
 		ColoneModel = new XTableColumnModel();
 		jTable.setColumnModel(ColoneModel);
 		jTable.setDefaultRenderer(Date.class, new DateTimeCellRenderer());

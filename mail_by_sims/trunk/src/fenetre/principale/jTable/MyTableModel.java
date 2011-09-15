@@ -45,9 +45,9 @@ public class MyTableModel extends AbstractTableModel {
 		// int largeurJTable = EnNomComposant.PANEL_TABLE_ET_LISTE
 		// .getLargeurInitiale();
 
-		columnId.setMinWidth(50);
-		columnId.setMaxWidth(50);
-		columnId.setPreferredWidth(50);
+		columnId.setMinWidth(0);
+		columnId.setMaxWidth(0);
+		columnId.setPreferredWidth(0);
 
 		columnDate.setMinWidth(120);
 		columnDate.setWidth(120);

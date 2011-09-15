@@ -1,7 +1,5 @@
 package fenetre;
 
-import fenetre.principale.EnNomComposant;
-import fenetre.principale.MlActionHtmlPane;
 import imap.util.messageUtilisateur;
 
 import java.awt.BorderLayout;
@@ -21,9 +19,13 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
+import javax.swing.JTable;
 import javax.swing.text.Document;
 
 import bdd.BDRequette;
+import fenetre.principale.EnNomComposant;
+import fenetre.principale.MlActionHtmlPane;
+import fenetre.principale.jList.MlActionjList;
 
 public class LectureMessagePleinEcran extends JFrame {
 
@@ -42,11 +44,12 @@ public class LectureMessagePleinEcran extends JFrame {
 	/**
 	 * This is the default constructor
 	 */
-	public LectureMessagePleinEcran(int p_idMessage) {
+	public LectureMessagePleinEcran(JTable p_table, int p_idMessage) {
 		super();
 		initialize();
 		modelList = new DefaultListModel();
 		jList.setModel(modelList);
+		jList.addMouseListener(new MlActionjList(p_table, jList));
 		afficheContenuMail(p_idMessage, jList);
 		BDRequette bd = new BDRequette();
 		this.setTitle(bd.getSujetFromId(p_idMessage));

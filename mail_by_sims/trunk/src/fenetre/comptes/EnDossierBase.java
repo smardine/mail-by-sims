@@ -91,7 +91,7 @@ public enum EnDossierBase {
 		if (lstSousDossierInbox.contains(p_nomDossier)) {
 			fldr = (IMAPFolder) p_store.getFolder("INBOX/" + p_nomDossier);
 		} else {
-			fldr = (IMAPFolder) p_store.getFolder(p_nomDossier);
+			fldr = (IMAPFolder) p_store.getFolder("[GMAIL]/" + p_nomDossier);
 		}
 
 		return fldr;

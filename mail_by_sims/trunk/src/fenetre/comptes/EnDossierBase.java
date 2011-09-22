@@ -91,11 +91,31 @@ public enum EnDossierBase {
 		if (lstSousDossierInbox.contains(p_nomDossier)) {
 			fldr = (IMAPFolder) p_store.getFolder("INBOX/" + p_nomDossier);
 		} else {
-			fldr = (IMAPFolder) p_store.getFolder("[GMAIL]/" + p_nomDossier);
+			fldr = (IMAPFolder) p_store.getFolder("[Gmail]/" + p_nomDossier);
 		}
-
+		// on verifie si le dossier existe
+		if (verifFolder(fldr, p_nomDossier)) {
+			return fldr;
+		}
+		// on essaye avec l'autre syntaxe possible
+		fldr = (IMAPFolder) p_store.getFolder(p_nomDossier);
+		if (fldr.exists()) {
+			return fldr;
+		}
 		return fldr;
 
+	}
+
+	private static boolean verifFolder(IMAPFolder p_fldr, String p_nomDossier) {
+		try {
+			if (p_fldr.exists()) {
+				return true;
+			}
+		} catch (MessagingException e) {
+			System.out.println(e);
+			return false;
+		}
+		return false;
 	}
 
 }

@@ -529,6 +529,7 @@ public class BDRequette {
 		} finally {
 			try {
 				laConnexion.rollback();
+
 				jeuEnregistrements.close();
 				state.close();
 			} catch (SQLException e) {

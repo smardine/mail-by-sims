@@ -217,7 +217,7 @@ public final class methodeHotmail {
 			// pour cela, comme on est en IMAp,
 			// on se base sur l'UID du message.
 			BDRequette bd = new BDRequette();
-			if (bd.verifieAbscenceUID(messageHotmail.getId())) {
+			if (bd.verifieAbscenceUID(messageHotmail.getId(), p_idDossier)) {
 				MlMessage messPourBase = new MlMessage();
 				messPourBase.setUIDMessage(messageHotmail.getId());
 				messPourBase.setCheminPhysique(GestionRepertoire

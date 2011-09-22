@@ -64,7 +64,8 @@ public final class methodePop {
 						+ ": Releve de " + folder.getFullName() + " :"
 						+ pourcent + " %");
 
-				if (bd.verifieAbscenceUID(folder.getUID(m))) {
+				if (bd.verifieAbscenceUID(folder.getUID(m), p_comptePop
+						.getIdInbox())) {
 					MlMessage messPourBase = new MlMessage();
 
 					messPourBase.setCheminPhysique(GestionRepertoire

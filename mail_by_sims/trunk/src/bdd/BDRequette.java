@@ -898,16 +898,16 @@ public class BDRequette {
 
 	}
 
-	public boolean verifieAbscenceUID(String uid) {
+	public boolean verifieAbscenceUID(String uid, int p_idDossier) {
 		String requete = "SELECT count (*) from MAIL_RECU a where a.UID_MESSAGE='"
-				+ uid.trim() + "'";
+				+ uid.trim() + "' and a.ID_DOSSIER_STOCKAGE=" + p_idDossier;
 		return ("0".equals(get1Champ(requete)));
 
 	}
 
-	public boolean verifieAbscenceUID(long p_uid) {
+	public boolean verifieAbscenceUID(long p_uid, int id_dossier) {
 
-		return verifieAbscenceUID("" + p_uid);
+		return verifieAbscenceUID("" + p_uid, id_dossier);
 	}
 
 	public boolean isMessageLu(int p_idMessageRecu) {

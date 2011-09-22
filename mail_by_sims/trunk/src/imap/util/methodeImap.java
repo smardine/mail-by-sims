@@ -220,7 +220,7 @@ public final class methodeImap {
 				// pour cela, comme on est en IMAp,
 				// on se base sur l'UID du message.
 
-				if (bd.verifieAbscenceUID(imapFolder.getUID(m))) {
+				if (bd.verifieAbscenceUID(imapFolder.getUID(m), p_idDossier)) {
 					MlMessage messPourBase = new MlMessage();
 
 					messPourBase.setCheminPhysique(GestionRepertoire

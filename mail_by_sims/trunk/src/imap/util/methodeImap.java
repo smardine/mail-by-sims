@@ -56,7 +56,10 @@ public final class methodeImap {
 			String p_fldrName) {
 		IMAPFolder[] listFldr = null;
 		try {
-			listFldr = (IMAPFolder[]) p_store.getFolder(p_fldrName).list();
+			if (p_store.getFolder(p_fldrName).list().length > 0) {
+				listFldr = (IMAPFolder[]) p_store.getFolder(p_fldrName).list();
+			}
+
 		} catch (MessagingException e) {
 			if (e instanceof javax.mail.FolderNotFoundException) {
 				messageUtilisateur.affMessageException(e,
@@ -66,6 +69,8 @@ public final class methodeImap {
 			messageUtilisateur.affMessageException(e,
 					"Impossible d'obtenir la liste des sous dossiers du repertoire "
 							+ p_fldrName);
+
+		} catch (ClassCastException c) {
 
 		}
 		return listFldr;
@@ -101,26 +106,28 @@ public final class methodeImap {
 
 				afficheText(textArea, "Ouverture de " + fldr.getFullName());
 				fldr.open(Folder.READ_WRITE);
+				afficheText(textArea, "Parcours des messages sur le serveur");
+				afficheText(textArea, "à la recherche des messages supprimés");
+				MlListeMessage listeMessage = bd.getListeDeMessage(pIdCompte,
+						bd.getIdDossier(dossier, pIdCompte));
+				int nbActu = 0;
+				for (MlMessage m : listeMessage) {
+					nbActu++;
+					majMessagerie(p_progress, textArea, bd, fldr, listeMessage,
+							nbActu, m);
+				}
+				try {
+					afficheText(textArea, "Fin de la verification des messages");
+					afficheText(textArea, "pour le dossier "
+							+ fldr.getFullName());
+					fldr.close(false);
+				} catch (MessagingException e) {
+					messageUtilisateur.affMessageException(e,
+							"Erreur connexion");
+				}
 			} catch (MessagingException e) {
 				messageUtilisateur.affMessageException(e, "Erreur connexion");
-				return;
-			}
-			afficheText(textArea, "Parcours des messages sur le serveur");
-			afficheText(textArea, "à la recherche des messages supprimés");
-			MlListeMessage listeMessage = bd.getListeDeMessage(pIdCompte, bd
-					.getIdDossier(dossier, pIdCompte));
-			int nbActu = 0;
-			for (MlMessage m : listeMessage) {
-				nbActu++;
-				majMessagerie(p_progress, textArea, bd, fldr, listeMessage,
-						nbActu, m);
-			}
-			try {
-				afficheText(textArea, "Fin de la verification des messages");
-				afficheText(textArea, "pour le dossier " + fldr.getFullName());
-				fldr.close(false);
-			} catch (MessagingException e) {
-				messageUtilisateur.affMessageException(e, "Erreur connexion");
+				// return;
 			}
 
 		}
@@ -167,14 +174,12 @@ public final class methodeImap {
 		}
 	}
 
-	public static void releveImap(Properties props, int p_idCompte,
+	public static void releveImap(Properties props, MlCompteMail p_compteMail,
 			JProgressBar p_progress, JProgressBar p_progressPJ,
 			int p_idDossier, IMAPFolder folder, JTextArea textArea) {
 
-		MlListeMessage lstMessage = new MlListeMessage();
-
-		releveDossier(p_idCompte, p_idDossier, p_progress, p_progressPJ,
-				lstMessage, folder, textArea);
+		releveDossier(p_compteMail, p_idDossier, p_progress, p_progressPJ,
+				folder, textArea);
 
 	}
 
@@ -189,15 +194,14 @@ public final class methodeImap {
 	 * @throws MessagingException
 	 * @throws IOException
 	 */
-	private static void releveDossier(int p_idCompte, int p_idDossier,
-			JProgressBar p_progress, JProgressBar p_progressPJ,
-			MlListeMessage lstMessage, IMAPFolder imapFolder, JTextArea textArea) {
+	private static void releveDossier(MlCompteMail p_compteMail,
+			int p_idDossier, JProgressBar p_progress,
+			JProgressBar p_progressPJ, IMAPFolder imapFolder, JTextArea textArea) {
 		afficheText(textArea, "Releve du dossier " + imapFolder.getFullName());
 		BDRequette bd = new BDRequette();
 		try {
 			imapFolder.open(Folder.READ_WRITE);
 			int count = imapFolder.getMessageCount();
-			MlCompteMail compteMail = new MlCompteMail(p_idCompte);
 
 			afficheText(textArea, "Nombre de messages: " + count);
 			// Message numbers start at 1
@@ -208,8 +212,9 @@ public final class methodeImap {
 
 				int pourcent = (nbActu++ * 100) / count;
 				p_progress.setValue(pourcent);
-				p_progress.setString(compteMail.getNomCompte() + ": Releve de "
-						+ imapFolder.getFullName() + " :" + pourcent + " %");
+				p_progress.setString(p_compteMail.getNomCompte()
+						+ ": Releve de " + imapFolder.getFullName() + " :"
+						+ pourcent + " %");
 				// on commence par verifier si le message est deja enregistré
 				// dans la base
 				// pour cela, comme on est en IMAp,
@@ -242,12 +247,11 @@ public final class methodeImap {
 
 					messPourBase.setDestinataire(listeDestinataires);
 					messPourBase.setExpediteur(m.getFrom()[0].toString());
-					messPourBase.setIdCompte(p_idCompte);
+					messPourBase.setIdCompte(p_compteMail.getIdCompte());
 					messPourBase.setIdDossier(verifieRegle(messPourBase
 							.getExpediteur(), p_idDossier));
 					messPourBase.setUIDMessage("" + imapFolder.getUID(m));
 					messPourBase.setSujet(m.getSubject());
-					lstMessage.add(messPourBase);
 					afficheText(textArea,
 							"Enregistrement du message dans la base");
 					bd.createNewMessage(messPourBase);

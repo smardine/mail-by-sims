@@ -8,6 +8,7 @@ import imap.util.methodeImap;
 
 import java.util.Properties;
 
+import javax.mail.Folder;
 import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
@@ -89,52 +90,69 @@ public class ReleveGmail {
 
 				methodeImap.afficheText(textArea,
 						"Ouverture de la boite de reception");
-				inbox = (IMAPFolder) store.getFolder("INBOX");
 
-				// releve de la boite de reception
+				Folder[] personnal = store.getPersonalNamespaces();
+				// Folder[] shared = store.getSharedNamespaces();
+				// Folder[] userNamedSpace = store.getUserNamespaces(user);
+				// IMAPFolder[] labels = methodeImap.getSousDossierIMAP(store,
+				// labelRoot.getFullName());
 
-				int id_Dossier = 0;
-				if (inbox != null) {
-					id_Dossier = p_compteMail.getIdInbox();
-					// id_dossier = bd.getIdDossier(EnDossierBase.RECEPTION
-					// .getLib(), p_compteMail);
+				for (Folder f : personnal) {
+					IMAPFolder[] sousfodler = methodeImap.getSousDossierIMAP(
+							store, f.getFullName());
 
-					methodeImap.releveImap(props, p_compteMail.getIdCompte(),
-							p_progress, p_progressPJ, id_Dossier, inbox,
-							textArea);
-					// on recupere ensuite les sous dossiers de la boite de
-					// reception
-					IMAPFolder[] lstFolder = methodeImap.getSousDossierIMAP(
-							store, inbox.getFullName());
-
-					for (IMAPFolder folder : lstFolder) {
-						int idSousDossier = bd.getIdDossier(folder.getName(),
-								p_compteMail.getIdCompte());
-						if (idSousDossier == (-1)) {// si le sous dossier est
-							// inconnu
-							// de la base, on en créer un
-							bd.createNewDossier(p_compteMail.getIdCompte(),
-									id_Dossier, folder.getName());
-							idSousDossier = bd.getIdDossier(folder.getName(),
-									p_compteMail.getIdCompte());
-						}
-						methodeImap.releveImap(props, p_compteMail
-								.getIdCompte(), p_progress, p_progressPJ,
-								idSousDossier, folder, textArea);
-
-					}
-
+					traiteListeDossier(p_compteMail, p_progress, p_progressPJ,
+							bd, props, sousfodler, store);
 				}
+				// IMAPFolder fodler = (IMAPFolder) personnal[0];
+				// IMAPFolder fodlerbis = methodeImap.getImapFoler(store, fodler
+				// .getFullName());
 
-				// recuperation des autres dossiers:envoyé, brouillons, spam,
-				// corbeille
-				IMAPFolder[] lstFolder = methodeImap.getSousDossierIMAP(store,
-						"[Gmail]");
-
-				for (IMAPFolder folder : lstFolder) {
-					traiteSousDossier(p_compteMail, p_progress, p_progressPJ,
-							bd, props, folder);
-				}
+				// inbox = (IMAPFolder) store.getFolder("INBOX");
+				//
+				// // releve de la boite de reception
+				//
+				// int id_Dossier = 0;
+				// if (inbox != null) {
+				// id_Dossier = p_compteMail.getIdInbox();
+				// // id_dossier = bd.getIdDossier(EnDossierBase.RECEPTION
+				// // .getLib(), p_compteMail);
+				//
+				// methodeImap.releveImap(props, p_compteMail, p_progress,
+				// p_progressPJ, id_Dossier, inbox, textArea);
+				// // on recupere ensuite les sous dossiers de la boite de
+				// // reception
+				// IMAPFolder[] lstFolder = methodeImap.getSousDossierIMAP(
+				// store, inbox.getFullName());
+				//
+				// for (IMAPFolder folder : lstFolder) {
+				// int idSousDossier = bd.getIdDossier(folder.getName(),
+				// p_compteMail.getIdCompte());
+				// if (idSousDossier == (-1)) {// si le sous dossier est
+				// // inconnu
+				// // de la base, on en créer un
+				// bd.createNewDossier(p_compteMail.getIdCompte(),
+				// id_Dossier, folder.getName());
+				// idSousDossier = bd.getIdDossier(folder.getName(),
+				// p_compteMail.getIdCompte());
+				// }
+				// methodeImap.releveImap(props, p_compteMail, p_progress,
+				// p_progressPJ, idSousDossier, folder, textArea);
+				//
+				// }
+				//
+				// }
+				//
+				// // recuperation des autres dossiers:envoyé, brouillons, spam,
+				// // corbeille
+				// IMAPFolder[] lstFolder =
+				// methodeImap.getSousDossierIMAP(store,
+				// "[Gmail]");
+				//
+				// for (IMAPFolder folder : lstFolder) {
+				// traiteSousDossier(p_compteMail, p_progress, p_progressPJ,
+				// bd, props, folder);
+				// }
 
 				methodeImap.afficheText(textArea,
 						"Releve de la boite Gmail terminée");
@@ -148,6 +166,84 @@ public class ReleveGmail {
 		methodeImap.afficheText(textArea,
 				"Fin des opérations sur la boite GMAIL");
 		bd.closeConnexion();
+	}
+
+	/**
+	 * @param p_compteMail
+	 * @param p_progress
+	 * @param p_progressPJ
+	 * @param bd
+	 * @param props
+	 * @param sousfodler
+	 */
+	private void traiteListeDossier(MlCompteMail p_compteMail,
+			JProgressBar p_progress, JProgressBar p_progressPJ, BDRequette bd,
+			Properties props, IMAPFolder[] sousfodler, Store p_store) {
+		if (sousfodler != null) {
+			for (IMAPFolder fldr : sousfodler) {
+
+				int idDossier = -1;
+				if (isInbox(fldr)) {
+					idDossier = p_compteMail.getIdInbox();
+				} else if (isBrouillon(fldr)) {
+					idDossier = p_compteMail.getIdBrouillons();
+				} else if (isCorbeille(fldr)) {
+					idDossier = p_compteMail.getIdCorbeille();
+				} else if (isEnvoye(fldr)) {
+					idDossier = p_compteMail.getIdEnvoye();
+				} else if (isSpam(fldr)) {
+					idDossier = p_compteMail.getIdSpam();
+				} else {
+					idDossier = bd.getIdDossier(fldr.getName(), p_compteMail
+							.getIdCompte());
+				}
+
+				if (idDossier == (-1)) {// si le sous dossier est
+					// inconnu
+					// de la base, on en créer un
+					if ("[Gmail]".equals(fldr.getFullName())) {
+						// ce n'est pas vraiment un repertoire,
+						// c'est plus un conteneur
+						// on recupere juste ses sous dossier et on continue
+						IMAPFolder[] lstFolder = methodeImap
+								.getSousDossierIMAP(p_store, fldr.getFullName());
+
+						traiteListeDossier(cptMail, progressBar, progressPJ,
+								bd, props, lstFolder, p_store);
+						continue;
+					}
+					if (fldr.getFullName().contains("[Gmail]")) {
+						// de cette facon, les dossier
+						// "Important","Tous les messages"...
+						// seront a la racine du compte dans le jtree
+						bd.createNewDossier(p_compteMail.getIdCompte(), 0, fldr
+								.getName());
+					} else {
+						// sinon, les dossiers créés le seront sous INBOX
+						bd.createNewDossier(p_compteMail.getIdCompte(),
+								p_compteMail.getIdInbox(), fldr.getName());
+					}
+
+					idDossier = bd.getIdDossier(fldr.getName(), p_compteMail
+							.getIdCompte());
+				}
+				methodeImap.releveImap(props, p_compteMail, p_progress,
+						p_progressPJ, idDossier, fldr, textArea);
+
+				IMAPFolder[] lstFolder = methodeImap.getSousDossierIMAP(
+						p_store, fldr.getFullName());
+
+				traiteListeDossier(cptMail, progressBar, progressPJ, bd, props,
+						lstFolder, p_store);
+
+				// for (IMAPFolder folder : lstFolder) {
+				// traiteSousDossier(p_compteMail, p_progress,
+				// p_progressPJ, bd, props, folder);
+				// }
+
+			}
+		}
+
 	}
 
 	/**
@@ -174,7 +270,12 @@ public class ReleveGmail {
 
 		} else if (isCorbeille(folder)) {
 			idDossier = p_compteMail.getIdCorbeille();
+		} else if (bd.getListeDossier(p_compteMail.getIdCompte()).contains(
+				folder.getName())) {
+			idDossier = bd.getIdDossier(folder.getName(), p_compteMail
+					.getIdCompte());
 		}
+
 		if (idDossier == -1) {// le dossier n'existe pas encore, on le créé
 			if (folder.getName().contains("INBOX")) {
 				bd.createNewDossier(p_compteMail.getIdCompte(), p_compteMail
@@ -190,8 +291,8 @@ public class ReleveGmail {
 
 		}
 
-		methodeImap.releveImap(props, p_compteMail.getIdCompte(), p_progress,
-				p_progressPJ, idDossier, folder, textArea);
+		methodeImap.releveImap(props, p_compteMail, p_progress, p_progressPJ,
+				idDossier, folder, textArea);
 
 	}
 
@@ -220,6 +321,14 @@ public class ReleveGmail {
 	private boolean isBrouillon(IMAPFolder folder) {
 		return folder.getFullName().equals("[Gmail]/Drafts") || //
 				folder.getFullName().equals("[Gmail]/Brouillons");
+	}
+
+	private boolean isInbox(IMAPFolder folder) {
+		return folder.getFullName().equals("INBOX");
+	}
+
+	private boolean isSpam(IMAPFolder folder) {
+		return folder.getFullName().equals("[Gmail]/Spam");
 	}
 
 }

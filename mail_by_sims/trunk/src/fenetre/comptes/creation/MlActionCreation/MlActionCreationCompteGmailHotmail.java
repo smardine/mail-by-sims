@@ -104,8 +104,7 @@ public class MlActionCreationCompteGmailHotmail implements ActionListener {
 				}
 			}
 
-			result = bd.createListeDossierDeBase(compteMail,
-					lstDossierBase);
+			result = bd.createListeDossierDeBase(compteMail, lstDossierBase);
 		}
 
 		if (!result) {
@@ -145,7 +144,7 @@ public class MlActionCreationCompteGmailHotmail implements ActionListener {
 	 * @return
 	 */
 	private MlCompteMail valorisationMlCompte() {
-		MlCompteMail compteMail = new MlCompteMail();
+		MlCompteMail compteMail = new MlCompteMail(null);
 		compteMail.setNomCompte(nomCompte.getText());
 		compteMail.setServeurReception(defFournisseur.getServeurPop());
 		compteMail.setPortPop(defFournisseur.getPortPop());

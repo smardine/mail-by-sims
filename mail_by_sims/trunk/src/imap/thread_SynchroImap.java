@@ -3,17 +3,14 @@ package imap;
 import hotmail.ReleveHotmail;
 import imap.util.methodeImap;
 
-import java.util.ArrayList;
-
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import pop.ClientMail;
-
 import mdl.MlCompteMail;
+import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
-import bdd.BDRequette;
+import pop.ClientMail;
 
 public class thread_SynchroImap extends Thread {
 
@@ -22,34 +19,30 @@ public class thread_SynchroImap extends Thread {
 	private final boolean isSynchro;
 	private final JProgressBar progressPieceJointe;
 	private final JScrollPane scrollPane;
-	private final ArrayList<String> listeDeCompte;
+	private final MlListeCompteMail listeDeCompte;
 
 	public thread_SynchroImap(JProgressBar p_progressBarReleve,
 			JProgressBar p_progressPieceJointe, JTextArea jTextArea,
 			JScrollPane p_scroll, boolean p_isSynchro,
-			ArrayList<String> p_listDeCompte) {// ,
+			MlListeCompteMail p_mlListeCompteMail) {// ,
 
 		this.textArea = jTextArea;
 		thread_SynchroImap.progress = p_progressBarReleve;
 		this.progressPieceJointe = p_progressPieceJointe;
 		this.isSynchro = p_isSynchro;
 		this.scrollPane = p_scroll;
-		this.listeDeCompte = p_listDeCompte;
+		this.listeDeCompte = p_mlListeCompteMail;
 
 	}
 
 	@Override
 	public void run() {
 		initComposantVisuel(true);
-		BDRequette bd = new BDRequette();
 
-		for (String s : listeDeCompte) {
-			int idCpt = bd.getIdComptes(s);
-			MlCompteMail cpt = new MlCompteMail(idCpt);
+		for (MlCompteMail cpt : listeDeCompte) {
 			definiCompteARelever(cpt);
-
 		}
-		bd.closeConnexion();
+
 		initComposantVisuel(false);
 
 	}
@@ -74,9 +67,8 @@ public class thread_SynchroImap extends Thread {
 			case HOTMAIL:
 				methodeImap.afficheText(textArea, "Releve du compte "
 						+ cpt.getNomCompte());
-				new ReleveHotmail(cpt.getIdCompte(), cpt.getUserName(), cpt
-						.getPassword(), /* cpt.getServeurReception(), */
-						progress, progressPieceJointe, textArea, isSynchro);
+				new ReleveHotmail(cpt, /* cpt.getServeurReception(), */
+				progress, progressPieceJointe, textArea, isSynchro);
 				break;
 			case IMAP:
 				break;
@@ -128,7 +120,6 @@ public class thread_SynchroImap extends Thread {
 			case GMAIL:
 				new MajServeurGmail(p_listMess, cpt, progress, textArea, false);
 				break;
-
 			case HOTMAIL:
 				break;
 			case POP:

@@ -26,10 +26,12 @@ public class MlCompteMail {
 		initialiseCompte(idCompte);
 	}
 
-	/**
-	 * Constructeur par defaut, utilisé sur la fenetre de création de compte
-	 */
-	public MlCompteMail() {
+	public MlCompteMail(String p_nomCompte) {
+		if (p_nomCompte != null) {
+			BDRequette bd = new BDRequette();
+			this.idCompte = bd.getIdComptes(p_nomCompte);
+			initialiseCompte(idCompte);
+		}
 
 	}
 

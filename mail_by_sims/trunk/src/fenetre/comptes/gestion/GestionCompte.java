@@ -2,7 +2,6 @@ package fenetre.comptes.gestion;
 
 import java.awt.Rectangle;
 import java.awt.Toolkit;
-import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JButton;
@@ -14,6 +13,8 @@ import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 
+import mdl.MlCompteMail;
+import mdl.MlListeCompteMail;
 import bdd.BDRequette;
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.gestion.MlActionGestion.EnActionComptes;
@@ -43,10 +44,10 @@ public class GestionCompte extends JFrame {
 		jList.setModel(modelList);
 		// on recupere la liste des comptes et on l'affiche
 		BDRequette bd = new BDRequette();
-		ArrayList<String> lst = bd.getListeDeComptes();
+		MlListeCompteMail lst = bd.getListeDeComptes();
 		bd.closeConnexion();
-		for (String s : lst) {
-			modelList.addElement(s);
+		for (MlCompteMail cpt : lst) {
+			modelList.addElement(cpt.getNomCompte());
 		}
 	}
 

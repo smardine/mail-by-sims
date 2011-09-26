@@ -11,6 +11,8 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import mdl.MlCompteMail;
+
 public final class Historique {
 
 	private Historique() {
@@ -49,6 +51,10 @@ public final class Historique {
 			}
 		}
 
+	}
+
+	public static void ecrireReleveBal(MlCompteMail p_compteMail, String p_text) {
+		ecrire("[" + p_compteMail.getNomCompte() + "] " + p_text);
 	}
 
 	/**

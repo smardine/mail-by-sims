@@ -2,7 +2,6 @@ package fenetre.principale.MlAction;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.ArrayList;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -10,6 +9,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import mdl.MlCompteMail;
+import mdl.MlListeCompteMail;
 import bdd.BDRequette;
 
 public class MlActionMainCombo implements MouseListener {
@@ -42,7 +43,7 @@ public class MlActionMainCombo implements MouseListener {
 		if (popUpMenu == null) {
 			popUpMenu = new JPopupMenu();
 			BDRequette bd = new BDRequette();
-			ArrayList<String> lstCpt = bd.getListeDeComptes();
+			MlListeCompteMail lstCpt = bd.getListeDeComptes();
 			bd.closeConnexion();
 			if (releveOuSynchro) {
 				popUpMenu.add(creerNouveauItem("Relever tous les comptes"));
@@ -51,8 +52,8 @@ public class MlActionMainCombo implements MouseListener {
 						.add(creerNouveauItem("Synchroniser tous les comptes"));
 			}
 
-			for (String s : lstCpt) {
-				popUpMenu.add(creerNouveauItem(s));
+			for (MlCompteMail cpt : lstCpt) {
+				popUpMenu.add(creerNouveauItem(cpt.getNomCompte()));
 			}
 
 		}

@@ -134,7 +134,6 @@ public class BDRequette {
 				ps.close();
 				inputContenu.close();
 				inputDestinataire.close();
-				;
 
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(e,
@@ -185,7 +184,6 @@ public class BDRequette {
 				}
 
 				state.close();
-				;
 
 			} catch (SQLException e) {
 				Historique.ecrire("Message d'erreur: " + e
@@ -229,8 +227,8 @@ public class BDRequette {
 				// peut
 				// faire un rollback
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				messageUtilisateur.affMessageException(e,
+						"Impossible de fermer la base");
 			}
 
 		}
@@ -720,7 +718,6 @@ public class BDRequette {
 				}
 				ps.close();
 				inPieceJointe.close();
-				;
 
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(e,
@@ -756,7 +753,7 @@ public class BDRequette {
 
 	public String encodeHTMLforBase(String aText) {
 		if (aText == null) {
-			aText = "inconnu";
+			return "inconnu";
 		}
 		final StringBuilder result = new StringBuilder();
 		final StringCharacterIterator iterator = new StringCharacterIterator(
@@ -916,9 +913,9 @@ public class BDRequette {
 
 	}
 
-	public boolean verifieAbscenceUID(long p_uid, int id_dossier) {
+	public boolean verifieAbscenceUID(long p_uid, int p_idDossier) {
 
-		return verifieAbscenceUID("" + p_uid, id_dossier);
+		return verifieAbscenceUID("" + p_uid, p_idDossier);
 	}
 
 	public boolean isMessageLu(int p_idMessageRecu) {

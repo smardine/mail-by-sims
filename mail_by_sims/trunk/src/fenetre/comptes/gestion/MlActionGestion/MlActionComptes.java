@@ -5,11 +5,12 @@ import imap.util.messageUtilisateur;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JTree;
 
+import mdl.MlCompteMail;
+import mdl.MlListeCompteMail;
 import bdd.BDRequette;
 import fenetre.comptes.creation.choixFAI;
 import fenetre.comptes.gestion.GestionCompte;
@@ -46,12 +47,12 @@ public class MlActionComptes implements ActionListener {
 					messageUtilisateur
 							.affMessageInfo("Suppression du compte réussie");
 					// on recupere la liste des comptes et on l'affiche
-					ArrayList<String> lst = bd.getListeDeComptes();
+					MlListeCompteMail lst = bd.getListeDeComptes();
 					DefaultListModel model = (DefaultListModel) GestionCompte.jList
 							.getModel();
 					model.clear();
-					for (String s : lst) {
-						model.addElement(s);
+					for (MlCompteMail cpt : lst) {
+						model.addElement(cpt.getNomCompte());
 					}
 				} else {
 					messageUtilisateur

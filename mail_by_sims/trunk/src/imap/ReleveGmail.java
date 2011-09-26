@@ -137,8 +137,7 @@ public class ReleveGmail {
 				if (idDossier == (-1)) {// si le sous dossier est
 					// inconnu
 					// de la base, on en créer un
-					Historique.ecrireReleveBal(cptMail,
-							"Création d'un nouveau dossier");
+
 					if ("[Gmail]".equals(fldr.getFullName())) {
 						// ce n'est pas vraiment un repertoire,
 						// c'est plus un conteneur
@@ -150,6 +149,9 @@ public class ReleveGmail {
 								bd, props, lstFolder, p_store);
 						continue;
 					}
+					Historique.ecrireReleveBal(cptMail,
+							"Création d'un nouveau dossier: "
+									+ fldr.getFullName());
 					if (fldr.getFullName().contains("[Gmail]")) {
 						// de cette facon, les dossier
 						// "Important","Tous les messages"...

@@ -29,6 +29,8 @@ import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
+import mdl.MlCompteMail;
+import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.GestionRepertoire;
@@ -61,11 +63,15 @@ public class thread_Import extends Thread {
 		String chemin = GestionRepertoire
 				.OpenFolder("Veuillez indiquer l'emplacement de vos mails Windows Mail");
 		// messageUtilisateur.affMessageInfo("Vous avez choisi: " + chemin);
-
+		MlListeCompteMail lst = bd.getListeDeComptes();
+		ArrayList<String> lstNomCompte = new ArrayList<String>(lst.getSize());
+		for (MlCompteMail cpt : lst) {
+			lstNomCompte.add(cpt.getNomCompte());
+		}
 		String choixCompte = messageUtilisateur.afficheChoixMultiple(
 				"Choix du compte",
-				"dans quel comptes souhaitez vous importer les messages?", bd
-						.getListeDeComptes());
+				"dans quel comptes souhaitez vous importer les messages?",
+				lstNomCompte);
 
 		// parcour du repertoire de facon recursive
 		// les fichiers avec l'extension ".fol"contienne le nom du repertoire
@@ -456,7 +462,7 @@ public class thread_Import extends Thread {
 		BDRequette bd = new BDRequette();
 		String dossierParent = (String) p_treePath.getLastPathComponent();
 		int idDossierParent = bd.getIdDossier(dossierParent, idCompte);
-		bd.createNewDossier(idCompte, idDossierParent, nomDossier);
+		bd.createNewDossier(idCompte, idDossierParent, nomDossier, "");
 		tree.getModel().valueForPathChanged(newTp, ActionTree.AJOUTER);
 		// tree.setSelectionPath(newTp);
 		Main.setTreePath(newTp);

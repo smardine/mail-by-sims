@@ -2,7 +2,7 @@ package mdl;
 
 import java.util.ArrayList;
 
-public class MlListeCompteMail {
+public class MlListeCompteMail extends ArrayList<MlCompteMail> {
 
 	private final ArrayList<MlCompteMail> list = new ArrayList<MlCompteMail>();
 

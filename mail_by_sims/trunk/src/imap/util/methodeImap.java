@@ -199,11 +199,15 @@ public final class methodeImap {
 			int p_idDossier, JProgressBar p_progress,
 			JProgressBar p_progressPJ, IMAPFolder imapFolder, JTextArea textArea) {
 		afficheText(textArea, "Releve du dossier " + imapFolder.getFullName());
+
 		BDRequette bd = new BDRequette();
 		try {
 			imapFolder.open(Folder.READ_WRITE);
 			int count = imapFolder.getMessageCount();
-
+			Historique.ecrireReleveBal(p_compteMail, "Ouverture du dossier "
+					+ imapFolder.getFullName());
+			Historique.ecrireReleveBal(p_compteMail, "Nombre de messages: "
+					+ count);
 			afficheText(textArea, "Nombre de messages: " + count);
 			// Message numbers start at 1
 			int nbActu = 1;
@@ -218,12 +222,11 @@ public final class methodeImap {
 						+ pourcent + " %");
 				// on commence par verifier si le message est deja enregistré
 				// dans la base
-				// pour cela, comme on est en IMAp,
+				// pour cela, comme on est en IMAP,
 				// on se base sur l'UID du message.
 
 				if (bd.verifieAbscenceUID(imapFolder.getUID(m), p_idDossier)) {
 					MlMessage messPourBase = new MlMessage();
-
 					messPourBase.setCheminPhysique(GestionRepertoire
 							.RecupRepTravail()
 							+ "/tempo/" + System.currentTimeMillis() + ".eml");
@@ -284,7 +287,7 @@ public final class methodeImap {
 
 		p_textArea.append(p_text + "\n");
 		p_textArea.setCaretPosition(p_textArea.getDocument().getLength());
-		Historique.ecrire(p_text);
+		// Historique.ecrire(p_text);
 	}
 
 	private static int verifieRegle(String expediteur, int p_idDossier) {

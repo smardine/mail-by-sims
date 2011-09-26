@@ -16,6 +16,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
+import tools.Historique;
 import bdd.BDRequette;
 
 import com.sun.mail.imap.IMAPFolder;
@@ -90,7 +91,7 @@ public class ReleveGmail {
 
 				methodeImap.afficheText(textArea,
 						"Ouverture de la boite de reception");
-
+				Historique.ecrireReleveBal(cptMail, "Releve des dossiers");
 				Folder[] personnal = store.getPersonalNamespaces();
 				// Folder[] shared = store.getSharedNamespaces();
 				// Folder[] userNamedSpace = store.getUserNamespaces(user);
@@ -136,6 +137,8 @@ public class ReleveGmail {
 				if (idDossier == (-1)) {// si le sous dossier est
 					// inconnu
 					// de la base, on en créer un
+					Historique.ecrireReleveBal(cptMail,
+							"Création d'un nouveau dossier");
 					if ("[Gmail]".equals(fldr.getFullName())) {
 						// ce n'est pas vraiment un repertoire,
 						// c'est plus un conteneur
@@ -152,11 +155,12 @@ public class ReleveGmail {
 						// "Important","Tous les messages"...
 						// seront a la racine du compte dans le jtree
 						bd.createNewDossier(p_compteMail.getIdCompte(), 0, fldr
-								.getName());
+								.getName(), fldr.getFullName());
 					} else {
 						// sinon, les dossiers créés le seront sous INBOX
 						bd.createNewDossier(p_compteMail.getIdCompte(),
-								p_compteMail.getIdInbox(), fldr.getName());
+								p_compteMail.getIdInbox(), fldr.getName(), fldr
+										.getFullName());
 					}
 
 					idDossier = bd.getIdDossier(fldr.getName(), p_compteMail

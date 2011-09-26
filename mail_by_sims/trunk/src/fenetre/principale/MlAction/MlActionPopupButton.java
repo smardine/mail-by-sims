@@ -4,12 +4,13 @@ import imap.thread_SynchroImap;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
 
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import mdl.MlCompteMail;
+import mdl.MlListeCompteMail;
 import bdd.BDRequette;
 
 public class MlActionPopupButton implements ActionListener {
@@ -51,9 +52,11 @@ public class MlActionPopupButton implements ActionListener {
 		} else if (actionCommand.contains("[releve ]")) {
 			String nomCompte = actionCommand.substring(actionCommand
 					.lastIndexOf("]") + 1);
-			// BDRequette bd = new BDRequette();
-			ArrayList<String> lst = new ArrayList<String>(1);
-			lst.add(nomCompte);
+
+			MlListeCompteMail lst = new MlListeCompteMail();
+			MlCompteMail cpt = new MlCompteMail();
+			cpt.setNomCompte(nomCompte);
+			lst.add(cpt);
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
 					pbPieceJointe, text, scrollPane, false, lst);
 			t.start();
@@ -61,8 +64,10 @@ public class MlActionPopupButton implements ActionListener {
 		} else if (actionCommand.contains("[synchro ]")) {
 			String nomCompte = actionCommand.substring(actionCommand
 					.lastIndexOf("]") + 1);
-			ArrayList<String> lst = new ArrayList<String>(1);
-			lst.add(nomCompte);
+			MlListeCompteMail lst = new MlListeCompteMail();
+			MlCompteMail cpt = new MlCompteMail();
+			cpt.setNomCompte(nomCompte);
+			lst.add(cpt);
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
 					pbPieceJointe, text, scrollPane, true, lst);
 			t.start();

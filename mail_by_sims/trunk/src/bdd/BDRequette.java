@@ -332,17 +332,18 @@ public class BDRequette {
 
 	}
 
-	/**
-	 * obtenir la liste des message a partir du nom d'un dossier racine
-	 * @param p_idDossierracine
-	 * @return
-	 */
-	public ArrayList<String> getListeMessage(int p_idDossierracine) {
-		String requete = "SELECT a.ID_MESSAGE_RECU FROM MAIL_RECU a where a.ID_DOSSIER_STOCKAGE='"
-				+ p_idDossierracine + "'";
-		return getListeDeChamp(requete);
-
-	}
+	// /**
+	// * obtenir la liste des message a partir du nom d'un dossier racine
+	// * @param p_idDossierracine
+	// * @return
+	// */
+	// public ArrayList<String> getListeMessage(int p_idDossierracine) {
+	// String requete =
+	// "SELECT a.ID_MESSAGE_RECU FROM MAIL_RECU a where a.ID_DOSSIER_STOCKAGE='"
+	// + p_idDossierracine + "'";
+	// return getListeDeChamp(requete);
+	//
+	// }
 
 	/**
 	 * Obtenir le nombre de sous dossier a partir du nom d'un dossier racine
@@ -353,59 +354,59 @@ public class BDRequette {
 		return getListeSousDossier(p_idDossierracine).size();
 	}
 
-	/**
-	 * Obtenir le nombre de message a partir du nom d'un dossier racine
-	 * @param p_idDossierracine
-	 * @return
-	 */
-	public int getnbMessage(int p_idDossierracine) {
-		return getListeMessage(p_idDossierracine).size();
-	}
+	// /**
+	// * Obtenir le nombre de message a partir du nom d'un dossier racine
+	// * @param p_idDossierracine
+	// * @return
+	// */
+	// public int getnbMessage(int p_idDossierracine) {
+	// return getListeMessage(p_idDossierracine).size();
+	// }
 
-	/**
-	 * Obtenir le champ "USER" a partir d'un id de compte
-	 * @param p_idCpt
-	 * @return
-	 */
-	public String getUserFromIdCompte(int p_idCpt) {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Select " + EnStructureTable.COMPTES_USERNAME.getNomChamp()
-				+ " from ");
-		sb.append(EnTable.COMPTES.getNomTable() + " where ");
-		sb.append(EnStructureTable.COMPTES_ID.getNomChamp() + " ='" + p_idCpt
-				+ "'");
-
-		return get1Champ(sb.toString());
-	}
+	// /**
+	// * Obtenir le champ "USER" a partir d'un id de compte
+	// * @param p_idCpt
+	// * @return
+	// */
+	// public String getUserFromIdCompte(int p_idCpt) {
+	// StringBuilder sb = new StringBuilder();
+	// sb.append("Select " + EnStructureTable.COMPTES_USERNAME.getNomChamp()
+	// + " from ");
+	// sb.append(EnTable.COMPTES.getNomTable() + " where ");
+	// sb.append(EnStructureTable.COMPTES_ID.getNomChamp() + " ='" + p_idCpt
+	// + "'");
+	//
+	// return get1Champ(sb.toString());
+	// }
 
 	/**
 	 * Obtenir le champ "Password" a partir d'un id de compte
 	 * @param p_idCpt
 	 * @return
 	 */
-	public String getPasswordFromIdCompte(int p_idCpt) {
-		String requete = "Select " + EnStructureTable.COMPTES_PWD.getNomChamp()
-				+ " from " + EnTable.COMPTES.getNomTable() + " where "
-				+ EnStructureTable.COMPTES_ID.getNomChamp() + " ='" + p_idCpt
-				+ "'";
-
-		return get1Champ(requete);
-	}
+	// public String getPasswordFromIdCompte(int p_idCpt) {
+	// String requete = "Select " + EnStructureTable.COMPTES_PWD.getNomChamp()
+	// + " from " + EnTable.COMPTES.getNomTable() + " where "
+	// + EnStructureTable.COMPTES_ID.getNomChamp() + " ='" + p_idCpt
+	// + "'";
+	//
+	// return get1Champ(requete);
+	// }
 
 	/**
 	 * Obtenir le servuer pop a partir d'un id de compte
 	 * @param p_idCpt
 	 * @return
 	 */
-	public String getHostFromIdCompte(int p_idCpt) {
-		String requete = "Select "
-				+ EnStructureTable.COMPTES_SERVEURPOP.getNomChamp() + " from "
-				+ EnTable.COMPTES.getNomTable() + " where "
-				+ EnStructureTable.COMPTES_ID.getNomChamp() + " ='" + p_idCpt
-				+ "'";
-
-		return get1Champ(requete);
-	}
+	// public String getHostFromIdCompte(int p_idCpt) {
+	// String requete = "Select "
+	// + EnStructureTable.COMPTES_SERVEURPOP.getNomChamp() + " from "
+	// + EnTable.COMPTES.getNomTable() + " where "
+	// + EnStructureTable.COMPTES_ID.getNomChamp() + " ='" + p_idCpt
+	// + "'";
+	//
+	// return get1Champ(requete);
+	// }
 
 	/**
 	 * Créer un nouveau dossier en base
@@ -418,7 +419,7 @@ public class BDRequette {
 	public boolean createNewDossier(int p_idCompte, int p_idDossierParent,
 			String p_nomNewDossier, String p_nomDossierInternet) {
 		String requette = "INSERT "
-				+ "INTO DOSSIER (ID_COMPTE,  ID_DOSSIER_PARENT, NOM_DOSSIER,NOM_INTERNET) "
+				+ "INTO DOSSIER (ID_COMPTE,  ID_DOSSIER_PARENT, NOM_DOSSIER, NOM_INTERNET) "
 				+ " VALUES (" //
 				+ "'" + p_idCompte + //
 				"','" + p_idDossierParent + // 

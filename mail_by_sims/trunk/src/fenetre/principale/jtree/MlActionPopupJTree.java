@@ -45,7 +45,8 @@ public class MlActionPopupJTree implements ActionListener {
 			if ("".equals(idDossierParent)) {
 				idDossierParent = 0;
 			}
-			if (bd.createNewDossier(idCompte, idDossierParent, nomNewDossier)) {
+			if (bd.createNewDossier(idCompte, idDossierParent, nomNewDossier,
+					"")) {
 				TreePath newTreePath = new TreePath(selectionPath.toString()
 						.replace("[", "").replace("]", "")
 						+ ", " + nomNewDossier);

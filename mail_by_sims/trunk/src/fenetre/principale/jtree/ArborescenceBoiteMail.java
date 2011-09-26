@@ -11,6 +11,8 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import mdl.MlCompteMail;
+import mdl.MlListeCompteMail;
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.Main;
@@ -20,7 +22,7 @@ public class ArborescenceBoiteMail implements TreeModel {
 
 	private final Vector<TreeModelListener> listeners; // Declare the listeners
 	// vector
-	private final ArrayList<String> lstCpt;
+	private final MlListeCompteMail lstCpt;
 
 	public ArborescenceBoiteMail() {
 		BDRequette bd = new BDRequette();
@@ -45,12 +47,12 @@ public class ArborescenceBoiteMail implements TreeModel {
 		BDRequette bd = new BDRequette();
 		if (root.equals(parent)) {
 			bd.closeConnexion();
-			return lstCpt.get(index);
+			return lstCpt.get(index).getNomCompte();
 		}
-		for (String compte : lstCpt) {
-			if (compte.equals(parent)) {
-				ArrayList<String> list = bd.getListeSousDossierBase(bd
-						.getIdComptes(compte));
+		for (MlCompteMail compte : lstCpt) {
+			if (compte.getNomCompte().equals(parent)) {
+				ArrayList<String> list = bd.getListeSousDossierBase(compte
+						.getIdCompte());
 				bd.closeConnexion();
 				return list.get(index);
 			}
@@ -68,10 +70,10 @@ public class ArborescenceBoiteMail implements TreeModel {
 			return lstCpt.size();
 		}
 
-		for (String compte : lstCpt) {
-			if (compte.equals(parent)) {
+		for (MlCompteMail compte : lstCpt) {
+			if (compte.equals((MlCompteMail) parent)) {
 				BDRequette bd = new BDRequette();
-				int retour = bd.getnbSousDossierBase(bd.getIdComptes(compte));
+				int retour = bd.getnbSousDossierBase(compte.getIdCompte());
 				bd.closeConnexion();
 				return retour;
 			}
@@ -93,11 +95,11 @@ public class ArborescenceBoiteMail implements TreeModel {
 
 	public int getIndexOfChild(Object parent, Object child) {
 
-		for (String compte : lstCpt) {
-			if (compte.equals(parent)) {
+		for (MlCompteMail compte : lstCpt) {
+			if (compte.getNomCompte().equals(parent)) {
 				BDRequette bd = new BDRequette();
-				int idDossier = bd.getIdDossier((String) child, bd
-						.getIdComptes(compte));
+				int idDossier = bd.getIdDossier((String) child, compte
+						.getIdCompte());
 				bd.closeConnexion();
 				if ("".equals(idDossier)) {
 					return -1;

@@ -14,6 +14,8 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
+import mdl.MlCompteMail;
+import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
@@ -100,20 +102,26 @@ public class MlActionJtree implements TreeSelectionListener,
 	 */
 	private void valoriseTreeEtNomCompte(TreePath p_path) {
 		BDRequette bd = new BDRequette();
-		ArrayList<String> lstCpt = bd.getListeDeComptes();
+		MlListeCompteMail lstCpt = bd.getListeDeComptes();
 		bd.closeConnexion();
 		if (null != p_path) {
-			if (lstCpt.contains(p_path.getLastPathComponent())) {
-				// on est dans le cas [superroot,gmail]
-				Main.setNomCompte((String) p_path.getLastPathComponent());
-			} else {
-				String[] tabChaine = p_path.toString().split(",");
-				if (tabChaine.length > 1) {
-					Main.setNomCompte(tabChaine[1].trim());
+
+			for (MlCompteMail cpt : lstCpt) {
+				if ((cpt.getNomCompte()).contains((CharSequence) p_path
+						.getLastPathComponent())) {
+					// on est dans le cas [superroot,gmail]
+					Main.setNomCompte((String) p_path.getLastPathComponent());
+				} else {
+					String[] tabChaine = p_path.toString().split(",");
+					if (tabChaine.length > 1) {
+						Main.setNomCompte(tabChaine[1].trim());
+					}
 				}
+				Main.setTreePath(p_path);
+				tree.setSelectionPath(p_path);
+
 			}
-			Main.setTreePath(p_path);
-			tree.setSelectionPath(p_path);
+
 		}
 
 	}

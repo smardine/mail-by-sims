@@ -71,7 +71,7 @@ public class ArborescenceBoiteMail implements TreeModel {
 		}
 
 		for (MlCompteMail compte : lstCpt) {
-			if (compte.equals((MlCompteMail) parent)) {
+			if (compte.getNomCompte().equals(parent)) {
 				BDRequette bd = new BDRequette();
 				int retour = bd.getnbSousDossierBase(compte.getIdCompte());
 				bd.closeConnexion();

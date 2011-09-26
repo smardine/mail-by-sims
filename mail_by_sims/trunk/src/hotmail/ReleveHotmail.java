@@ -21,34 +21,34 @@ import com.googlecode.jdeltasync.Message;
 
 public class ReleveHotmail {
 
-	private final String user;
-	private final String password;
+	// private final String user;
+	// private final String password;
 	// private final String host;
-	private final int idCompte;
+	// private final int idCompte;
 	private final JProgressBar progressBar;
 	private final boolean isSynchro;
 	private final JTextArea textArea;
 	private final JProgressBar progressPJ;
 
-	public ReleveHotmail(int p_idCpt, String p_user, String p_password,
+	public ReleveHotmail(MlCompteMail p_compteMail,
 	/* String p_host, */JProgressBar progress,
 			JProgressBar p_progressPieceJointe, JTextArea p_textArea,
 			boolean p_isSynchro) {
 
-		this.user = p_user;
-		this.password = p_password;
-		// this.host = p_host;
-		this.idCompte = p_idCpt;
+		// this.user = p_user;
+		// this.password = p_password;
+		// // this.host = p_host;
+		// this.idCompte = p_idCpt;
 		this.progressBar = progress;
 		this.textArea = p_textArea;
 		this.progressPJ = p_progressPieceJointe;
 		this.isSynchro = p_isSynchro;
 
-		this.main(idCompte, progressBar, progressPJ);
+		this.main(p_compteMail, progressBar, progressPJ);
 
 	}
 
-	private void main(int p_idCompte, JProgressBar p_progressBar,
+	private void main(MlCompteMail p_compteMail, JProgressBar p_progressBar,
 			JProgressBar p_progressBarPJ) {
 
 		// props.setProperty("mail.store.protocol", "davmail");
@@ -66,29 +66,30 @@ public class ReleveHotmail {
 			// user, password, textArea, label);
 		} else {
 			DeltaSyncClientHelper client = new DeltaSyncClientHelper(
-					new DeltaSyncClient(), user, password);
+					new DeltaSyncClient(), p_compteMail.getUserName(),
+					p_compteMail.getPassword());
 
 			// lance la connexion
 			try {
 				client.login();
 				ArrayList<Folder> dossierDeBase = methodeHotmail
 						.getDossierPrincipaux(client);
-				MlCompteMail cpt = new MlCompteMail(p_idCompte);
+
 				for (Folder unDossier : dossierDeBase) {
 					int idDossier = 0;
-					idDossier = getIdDossier(cpt, unDossier, idDossier);
+					idDossier = getIdDossier(p_compteMail, unDossier);
 					Message[] messages = client.getMessages(unDossier);
-					methodeHotmail.releveHotmail(p_idCompte, progressBar,
-							progressPJ, idDossier, messages, unDossier, client,
-							textArea);
+					methodeHotmail.releveHotmail(p_compteMail.getIdCompte(),
+							progressBar, progressPJ, idDossier, messages,
+							unDossier, client, textArea);
 				}
 
 				ArrayList<Folder> sousDossier = methodeHotmail
 						.getSousDossierHotmail(client);
 				BDRequette bd = new BDRequette();
 				for (Folder f : sousDossier) {
-					traiteSousDossier(p_idCompte, p_progressBar,
-							p_progressBarPJ, client, cpt, bd, f);
+					traiteSousDossier(p_progressBar, p_progressBarPJ, client,
+							p_compteMail, bd, f);
 
 				}
 
@@ -112,7 +113,8 @@ public class ReleveHotmail {
 	 * @param idDossier
 	 * @return
 	 */
-	private int getIdDossier(MlCompteMail cpt, Folder unDossier, int idDossier) {
+	private int getIdDossier(MlCompteMail cpt, Folder unDossier) {
+		int idDossier = 0;
 		if ("Inbox".equals(unDossier.getName())) {
 			idDossier = cpt.getIdInbox();
 		} else if ("Junk".equals(unDossier.getName())) {
@@ -138,20 +140,19 @@ public class ReleveHotmail {
 	 * @throws DeltaSyncException
 	 * @throws IOException
 	 */
-	private void traiteSousDossier(int p_idCompte, JProgressBar p_progressBar,
+	private void traiteSousDossier(JProgressBar p_progressBar,
 			JProgressBar p_progressBarPJ, DeltaSyncClientHelper client,
 			MlCompteMail cpt, BDRequette bd, Folder f)
 			throws DeltaSyncException, IOException {
-		int idDossier = bd.getIdDossier(f.getName(), p_idCompte);
+		int idDossier = bd.getIdDossier(f.getName(), cpt.getIdCompte());
 		if (idDossier == -1) {// le dossier n'existe pas, on le crée
-			bd.createNewDossier(p_idCompte, cpt.getIdInbox(), f
-					.getName());
-			idDossier = bd.getIdDossier(f.getName(), p_idCompte);
+			bd.createNewDossier(cpt.getIdCompte(), cpt.getIdInbox(), f
+					.getName(), f.getName());
+			idDossier = bd.getIdDossier(f.getName(), cpt.getIdCompte());
 		}
 		Message[] messages = client.getMessages(f);
-		methodeHotmail.releveHotmail(p_idCompte, p_progressBar,
-				p_progressBarPJ, idDossier, messages, f, client,
-				textArea);
+		methodeHotmail.releveHotmail(cpt.getIdCompte(), p_progressBar,
+				p_progressBarPJ, idDossier, messages, f, client, textArea);
 	}
 
 }

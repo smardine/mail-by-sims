@@ -20,6 +20,7 @@ import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.GestionRepertoire;
+import tools.Historique;
 import bdd.BDRequette;
 
 import com.sun.mail.pop3.POP3Folder;
@@ -52,6 +53,8 @@ public final class methodePop {
 			int count = folder.getMessageCount();
 
 			methodeImap.afficheText(p_textArea, "Nombre de messages: " + count);
+			Historique.ecrireReleveBal(comptePop, "Nombre de messages: "
+					+ count);
 			// Message numbers start at 1
 			int nbActu = 1;
 			MlListeMessage lstMessage = new MlListeMessage();
@@ -127,8 +130,8 @@ public final class methodePop {
 			st = sess.getStore("pop3");
 			st.connect(p_compte.getServeurReception(), p_compte.getUserName(),
 					p_compte.getPassword());
-			System.out.println("st=:" + st);
-			System.out.println("Obtention d'un folder");
+			// System.out.println("st=:" + st);
+			// System.out.println("Obtention d'un folder");
 			POP3Folder f = (POP3Folder) st.getFolder("INBOX");
 			f.open(Folder.READ_ONLY);
 			// int nbMessageDansInbox = f.getMessageCount();

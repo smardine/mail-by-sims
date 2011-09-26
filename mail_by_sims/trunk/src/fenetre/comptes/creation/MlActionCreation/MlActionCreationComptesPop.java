@@ -10,9 +10,8 @@ import java.util.List;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 
-import pop.util.methodePop;
-
 import mdl.MlCompteMail;
+import pop.util.methodePop;
 import bdd.BDRequette;
 import fenetre.comptes.EnDefFournisseur;
 import fenetre.comptes.EnDossierBase;
@@ -74,7 +73,7 @@ public class MlActionCreationComptesPop implements ActionListener {
 				return;
 			}
 
-			MlCompteMail compteMail = new MlCompteMail();
+			MlCompteMail compteMail = new MlCompteMail("");
 			compteMail.setNomCompte(nomCompte.getText());
 			compteMail.setServeurReception(pop.getText());
 			compteMail.setPortPop(110);

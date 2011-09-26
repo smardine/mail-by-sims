@@ -8,6 +8,7 @@ public class BDScripts {
 	private ArrayList<String> version2;
 	private ArrayList<String> version3;
 	private ArrayList<String> version4;
+	private ArrayList<String> version5;
 
 	public BDScripts() {
 
@@ -225,6 +226,14 @@ public class BDScripts {
 				.add("CREATE DESCENDING INDEX IDX_MAIL_RECU_DATE_REC_DESC ON MAIL_RECU (DATE_RECEPTION);");
 		version4.add("UPDATE PARAM SET VERSION_BASE=4;");
 		return version4;
+	}
+
+	public ArrayList<String> getVersion5() {
+		version5 = new ArrayList<String>();
+		version5
+				.add("ALTER TABLE DOSSIER ADD NOM_INTERNET Varchar(999) CHARACTER SET ISO8859_1;");
+		version5.add("UPDATE PARAM SET VERSION_BASE=5;");
+		return version5;
 	}
 
 }

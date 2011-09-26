@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mdl.MlCompteMail;
+import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.GestionRepertoire;
@@ -241,10 +242,17 @@ public class BDRequette {
 	 * Obtenir la liste des compte mails enregistrés en base
 	 * @return
 	 */
-	public ArrayList<String> getListeDeComptes() {
-		String requete = "Select " + EnStructureTable.COMPTES_NOM.getNomChamp()
+	public MlListeCompteMail getListeDeComptes() {
+		String requete = "Select " + EnStructureTable.COMPTES_ID.getNomChamp()
 				+ " from " + EnTable.COMPTES.getNomTable();
-		return getListeDeChamp(requete);
+		ArrayList<String> lst = getListeDeChamp(requete);
+		MlListeCompteMail listeCompte = new MlListeCompteMail();
+		for (String s : lst) {
+			MlCompteMail cpt = new MlCompteMail(Integer.parseInt(s));
+			listeCompte.add(cpt);
+		}
+
+		return listeCompte;
 
 	}
 
@@ -406,16 +414,19 @@ public class BDRequette {
 	 * @param p_idCompte - String - l'id de compte
 	 * @param p_idDossierParent - String - l'id du dossier parent
 	 * @param p_nomNewDossier - String le nom du nouveau dossier
+	 * @param p_nomDossierInternet
 	 * @return true ou false
 	 */
 	public boolean createNewDossier(int p_idCompte, int p_idDossierParent,
-			String p_nomNewDossier) {
+			String p_nomNewDossier, String p_nomDossierInternet) {
 		String requette = "INSERT "
-				+ "INTO DOSSIER (ID_COMPTE,  ID_DOSSIER_PARENT, NOM_DOSSIER) "
+				+ "INTO DOSSIER (ID_COMPTE,  ID_DOSSIER_PARENT, NOM_DOSSIER,NOM_INTERNET) "
 				+ " VALUES (" //
 				+ "'" + p_idCompte + //
-				"','" + p_idDossierParent + "','"//
-				+ p_nomNewDossier + "')";
+				"','" + p_idDossierParent + // 
+				"','" + p_nomNewDossier + // 
+				"','" + p_nomDossierInternet + "')";
+
 		return executeRequete(requette);
 
 	}

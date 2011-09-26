@@ -258,6 +258,8 @@ public final class methodeImap {
 					messPourBase.setSujet(m.getSubject());
 					afficheText(textArea,
 							"Enregistrement du message dans la base");
+					Historique.ecrireReleveBal(p_compteMail,
+							"Enregistrement du message dans la base");
 					bd.createNewMessage(messPourBase);
 
 				}

@@ -9,6 +9,7 @@ public class BDScripts {
 	private ArrayList<String> version3;
 	private ArrayList<String> version4;
 	private ArrayList<String> version5;
+	private ArrayList<String> version6;
 
 	public BDScripts() {
 
@@ -234,6 +235,20 @@ public class BDScripts {
 				.add("ALTER TABLE DOSSIER ADD NOM_INTERNET Varchar(999) CHARACTER SET ISO8859_1;");
 		version5.add("UPDATE PARAM SET VERSION_BASE=5;");
 		return version5;
+	}
+
+	public ArrayList<String> getVersion6() {
+		version6 = new ArrayList<String>();
+		version6.add("CREATE INDEX IDX_NOM_DOSSIER ON DOSSIER (NOM_DOSSIER);");
+		version6
+				.add("CREATE INDEX IDX_DOSSIER_CPT ON DOSSIER (ID_COMPTE, ID_DOSSIER_PARENT);");
+		version6.add("CREATE INDEX IDX_NOM_COMPTE ON COMPTES (NOM_COMPTE);");
+		version6
+				.add("CREATE INDEX IDX_PIECE_JOINTE1 ON PIECE_JOINTE (ID_MESSAGE);");
+		version6
+				.add("CREATE INDEX IDX_PIECE_JOINTE2 ON PIECE_JOINTE (NOM_PIECE_JOINTE);");
+		version6.add("UPDATE PARAM SET VERSION_BASE=6;");
+		return version6;
 	}
 
 }

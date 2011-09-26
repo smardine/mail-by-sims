@@ -19,6 +19,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
+import tools.Historique;
 
 import com.sun.mail.pop3.POP3Folder;
 
@@ -61,11 +62,13 @@ public class ClientMail {
 		try {
 			st = sess.getStore("pop3");
 			st.connect(host, Identifiant, MotDePasse);
-			System.out.println("Connexion ok");
-			System.out.println("st=:" + st);
-			System.out.println("Obtention d'un folder");
+			// System.out.println("Connexion ok");
+			// System.out.println("st=:" + st);
+			// System.out.println("Obtention d'un folder");
 			POP3Folder f = (POP3Folder) st.getFolder("INBOX");
 			methodeImap.afficheText(text, "Ouverture de la boite de reception");
+			Historique.ecrireReleveBal(comptePop,
+					"Ouverture de la boite de reception");
 			f.open(Folder.READ_ONLY);// ouverture de INBOX
 			pop.util.methodePop.releveCompte(comptePop, f, text,
 					progressReleve, progressPieceJointe);

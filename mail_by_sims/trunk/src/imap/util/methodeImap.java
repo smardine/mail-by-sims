@@ -156,7 +156,8 @@ public final class methodeImap {
 
 		int pourcent = (nbActu * 100) / listeMessage.size();
 		p_progress.setValue(pourcent);
-		p_progress.setString("Mise a jour messagerie: " + pourcent + " %");
+		p_progress.setString("Maj dossier " + fldr.getFullName() + " : "
+				+ pourcent + " %");
 		// label.setText("Message traité n° " + nbActu
 		// + " sur un total de " + listeMessage.size());
 		try {

@@ -1,4 +1,4 @@
-package Pop3.util;
+package pop.util;
 
 import imap.util.methodeImap;
 import importMail.thread_Import;

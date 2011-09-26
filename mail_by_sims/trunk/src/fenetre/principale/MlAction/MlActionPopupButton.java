@@ -54,7 +54,7 @@ public class MlActionPopupButton implements ActionListener {
 					.lastIndexOf("]") + 1);
 
 			MlListeCompteMail lst = new MlListeCompteMail();
-			MlCompteMail cpt = new MlCompteMail();
+			MlCompteMail cpt = new MlCompteMail(nomCompte);
 			cpt.setNomCompte(nomCompte);
 			lst.add(cpt);
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
@@ -65,7 +65,7 @@ public class MlActionPopupButton implements ActionListener {
 			String nomCompte = actionCommand.substring(actionCommand
 					.lastIndexOf("]") + 1);
 			MlListeCompteMail lst = new MlListeCompteMail();
-			MlCompteMail cpt = new MlCompteMail();
+			MlCompteMail cpt = new MlCompteMail(nomCompte);
 			cpt.setNomCompte(nomCompte);
 			lst.add(cpt);
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,

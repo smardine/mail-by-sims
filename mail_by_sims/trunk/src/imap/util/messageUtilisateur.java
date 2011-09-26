@@ -14,13 +14,13 @@ public final class messageUtilisateur {
 
 	public static void affMessageException(Exception p_exception, String p_titre) {
 		if (p_exception == null) {
-			JOptionPane.showMessageDialog(null, null, p_titre,
-					JOptionPane.ERROR_MESSAGE);
+			// JOptionPane.showMessageDialog(null, null, p_titre,
+			// JOptionPane.ERROR_MESSAGE);
 			Historique.ecrire("Exception relevée: \n" + p_titre);
 		} else {
-			JOptionPane.showMessageDialog(null, p_exception.getClass() + " "
-					+ p_exception.getMessage(), p_titre,
-					JOptionPane.ERROR_MESSAGE);
+			// JOptionPane.showMessageDialog(null, p_exception.getClass() + " "
+			// + p_exception.getMessage(), p_titre,
+			// JOptionPane.ERROR_MESSAGE);
 			Historique.ecrire("Titre: " + p_titre);
 			Historique.ecrire("Exception dans la class "
 					+ p_exception.getClass());
@@ -31,13 +31,15 @@ public final class messageUtilisateur {
 
 	public static void affMessageErreur(String p_message) {
 
-		JOptionPane.showMessageDialog(null, p_message,
-				"Une erreur est survenue", JOptionPane.ERROR_MESSAGE);
+		// JOptionPane.showMessageDialog(null, p_message,
+		// "Une erreur est survenue", JOptionPane.ERROR_MESSAGE);
+		Historique.ecrire("[ERROR] " + p_message);
 	}
 
 	public static void affMessageInfo(String p_message) {
-		JOptionPane.showMessageDialog(null, p_message, "Pour information",
-				JOptionPane.INFORMATION_MESSAGE);
+		// JOptionPane.showMessageDialog(null, p_message, "Pour information",
+		// JOptionPane.INFORMATION_MESSAGE);
+		Historique.ecrire("[INFO] " + p_message);
 
 	}
 

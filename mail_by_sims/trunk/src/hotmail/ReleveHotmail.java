@@ -10,6 +10,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
+import tools.Historique;
 import bdd.BDRequette;
 
 import com.googlecode.jdeltasync.AuthenticationException;
@@ -52,22 +53,16 @@ public class ReleveHotmail {
 			JProgressBar p_progressBarPJ) {
 
 		// props.setProperty("mail.store.protocol", "davmail");
-
+		BDRequette bd = new BDRequette();
+		DeltaSyncClientHelper client = new DeltaSyncClientHelper(
+				new DeltaSyncClient(), p_compteMail.getUserName(), p_compteMail
+						.getPassword());
 		if (isSynchro) {
-			// on commence par verifier les messages suprrimés car sinon, on
-			// pert du
-			// temp a le faire apres une releve de la BAL
-			// methodeImap
-			// .afficheText(textArea, "Mise a jour de la boite hotmail");
-			// methodeImap.afficheText(textArea,
-			// "Synchronisation des messages supprimés");
-			// methodeImap.miseAJourMessage(props, p_idCompte, progressBar,
-			// host,
-			// user, password, textArea, label);
+
+			methodeHotmail.miseAJourMessagerie(bd, client, p_compteMail,
+					p_progressBar, p_progressBarPJ, textArea);
+
 		} else {
-			DeltaSyncClientHelper client = new DeltaSyncClientHelper(
-					new DeltaSyncClient(), p_compteMail.getUserName(),
-					p_compteMail.getPassword());
 
 			// lance la connexion
 			try {
@@ -77,21 +72,41 @@ public class ReleveHotmail {
 
 				for (Folder unDossier : dossierDeBase) {
 					int idDossier = 0;
-					idDossier = getIdDossier(p_compteMail, unDossier);
+					idDossier = methodeHotmail.getIdDossierPrincipaux(
+							p_compteMail, unDossier);
 					Message[] messages = client.getMessages(unDossier);
-					methodeHotmail.releveHotmail(p_compteMail.getIdCompte(),
-							progressBar, progressPJ, idDossier, messages,
-							unDossier, client, textArea);
+					int messBaseCount = bd.getnbMessageParDossier(p_compteMail
+							.getIdCompte(), idDossier);
+
+					int nbMessARelever = messages.length - messBaseCount;
+					Historique.ecrireReleveBal(p_compteMail,
+							"Nombre de messages total: " + messages.length);
+					Historique
+							.ecrireReleveBal(p_compteMail,
+									"Nombre de message(s) à relever: "
+											+ nbMessARelever);
+					if (nbMessARelever > 0) {
+						methodeHotmail.releveHotmail(
+								p_compteMail.getIdCompte(), progressBar,
+								progressPJ, idDossier, messages, unDossier,
+								client, textArea);
+					} else {
+						methodeHotmail.afficheText(textArea,
+								"Pas de nouveau message a relever dans le dossier "
+										+ unDossier.getName());
+					}
+
 				}
 
 				ArrayList<Folder> sousDossier = methodeHotmail
 						.getSousDossierHotmail(client);
-				BDRequette bd = new BDRequette();
+
 				for (Folder f : sousDossier) {
 					traiteSousDossier(p_progressBar, p_progressBarPJ, client,
 							p_compteMail, bd, f);
 
 				}
+				bd.closeConnexion();
 
 			} catch (AuthenticationException e) {
 				messageUtilisateur
@@ -105,28 +120,6 @@ public class ReleveHotmail {
 			}
 		}
 
-	}
-
-	/**
-	 * @param cpt
-	 * @param unDossier
-	 * @param idDossier
-	 * @return
-	 */
-	private int getIdDossier(MlCompteMail cpt, Folder unDossier) {
-		int idDossier = 0;
-		if ("Inbox".equals(unDossier.getName())) {
-			idDossier = cpt.getIdInbox();
-		} else if ("Junk".equals(unDossier.getName())) {
-			idDossier = cpt.getIdSpam();
-		} else if ("Drafts".equals(unDossier.getName())) {
-			idDossier = cpt.getIdBrouillons();
-		} else if ("Sent".equals(unDossier.getName())) {
-			idDossier = cpt.getIdEnvoye();
-		} else if ("Deleted".equals(unDossier.getName())) {
-			idDossier = cpt.getIdCorbeille();
-		}
-		return idDossier;
 	}
 
 	/**
@@ -151,8 +144,20 @@ public class ReleveHotmail {
 			idDossier = bd.getIdDossier(f.getName(), cpt.getIdCompte());
 		}
 		Message[] messages = client.getMessages(f);
-		methodeHotmail.releveHotmail(cpt.getIdCompte(), p_progressBar,
-				p_progressBarPJ, idDossier, messages, f, client, textArea);
+
+		int messBaseCount = bd.getnbMessageParDossier(cpt.getIdCompte(),
+				idDossier);
+
+		int nbMessARelever = messages.length - messBaseCount;
+		if (nbMessARelever > 0) {
+			methodeHotmail.releveHotmail(cpt.getIdCompte(), p_progressBar,
+					p_progressBarPJ, idDossier, messages, f, client, textArea);
+		} else {
+			methodeHotmail.afficheText(textArea,
+					"Pas de nouveau message a relever dans le dossier "
+							+ f.getName());
+		}
+
 	}
 
 }

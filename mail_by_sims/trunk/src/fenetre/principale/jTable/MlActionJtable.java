@@ -182,38 +182,48 @@ public class MlActionJtable implements MouseListener, ActionListener {
 
 	public static void afficheContenuMail(JTable table, JList jList) {
 		int selectedLine = table.getSelectedRow();
+		if (selectedLine >= 0) {
+			Integer idMessage = MlActionPopupJTable
+					.getReelIdMessage(selectedLine);
+			// le n° du message (meme si il est caché).
+			BDRequette bd = new BDRequette();
+			File contenu = bd.getContenuFromId(idMessage, false);
 
-		Integer idMessage = MlActionPopupJTable.getReelIdMessage(selectedLine);
-		// le n° du message (meme si il est caché).
-		BDRequette bd = new BDRequette();
-		File contenu = bd.getContenuFromId(idMessage, false);
-
-		// on RAZ le contenu du panelEditor
-		Document doc = editor.getDocument();
-		doc.putProperty(Document.StreamDescriptionProperty, null);
-		if (contenu != null) {
-			try {
-				editor.setPage("file:///" + contenu.getAbsolutePath());
-				// affichage des piece jointe dans la liste (si il y en a)
-				ArrayList<String> lstPj = bd.getListNomPieceJointe(idMessage);
-				DefaultListModel model = (DefaultListModel) jList.getModel();
-				int nbLigne = model.getSize();
-				if (nbLigne > 0) {// si la liste est deja repli, on la vide
-					model.removeAllElements();
-				}
-				if (lstPj.size() > 0) {
-					for (String s : lstPj) {
-						model.addElement(s);
+			// on RAZ le contenu du panelEditor
+			Document doc = editor.getDocument();
+			doc.putProperty(Document.StreamDescriptionProperty, null);
+			if (contenu != null) {
+				try {
+					editor.setPage("file:///" + contenu.getAbsolutePath());
+					// affichage des piece jointe dans la liste (si il y en a)
+					ArrayList<String> lstPj = bd
+							.getListNomPieceJointe(idMessage);
+					DefaultListModel model = (DefaultListModel) jList
+							.getModel();
+					int nbLigne = model.getSize();
+					if (nbLigne > 0) {// si la liste est deja repli, on la vide
+						model.removeAllElements();
 					}
+					if (lstPj.size() > 0) {
+						for (String s : lstPj) {
+							model.addElement(s);
+						}
 
+					}
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
 				}
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			}
+
+			bd.closeConnexion();
+		} else {
+			table.removeAll();
+			jList.removeAll();
+			Document doc = editor.getDocument();
+			doc.putProperty(Document.StreamDescriptionProperty, null);
 		}
 
-		bd.closeConnexion();
 	}
 
 	@Override

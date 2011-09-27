@@ -243,8 +243,8 @@ public final class methodeImap {
 			}
 			// Message numbers start at 1
 			int nbActu = 1;
-			Message[] tabMessageARelever = imapFolder.getMessages(imapcount
-					- nbMessARelever, imapcount);
+			Message[] tabMessageARelever = imapFolder.getMessages(
+					(imapcount - nbMessARelever) + 1, imapcount);
 			for (Message m : tabMessageARelever) {
 				// p_label.setText("Message traité n° " + nbActu++
 				// + " sur un total de " + count);

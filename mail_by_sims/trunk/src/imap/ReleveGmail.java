@@ -89,8 +89,7 @@ public class ReleveGmail {
 				store = session.getStore("imaps");
 				store.connect(host, user, password);
 
-				methodeImap.afficheText(textArea,
-						"Ouverture de la boite de reception");
+				methodeImap.afficheText(textArea, "Releve des dossiers");
 				Historique.ecrireReleveBal(cptMail, "Releve des dossiers");
 				Folder[] personnal = store.getPersonalNamespaces();
 				// Folder[] shared = store.getSharedNamespaces();

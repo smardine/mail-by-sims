@@ -1097,4 +1097,11 @@ public class BDRequette {
 
 	}
 
+	public int getnbMessageParDossier(int p_idCompte, int p_idDossier) {
+		String requette = "select count (a.UID_MESSAGE) FROM MAIL_RECU a where a.ID_COMPTE="
+				+ p_idCompte + " and a.ID_DOSSIER_STOCKAGE=" + p_idDossier;
+		return Integer.parseInt(get1Champ(requette));
+
+	}
+
 }

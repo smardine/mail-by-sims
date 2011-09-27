@@ -93,34 +93,50 @@ public final class methodeImap {
 		BDRequette bd = new BDRequette();
 		ArrayList<String> listeDossier = bd.getListeDossier(pIdCompte);
 		for (String dossier : listeDossier) {
-			IMAPFolder fldr = null;
+			IMAPFolder imapFolder = null;
 			try {
 				EnDossierBase dossierBase = EnDossierBase
 						.getDossierbase(dossier);
 				if (dossierBase != null) {
-					fldr = EnDossierBase.getDossierGmail(dossierBase, store);
+					imapFolder = EnDossierBase.getDossierGmail(dossierBase,
+							store);
 				} else {
-					fldr = EnDossierBase.getSousDossierInbox(dossier,
+					imapFolder = EnDossierBase.getSousDossierInbox(dossier,
 							pIdCompte, store);
 				}
 
-				afficheText(textArea, "Ouverture de " + fldr.getFullName());
-				fldr.open(Folder.READ_WRITE);
+				afficheText(textArea, "Ouverture de "
+						+ imapFolder.getFullName());
+				imapFolder.open(Folder.READ_WRITE);
 				afficheText(textArea, "Parcours des messages sur le serveur");
 				afficheText(textArea, "à la recherche des messages supprimés");
+				int idDossier = bd.getIdDossier(dossier, pIdCompte);
+				int imapcount = imapFolder.getMessageCount();
+				int messBaseCount = bd.getnbMessageParDossier(pIdCompte,
+						idDossier);
+				int nbMessARelever = imapcount - messBaseCount;
+
+				if (nbMessARelever == 0) {
+					// meme nb de message pas de recherche de mess supprimé a
+					// faire
+					imapFolder.close(false);
+					continue;
+
+				}
+
 				MlListeMessage listeMessage = bd.getListeDeMessage(pIdCompte,
 						bd.getIdDossier(dossier, pIdCompte));
 				int nbActu = 0;
 				for (MlMessage m : listeMessage) {
 					nbActu++;
-					majMessagerie(p_progress, textArea, bd, fldr, listeMessage,
-							nbActu, m);
+					majMessagerie(p_progress, textArea, bd, imapFolder,
+							listeMessage, nbActu, m);
 				}
 				try {
 					afficheText(textArea, "Fin de la verification des messages");
 					afficheText(textArea, "pour le dossier "
-							+ fldr.getFullName());
-					fldr.close(false);
+							+ imapFolder.getFullName());
+					imapFolder.close(false);
 				} catch (MessagingException e) {
 					messageUtilisateur.affMessageException(e,
 							"Erreur connexion");
@@ -203,19 +219,37 @@ public final class methodeImap {
 		BDRequette bd = new BDRequette();
 		try {
 			imapFolder.open(Folder.READ_WRITE);
-			int count = imapFolder.getMessageCount();
+			int imapcount = imapFolder.getMessageCount();
+			int messBaseCount = bd.getnbMessageParDossier(p_compteMail
+					.getIdCompte(), p_idDossier);
+			int nbMessARelever = imapcount - messBaseCount;
+
 			Historique.ecrireReleveBal(p_compteMail, "Ouverture du dossier "
 					+ imapFolder.getFullName());
-			Historique.ecrireReleveBal(p_compteMail, "Nombre de messages: "
-					+ count);
-			afficheText(textArea, "Nombre de messages: " + count);
+			Historique.ecrireReleveBal(p_compteMail,
+					"Nombre de messages dans le dossier: " + imapcount);
+			Historique.ecrireReleveBal(p_compteMail,
+					"Nombre de message a relever: " + nbMessARelever);
+			afficheText(textArea, "Nombre de messages: " + imapcount);
+
+			if (nbMessARelever <= 0) {
+				p_progress.setValue(100);
+				p_progress.setString(p_compteMail.getNomCompte()
+						+ ": Releve de " + imapFolder.getFullName() + " :"
+						+ 100 + " %");
+				imapFolder.close(false);
+				// bd.closeConnexion();
+				return;
+			}
 			// Message numbers start at 1
 			int nbActu = 1;
-			for (Message m : imapFolder.getMessages()) {
+			Message[] tabMessageARelever = imapFolder.getMessages(imapcount
+					- nbMessARelever, imapcount);
+			for (Message m : tabMessageARelever) {
 				// p_label.setText("Message traité n° " + nbActu++
 				// + " sur un total de " + count);
 
-				int pourcent = (nbActu++ * 100) / count;
+				int pourcent = (nbActu++ * 100) / nbMessARelever;
 				p_progress.setValue(pourcent);
 				p_progress.setString(p_compteMail.getNomCompte()
 						+ ": Releve de " + imapFolder.getFullName() + " :"

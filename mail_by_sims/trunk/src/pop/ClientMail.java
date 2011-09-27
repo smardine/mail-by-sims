@@ -70,8 +70,16 @@ public class ClientMail {
 			Historique.ecrireReleveBal(comptePop,
 					"Ouverture de la boite de reception");
 			f.open(Folder.READ_ONLY);// ouverture de INBOX
+			// BDRequette bd = new BDRequette();
+			//
+			// int messBaseCount = bd.getnbMessageParDossier(comptePop
+			// .getIdCompte(), comptePop.getIdInbox());
+			// bd.closeConnexion();
+			// int nbMessARelever = f.getMessageCount() - messBaseCount;
+			// if (nbMessARelever > 0) {
 			pop.util.methodePop.releveCompte(comptePop, f, text,
 					progressReleve, progressPieceJointe);
+			// }
 
 			f.close(false);
 			st.close();

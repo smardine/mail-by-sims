@@ -112,73 +112,16 @@ public final class methodeHotmail {
 		return dossierPrincipaux;
 	}
 
-	/**
-	 * public static void miseAJourMessage(Properties props, int pIdCompte,
-	 * JProgressBar p_progress, String host, String user, String password,
-	 * JTextArea textArea, JLabel label) { Session session =
-	 * Session.getInstance(props); // Get a Store object Store store = null; try
-	 * { store = session.getStore("imaps"); store.connect(host, user, password);
-	 * } catch (Exception e) { messageUtilisateur.affMessageException(e,
-	 * "Erreur connexion"); return; } BDRequette bd = new BDRequette();
-	 * ArrayList<String> listeDossier = bd.getListeDossier(pIdCompte); for
-	 * (String dossier : listeDossier) { Folder fldr; try { if
-	 * (EnDossierBase.RECEPTION.getLib().equals(dossier)) { fldr = (Folder)
-	 * store.getFolder("INBOX"); } else if
-	 * (EnDossierBase.BROUILLON.getLib().equals(dossier)) { if
-	 * (store.getFolder("[Gmail]/Drafts").exists()) { fldr = (Folder)
-	 * store.getFolder("[Gmail]/Drafts"); } else { fldr = (Folder)
-	 * store.getFolder("[Gmail]/Brouillons"); } } else if
-	 * (EnDossierBase.ENVOYES.getLib().equals(dossier)) { if
-	 * (store.getFolder("[Gmail]/Sent Mail").exists()) { fldr = (Folder)
-	 * store.getFolder("[Gmail]/Sent Mail"); } else { fldr = (Folder) store
-	 * .getFolder("[Gmail]/Messages envoyés"); } } else if
-	 * (EnDossierBase.SPAM.getLib().equals(dossier)) { fldr = (Folder)
-	 * store.getFolder("[Gmail]/Spam"); } else if
-	 * (EnDossierBase.CORBEILLE.getLib().equals(dossier)) { if
-	 * (store.getFolder("[Gmail]/Trash").exists()) { fldr = (Folder)
-	 * store.getFolder("[Gmail]/Trash"); } else { fldr = (Folder)
-	 * store.getFolder("[Gmail]/Corbeille"); } } else { ArrayList<String>
-	 * lstSousDossierInbox = bd .getListeSousDossier(bd
-	 * .getIdDossier(EnDossierBase.RECEPTION .getLib(), pIdCompte)); if
-	 * (lstSousDossierInbox.contains(dossier)) { fldr = (Folder)
-	 * store.getFolder("INBOX/" + dossier); } else { fldr = (Folder)
-	 * store.getFolder(dossier); } } afficheText(textArea, "Ouverture de " +
-	 * fldr.getFullName()); fldr.open(Folder.READ_WRITE); } catch
-	 * (MessagingException e) { messageUtilisateur.affMessageException(e,
-	 * "Erreur connexion"); return; } afficheText(textArea,
-	 * "Parcours des messages sur le serveur"); afficheText(textArea,
-	 * "à la recherche des messages supprimés"); MlListeMessage listeMessage =
-	 * bd.getListeDeMessage(pIdCompte, bd .getIdDossier(dossier, pIdCompte));
-	 * int nbActu = 0; for (MlMessage m : listeMessage) { nbActu++; int pourcent
-	 * = (nbActu * 100) / listeMessage.size(); p_progress.setValue(pourcent);
-	 * p_progress.setString("Mise a jour messagerie: " + pourcent + " %");
-	 * label.setText("Message traité n° " + nbActu + " sur un total de " +
-	 * listeMessage.size()); try { // Message messageImap = //
-	 * fldr.getMessageByUID(Long.parseLong(m // .getUIDMessage())); // if
-	 * (messageImap == null) { // afficheText(textArea, //
-	 * "Message supprimé sur le serveur, mise a jour de la base"); //
-	 * BDRequette.deleteMessageRecu(m.getIdMessage()); // } } catch
-	 * (NumberFormatException e) { messageUtilisateur.affMessageException(e,
-	 * "Erreur conversion UID"); }// catch (MessagingException e) { //
-	 * messageUtilisateur.affMessageException(e, // "Erreur connexion"); // } }
-	 * try { afficheText(textArea, "Fin de la verification des messages");
-	 * afficheText(textArea, "pour le dossier " + fldr.getFullName());
-	 * fldr.close(false); } catch (MessagingException e) {
-	 * messageUtilisateur.affMessageException(e, "Erreur connexion"); } } try {
-	 * store.close(); } catch (MessagingException e) {
-	 * messageUtilisateur.affMessageException(e, "Erreur connexion"); } finally
-	 * { bd.closeConnexion(); } }
-	 */
-
 	public static void releveHotmail(int p_idCompte, JProgressBar p_progress,
 			JProgressBar p_progressPJ, int p_idDossier, Message[] p_messages,
 			com.googlecode.jdeltasync.Folder p_Folder,
 			DeltaSyncClientHelper p_client, JTextArea textArea) {
 
-		MlListeMessage lstMessage = new MlListeMessage();
+		// MlListeMessage lstMessage = new MlListeMessage();
 
 		releveDossier(p_idCompte, p_idDossier, p_progress, p_progressPJ,
-				lstMessage, p_messages, p_Folder, p_client, textArea);
+		// lstMessage,
+				p_messages, p_Folder, p_client, textArea);
 
 	}
 
@@ -195,7 +138,7 @@ public final class methodeHotmail {
 	 */
 	private static void releveDossier(int p_idCompte, int p_idDossier,
 			JProgressBar p_progress, JProgressBar p_progressPJ,
-			MlListeMessage lstMessage, Message[] p_tableauMessage,
+			Message[] p_tableauMessage,
 			com.googlecode.jdeltasync.Folder p_folder,
 			DeltaSyncClientHelper p_client, JTextArea textArea) {
 		afficheText(textArea, "Releve du dossier " + p_folder.getName());
@@ -205,17 +148,12 @@ public final class methodeHotmail {
 		// Message numbers start at 1
 		int nbActu = 1;
 		for (Message messageHotmail : p_tableauMessage) {
-			// p_label.setText("Message traité n° " + nbActu++
-			// + " sur un total de " + count);
 
 			int pourcent = (nbActu++ * 100) / count;
 			p_progress.setValue(pourcent);
 			p_progress.setString(compteMail.getNomCompte() + ": Releve de "
 					+ p_folder.getName() + " :" + pourcent + " %");
-			// on commence par verifier si le message est deja enregistré
-			// dans la base
-			// pour cela, comme on est en IMAp,
-			// on se base sur l'UID du message.
+
 			BDRequette bd = new BDRequette();
 			if (bd.verifieAbscenceUID(messageHotmail.getId(), p_idDossier)) {
 				MlMessage messPourBase = new MlMessage();
@@ -226,30 +164,11 @@ public final class methodeHotmail {
 
 				messPourBase = recupContenuMail(p_client, messPourBase,
 						messageHotmail, textArea, p_progressPJ);
-				// messPourBase.setDateReception(messageHotmail.getDateReceived());
-				// ArrayList<String> listeDestinataires;
-				// if (null != m.getFrom()getAllRecipients()) {// si on
-				// connait la
-				// // taille de
-				// // la liste, on la fixe
-				// listeDestinataires = new ArrayList<String>(m
-				// .getAllRecipients().length);
-				// for (Address uneAdresse : m.getAllRecipients()) {
-				// listeDestinataires.add(uneAdresse.toString());
-				// }
-				// } else {
-				// listeDestinataires = new ArrayList<String>(1);
-				// listeDestinataires.add("Destinataire(s) masqué(s)");
-				// }
 
-				// messPourBase.setDestinataire(listeDestinataires);
-				// messPourBase.setExpediteur(messageHotmail.getFrom());
 				messPourBase.setIdCompte(p_idCompte);
 				messPourBase.setIdDossier(verifieRegle(messPourBase
 						.getExpediteur(), p_idDossier));
-				// messPourBase.setUIDMessage("" + messageHotmail.getId());
-				// messPourBase.setSujet(messageHotmail.getSubject());
-				// lstMessage.add(messPourBase);
+
 				afficheText(textArea, "Enregistrement du message dans la base");
 				bd.createNewMessage(messPourBase);
 
@@ -392,6 +311,103 @@ public final class methodeHotmail {
 		}
 		return true;
 
+	}
+
+	public static void miseAJourMessagerie(BDRequette p_bd,
+			DeltaSyncClientHelper p_client, MlCompteMail p_compteMail,
+			JProgressBar p_progressBar, JProgressBar p_progressBarPJ,
+			JTextArea p_textArea) {
+
+		try {
+			p_client.login();
+			com.googlecode.jdeltasync.Folder[] lstFolder = p_client
+					.getFolders();
+			for (com.googlecode.jdeltasync.Folder f : lstFolder) {
+				afficheText(p_textArea, "Verification du dossier: "
+						+ f.getName());
+				int idDossier = getIdDossierPrincipaux(p_compteMail, f);
+				if (idDossier == -1) {
+					idDossier = p_bd.getIdDossier(f.getName(), p_compteMail
+							.getIdCompte());
+				}
+
+				if (idDossier != -1) {
+					Message[] lstMessagesHotmail = p_client.getMessages(f);
+					int messBaseCount = p_bd.getnbMessageParDossier(
+							p_compteMail.getIdCompte(), idDossier);
+					int nbMessARelever = lstMessagesHotmail.length
+							- messBaseCount;
+					if (nbMessARelever < 0) {// il y a + de message en base que
+						// sur
+						// le serveur, on analyse fichier
+						// par fichier
+						MlListeMessage lstMessageBase = p_bd.getListeDeMessage(
+								p_compteMail.getIdCompte(), idDossier);
+						int nbActu = 1;
+						for (MlMessage m : lstMessageBase) {
+							int pourcent = (nbActu++ * 100)
+									/ lstMessageBase.size();
+							p_progressBar.setValue(pourcent);
+							p_progressBar.setString(p_compteMail.getNomCompte()
+									+ ": Vérif de " + f.getName() + " :"
+									+ pourcent + " %");
+
+							if (!verifUID(m.getUIDMessage(), lstMessagesHotmail)) {
+								p_bd.deleteMessageRecu(m.getIdMessage());
+								afficheText(p_textArea,
+										"Message suprimé du serveur, effacement du message de la base");
+							}
+						}
+
+					}
+				}
+
+			}
+
+		} catch (AuthenticationException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (DeltaSyncException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	private static boolean verifUID(String p_uidMessage,
+			Message[] p_lstMessagesHotmail) {
+		for (Message m : p_lstMessagesHotmail) {
+			if (p_uidMessage.equals(m.getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 * @param cpt
+	 * @param p_f
+	 * @param idDossier
+	 * @return
+	 */
+	public static int getIdDossierPrincipaux(MlCompteMail cpt,
+			com.googlecode.jdeltasync.Folder p_f) {
+		int idDossier = -1;
+		if ("Inbox".equals(p_f.getName())) {
+			idDossier = cpt.getIdInbox();
+		} else if ("Junk".equals(p_f.getName())) {
+			idDossier = cpt.getIdSpam();
+		} else if ("Drafts".equals(p_f.getName())) {
+			idDossier = cpt.getIdBrouillons();
+		} else if ("Sent".equals(p_f.getName())) {
+			idDossier = cpt.getIdEnvoye();
+		} else if ("Deleted".equals(p_f.getName())) {
+			idDossier = cpt.getIdCorbeille();
+		}
+		return idDossier;
 	}
 
 }

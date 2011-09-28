@@ -362,15 +362,14 @@ public class thread_Import extends Thread {
 
 	}
 
-	public static String decodeurIso(String fileName) {
-
-		fileName = fileName.replaceAll("=?ISO-8859-1?Q?", "").replaceAll(
+	public static String decodeurIso(String p_fileName) {
+		String s = p_fileName.replaceAll("=?ISO-8859-1?Q?", "").replaceAll(
 				"=?iso-8859-1?Q?", "").replace("?", "").replace(",", "")
 				.replaceAll("=?UTF-8?Q?", "").replaceAll("=?utf-8?Q?", "")
 				.replace("=5F", "_").replace("=E9", "é").replace("=Q", "")
 				.replace("=CC=81e", "é").replace("=", "").replace("2E", ".");
 
-		return fileName;
+		return s;
 	}
 
 	private MlListeMessage parcoursDossier(String p_chemin, String p_compte,

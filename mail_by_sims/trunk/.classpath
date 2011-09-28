@@ -6,7 +6,6 @@
 	<classpathentry kind="lib" path="lib/activation.jar"/>
 	<classpathentry kind="lib" path="lib/jaybird_full_2_1_6.jar"/>
 	<classpathentry kind="lib" path="lib/mail.jar"/>
-	<classpathentry kind="lib" path="lib/deltasync.jar"/>
 	<classpathentry kind="lib" path="lib/libdeltasync/apache-mime4j-0.5.jar"/>
 	<classpathentry kind="lib" path="lib/libdeltasync/commons-codec-1.5-javadoc.jar"/>
 	<classpathentry kind="lib" path="lib/libdeltasync/commons-codec-1.5-sources.jar"/>
@@ -22,5 +21,6 @@
 	<classpathentry kind="lib" path="lib/libdeltasync/logback-core-0.9.29.jar"/>
 	<classpathentry kind="lib" path="lib/libdeltasync/slf4j-api-1.6.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/libdeltasync/slf4j-api-1.6.1.jar"/>
+	<classpathentry kind="lib" path="lib/deltasync.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

@@ -15,7 +15,6 @@
         <pathelement location="lib/activation.jar"/>
         <pathelement location="lib/jaybird_full_2_1_6.jar"/>
         <pathelement location="lib/mail.jar"/>
-        <pathelement location="lib/deltasync.jar"/>
         <pathelement location="lib/libdeltasync/apache-mime4j-0.5.jar"/>
         <pathelement location="lib/libdeltasync/commons-codec-1.5-javadoc.jar"/>
         <pathelement location="lib/libdeltasync/commons-codec-1.5-sources.jar"/>
@@ -31,6 +30,7 @@
         <pathelement location="lib/libdeltasync/logback-core-0.9.29.jar"/>
         <pathelement location="lib/libdeltasync/slf4j-api-1.6.1-sources.jar"/>
         <pathelement location="lib/libdeltasync/slf4j-api-1.6.1.jar"/>
+        <pathelement location="lib/deltasync.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -126,11 +126,6 @@
     </target>
     <target name="clientmail">
         <java classname="fenetre.principale.Main" failonerror="true" fork="yes">
-            <classpath refid="Mail by sims.classpath"/>
-        </java>
-    </target>
-    <target name="SwingProperties">
-        <java classname="tools.SwingProperties" failonerror="true" fork="yes">
             <classpath refid="Mail by sims.classpath"/>
         </java>
     </target>

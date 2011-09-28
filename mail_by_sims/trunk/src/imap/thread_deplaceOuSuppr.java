@@ -1,8 +1,5 @@
 package imap;
 
-import fenetre.principale.Main;
-import fenetre.principale.jTable.MlActionJtable;
-import fenetre.principale.jTable.MyTableModel;
 import imap.util.methodeImap;
 
 import javax.swing.JList;
@@ -12,9 +9,14 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.tree.TreePath;
 
+import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import bdd.BDRequette;
+import fenetre.principale.Main;
+import fenetre.principale.jTable.MlActionJtable;
+import fenetre.principale.jTable.MyTableModel;
+import fenetre.principale.jTable.jTableHelper;
 
 public class thread_deplaceOuSuppr extends Thread {
 	private final JProgressBar progressBar;
@@ -65,7 +67,7 @@ public class thread_deplaceOuSuppr extends Thread {
 			int[] p_tabIdLigneSelectionnee) {
 		MlListeMessage lstASuppr = new MlListeMessage();
 		MlListeMessage lstADepl = new MlListeMessage();
-		BDRequette bd = new BDRequette();
+
 		int nbMessTraite = 1;
 		for (int i = 0; i < p_tabIdLigneSelectionnee.length; i++) {
 			progressBar.setValue((100 * nbMessTraite)
@@ -74,9 +76,12 @@ public class thread_deplaceOuSuppr extends Thread {
 					+ p_tabIdLigneSelectionnee.length);
 
 			int selectedLine = p_tabIdLigneSelectionnee[i];
-			int row = table.convertRowIndexToModel(selectedLine);
-
-			Integer idMessage = (Integer) table.getModel().getValueAt(row, 0);
+			Integer idMessage = jTableHelper.getReelIdMessage(table,
+					selectedLine);
+			// int row = table.convertRowIndexToModel(selectedLine);
+			//
+			// Integer idMessage = (Integer) table.getModel().getValueAt(row,
+			// 0);
 			// le n° du message (meme si il est caché).
 			// Date dateReception = (Date) table.getModel().getValueAt(
 			// selectedLine, 1);// la date de reception
@@ -86,21 +91,23 @@ public class thread_deplaceOuSuppr extends Thread {
 
 			// String sujet = (String) table.getModel()
 			// .getValueAt(selectedLine, 3);// le
-
-			boolean isDeplacementVersCorbeille = bd
-					.verifieNecessiteDeplacementCorbeille(idMessage);
-			if (isDeplacementVersCorbeille) {
-				lstADepl.add(bd.getMessageById(idMessage));
+			MlMessage m = new MlMessage(idMessage);
+			MlCompteMail cpt = new MlCompteMail(m.getIdCompte());
+			// boolean isDeplacementVersCorbeille = bd
+			// .verifieNecessiteDeplacementCorbeille(idMessage);
+			if (m.getIdDossier() != cpt.getIdCorbeille()) {
+				lstADepl.add(m);
 				methodeImap.afficheText(textArea, "message° " + nbMessTraite++
 						+ " à deplacer vers la corbeille");
 
 			} else {
-				lstASuppr.add(bd.getMessageById(idMessage));
+				lstASuppr.add(m);
 				methodeImap.afficheText(textArea, "message° " + nbMessTraite++
 						+ " à supprimer");
 			}
 
 		}// fin de for
+		BDRequette bd = new BDRequette();
 		if (lstADepl.size() > 0) {
 			methodeImap.afficheText(textArea,
 					"Déplacement du ou des messages vers la corbeille");
@@ -119,6 +126,7 @@ public class thread_deplaceOuSuppr extends Thread {
 				bd.deleteMessageRecu(m.getIdMessage());
 			}
 		}
+		bd.closeConnexion();
 	}
 
 	/**

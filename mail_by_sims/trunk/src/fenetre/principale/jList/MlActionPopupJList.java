@@ -14,7 +14,7 @@ import tools.ManipFichier;
 import tools.OpenWithDefaultViewer;
 import bdd.BDRequette;
 import fenetre.principale.MlAction.EnActionMain;
-import fenetre.principale.jTable.MlActionPopupJTable;
+import fenetre.principale.jTable.jTableHelper;
 
 public class MlActionPopupJList implements ActionListener {
 
@@ -63,7 +63,7 @@ public class MlActionPopupJList implements ActionListener {
 	}
 
 	private void traiteToutEnregistrerPJ() {
-		int idMessage = MlActionPopupJTable.getReelIdMessage(table
+		int idMessage = jTableHelper.getReelIdMessage(table, table
 				.getSelectedRow());
 		BDRequette bd = new BDRequette();
 		ArrayList<String> lstPJ = bd.getListNomPieceJointe(idMessage);
@@ -79,7 +79,7 @@ public class MlActionPopupJList implements ActionListener {
 	}
 
 	private void traiteEnregistrerPJ() {
-		int idMessage = MlActionPopupJTable.getReelIdMessage(table
+		int idMessage = jTableHelper.getReelIdMessage(table, table
 				.getSelectedRow());
 		String nomPieceJointe = (String) list.getSelectedValue();
 		BDRequette bd = new BDRequette();
@@ -93,7 +93,7 @@ public class MlActionPopupJList implements ActionListener {
 	}
 
 	protected static void traiteOuvrirPJ() {
-		int idMessage = MlActionPopupJTable.getReelIdMessage(table
+		int idMessage = jTableHelper.getReelIdMessage(table, table
 				.getSelectedRow());
 		String nomPieceJointe = (String) list.getSelectedValue();
 

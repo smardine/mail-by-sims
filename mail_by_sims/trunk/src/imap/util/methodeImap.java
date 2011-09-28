@@ -116,7 +116,7 @@ public final class methodeImap {
 						idDossier);
 				int nbMessARelever = imapcount - messBaseCount;
 
-				if (nbMessARelever == 0) {
+				if (nbMessARelever >= 0) {
 					// meme nb de message pas de recherche de mess supprimé a
 					// faire
 					imapFolder.close(false);
@@ -177,6 +177,7 @@ public final class methodeImap {
 		// label.setText("Message traité n° " + nbActu
 		// + " sur un total de " + listeMessage.size());
 		try {
+
 			Message messageImap = fldr.getMessageByUID(Long.parseLong(m
 					.getUIDMessage()));
 			if (messageImap == null) {

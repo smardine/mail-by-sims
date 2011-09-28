@@ -57,6 +57,7 @@ public class ReleveHotmail {
 		DeltaSyncClientHelper client = new DeltaSyncClientHelper(
 				new DeltaSyncClient(), p_compteMail.getUserName(), p_compteMail
 						.getPassword());
+
 		if (isSynchro) {
 
 			methodeHotmail.miseAJourMessagerie(bd, client, p_compteMail,
@@ -119,6 +120,7 @@ public class ReleveHotmail {
 				messageUtilisateur.affMessageException(e, "Erreur E/S");
 			}
 		}
+		client.disconnect();
 
 	}
 

@@ -936,36 +936,38 @@ public class BDRequette {
 
 	}
 
-	public MlMessage getMessageById(int p_idMessage) {
+	public ArrayList<ArrayList<String>> getMessageById(int p_idMessage) {
 		String script = "SELECT a.ID_MESSAGE_RECU, a.UID_MESSAGE, a.EXPEDITEUR, a.DESTINATAIRE, "
 				+ "a.SUJET, a.CONTENU, a.DATE_RECEPTION, a.ID_DOSSIER_STOCKAGE,a.ID_COMPTE"
 				+ " FROM MAIL_RECU a WHERE a.ID_MESSAGE_RECU=" + p_idMessage;
 
-		MlMessage m = new MlMessage();
+		// MlMessage m = new MlMessage();
 		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(script);
-		for (int i = 0; i < lstResultat.size(); i++) {
-			ArrayList<String> unEnregistrement = lstResultat.get(i);
+		// for (int i = 0; i < lstResultat.size(); i++) {
+		// ArrayList<String> unEnregistrement = lstResultat.get(i);
+		//
+		// m.setIdMessage(Integer.parseInt(unEnregistrement.get(0)));
+		// m.setUIDMessage(unEnregistrement.get(1));
+		// m.setExpediteur(decodeHTMLFromBase(unEnregistrement.get(2)));
+		// String[] tabDestinaire = unEnregistrement.get(3).split(";");
+		// ArrayList<String> lstDest = new ArrayList<String>();
+		// for (String des : tabDestinaire) {
+		// lstDest.add(des);
+		// }
+		// m.setDestinataire(lstDest);
+		// m.setSujet(decodeHTMLFromBase(unEnregistrement.get(4)));
+		// m.setContenu(unEnregistrement.get(5));
+		// m.setDateReception(RecupDate.getdateFromTimeStamp((unEnregistrement
+		// .get(6))));
+		// m.setIdDossier(Integer.parseInt(unEnregistrement
+		// .get(7)));
+		// m.setNomDossier(getNomDossier(Integer.parseInt(unEnregistrement
+		// .get(7))));
+		// m.setIdCompte(Integer.parseInt(unEnregistrement.get(8)));
+		//
+		// }
 
-			m.setIdMessage(Integer.parseInt(unEnregistrement.get(0)));
-			m.setUIDMessage(unEnregistrement.get(1));
-			m.setExpediteur(decodeHTMLFromBase(unEnregistrement.get(2)));
-			String[] tabDestinaire = unEnregistrement.get(3).split(";");
-			ArrayList<String> lstDest = new ArrayList<String>();
-			for (String des : tabDestinaire) {
-				lstDest.add(des);
-			}
-			m.setDestinataire(lstDest);
-			m.setSujet(decodeHTMLFromBase(unEnregistrement.get(4)));
-			m.setContenu(unEnregistrement.get(5));
-			m.setDateReception(RecupDate.getdateFromTimeStamp((unEnregistrement
-					.get(6))));
-			m.setNomDossier(getNomDossier(Integer.parseInt(unEnregistrement
-					.get(7))));
-			m.setIdCompte(Integer.parseInt(unEnregistrement.get(8)));
-
-		}
-
-		return m;
+		return lstResultat;
 	}
 
 	public String getNomDossier(int p_idDossierStockage) {
@@ -1053,29 +1055,31 @@ public class BDRequette {
 		return true;
 	}
 
-	public boolean verifieNecessiteDeplacementCorbeille(int p_idMessage) {
-		String requete = "SELECT a.ID_DOSSIER_STOCKAGE FROM MAIL_RECU a WHERE a.ID_MESSAGE_RECU="
-				+ p_idMessage;
-		int idDossierStock = Integer.parseInt(get1Champ(requete));
-		MlCompteMail cpt = getMlCompteFromIdMessage(p_idMessage);
+	// public boolean verifieNecessiteDeplacementCorbeille(int p_idMessage) {
+	// String requete =
+	// "SELECT a.ID_DOSSIER_STOCKAGE FROM MAIL_RECU a WHERE a.ID_MESSAGE_RECU="
+	// + p_idMessage;
+	// int idDossierStock = Integer.parseInt(get1Champ(requete));
+	// MlCompteMail cpt = getMlCompteFromIdMessage(p_idMessage);
+	//
+	// if (idDossierStock != cpt.getIdCorbeille()) {
+	// return true;
+	// }
+	// return false;
+	// }
 
-		if (idDossierStock != cpt.getIdCorbeille()) {
-			return true;
-		}
-		return false;
-	}
-
-	public MlCompteMail getMlCompteFromIdMessage(int p_idMessage) {
-		String Requete = "SELECT a.ID_COMPTE FROM MAIL_RECU a where a.ID_MESSAGE_RECU="
-				+ p_idMessage;
-		int idCpt = Integer.parseInt(get1Champ(Requete));
-		return new MlCompteMail(idCpt);
-	}
+	// public MlCompteMail getMlCompteFromIdMessage(int p_idMessage) {
+	// String Requete =
+	// "SELECT a.ID_COMPTE FROM MAIL_RECU a where a.ID_MESSAGE_RECU="
+	// + p_idMessage;
+	// int idCpt = Integer.parseInt(get1Champ(Requete));
+	// return new MlCompteMail(idCpt);
+	// }
 
 	public boolean deplaceMessageVersCorbeille(MlListeMessage p_list) {
 
 		for (MlMessage m : p_list) {
-			MlCompteMail cpt = getMlCompteFromIdMessage(m.getIdMessage());
+			MlCompteMail cpt = new MlCompteMail(m.getIdCompte());
 
 			String requete = "UPDATE MAIL_RECU a SET ID_DOSSIER_STOCKAGE="
 					+ cpt.getIdCorbeille() + " WHERE a.ID_MESSAGE_RECU="

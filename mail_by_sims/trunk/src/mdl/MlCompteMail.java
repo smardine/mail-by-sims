@@ -30,6 +30,7 @@ public class MlCompteMail {
 		if (p_nomCompte != null) {
 			BDRequette bd = new BDRequette();
 			this.idCompte = bd.getIdComptes(p_nomCompte);
+			bd.closeConnexion();
 			initialiseCompte(idCompte);
 		}
 

@@ -122,9 +122,4 @@ public class MlActionPopupJTable implements ActionListener {
 		}
 	}
 
-	public static Integer getReelIdMessage(int p_selectedIndexLine) {
-		int row = table.convertRowIndexToModel(p_selectedIndexLine);
-		return (Integer) table.getModel().getValueAt(row, 0);
-	}
-
 }

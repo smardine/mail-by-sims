@@ -4,6 +4,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
+import tools.RecupDate;
+import bdd.BDRequette;
+
 public class MlMessage {
 	private String NomDossier;
 	private int idDossier;
@@ -20,6 +23,34 @@ public class MlMessage {
 
 	public MlMessage() {
 		listePieceJointe = new ArrayList<File>();
+	}
+
+	public MlMessage(int p_idMessage) {
+		super();
+		BDRequette bd = new BDRequette();
+		ArrayList<ArrayList<String>> lstChamp = bd.getMessageById(p_idMessage);
+		for (int i = 0; i < lstChamp.size(); i++) {
+			ArrayList<String> unEnregistrement = lstChamp.get(i);
+
+			setIdMessage(Integer.parseInt(unEnregistrement.get(0)));
+			setUIDMessage(unEnregistrement.get(1));
+			setExpediteur(bd.decodeHTMLFromBase(unEnregistrement.get(2)));
+			String[] tabDestinaire = unEnregistrement.get(3).split(";");
+			ArrayList<String> lstDest = new ArrayList<String>();
+			for (String des : tabDestinaire) {
+				lstDest.add(des);
+			}
+			setDestinataire(lstDest);
+			setSujet(bd.decodeHTMLFromBase(unEnregistrement.get(4)));
+			setContenu(unEnregistrement.get(5));
+			setDateReception(RecupDate.getdateFromTimeStamp((unEnregistrement
+					.get(6))));
+			setIdDossier(Integer.parseInt(unEnregistrement.get(7)));
+			setNomDossier(bd.getNomDossier(Integer.parseInt(unEnregistrement
+					.get(7))));
+			setIdCompte(Integer.parseInt(unEnregistrement.get(8)));
+
+		}
 	}
 
 	/**

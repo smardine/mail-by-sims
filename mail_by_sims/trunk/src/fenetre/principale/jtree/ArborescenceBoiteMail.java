@@ -24,12 +24,13 @@ public class ArborescenceBoiteMail implements TreeModel {
 	// vector
 	private final MlListeCompteMail lstCpt;
 
-	public ArborescenceBoiteMail() {
-		BDRequette bd = new BDRequette();
+	public ArborescenceBoiteMail(MlListeCompteMail p_lstCompte) {
+		// BDRequette bd = new BDRequette();
 		root = EnDossierBase.ROOT.getLib();
 		listeners = new Vector<TreeModelListener>();
-		lstCpt = bd.getListeDeComptes();
-		bd.closeConnexion();
+		// lstCpt = new MlListeCompteMail();
+		lstCpt = p_lstCompte;
+		// bd.closeConnexion();
 		UIManager.put("Tree.openIcon", new ImageIcon(
 				"Images/dossier-ouvert-16.png"));
 		UIManager.put("Tree.closedIcon", new ImageIcon(
@@ -191,6 +192,13 @@ public class ArborescenceBoiteMail implements TreeModel {
 			listener.treeStructureChanged(e);
 		}
 
+	}
+
+	/**
+	 * @return the lstCpt
+	 */
+	public MlListeCompteMail getLstCpt() {
+		return this.lstCpt;
 	}
 
 }

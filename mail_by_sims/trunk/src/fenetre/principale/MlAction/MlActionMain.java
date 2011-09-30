@@ -11,10 +11,10 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 
+import mdl.MlListeCompteMail;
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.OpenWithDefaultViewer;
-import bdd.BDRequette;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class MlActionMain implements ActionListener {
@@ -24,6 +24,7 @@ public class MlActionMain implements ActionListener {
 	private JProgressBar pbPieceJointe;
 	private JTextArea text;
 	private JScrollPane scrollPane;
+	private MlListeCompteMail listeCompteMail;
 
 	public MlActionMain(JTree p_treeCompte) {
 
@@ -34,9 +35,11 @@ public class MlActionMain implements ActionListener {
 
 	}
 
-	public MlActionMain(JTree p_tree, JProgressBar p_jProgressBarReleve,
+	public MlActionMain(MlListeCompteMail p_listeCompte, JTree p_tree,
+			JProgressBar p_jProgressBarReleve,
 			JProgressBar p_jProgressBarPieceJointe, JTextArea p_jTextArea,
 			JScrollPane p_scroll) {
+		this.listeCompteMail = p_listeCompte;
 		this.tree = p_tree;
 		this.pbReleve = p_jProgressBarReleve;
 		this.pbPieceJointe = p_jProgressBarPieceJointe;
@@ -70,22 +73,20 @@ public class MlActionMain implements ActionListener {
 			t.start();
 		}
 		if (e.getActionCommand().equals(EnActionMain.ENVOYER_RECEVOIR.getLib())) {
-			BDRequette bd = new BDRequette();
+			// BDRequette bd = new BDRequette();
 
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, true, bd
-							.getListeDeComptes());
+					pbPieceJointe, text, scrollPane, true, listeCompteMail);
 			t.start();
-			bd.closeConnexion();
+			// bd.closeConnexion();
 
 		}
 		if (e.getActionCommand().equals(EnActionMain.RECEVOIR.getLib())) {
-			BDRequette bd = new BDRequette();
+			// BDRequette bd = new BDRequette();
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, false, bd
-							.getListeDeComptes());
+					pbPieceJointe, text, scrollPane, false, listeCompteMail);
 			t.start();
-			bd.closeConnexion();
+			// bd.closeConnexion();
 		}
 
 	}

@@ -33,6 +33,7 @@ import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
+import mdl.MlPieceJointe;
 import tools.GestionRepertoire;
 import tools.ReadFile;
 import bdd.BDRequette;
@@ -63,7 +64,7 @@ public class thread_Import extends Thread {
 		String chemin = GestionRepertoire
 				.OpenFolder("Veuillez indiquer l'emplacement de vos mails Windows Mail");
 		// messageUtilisateur.affMessageInfo("Vous avez choisi: " + chemin);
-		MlListeCompteMail lst = bd.getListeDeComptes();
+		MlListeCompteMail lst = new MlListeCompteMail();
 		ArrayList<String> lstNomCompte = new ArrayList<String>(lst.getSize());
 		for (MlCompteMail cpt : lst) {
 			lstNomCompte.add(cpt.getNomCompte());
@@ -290,19 +291,7 @@ public class thread_Import extends Thread {
 		InputStream input = (InputStream) p_inputStream;
 		String fileName = p_bodyPart.getFileName();
 
-		if (fileName != null) {
-			fileName = fileName.substring(p_bodyPart.getFileName().lastIndexOf(
-					"\\") + 1);
-		} else {
-			fileName = "inconnu";
-		}
-
-		System.out.println("**C'est une piece jointe dont le nom est :"
-				+ fileName);
-		if (fileName.contains("ISO") || fileName.contains("UTF")
-				|| fileName.contains("iso") || fileName.contains("utf")) {
-			fileName = decodeurIso(fileName);
-		}
+		fileName = traiteNomPJ(p_bodyPart, fileName);
 		methodeImap
 				.afficheText(textArea,
 						"Recuperation d'une piece jointe dont le nom est \n"
@@ -345,7 +334,8 @@ public class thread_Import extends Thread {
 					try {
 						writeFile.close();
 						input.close();
-						p_mlMessage.getListePieceJointe().add(fichier);
+						p_mlMessage.getListePieceJointe().add(
+								new MlPieceJointe(fichier));
 						p_progressPJ.setVisible(false);
 					} catch (IOException e) {
 						JOptionPane
@@ -360,6 +350,31 @@ public class thread_Import extends Thread {
 			}
 		}
 
+	}
+
+	/**
+	 * @param p_bodyPart
+	 * @param fileName
+	 * @return
+	 * @throws MessagingException
+	 */
+	private static String traiteNomPJ(BodyPart p_bodyPart, String p_fileName)
+			throws MessagingException {
+		String nomPJ = p_fileName;
+		if (nomPJ != null) {
+			nomPJ = nomPJ
+					.substring(p_bodyPart.getFileName().lastIndexOf("\\") + 1);
+		} else {
+			nomPJ = "inconnu";
+		}
+
+		System.out
+				.println("**C'est une piece jointe dont le nom est :" + nomPJ);
+		if (nomPJ.contains("ISO") || nomPJ.contains("UTF")
+				|| nomPJ.contains("iso") || nomPJ.contains("utf")) {
+			nomPJ = decodeurIso(nomPJ);
+		}
+		return nomPJ;
 	}
 
 	public static String decodeurIso(String p_fileName) {

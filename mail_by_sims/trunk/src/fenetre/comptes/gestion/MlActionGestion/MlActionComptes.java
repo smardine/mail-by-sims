@@ -47,7 +47,7 @@ public class MlActionComptes implements ActionListener {
 					messageUtilisateur
 							.affMessageInfo("Suppression du compte réussie");
 					// on recupere la liste des comptes et on l'affiche
-					MlListeCompteMail lst = bd.getListeDeComptes();
+					MlListeCompteMail lst = new MlListeCompteMail();
 					DefaultListModel model = (DefaultListModel) GestionCompte.jList
 							.getModel();
 					model.clear();

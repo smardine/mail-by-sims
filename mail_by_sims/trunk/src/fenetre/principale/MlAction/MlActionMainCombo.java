@@ -11,7 +11,6 @@ import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
-import bdd.BDRequette;
 
 public class MlActionMainCombo implements MouseListener {
 
@@ -21,11 +20,13 @@ public class MlActionMainCombo implements MouseListener {
 	private final JProgressBar progressPieceJointe;
 	private final JTextArea textArea;
 	private final JScrollPane scrollPane;
+	private final MlListeCompteMail listeCompteMail;
 
-	public MlActionMainCombo(boolean p_releveOuSynchro,
-			JProgressBar p_progressReleve, JProgressBar p_progressPieceJointe,
-			JTextArea p_text, JScrollPane p_scroll) {
-
+	public MlActionMainCombo(MlListeCompteMail p_listeCompte,
+			boolean p_releveOuSynchro, JProgressBar p_progressReleve,
+			JProgressBar p_progressPieceJointe, JTextArea p_text,
+			JScrollPane p_scroll) {
+		this.listeCompteMail = p_listeCompte;
 		this.releveOuSynchro = p_releveOuSynchro;
 		this.progressReleve = p_progressReleve;
 		this.progressPieceJointe = p_progressPieceJointe;
@@ -42,9 +43,10 @@ public class MlActionMainCombo implements MouseListener {
 	private JPopupMenu getJPopupMenu() {
 		if (popUpMenu == null) {
 			popUpMenu = new JPopupMenu();
-			BDRequette bd = new BDRequette();
-			MlListeCompteMail lstCpt = bd.getListeDeComptes();
-			bd.closeConnexion();
+			// BDRequette bd = new BDRequette();
+
+			// MlListeCompteMail lstCpt = new MlListeCompteMail();
+			// bd.closeConnexion();
 			if (releveOuSynchro) {
 				popUpMenu.add(creerNouveauItem("Relever tous les comptes"));
 			} else {
@@ -52,7 +54,7 @@ public class MlActionMainCombo implements MouseListener {
 						.add(creerNouveauItem("Synchroniser tous les comptes"));
 			}
 
-			for (MlCompteMail cpt : lstCpt) {
+			for (MlCompteMail cpt : listeCompteMail) {
 				popUpMenu.add(creerNouveauItem(cpt.getNomCompte()));
 			}
 

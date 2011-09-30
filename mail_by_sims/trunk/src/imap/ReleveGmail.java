@@ -192,6 +192,7 @@ public class ReleveGmail {
 		int idDossier;
 		if (isInbox(fldr)) {
 			idDossier = p_compteMail.getIdInbox();
+
 		} else if (isBrouillon(fldr)) {
 			idDossier = p_compteMail.getIdBrouillons();
 		} else if (isCorbeille(fldr)) {
@@ -204,6 +205,8 @@ public class ReleveGmail {
 			idDossier = bd.getIdDossier(fldr.getName(), p_compteMail
 					.getIdCompte());
 		}
+
+		bd.majNomDossierInternet(idDossier, fldr.getFullName());
 		return idDossier;
 	}
 

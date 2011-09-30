@@ -18,6 +18,8 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
+import mdl.MlDossier;
+import mdl.MlListeDossier;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.GestionRepertoire;
@@ -91,18 +93,19 @@ public final class methodeImap {
 			return;
 		}
 		BDRequette bd = new BDRequette();
-		ArrayList<String> listeDossier = bd.getListeDossier(pIdCompte);
-		for (String dossier : listeDossier) {
+		MlListeDossier lst = new MlListeDossier(pIdCompte);
+		// ArrayList<String> listeDossier = bd.getListeDossier(pIdCompte);
+		for (MlDossier dossier : lst) {
 			IMAPFolder imapFolder = null;
 			try {
 				EnDossierBase dossierBase = EnDossierBase
-						.getDossierbase(dossier);
+						.getDossierbase(dossier.getNomEnBase());
 				if (dossierBase != null) {
 					imapFolder = EnDossierBase.getDossierGmail(dossierBase,
 							store);
 				} else {
-					imapFolder = EnDossierBase.getSousDossierInbox(dossier,
-							pIdCompte, store);
+					imapFolder = EnDossierBase.getSousDossierInbox(dossier
+							.getNomEnBase(), pIdCompte, store);
 				}
 
 				afficheText(textArea, "Ouverture de "
@@ -110,7 +113,7 @@ public final class methodeImap {
 				imapFolder.open(Folder.READ_WRITE);
 				afficheText(textArea, "Parcours des messages sur le serveur");
 				afficheText(textArea, "à la recherche des messages supprimés");
-				int idDossier = bd.getIdDossier(dossier, pIdCompte);
+				int idDossier = dossier.getIdDossier();
 				int imapcount = imapFolder.getMessageCount();
 				int messBaseCount = bd.getnbMessageParDossier(pIdCompte,
 						idDossier);
@@ -124,8 +127,8 @@ public final class methodeImap {
 
 				}
 
-				MlListeMessage listeMessage = bd.getListeDeMessage(pIdCompte,
-						bd.getIdDossier(dossier, pIdCompte));
+				MlListeMessage listeMessage = new MlListeMessage(pIdCompte,
+						dossier.getIdDossier());
 				int nbActu = 0;
 				for (MlMessage m : listeMessage) {
 					nbActu++;

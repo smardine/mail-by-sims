@@ -9,7 +9,6 @@ import javax.swing.table.TableColumn;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.RecupDate;
-import bdd.BDRequette;
 
 public class MyTableModel extends AbstractTableModel {
 	/**
@@ -24,9 +23,9 @@ public class MyTableModel extends AbstractTableModel {
 	private final XTableColumnModel coloneModel;
 
 	// private final MlListeMessage rowValues = new MlListeMessage();
-	public MyTableModel(MlListeMessage p_liste, XTableColumnModel p_coloneModel) {
+	public MyTableModel(XTableColumnModel p_coloneModel) {
 
-		valorisetable(p_liste);
+		// valorisetable(p_liste);
 		this.coloneModel = p_coloneModel;
 		coloneModel.addColumn(new TableColumn(0), "n°");
 		coloneModel.addColumn(new TableColumn(1), "Date de reception");
@@ -89,7 +88,11 @@ public class MyTableModel extends AbstractTableModel {
 	}
 
 	public int getRowCount() {
-		return data.length;
+		if (data != null) {
+			return data.length;
+		}
+		return 0;
+
 	}
 
 	@Override
@@ -124,7 +127,7 @@ public class MyTableModel extends AbstractTableModel {
 
 	public void valorisetable(MlListeMessage p_liste) {
 		data = new Object[p_liste.size()][columnNames.length];
-		BDRequette bd = new BDRequette();
+		// BDRequette bd = new BDRequette();
 		for (int i = 0; i < p_liste.size(); i++) {// on parcour la liste des
 			// messages
 			MlMessage m = p_liste.get(i);
@@ -136,21 +139,20 @@ public class MyTableModel extends AbstractTableModel {
 			data[i][2] = m.getExpediteur();
 			// sujet
 			data[i][3] = m.getSujet();
-
-			if (bd.messageHavePieceJointe(m.getIdMessage())) {
+			if (m.getListePieceJointe().size() > 0) {
 				data[i][4] = new ImageIcon(getClass().getResource(
 						"/piece_jointe16.png"));
 			} else {
 				data[i][4] = null;
 			}
-			if (bd.isMessageLu(m.getIdMessage())) {
+			if (m.isLu()) {
 				data[i][5] = Boolean.TRUE;
 			} else {
 				data[i][5] = Boolean.FALSE;
 			}
 
 		}
-		bd.closeConnexion();
+
 		fireTableDataChanged();
 
 	}

@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="Mail by sims">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../eclipse-galileo VisualEditor"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="Mail by sims.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="lib/activation.jar"/>
+        <pathelement location="lib/jaybird_full_2_1_6.jar"/>
+        <pathelement location="lib/mail.jar"/>
+        <pathelement location="lib/libdeltasync/apache-mime4j-0.5.jar"/>
+        <pathelement location="lib/libdeltasync/commons-codec-1.5-javadoc.jar"/>
+        <pathelement location="lib/libdeltasync/commons-codec-1.5-sources.jar"/>
+        <pathelement location="lib/libdeltasync/commons-codec-1.5.jar"/>
+        <pathelement location="lib/libdeltasync/commons-logging-1.1.1.jar"/>
+        <pathelement location="lib/libdeltasync/httpclient-4.1.1.jar"/>
+        <pathelement location="lib/libdeltasync/httpclient-cache-4.1.1.jar"/>
+        <pathelement location="lib/libdeltasync/httpcore-4.1.jar"/>
+        <pathelement location="lib/libdeltasync/httpmime-4.1.1.jar"/>
+        <pathelement location="lib/libdeltasync/logback-classic-0.9.29-sources.jar"/>
+        <pathelement location="lib/libdeltasync/logback-classic-0.9.29.jar"/>
+        <pathelement location="lib/libdeltasync/logback-core-0.9.29-sources.jar"/>
+        <pathelement location="lib/libdeltasync/logback-core-0.9.29.jar"/>
+        <pathelement location="lib/libdeltasync/slf4j-api-1.6.1-sources.jar"/>
+        <pathelement location="lib/libdeltasync/slf4j-api-1.6.1.jar"/>
+        <pathelement location="lib/deltasync.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+                <exclude name="fenetre/TreeExpandRowAndMakeRowVisible.java"/>
+                <exclude name="JTree/TreeExpandRowAndMakeRowVisible.java"/>
+                <exclude name="layout/BoxLayoutDemo2.java"/>
+                <exclude name="html/gui.java"/>
+                <exclude name="html/fetchMail.java"/>
+                <exclude name="fenetre/test.java"/>
+                <exclude name="fenetre/test1.java"/>
+                <exclude name="fenetre/test2.java"/>
+                <exclude name="fenetre/test3.java"/>
+                <exclude name="fenetre/test4.java"/>
+                <exclude name="jseparator/"/>
+                <exclude name="Mail/"/>
+                <exclude name="fenetre/principale/RightClick.java"/>
+                <exclude name="fenetre/principale/DocumentViewer.java"/>
+                <exclude name="fenetre/principale/Main_old.java"/>
+                <exclude name="fenetre/principale/test.java"/>
+                <exclude name="fenetre/ReleveMessagerie.java"/>
+                <exclude name="fenetre/principale/MlAction/MlActionBouton.java"/>
+                <exclude name="resizable/ComponentEventDemo.java"/>
+                <exclude name="resizable/JResizer.java"/>
+                <exclude name="resizable/MyMouseInputAdapter.java"/>
+                <exclude name="resizable/ResizableBorder.java"/>
+                <exclude name="resizable/ResizableComponent.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="Images">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <exclude name="fenetre/TreeExpandRowAndMakeRowVisible.java"/>
+            <exclude name="JTree/TreeExpandRowAndMakeRowVisible.java"/>
+            <exclude name="layout/BoxLayoutDemo2.java"/>
+            <exclude name="html/gui.java"/>
+            <exclude name="html/fetchMail.java"/>
+            <exclude name="fenetre/test.java"/>
+            <exclude name="fenetre/test1.java"/>
+            <exclude name="fenetre/test2.java"/>
+            <exclude name="fenetre/test3.java"/>
+            <exclude name="fenetre/test4.java"/>
+            <exclude name="jseparator/"/>
+            <exclude name="Mail/"/>
+            <exclude name="fenetre/principale/RightClick.java"/>
+            <exclude name="fenetre/principale/DocumentViewer.java"/>
+            <exclude name="fenetre/principale/Main_old.java"/>
+            <exclude name="fenetre/principale/test.java"/>
+            <exclude name="fenetre/ReleveMessagerie.java"/>
+            <exclude name="fenetre/principale/MlAction/MlActionBouton.java"/>
+            <exclude name="resizable/ComponentEventDemo.java"/>
+            <exclude name="resizable/JResizer.java"/>
+            <exclude name="resizable/MyMouseInputAdapter.java"/>
+            <exclude name="resizable/ResizableBorder.java"/>
+            <exclude name="resizable/ResizableComponent.java"/>
+            <classpath refid="Mail by sims.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="Images"/>
+            <classpath refid="Mail by sims.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="clientmail">
+        <java classname="fenetre.principale.Main" failonerror="true" fork="yes">
+            <classpath refid="Mail by sims.classpath"/>
+        </java>
+    </target>
+</project>

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project Mail by sims with Jar-in-Jar Loader">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="C:/Users/smardine/Documents/dvp perso/workspace Visual Edit/Mail by sims/mbs.jar">
+            <manifest>
+                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+                <attribute name="Rsrc-Main-Class" value="fenetre.principale.Main"/>
+                <attribute name="Class-Path" value="."/>
+                <attribute name="Rsrc-Class-Path" value="./ activation.jar jaybird_full_2_1_6.jar mail.jar apache-mime4j-0.5.jar commons-codec-1.5-javadoc.jar commons-codec-1.5-sources.jar commons-codec-1.5.jar commons-logging-1.1.1.jar httpclient-4.1.1.jar httpclient-cache-4.1.1.jar httpcore-4.1.jar httpmime-4.1.1.jar logback-classic-0.9.29-sources.jar logback-classic-0.9.29.jar logback-core-0.9.29-sources.jar logback-core-0.9.29.jar slf4j-api-1.6.1-sources.jar slf4j-api-1.6.1.jar deltasync.jar"/>
+            </manifest>
+            <zipfileset src="jar-in-jar-loader.zip"/>
+            <fileset dir="C:/Users/smardine/Documents/dvp perso/workspace Visual Edit/Mail by sims/bin"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib" includes="activation.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib" includes="jaybird_full_2_1_6.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib" includes="mail.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="apache-mime4j-0.5.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="commons-codec-1.5-javadoc.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="commons-codec-1.5-sources.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="commons-codec-1.5.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="commons-logging-1.1.1.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="httpclient-4.1.1.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="httpclient-cache-4.1.1.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="httpcore-4.1.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="httpmime-4.1.1.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="logback-classic-0.9.29-sources.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="logback-classic-0.9.29.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="logback-core-0.9.29-sources.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="logback-core-0.9.29.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="slf4j-api-1.6.1-sources.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="slf4j-api-1.6.1.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib" includes="deltasync.jar"/>
+        </jar>
+    </target>
+</project>

@@ -18,8 +18,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
-import mdl.MlDossier;
-import mdl.MlListeDossier;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.GestionRepertoire;
@@ -93,19 +91,18 @@ public final class methodeImap {
 			return;
 		}
 		BDRequette bd = new BDRequette();
-		MlListeDossier lst = new MlListeDossier(pIdCompte);
-		// ArrayList<String> listeDossier = bd.getListeDossier(pIdCompte);
-		for (MlDossier dossier : lst) {
+		ArrayList<String> listeDossier = bd.getListeDossier(pIdCompte);
+		for (String dossier : listeDossier) {
 			IMAPFolder imapFolder = null;
 			try {
 				EnDossierBase dossierBase = EnDossierBase
-						.getDossierbase(dossier.getNomEnBase());
+						.getDossierbase(dossier);
 				if (dossierBase != null) {
 					imapFolder = EnDossierBase.getDossierGmail(dossierBase,
 							store);
 				} else {
-					imapFolder = EnDossierBase.getSousDossierInbox(dossier
-							.getNomEnBase(), pIdCompte, store);
+					imapFolder = EnDossierBase.getSousDossierInbox(dossier,
+							pIdCompte, store);
 				}
 
 				afficheText(textArea, "Ouverture de "
@@ -113,7 +110,7 @@ public final class methodeImap {
 				imapFolder.open(Folder.READ_WRITE);
 				afficheText(textArea, "Parcours des messages sur le serveur");
 				afficheText(textArea, "à la recherche des messages supprimés");
-				int idDossier = dossier.getIdDossier();
+				int idDossier = bd.getIdDossier(dossier, pIdCompte);
 				int imapcount = imapFolder.getMessageCount();
 				int messBaseCount = bd.getnbMessageParDossier(pIdCompte,
 						idDossier);
@@ -127,13 +124,13 @@ public final class methodeImap {
 
 				}
 
-				MlListeMessage listeMessage = new MlListeMessage(pIdCompte,
-						dossier.getIdDossier());
+				MlListeMessage listeMessage = bd.getListeDeMessage(pIdCompte,
+						bd.getIdDossier(dossier, pIdCompte));
 				int nbActu = 0;
 				for (MlMessage m : listeMessage) {
 					nbActu++;
 					majMessagerie(p_progress, textArea, bd, imapFolder,
-							listeMessage, nbActu, m);
+							listeMessage.size(), nbActu, m);
 				}
 				try {
 					afficheText(textArea, "Fin de la verification des messages");
@@ -171,9 +168,9 @@ public final class methodeImap {
 	 */
 	private static void majMessagerie(JProgressBar p_progress,
 			JTextArea textArea, BDRequette bd, IMAPFolder fldr,
-			MlListeMessage listeMessage, int nbActu, MlMessage m) {
+			int tailleListe, int nbActu, MlMessage m) {
 
-		int pourcent = (nbActu * 100) / listeMessage.size();
+		int pourcent = (nbActu * 100) / tailleListe;
 		p_progress.setValue(pourcent);
 		p_progress.setString("Maj dossier " + fldr.getFullName() + " : "
 				+ pourcent + " %");

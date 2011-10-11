@@ -139,7 +139,7 @@ public class thread_deplaceOuSuppr extends Thread {
 		if (!bd.getListeDeComptes().contains(dossierChoisi)) {
 			int idCompte = bd.getIdComptes(Main.getNomCompte());
 			int idDossierChoisi = bd.getIdDossier(dossierChoisi, idCompte);
-			MlListeMessage listeMessage = new MlListeMessage(idCompte,
+			MlListeMessage listeMessage = bd.getListeDeMessage(idCompte,
 					idDossierChoisi);
 
 			MyTableModel modelDetable = (MyTableModel) table.getModel();

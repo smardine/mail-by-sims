@@ -20,9 +20,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import mdl.MlCompteMail;
+import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
-import mdl.MlPieceJointe;
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.RecupDate;
@@ -240,11 +240,11 @@ public class BDRequette {
 	 * Obtenir la liste des compte mails enregistrés en base
 	 * @return
 	 */
-	public ArrayList<MlCompteMail> getListeDeComptes() {
+	public MlListeCompteMail getListeDeComptes() {
 		String requete = "Select " + EnStructureTable.COMPTES_ID.getNomChamp()
 				+ " from " + EnTable.COMPTES.getNomTable();
 		ArrayList<String> lst = getListeDeChamp(requete);
-		ArrayList<MlCompteMail> listeCompte = new ArrayList<MlCompteMail>();
+		MlListeCompteMail listeCompte = new MlListeCompteMail();
 		for (String s : lst) {
 			MlCompteMail cpt = new MlCompteMail(Integer.parseInt(s));
 			listeCompte.add(cpt);
@@ -676,11 +676,9 @@ public class BDRequette {
 			// on insere le contenu en base
 			// si des pieces jointe sont presente, on enregistre leur chemin en
 			// base avec l'id du message
-			for (MlPieceJointe pj : m.getListePieceJointe()) {
-				if (enregistrePieceJointe(maxId, pj.getContenuPiecejointe())) {
-					if (!pj.getContenuPiecejointe().delete()) {
-						pj.getContenuPiecejointe().deleteOnExit();
-					}
+			for (File f1 : m.getListePieceJointe()) {
+				if (enregistrePieceJointe(maxId, f1)) {
+					f1.delete();
 				}
 			}
 
@@ -792,15 +790,39 @@ public class BDRequette {
 				.replaceAll("&amp;", "&");
 	}
 
-	public ArrayList<String> getListeIDMessage(int p_idCompte,
+	public MlListeMessage getListeDeMessage(int p_idCompte,
 			int p_idDossierChoisi) {
+		MlListeMessage lstMessage = new MlListeMessage();
+		String requette = "SELECT " + "a.ID_MESSAGE_RECU, " + "a.UID_MESSAGE, "
+				+ "a.EXPEDITEUR, " + "a.DESTINATAIRE, " + "a.SUJET, "
+				+ "a.CONTENU, " + "a.DATE_RECEPTION " + "FROM MAIL_RECU a "
+				+ "where a.ID_COMPTE='" + p_idCompte
+				+ "' and a.ID_DOSSIER_STOCKAGE='" + p_idDossierChoisi
+				+ "' ORDER BY a.DATE_RECEPTION DESC";
+		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(requette);
+		for (int i = 0; i < lstResultat.size(); i++) {
+			ArrayList<String> unEnregistrement = lstResultat.get(i);
+			MlMessage m = new MlMessage();
+			m.setIdMessage(Integer.parseInt(unEnregistrement.get(0)));
+			m.setUIDMessage(unEnregistrement.get(1));
+			m.setExpediteur(decodeHTMLFromBase(unEnregistrement.get(2)));
+			String[] tabDestinaire = unEnregistrement.get(3).split(";");
+			ArrayList<String> lstDest = new ArrayList<String>();
+			for (String des : tabDestinaire) {
+				lstDest.add(des);
+			}
+			m.setDestinataire(lstDest);
+			m.setSujet(decodeHTMLFromBase(unEnregistrement.get(4)));
+			m.setContenu(unEnregistrement.get(5));
+			m.setDateReception(RecupDate.getdateFromTimeStamp((unEnregistrement
+					.get(6))));
 
-		String requette = "SELECT a.ID_MESSAGE_RECU FROM MAIL_RECU a where a.ID_COMPTE="
-				+ p_idCompte
-				+ " and a.ID_DOSSIER_STOCKAGE="
-				+ p_idDossierChoisi + " ORDER BY a.DATE_RECEPTION DESC";
-		return getListeDeChamp(requette);
+			lstMessage.add(m);
 
+		}
+
+		return lstMessage;
+		// return null;
 	}
 
 	public boolean messageHavePieceJointe(int p_idMessage) {
@@ -843,27 +865,6 @@ public class BDRequette {
 			contenuPieceJointe.delete();
 		}
 		return writeBlobToFile(requette, contenuPieceJointe);
-
-	}
-
-	public File getContenuPieceJointeFromIdPieceJointeId(
-			MlPieceJointe p_pieceJointe) {
-		String requette = "SELECT CONTENU_PIECE_JOINTE FROM PIECE_JOINTE WHERE ID_PIECE_JOINTE="
-				+ p_pieceJointe.getIdPiecejointe();
-
-		File contenuPieceJointe = new File(GestionRepertoire.RecupRepTravail()
-				+ "/tempo/" + p_pieceJointe.getNomPieceJointe());
-
-		return writeBlobToFile(requette, contenuPieceJointe);
-	}
-
-	public ArrayList<String> getPieceJointeById(int p_idPieceJointe) {
-		String script = "SELECT a.NOM_PIECE_JOINTE, a.ID_MESSAGE"
-				+ " FROM PIECE_JOINTE a" + " where a.ID_PIECE_JOINTE="
-				+ p_idPieceJointe;
-
-		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(script);
-		return lstResultat.get(0);
 
 	}
 
@@ -937,23 +938,40 @@ public class BDRequette {
 
 	public ArrayList<ArrayList<String>> getMessageById(int p_idMessage) {
 		String script = "SELECT a.ID_MESSAGE_RECU, a.UID_MESSAGE, a.EXPEDITEUR, a.DESTINATAIRE, "
-				+ "a.SUJET, a.CONTENU, a.DATE_RECEPTION, a.ID_DOSSIER_STOCKAGE,a.ID_COMPTE,a.STATUT"
+				+ "a.SUJET, a.CONTENU, a.DATE_RECEPTION, a.ID_DOSSIER_STOCKAGE,a.ID_COMPTE"
 				+ " FROM MAIL_RECU a WHERE a.ID_MESSAGE_RECU=" + p_idMessage;
 
-		return getListeDenregistrement(script);
+		// MlMessage m = new MlMessage();
+		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(script);
+		// for (int i = 0; i < lstResultat.size(); i++) {
+		// ArrayList<String> unEnregistrement = lstResultat.get(i);
+		//
+		// m.setIdMessage(Integer.parseInt(unEnregistrement.get(0)));
+		// m.setUIDMessage(unEnregistrement.get(1));
+		// m.setExpediteur(decodeHTMLFromBase(unEnregistrement.get(2)));
+		// String[] tabDestinaire = unEnregistrement.get(3).split(";");
+		// ArrayList<String> lstDest = new ArrayList<String>();
+		// for (String des : tabDestinaire) {
+		// lstDest.add(des);
+		// }
+		// m.setDestinataire(lstDest);
+		// m.setSujet(decodeHTMLFromBase(unEnregistrement.get(4)));
+		// m.setContenu(unEnregistrement.get(5));
+		// m.setDateReception(RecupDate.getdateFromTimeStamp((unEnregistrement
+		// .get(6))));
+		// m.setIdDossier(Integer.parseInt(unEnregistrement
+		// .get(7)));
+		// m.setNomDossier(getNomDossier(Integer.parseInt(unEnregistrement
+		// .get(7))));
+		// m.setIdCompte(Integer.parseInt(unEnregistrement.get(8)));
+		//
+		// }
 
+		return lstResultat;
 	}
 
 	public String getNomDossier(int p_idDossierStockage) {
 		String script = "SELECT a.NOM_DOSSIER FROM DOSSIER a WHERE a.ID_DOSSIER="
-				+ p_idDossierStockage;
-		return get1Champ(script);
-
-	}
-
-	public String getNomDossierInternet(int p_idDossierStockage) {
-
-		String script = "SELECT a.NOM_INTERNET from DOSSIER a where a.ID_DOSSIER="
 				+ p_idDossierStockage;
 		return get1Champ(script);
 
@@ -1087,13 +1105,6 @@ public class BDRequette {
 		String requette = "select count (a.UID_MESSAGE) FROM MAIL_RECU a where a.ID_COMPTE="
 				+ p_idCompte + " and a.ID_DOSSIER_STOCKAGE=" + p_idDossier;
 		return Integer.parseInt(get1Champ(requette));
-
-	}
-
-	public void majNomDossierInternet(int p_idDossier, String p_fullName) {
-		String script = "UPDATE DOSSIER a set a.NOM_INTERNET='" + p_fullName
-				+ "' where a.ID_DOSSIER=" + p_idDossier;
-		executeRequete(script);
 
 	}
 

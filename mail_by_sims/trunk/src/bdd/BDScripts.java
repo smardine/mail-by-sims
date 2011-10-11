@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class BDScripts {
 
+	private ArrayList<String> allversion;
 	private ArrayList<String> version1;
 	private ArrayList<String> version2;
 	private ArrayList<String> version3;
@@ -13,6 +14,17 @@ public class BDScripts {
 
 	public BDScripts() {
 
+	}
+
+	public ArrayList<String> getAll() {
+		allversion = new ArrayList<String>();
+		allversion.addAll(getVersion1());
+		allversion.addAll(getVersion2());
+		allversion.addAll(getVersion3());
+		allversion.addAll(getVersion4());
+		allversion.addAll(getVersion5());
+		allversion.addAll(getVersion6());
+		return allversion;
 	}
 
 	public ArrayList<String> getVersion1() {

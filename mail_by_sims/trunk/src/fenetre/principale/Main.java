@@ -34,8 +34,9 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.TreePath;
 
-import mdl.MlListeCompteMail;
+import mdl.MlListeMessage;
 import verification.Thread_Verif;
+import bdd.BDAcces;
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.MlAction.EnActionMain;
@@ -96,7 +97,6 @@ public class Main extends JFrame {
 	private JScrollPane jScrollPane3 = null;
 	private JButton jButton = null;
 	private JButton jButton1 = null;
-	private ArborescenceBoiteMail arbo;
 
 	/**
 	 * This method initializes panelBouton
@@ -246,7 +246,7 @@ public class Main extends JFrame {
 	private JTree getJTree() {
 		if (jTree == null) {
 			// new BDAcces();
-			arbo = new ArborescenceBoiteMail(new MlListeCompteMail());
+			ArborescenceBoiteMail arbo = new ArborescenceBoiteMail();
 			jTree = new JTree(arbo);
 			jTree.setShowsRootHandles(true);
 			jTree.setRootVisible(false);
@@ -545,7 +545,8 @@ public class Main extends JFrame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-
+		BDAcces bd = new BDAcces();
+		bd.verifVersionBDD(bd.isExist());
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				Main thisClass = new Main();
@@ -565,47 +566,43 @@ public class Main extends JFrame {
 		this.addComponentListener(new MlComposantListener(panelPrincipal));
 		Thread_Verif verif = new Thread_Verif(jTree);
 		verif.start();
-		// MlListeCompteMail listeCompte = new MlListeCompteMail();
+
 		modelList = new DefaultListModel();
 		jList.setModel(modelList);
 		jList.addMouseListener(new MlActionjList(jTable, jList));
 		ColoneModel = new XTableColumnModel();
 		jTable.setColumnModel(ColoneModel);
 		jTable.setDefaultRenderer(Date.class, new DateTimeCellRenderer());
-		tableModel = new MyTableModel(ColoneModel);
+		tableModel = new MyTableModel(new MlListeMessage(), ColoneModel);
 		jTable.setModel(tableModel);
 		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jList,
 				jProgressBarReleve, jTextArea, jScrollPane3));
 
 		jMenuContact.addActionListener(new MlActionMain());
-		jTree.addMouseListener(new MlActionJtree(arbo.getLstCpt(), jTree,
-				jTable));
-		jTree.addTreeSelectionListener(new MlActionJtree(arbo.getLstCpt(),
-				jTree, jTable));
-		jTree.addTreeExpansionListener(new MlActionJtree(arbo.getLstCpt(),
-				jTree, jTable));
-		jMenuItemImporter.addActionListener(new MlActionMain(arbo.getLstCpt(),
-				jTree, jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
-				jScrollPane3));
-		jMenuItemReleve.addActionListener(new MlActionMain(arbo.getLstCpt(),
-				jTree, jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
-				jScrollPane3));
-		btEnvoyerRecevoir.addActionListener(new MlActionMain(arbo.getLstCpt(),
-				jTree, jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
-				jScrollPane3));
-		btRecevoir.addActionListener(new MlActionMain(arbo.getLstCpt(), jTree,
+		jTree.addMouseListener(new MlActionJtree(jTree, jTable));
+		jTree.addTreeSelectionListener(new MlActionJtree(jTree, jTable));
+		jTree.addTreeExpansionListener(new MlActionJtree(jTree, jTable));
+		jMenuItemImporter.addActionListener(new MlActionMain(jTree,
 				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
 				jScrollPane3));
-		btEnvoyer.addActionListener(new MlActionMain(arbo.getLstCpt(), jTree,
+		jMenuItemReleve.addActionListener(new MlActionMain(jTree,
 				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
 				jScrollPane3));
+		btEnvoyerRecevoir.addActionListener(new MlActionMain(jTree,
+				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
+				jScrollPane3));
+		btRecevoir.addActionListener(new MlActionMain(jTree,
+				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
+				jScrollPane3));
+		btEnvoyer.addActionListener(new MlActionMain(jTree, jProgressBarReleve,
+				jProgressBarPieceJointe, jTextArea, jScrollPane3));
 		btSupprMessage.addActionListener(new MlActionPopupJTable(jTable, jList,
 				jProgressBarReleve, jTextArea, jScrollPane3));
 		jMenuCompte.addActionListener(new MlActionMain(jTree));
-		jButton.addMouseListener(new MlActionMainCombo(arbo.getLstCpt(), false,
+		jButton.addMouseListener(new MlActionMainCombo(false,
 				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
 				jScrollPane3));
-		jButton1.addMouseListener(new MlActionMainCombo(arbo.getLstCpt(), true,
+		jButton1.addMouseListener(new MlActionMainCombo(true,
 				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
 				jScrollPane3));
 

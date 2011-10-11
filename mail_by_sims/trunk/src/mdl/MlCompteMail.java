@@ -15,7 +15,6 @@ public class MlCompteMail {
 			nomCompte;
 
 	private EnTypeCompte typeCompte;
-	private MlListeDossier lstDossier;
 
 	/**
 	 * Constructeur d'object, si on connait son Id, l'initialisation se charge
@@ -25,11 +24,10 @@ public class MlCompteMail {
 	public MlCompteMail(int p_idCompte) {
 		this.idCompte = p_idCompte;
 		initialiseCompte(idCompte);
-
 	}
 
 	public MlCompteMail(String p_nomCompte) {
-		if (p_nomCompte != null) {
+		if (p_nomCompte != null && p_nomCompte != "") {
 			BDRequette bd = new BDRequette();
 			this.idCompte = bd.getIdComptes(p_nomCompte);
 			bd.closeConnexion();
@@ -66,37 +64,20 @@ public class MlCompteMail {
 					setPassword(defCompte.get(6));
 					break;
 				case 7:
-					traiteTypeCompte(defCompte);
+					if ("imap".equals(defCompte.get(7))) {
+						setTypeCompte(EnTypeCompte.IMAP);
+					} else if ("pop".equals(defCompte.get(7))) {
+						setTypeCompte(EnTypeCompte.POP);
+					} else if ("gmail".equals(defCompte.get(7))) {
+						setTypeCompte(EnTypeCompte.GMAIL);
+					} else if ("hotmail".equals(defCompte.get(7))) {
+						setTypeCompte(EnTypeCompte.HOTMAIL);
+					}
 					break;
 
 			}
 		}// fin de for
 
-		obtainIdDossierPrincipaux(bd);
-
-		bd.closeConnexion();
-
-	}
-
-	/**
-	 * @param defCompte
-	 */
-	private void traiteTypeCompte(ArrayList<String> defCompte) {
-		if ("imap".equals(defCompte.get(7))) {
-			setTypeCompte(EnTypeCompte.IMAP);
-		} else if ("pop".equals(defCompte.get(7))) {
-			setTypeCompte(EnTypeCompte.POP);
-		} else if ("gmail".equals(defCompte.get(7))) {
-			setTypeCompte(EnTypeCompte.GMAIL);
-		} else if ("hotmail".equals(defCompte.get(7))) {
-			setTypeCompte(EnTypeCompte.HOTMAIL);
-		}
-	}
-
-	/**
-	 * @param bd
-	 */
-	private void obtainIdDossierPrincipaux(BDRequette bd) {
 		EnDossierBase[] lstDossierBase = EnDossierBase.values();
 		for (EnDossierBase unDossier : lstDossierBase) {
 			switch (unDossier) {
@@ -119,6 +100,9 @@ public class MlCompteMail {
 					break;
 			}
 		}
+
+		bd.closeConnexion();
+
 	}
 
 	/**
@@ -315,24 +299,6 @@ public class MlCompteMail {
 	 */
 	public void setIdCompte(int p_idCompte) {
 		this.idCompte = p_idCompte;
-	}
-
-	/**
-	 * @param lstDossier the lstDossier to set
-	 */
-	public void setLstDossier(MlListeDossier lstDossier) {
-		if (lstDossier == null) {
-			this.lstDossier = lstDossier;
-		}
-
-	}
-
-	/**
-	 * @return the lstDossier
-	 */
-	public MlListeDossier getLstDossier() {
-		lstDossier = new MlListeDossier(idCompte);
-		return lstDossier;
 	}
 
 }

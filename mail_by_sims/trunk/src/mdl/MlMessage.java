@@ -1,5 +1,6 @@
 package mdl;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -8,7 +9,6 @@ import bdd.BDRequette;
 
 public class MlMessage {
 	private String NomDossier;
-	private String NomDossierInternet;
 	private int idDossier;
 	private int idCompte;
 	private String cheminPhysique;
@@ -18,12 +18,11 @@ public class MlMessage {
 	private String contenu;
 	private Date dateReception;
 	private String uIDMessage;
-	private MlListePieceJointe listePieceJointe;
+	private ArrayList<File> listePieceJointe;
 	private int idMessage;
-	private boolean isLu;
 
 	public MlMessage() {
-		// listePieceJointe = new MlListePieceJointe();
+		listePieceJointe = new ArrayList<File>();
 	}
 
 	public MlMessage(int p_idMessage) {
@@ -47,11 +46,10 @@ public class MlMessage {
 			setDateReception(RecupDate.getdateFromTimeStamp((unEnregistrement
 					.get(6))));
 			setIdDossier(Integer.parseInt(unEnregistrement.get(7)));
-			setNomDossier(bd.getNomDossier(getIdDossier()));
+			setNomDossier(bd.getNomDossier(Integer.parseInt(unEnregistrement
+					.get(7))));
 			setIdCompte(Integer.parseInt(unEnregistrement.get(8)));
-			setLu("1".equals(unEnregistrement.get(9)));
-			setNomDossierInternet(bd.getNomDossierInternet(getIdDossier()));
-			setListePieceJointe(new MlListePieceJointe(idMessage));
+
 		}
 	}
 
@@ -95,20 +93,6 @@ public class MlMessage {
 	 */
 	public String getNomDossier() {
 		return NomDossier;
-	}
-
-	/**
-	 * @param nomDossierInternet the nomDossierInternet to set
-	 */
-	public void setNomDossierInternet(String nomDossierInternet) {
-		this.NomDossierInternet = nomDossierInternet;
-	}
-
-	/**
-	 * @return the nomDossierInternet
-	 */
-	public String getNomDossierInternet() {
-		return NomDossierInternet;
 	}
 
 	/**
@@ -198,14 +182,14 @@ public class MlMessage {
 	/**
 	 * @param listePieceJointe the listePieceJointe to set
 	 */
-	public void setListePieceJointe(MlListePieceJointe listePieceJointe) {
+	public void setListePieceJointe(ArrayList<File> listePieceJointe) {
 		this.listePieceJointe = listePieceJointe;
 	}
 
 	/**
 	 * @return the listePieceJointe
 	 */
-	public MlListePieceJointe getListePieceJointe() {
+	public ArrayList<File> getListePieceJointe() {
 		return listePieceJointe;
 	}
 
@@ -230,20 +214,6 @@ public class MlMessage {
 
 	public int getIdMessage() {
 		return idMessage;
-	}
-
-	/**
-	 * @param isLu the isLu to set
-	 */
-	public void setLu(boolean isLu) {
-		this.isLu = isLu;
-	}
-
-	/**
-	 * @return the isLu
-	 */
-	public boolean isLu() {
-		return isLu;
 	}
 
 }

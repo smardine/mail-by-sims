@@ -39,8 +39,8 @@ public class MlComposantListener implements ComponentListener {
 		Dimension taille = composant.getSize();
 		double hauteur = taille.getHeight();
 		double largeur = taille.getWidth();
-		// System.out.println("taille de la fenetre: hauteur=" + hauteur
-		// + " largeur=" + largeur);
+		System.out.println("taille de la fenetre: hauteur=" + hauteur
+				+ " largeur=" + largeur);
 		int nbComposant = panelPrincipal.getComponentCount();
 
 		for (int i = 0; i < nbComposant; i++) {
@@ -49,7 +49,7 @@ public class MlComposantListener implements ComponentListener {
 			if (EnNomComposant.PANEL_TREE.getLib().equals(nomCompo)) {
 				dim = EnNomComposant.PANEL_TREE.calculNouvelleDimension(
 						largeur, hauteur);
-				// System.out.println("taille jtree=" + dim);
+				System.out.println("taille jtree=" + dim);
 				panelPrincipal.getComponent(i).setSize(dim);
 				panelPrincipal.getComponent(i).repaint();
 
@@ -63,7 +63,7 @@ public class MlComposantListener implements ComponentListener {
 			if (EnNomComposant.PANEL_HTML.getLib().equals(nomCompo)) {
 				dim = EnNomComposant.PANEL_HTML.calculNouvelleDimension(
 						largeur, hauteur);
-				// System.out.println("taille html=" + dim);
+				System.out.println("taille html=" + dim);
 				panelPrincipal.getComponent(i).setSize(dim);
 				panelPrincipal.getComponent(i).repaint();
 
@@ -71,7 +71,7 @@ public class MlComposantListener implements ComponentListener {
 			if (EnNomComposant.PANEL_TABLE_ET_LISTE.getLib().equals(nomCompo)) {
 				dim = EnNomComposant.PANEL_TABLE_ET_LISTE
 						.calculNouvelleDimension(largeur, hauteur);
-				// System.out.println("taille table et liste=" + dim);
+				System.out.println("taille table et liste=" + dim);
 				panelPrincipal.getComponent(i).setSize(dim);
 				panelPrincipal.getComponent(i).repaint();
 

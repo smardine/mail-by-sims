@@ -15,6 +15,7 @@ import javax.swing.WindowConstants;
 
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
+import bdd.BDRequette;
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.gestion.MlActionGestion.EnActionComptes;
 import fenetre.comptes.gestion.MlActionGestion.MlActionComptes;
@@ -42,9 +43,9 @@ public class GestionCompte extends JFrame {
 		modelList = new DefaultListModel();
 		jList.setModel(modelList);
 		// on recupere la liste des comptes et on l'affiche
-		// BDRequette bd = new BDRequette();
-		MlListeCompteMail lst = new MlListeCompteMail();
-		// bd.closeConnexion();
+		BDRequette bd = new BDRequette();
+		MlListeCompteMail lst = bd.getListeDeComptes();
+		bd.closeConnexion();
 		for (MlCompteMail cpt : lst) {
 			modelList.addElement(cpt.getNomCompte());
 		}

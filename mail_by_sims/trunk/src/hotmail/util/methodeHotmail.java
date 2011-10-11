@@ -341,11 +341,8 @@ public final class methodeHotmail {
 						// sur
 						// le serveur, on analyse fichier
 						// par fichier
-						MlListeMessage lstMessageBase = new MlListeMessage(
+						MlListeMessage lstMessageBase = p_bd.getListeDeMessage(
 								p_compteMail.getIdCompte(), idDossier);
-						// MlListeMessage lstMessageBase =
-						// p_bd.getListeDeMessage(
-						// p_compteMail.getIdCompte(), idDossier);
 						int nbActu = 1;
 						for (MlMessage m : lstMessageBase) {
 							int pourcent = (nbActu++ * 100)

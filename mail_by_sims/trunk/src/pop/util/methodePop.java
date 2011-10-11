@@ -59,14 +59,14 @@ public final class methodePop {
 			int nbActu = 1;
 			MlListeMessage lstMessage = new MlListeMessage();
 			Message[] lstMessagesPop = folder.getMessages();
-			for (Message m : lstMessagesPop) {
 
+			for (int i = lstMessagesPop.length; i > 0; i--) {
 				int pourcent = (nbActu++ * 100) / count;
 				progressReleve.setValue(pourcent);
 				progressReleve.setString(p_comptePop.getNomCompte()
 						+ ": Releve de " + folder.getFullName() + " :"
 						+ pourcent + " %");
-
+				Message m = lstMessagesPop[i - 1];
 				if (bd.verifieAbscenceUID(folder.getUID(m), p_comptePop
 						.getIdInbox())) {
 					MlMessage messPourBase = new MlMessage();
@@ -104,8 +104,54 @@ public final class methodePop {
 							"Enregistrement du message dans la base");
 					bd.createNewMessage(messPourBase);
 				}
-
 			}
+			// for (Message m : lstMessagesPop) {
+			//
+			// int pourcent = (nbActu++ * 100) / count;
+			// progressReleve.setValue(pourcent);
+			// progressReleve.setString(p_comptePop.getNomCompte()
+			// + ": Releve de " + folder.getFullName() + " :"
+			// + pourcent + " %");
+			//
+			// if (bd.verifieAbscenceUID(folder.getUID(m), p_comptePop
+			// .getIdInbox())) {
+			// MlMessage messPourBase = new MlMessage();
+			//
+			// messPourBase.setCheminPhysique(GestionRepertoire
+			// .RecupRepTravail()
+			// + "/tempo/" + System.currentTimeMillis() + ".eml");
+			//
+			// messPourBase.setContenu(thread_Import.recupContenuMail(
+			// messPourBase, p_progressPJ, m, text));
+			// messPourBase.setDateReception(m.getReceivedDate());
+			// ArrayList<String> listeDestinataires;
+			// if (null != m.getAllRecipients()) {// si on connait la
+			// // taille de
+			// // la liste, on la fixe
+			// listeDestinataires = new ArrayList<String>(m
+			// .getAllRecipients().length);
+			// for (Address uneAdresse : m.getAllRecipients()) {
+			// listeDestinataires.add(uneAdresse.toString());
+			// }
+			// } else {
+			// listeDestinataires = new ArrayList<String>(1);
+			// listeDestinataires.add("Destinataire(s) masqué(s)");
+			// }
+			//
+			// messPourBase.setDestinataire(listeDestinataires);
+			// messPourBase.setExpediteur(m.getFrom()[0].toString());
+			// messPourBase.setIdCompte(p_comptePop.getIdCompte());
+			// messPourBase.setIdDossier(verifieRegle(messPourBase
+			// .getExpediteur(), p_comptePop.getIdInbox()));
+			// messPourBase.setUIDMessage("" + folder.getUID(m));
+			// messPourBase.setSujet(m.getSubject());
+			// lstMessage.add(messPourBase);
+			// methodeImap.afficheText(text,
+			// "Enregistrement du message dans la base");
+			// bd.createNewMessage(messPourBase);
+			// }
+
+			// }
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

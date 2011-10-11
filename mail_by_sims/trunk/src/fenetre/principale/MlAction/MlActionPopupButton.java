@@ -11,6 +11,7 @@ import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
+import bdd.BDRequette;
 
 public class MlActionPopupButton implements ActionListener {
 
@@ -33,20 +34,20 @@ public class MlActionPopupButton implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 
 		String actionCommand = e.getActionCommand();
-		// BDRequette bd = new BDRequette();
+		BDRequette bd = new BDRequette();
 		if ("[releve ]Relever tous les comptes".equals(actionCommand)) {
 
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, false,
-					new MlListeCompteMail());
+					pbPieceJointe, text, scrollPane, false, bd
+							.getListeDeComptes());
 
 			t.start();
 
 		} else if ("[synchro ]Synchroniser tous les comptes"
 				.equals(actionCommand)) {
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, true,
-					new MlListeCompteMail());
+					pbPieceJointe, text, scrollPane, true, bd
+							.getListeDeComptes());
 			t.start();
 		} else if (actionCommand.contains("[releve ]")) {
 			String nomCompte = actionCommand.substring(actionCommand
@@ -71,7 +72,7 @@ public class MlActionPopupButton implements ActionListener {
 					pbPieceJointe, text, scrollPane, true, lst);
 			t.start();
 		}
-		// bd.closeConnexion();
+		bd.closeConnexion();
 
 	}
 

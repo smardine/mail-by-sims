@@ -15,9 +15,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
 import mdl.MlCompteMail;
-import mdl.MlDossier;
 import mdl.MlListeCompteMail;
-import mdl.MlListeDossier;
 import mdl.MlListeMessage;
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
@@ -32,14 +30,11 @@ public class MlActionJtree implements TreeSelectionListener,
 	private JPopupMenu popUpMenu;
 	private JMenuItem Ajouter;
 	private JMenuItem Supprimer;
-	private final MlListeCompteMail listCompteMail;
 
-	public MlActionJtree(MlListeCompteMail p_lstCptMail, JTree p_jTree,
-			JTable p_jTable) {
+	public MlActionJtree(JTree p_jTree, JTable p_jTable) {
 		this.tree = p_jTree;
 		this.table = p_jTable;
 		this.popUpMenu = getJPopupMenu();
-		this.listCompteMail = p_lstCptMail;
 	}
 
 	/**
@@ -106,10 +101,9 @@ public class MlActionJtree implements TreeSelectionListener,
 	 * @param p_event
 	 */
 	private void valoriseTreeEtNomCompte(TreePath p_path) {
-		// BDRequette bd = new BDRequette();
-
-		MlListeCompteMail lstCpt = new MlListeCompteMail();
-		// bd.closeConnexion();
+		BDRequette bd = new BDRequette();
+		MlListeCompteMail lstCpt = bd.getListeDeComptes();
+		bd.closeConnexion();
 		if (null != p_path) {
 
 			for (MlCompteMail cpt : lstCpt) {
@@ -164,56 +158,31 @@ public class MlActionJtree implements TreeSelectionListener,
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		if (e.getClickCount() == 1) {
-			TreePath cheminTree = getPathFromEvent(e);
-			if (null == getPathFromEvent(e)
-					|| getPathFromEvent(e).getPathCount() == 2) {
-				return;// on a cliqué sur le nom d'un compte
-			}
-			String nomCompte = (String) cheminTree.getPathComponent(1);
-			for (MlCompteMail cpt : listCompteMail) {
-				if (cpt.getNomCompte().equals(nomCompte)) {
-					String dossierChoisi = (String) getPathFromEvent(e)
-							.getLastPathComponent();
-					MlListeDossier lstDossier = cpt.getLstDossier();
-					for (MlDossier d : lstDossier) {
-						if (d.getNomEnBase().equals(dossierChoisi)) {
-							MlListeMessage listeMessage = d.getLstMessage();
-							MyTableModel modelDetable = (MyTableModel) table
-									.getModel();
-							modelDetable.valorisetable(listeMessage);
-							return;
-						}
-					}
+		BDRequette bd = new BDRequette();
+		if (!bd.getListeDeComptes().contains(getPathFromEvent(e))) {
+			// affiche le contenu de la base correspondant a ce que l'on a
+			// cliqué
+			if (null != getPathFromEvent(e)) {
+				String dossierChoisi = (String) getPathFromEvent(e)
+						.getLastPathComponent();
+
+				if (!bd.getListeDeComptes().contains(dossierChoisi)) {
+					int idCompte = bd.getIdComptes(Main.getNomCompte());
+					int idDossierChoisi = bd.getIdDossier(dossierChoisi,
+							idCompte);
+					MlListeMessage listeMessage = bd.getListeDeMessage(
+							idCompte, idDossierChoisi);
+
+					MyTableModel modelDetable = (MyTableModel) table.getModel();
+					modelDetable.valorisetable(listeMessage);
+					// table.setVisible(true);
 
 				}
-			}
-		}
 
-		// if (!bd.getListeDeComptes().contains(getPathFromEvent(e))) {
-		// // affiche le contenu de la base correspondant a ce que l'on a
-		// // cliqué
-		// if (null != getPathFromEvent(e)) {
-		// String dossierChoisi = (String) getPathFromEvent(e)
-		// .getLastPathComponent();
-		//
-		// if (!bd.getListeDeComptes().contains(dossierChoisi)) {
-		// int idCompte = bd.getIdComptes(Main.getNomCompte());
-		// int idDossierChoisi = bd.getIdDossier(dossierChoisi,
-		// idCompte);
-		// MlListeMessage listeMessage = bd.getListeDeMessage(
-		// idCompte, idDossierChoisi);
-		//
-		// MyTableModel modelDetable = (MyTableModel) table.getModel();
-		// modelDetable.valorisetable(listeMessage);
-		// // table.setVisible(true);
-		//
-		// }
-		//
-		// }
-		//
-		// }
-		// bd.closeConnexion();
+			}
+
+		}
+		bd.closeConnexion();
 	}
 
 	@Override
@@ -272,12 +241,6 @@ public class MlActionJtree implements TreeSelectionListener,
 		TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
 		return selPath;
 	}
-
-	// private String getStringPathFromEvent(MouseEvent p_event) {
-	// TreePath selPath = tree.getPathForLocation(p_event.getX(), p_event
-	// .getY());
-	// return selPath.toString();
-	// }
 
 	private ArrayList<String> getListeDossierdeBase() {
 		ArrayList<String> lstDossierBase = new ArrayList<String>(4);

@@ -23,10 +23,13 @@ import tools.Historique;
  */
 public class BDAcces {
 	private final BDParam parametres;
+
 	private boolean etatConnexion;
 	private Connection connexion;
 	private FBManager firebirdManager;
 	final String VERSION_BASE = "6";
+
+	private boolean ttACreer;
 
 	/**
 	 * constructeur
@@ -51,8 +54,9 @@ public class BDAcces {
 					+ parametres.getEmplacementBase()
 					+ "?encoding=ISO8859_1&user=" + parametres.getUSER()
 					+ "&password=" + parametres.getPASSWORD();
-			boolean exist = isDataBaseExist(parametres.getEmplacementBase());
-
+			if (!isDataBaseExist(parametres.getEmplacementBase())) {
+				ttACreer = true;
+			}
 			FBManager fbManager = new FBManager();
 			firebirdManager = fbManager;
 			fbManager.setCreateOnStart(true);// si le fichier base n'existe pas
@@ -73,7 +77,9 @@ public class BDAcces {
 
 				connexion = DriverManager.getConnection(UrlDeConnexion);
 				connexion.setAutoCommit(false);
-
+				// connexion
+				// .setTransactionIsolation(Connection.TRANSACTION_SERIALIZABLE);
+				// connexion.setHoldability(ResultSet.CLOSE_CURSORS_AT_COMMIT);
 				etatConnexion = true;
 			} catch (SQLException e) {
 				JOptionPane.showMessageDialog(null,
@@ -90,32 +96,25 @@ public class BDAcces {
 				System.exit(0);
 			}
 
-			try {
-				verifVersionBDD(exist);
-			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(e,
-						"Erreur a la vérification de la BDD");
-			}
+			// try {
+			// verifVersionBDD(exist);
+			// } catch (SQLException e) {
+			// messageUtilisateur.affMessageException(e,
+			// "Erreur a la vérification de la BDD");
+			// }
 
 		}
 
 	}
 
-	public void createDatabase() {
+	public boolean verifVersionBDD(boolean p_exist) {
 
-	}
-
-	public boolean verifVersionBDD(boolean p_exist) throws SQLException {
-		if (!p_exist) {// la base n'existait pas quand on s'y est
+		if (ttACreer) {// la base n'existait pas quand on s'y est
 			// connecté, il faut passer les scripts de
 			// creation
 			BDScripts scripts = new BDScripts();
-			ArrayList<String> version1 = scripts.getVersion1();
-
 			ScriptExecutor se = new ScriptExecutor();
-			LanceMiseAJour(se, version1);
-			ArrayList<String> version2 = scripts.getVersion2();
-			LanceMiseAJour(se, version2);
+			LanceMiseAJour(se, scripts.getAll());
 
 		} else {
 
@@ -155,19 +154,27 @@ public class BDAcces {
 	 * @throws SQLException
 	 */
 	private void LanceMiseAJour(ScriptExecutor se,
-			ArrayList<String> versionApasser) throws SQLException {
+			ArrayList<String> versionApasser) {
 		boolean succes;
 		for (String s : versionApasser) {
 			succes = se.executeScriptSQL(connexion, s);
 			if (!succes) {
-				connexion.rollback();
+				try {
+					connexion.rollback();
+				} catch (SQLException e) {
+
+				}
 				messageUtilisateur
 						.affMessageErreur("Impossible de mettre a jour la base de données \r\n Votre logiciel va se fermer");
 				Historique.ecrire("Erreur a la mise a jour sur le script:\n\r"
 						+ s);
 				System.exit(0);
 			} else {
-				connexion.commit();
+				try {
+					connexion.commit();
+				} catch (SQLException e) {
+
+				}
 			}
 		}
 	}
@@ -179,10 +186,7 @@ public class BDAcces {
 		if (f.exists()) {// le fichier de base existe
 			return true;
 		}
-
 		d.mkdirs();// si des dossier du repertoire n'existe pas, il seront créer
-		// f.createNewFile();
-
 		return false;
 	}
 
@@ -254,4 +258,7 @@ public class BDAcces {
 		return chaine_champ;
 	}
 
+	public boolean isExist() {
+		return isDataBaseExist(parametres.getEmplacementBase());
+	}
 }

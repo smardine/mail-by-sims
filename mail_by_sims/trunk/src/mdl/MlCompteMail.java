@@ -27,7 +27,7 @@ public class MlCompteMail {
 	}
 
 	public MlCompteMail(String p_nomCompte) {
-		if (p_nomCompte != null && p_nomCompte != "") {
+		if (p_nomCompte != null && !p_nomCompte.equals("")) {
 			BDRequette bd = new BDRequette();
 			this.idCompte = bd.getIdComptes(p_nomCompte);
 			bd.closeConnexion();

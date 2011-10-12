@@ -22,5 +22,6 @@
 	<classpathentry kind="lib" path="lib/libdeltasync/slf4j-api-1.6.1-sources.jar"/>
 	<classpathentry kind="lib" path="lib/libdeltasync/slf4j-api-1.6.1.jar"/>
 	<classpathentry kind="lib" path="lib/deltasync.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/3"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

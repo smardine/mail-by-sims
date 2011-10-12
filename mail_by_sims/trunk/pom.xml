@@ -13,6 +13,34 @@
       <scope>system</scope>
     <systemPath>${basedir}/lib//mail.jar</systemPath>    
     </dependency>  
+    <dependency>  
+      <groupId>dep</groupId>
+      <artifactId>dep2</artifactId>
+      <version>1.0</version>                 
+      <scope>system</scope>
+    <systemPath>${basedir}/lib//activation.jar</systemPath>    
+    </dependency>  
+    <dependency>  
+      <groupId>dep</groupId>
+      <artifactId>dep3</artifactId>
+      <version>1.0</version>                 
+      <scope>system</scope>
+    <systemPath>${basedir}/lib//deltasync.jar</systemPath>    
+    </dependency>  
+    <dependency>  
+      <groupId>dep</groupId>
+      <artifactId>dep4</artifactId>
+      <version>1.0</version>                 
+      <scope>system</scope>
+    <systemPath>${basedir}/lib//jaybird_full_2_1_6.jar</systemPath>    
+    </dependency>  
+    <dependency>  
+      <groupId>dep</groupId>
+      <artifactId>dep5</artifactId>
+      <version>1.0</version>                 
+      <scope>system</scope>
+    <systemPath>${basedir}/lib//junit.jar</systemPath>    
+    </dependency>  
   </dependencies> 
 
   <build>

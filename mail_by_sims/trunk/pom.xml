@@ -1,29 +1,63 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.myorg</groupId>
-  <artifactId>mail.by.sims</artifactId>
-  <name>mail by sims</name>
-  <version>0.0.1-SNAPSHOT</version>
+  <groupId>fr.simscorps</groupId>
+  <artifactId>client.mail</artifactId>
+  <name>client mail</name>
+  <version>1.0</version>
+  <dependencies>
+    <dependency>  
+      <groupId>dep</groupId>
+      <artifactId>dep1</artifactId>
+      <version>1.0</version>                 
+      <scope>system</scope>
+    <systemPath>${basedir}/lib//mail.jar</systemPath>    
+    </dependency>  
+  </dependencies> 
+
   <build>
-        <sourceDirectory>src</sourceDirectory>
-        <outputDirectory>bin</outputDirectory>
-        <plugins>
-           <plugin>
-              <groupId>org.apache.maven.plugins</groupId>
-              <artifactId>maven-compiler-plugin</artifactId>
-              <configuration>
-                  <source>1.5</source>
-                  <target>1.5</target>
-                  <excludes>
-                      <exclude>**/*.*</exclude>
-                  </excludes>
-              </configuration>
-           </plugin>
-        </plugins>
+    <outputDirectory><![CDATA[bin]]></outputDirectory>
+    <sourceDirectory><![CDATA[src]]></sourceDirectory>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.5</source>
+          <target>1.5</target>
+          
+        </configuration>
+      </plugin>
+      <plugin>
+  <groupId>org.codehaus.mojo</groupId>
+  <artifactId>build-helper-maven-plugin</artifactId>
+  <version>1.1</version>
+  <executions>
+    <execution>
+      <id>add-source</id>
+      <phase>generate-sources</phase>
+      <goals>
+          <goal>add-source</goal>
+      </goals>
+      <configuration>
+          <sources>
+              <source><![CDATA[lib/*.jar]]></source>
+
+          </sources>
+      </configuration>
+    </execution>
+  </executions>
+</plugin>
+
+    </plugins>
   </build>
+
   <properties>
-  	<sonar.dynamicAnalysis>false</sonar.dynamicAnalysis>
+    
+    <sonar.dynamicAnalysis><![CDATA[false]]></sonar.dynamicAnalysis>
+    
+    
+    
+    <sonar.phase><![CDATA[generate-sources]]></sonar.phase>
   </properties>
 </project>

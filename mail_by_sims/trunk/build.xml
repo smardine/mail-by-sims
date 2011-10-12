@@ -11,9 +11,6 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
     <property name="source" value="1.6"/>
-    <path id="JUnit 3.libraryclasspath">
-        <pathelement location="${ECLIPSE_HOME}/plugins/org.junit_3.8.2.v20090203-1005/junit.jar"/>
-    </path>
     <path id="Mail by sims.classpath">
         <pathelement location="bin"/>
         <pathelement location="lib/activation.jar"/>
@@ -35,7 +32,7 @@
         <pathelement location="lib/libdeltasync/slf4j-api-1.6.1-sources.jar"/>
         <pathelement location="lib/libdeltasync/slf4j-api-1.6.1.jar"/>
         <pathelement location="lib/deltasync.jar"/>
-        <path refid="JUnit 3.libraryclasspath"/>
+        <pathelement location="lib/junit.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>

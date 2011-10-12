@@ -8,7 +8,7 @@
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
                 <attribute name="Rsrc-Main-Class" value="fenetre.principale.Main"/>
                 <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ activation.jar jaybird_full_2_1_6.jar mail.jar apache-mime4j-0.5.jar commons-codec-1.5-javadoc.jar commons-codec-1.5-sources.jar commons-codec-1.5.jar commons-logging-1.1.1.jar httpclient-4.1.1.jar httpclient-cache-4.1.1.jar httpcore-4.1.jar httpmime-4.1.1.jar logback-classic-0.9.29-sources.jar logback-classic-0.9.29.jar logback-core-0.9.29-sources.jar logback-core-0.9.29.jar slf4j-api-1.6.1-sources.jar slf4j-api-1.6.1.jar deltasync.jar"/>
+                <attribute name="Rsrc-Class-Path" value="./ activation.jar jaybird_full_2_1_6.jar mail.jar apache-mime4j-0.5.jar commons-codec-1.5-javadoc.jar commons-codec-1.5-sources.jar commons-codec-1.5.jar commons-logging-1.1.1.jar httpclient-4.1.1.jar httpclient-cache-4.1.1.jar httpcore-4.1.jar httpmime-4.1.1.jar logback-classic-0.9.29-sources.jar logback-classic-0.9.29.jar logback-core-0.9.29-sources.jar logback-core-0.9.29.jar slf4j-api-1.6.1-sources.jar slf4j-api-1.6.1.jar deltasync.jar junit.jar"/>
             </manifest>
             <zipfileset src="jar-in-jar-loader.zip"/>
             <fileset dir="C:/Users/smardine/Documents/dvp perso/workspace Visual Edit/Mail by sims/bin"/>
@@ -31,6 +31,7 @@
             <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="slf4j-api-1.6.1-sources.jar"/>
             <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib\libdeltasync" includes="slf4j-api-1.6.1.jar"/>
             <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib" includes="deltasync.jar"/>
+            <zipfileset dir="C:\Users\smardine\Documents\dvp perso\workspace Visual Edit\Mail by sims\lib" includes="junit.jar"/>
         </jar>
     </target>
 </project>

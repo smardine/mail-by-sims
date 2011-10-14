@@ -1,6 +1,5 @@
 package fenetre.principale.jtree;
 
-import fenetre.principale.Main;
 import imap.util.REPONSE;
 import imap.util.messageUtilisateur;
 
@@ -10,6 +9,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
+import mdl.ComposantVisuelCommun;
 import bdd.BDRequette;
 
 public class MlActionPopupJTree implements ActionListener {
@@ -50,7 +50,7 @@ public class MlActionPopupJTree implements ActionListener {
 				TreePath newTreePath = new TreePath(selectionPath.toString()
 						.replace("[", "").replace("]", "")
 						+ ", " + nomNewDossier);
-				Main.setTreePath(newTreePath);
+				ComposantVisuelCommun.setTreePath(newTreePath);
 				tree.getModel().valueForPathChanged(newTreePath,
 						ActionTree.AJOUTER);
 				tree.setSelectionPath(newTreePath);
@@ -77,7 +77,8 @@ public class MlActionPopupJTree implements ActionListener {
 			switch (rep) {
 				case OUI:// on supprime le dossier
 					bd.deleteDossier(idCompte, idDossier);
-					Main.setTreePath(selectionPath.getParentPath());
+					ComposantVisuelCommun.setTreePath(selectionPath
+							.getParentPath());
 					tree.getModel().valueForPathChanged(selectionPath,
 							ActionTree.SUPPRIMER);
 					tree.setSelectionPath(selectionPath.getParentPath());

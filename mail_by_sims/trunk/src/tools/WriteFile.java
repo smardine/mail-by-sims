@@ -11,6 +11,7 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 
 public final class WriteFile {
+	private final static String TAG = "WriteFile";
 
 	private WriteFile() {
 
@@ -34,7 +35,7 @@ public final class WriteFile {
 			out.write(contenu);
 			out.close();
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Impossible de créer le fichier " + chemin);
 
 		}

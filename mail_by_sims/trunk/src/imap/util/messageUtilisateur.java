@@ -12,16 +12,17 @@ public final class messageUtilisateur {
 
 	}
 
-	public static void affMessageException(Exception p_exception, String p_titre) {
+	public static void affMessageException(String p_tag, Exception p_exception,
+			String p_titre) {
 		if (p_exception == null) {
 			// JOptionPane.showMessageDialog(null, null, p_titre,
 			// JOptionPane.ERROR_MESSAGE);
-			Historique.ecrire("Exception relevée: \n" + p_titre);
+			Historique.ecrire(p_tag + " Exception relevée: \n" + p_titre);
 		} else {
-			// JOptionPane.showMessageDialog(null, p_exception.getClass() + " "
-			// + p_exception.getMessage(), p_titre,
-			// JOptionPane.ERROR_MESSAGE);
-			Historique.ecrire("Titre: " + p_titre);
+			JOptionPane.showMessageDialog(null, p_exception.getClass() + " "
+					+ p_exception.getMessage(), p_titre,
+					JOptionPane.ERROR_MESSAGE);
+			Historique.ecrire(p_tag + " Titre: " + p_titre);
 			Historique.ecrire("Exception dans la class "
 					+ p_exception.getClass());
 			Historique.ecrire("Cause de l'erreur: " + p_exception.getMessage());
@@ -29,11 +30,11 @@ public final class messageUtilisateur {
 
 	}
 
-	public static void affMessageErreur(String p_message) {
+	public static void affMessageErreur(String p_tag, String p_message) {
 
 		// JOptionPane.showMessageDialog(null, p_message,
 		// "Une erreur est survenue", JOptionPane.ERROR_MESSAGE);
-		Historique.ecrire("[ERROR] " + p_message);
+		Historique.ecrire(p_tag + " [ERROR] " + p_message);
 	}
 
 	public static void affMessageInfo(String p_message) {

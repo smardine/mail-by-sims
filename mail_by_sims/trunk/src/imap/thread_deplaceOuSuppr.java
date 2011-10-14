@@ -9,11 +9,11 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.tree.TreePath;
 
+import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import bdd.BDRequette;
-import fenetre.principale.Main;
 import fenetre.principale.jTable.MlActionJtable;
 import fenetre.principale.jTable.MyTableModel;
 import fenetre.principale.jTable.jTableHelper;
@@ -78,23 +78,10 @@ public class thread_deplaceOuSuppr extends Thread {
 			int selectedLine = p_tabIdLigneSelectionnee[i];
 			Integer idMessage = jTableHelper.getReelIdMessage(table,
 					selectedLine);
-			// int row = table.convertRowIndexToModel(selectedLine);
-			//
-			// Integer idMessage = (Integer) table.getModel().getValueAt(row,
-			// 0);
-			// le n° du message (meme si il est caché).
-			// Date dateReception = (Date) table.getModel().getValueAt(
-			// selectedLine, 1);// la date de reception
 
-			// String expediteur = (String) table.getModel().getValueAt(
-			// selectedLine, 2);// l'expediteur
-
-			// String sujet = (String) table.getModel()
-			// .getValueAt(selectedLine, 3);// le
 			MlMessage m = new MlMessage(idMessage);
 			MlCompteMail cpt = new MlCompteMail(m.getIdCompte());
-			// boolean isDeplacementVersCorbeille = bd
-			// .verifieNecessiteDeplacementCorbeille(idMessage);
+
 			if (m.getIdDossier() != cpt.getIdCorbeille()) {
 				lstADepl.add(m);
 				methodeImap.afficheText(textArea, "message° " + nbMessTraite++
@@ -133,11 +120,12 @@ public class thread_deplaceOuSuppr extends Thread {
 	 * 
 	 */
 	private void refreshJtreeAndJTable() {
-		TreePath treePath = Main.getTreePath();
+		TreePath treePath = ComposantVisuelCommun.getTreePath();
 		String dossierChoisi = (String) treePath.getLastPathComponent();
 		BDRequette bd = new BDRequette();
 		if (!bd.getListeDeComptes().contains(dossierChoisi)) {
-			int idCompte = bd.getIdComptes(Main.getNomCompte());
+			int idCompte = bd
+					.getIdComptes(ComposantVisuelCommun.getNomCompte());
 			int idDossierChoisi = bd.getIdDossier(dossierChoisi, idCompte);
 			MlListeMessage listeMessage = bd.getListeDeMessage(idCompte,
 					idDossierChoisi);

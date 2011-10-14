@@ -24,7 +24,7 @@ import bdd.BDRequette;
 import com.sun.mail.imap.IMAPFolder;
 
 public class MajServeurGmail {
-
+	private final String TAG = this.getClass().getSimpleName();
 	private final JProgressBar progressBar;
 	private MlListeMessage listeMessageASupprimer;
 	private final boolean isSuppr;
@@ -43,7 +43,7 @@ public class MajServeurGmail {
 			try {
 				LanceSuppression();
 			} catch (MessagingException e) {
-				messageUtilisateur.affMessageException(e,
+				messageUtilisateur.affMessageException(TAG, e,
 						"Erreur a la suppression des messages sur le serveur ");
 			}
 		} else {
@@ -136,12 +136,14 @@ public class MajServeurGmail {
 			}
 
 			IMAPFolder dest = (IMAPFolder) store.getFolder("[Gmail]/Corbeille");
+			methodeImap.afficheText(text, "maj du serveur ");
 			listeMessageASupprimer = methodeImap.deplaceMessage(
-					listeMessageASupprimer, src, dest);
+					listeMessageASupprimer, src, dest, progressBar);
+			BDRequette bd = new BDRequette();
 			for (MlMessage m : listeMessageASupprimer) {
-				BDRequette bd = new BDRequette();
 				bd.updateUIDMessage(m);
 			}
+			bd.closeConnexion();
 		} catch (NoSuchProviderException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

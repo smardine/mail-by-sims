@@ -25,8 +25,7 @@ import com.sun.mail.pop3.POP3Folder;
 
 public class ClientMail {
 
-	/** Dans cette chaine c'est le nom du serveur courier */
-
+	private final String TAG = this.getClass().getSimpleName();
 	private final String host;
 	private final String Identifiant;
 	private final String MotDePasse;
@@ -86,12 +85,13 @@ public class ClientMail {
 
 		} catch (NoSuchProviderException e) {
 			methodeImap.afficheText(text, "connexion impossible au compte pop");
-			messageUtilisateur.affMessageException(e, "Connexion impossible");
+			messageUtilisateur.affMessageException(TAG, e,
+					"Connexion impossible");
 			return;
 
 		} catch (MessagingException e) {
 			methodeImap.afficheText(text, "releve de la boite impossible");
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"releve de la boite impossible");
 			return;
 		}

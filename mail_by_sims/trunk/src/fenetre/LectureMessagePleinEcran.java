@@ -28,7 +28,7 @@ import fenetre.principale.MlActionHtmlPane;
 import fenetre.principale.jList.MlActionjList;
 
 public class LectureMessagePleinEcran extends JFrame {
-
+	private final String TAG = this.getClass().getSimpleName();
 	private static final long serialVersionUID = 1L;
 	private JPanel jContentPane = null;
 	private JDesktopPane jDesktopPaneVisualiser = null;
@@ -66,7 +66,7 @@ public class LectureMessagePleinEcran extends JFrame {
 		try {
 			htmlPane.setPage("file:///" + contenu.getAbsolutePath());
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"impossible d'afficher le mail");
 		}
 

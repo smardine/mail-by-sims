@@ -25,7 +25,7 @@ import com.sun.mail.imap.IMAPFolder;
  * @author smardine
  */
 public class ReleveGmail {
-
+	private final String TAG = this.getClass().getSimpleName();
 	private final JProgressBar progressBar;
 	private final JProgressBar progressPJ;
 	private static JTextArea textArea;
@@ -107,7 +107,8 @@ public class ReleveGmail {
 						+ p_compteMail.getNomCompte() + " terminée");
 				store.close();
 			} catch (MessagingException e) {
-				messageUtilisateur.affMessageException(e, "Erreur connexion");
+				messageUtilisateur.affMessageException(TAG, e,
+						"Erreur connexion");
 			}
 
 		}

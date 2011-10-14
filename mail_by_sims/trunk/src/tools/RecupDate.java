@@ -9,6 +9,7 @@ import java.util.Date;
 import java.util.Locale;
 
 public class RecupDate {
+	private final static String TAG = "RecupDate";
 	// * Choix de la langue francaise
 	Locale locale = Locale.getDefault();
 	private static Date actuelle = new Date();
@@ -77,10 +78,11 @@ public class RecupDate {
 	 *         10:47:29.318'
 	 */
 	public static String getTimeStamp(Date p_date) {
-		if (p_date == null) {
-			p_date = new Date();
+		Date aDate = p_date;
+		if (aDate == null) {
+			aDate = new Date();
 		}
-		return formatTimeStamp.format(p_date);
+		return formatTimeStamp.format(aDate);
 	}
 
 	public static Date getdateFromTimeStamp(String timeStamp) {
@@ -88,7 +90,7 @@ public class RecupDate {
 		try {
 			dateretour = formatTimeStampToDate.parse(timeStamp);
 		} catch (ParseException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"impossible de recuperer la date au bon format");
 		}
 		return dateretour;
@@ -101,7 +103,7 @@ public class RecupDate {
 		try {
 			date = formatPourTable.parse(dateretour);
 		} catch (ParseException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"impossible de recuperer la date au bon format");
 		}
 		return date;

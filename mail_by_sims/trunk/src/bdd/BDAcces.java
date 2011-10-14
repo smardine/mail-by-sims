@@ -23,7 +23,7 @@ import tools.Historique;
  */
 public class BDAcces {
 	private final BDParam parametres;
-
+	private final String TAG = this.getClass().getSimpleName();
 	private boolean etatConnexion;
 	private Connection connexion;
 	private FBManager firebirdManager;
@@ -165,7 +165,9 @@ public class BDAcces {
 
 				}
 				messageUtilisateur
-						.affMessageErreur("Impossible de mettre a jour la base de données \r\n Votre logiciel va se fermer");
+						.affMessageErreur(
+								TAG,
+								"Impossible de mettre a jour la base de données \r\n Votre logiciel va se fermer");
 				Historique.ecrire("Erreur a la mise a jour sur le script:\n\r"
 						+ s);
 				System.exit(0);
@@ -242,7 +244,7 @@ public class BDAcces {
 
 		} catch (SQLException e) {
 			Historique.ecrire("Erreur SQL :" + e);
-			messageUtilisateur.affMessageException(e, "Erreur SQL");
+			messageUtilisateur.affMessageException(TAG, e, "Erreur SQL");
 		} finally {
 			try {
 				jeuEnregistrements.close();
@@ -250,7 +252,7 @@ public class BDAcces {
 				connexion.rollback();
 
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(e,
+				messageUtilisateur.affMessageException(TAG, e,
 						"Impossible de fermer la transaction");
 			}
 

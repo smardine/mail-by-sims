@@ -33,6 +33,7 @@ import com.googlecode.jdeltasync.DeltaSyncException;
 import com.googlecode.jdeltasync.Message;
 
 public final class methodeHotmail {
+	private final static String TAG = "methodeHotmail";
 
 	private methodeHotmail() {
 
@@ -50,7 +51,7 @@ public final class methodeHotmail {
 		try {
 			fldr = p_store.getFolder(p_fldrName);
 		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Impossible de se connecter au dossier " + p_fldrName);
 
 		}
@@ -73,10 +74,10 @@ public final class methodeHotmail {
 				}
 			}
 		} catch (DeltaSyncException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la recuperation des sous dossiers");
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la recuperation des sous dossiers");
 		}
 
@@ -102,10 +103,10 @@ public final class methodeHotmail {
 				}
 			}
 		} catch (DeltaSyncException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la recuperation des dossiers principaux");
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la recuperation des dossiers principaux");
 		}
 
@@ -201,33 +202,28 @@ public final class methodeHotmail {
 
 	public static MlMessage recupContenuMail(DeltaSyncClientHelper client,
 			MlMessage p_mlMessage, Message p_messageHotmail,
-			JTextArea textArea, JProgressBar p_progressPJ)// ,
-	// long
-	// p_prefixeNomFichier)//
-	{
-		// StringBuilder sb = new StringBuilder();
-		// int messageNumber = p_messageJavaMail.getMessageNumber();
-		// String messageName = p_messageJavaMail.getFileName();
+			JTextArea textArea, JProgressBar p_progressPJ) {
+		MlMessage aMessage = p_mlMessage;
 		methodeImap.afficheText(textArea,
 				"Téléchargement du contenu du message");
 		// Object o;
 		try {
 			client.downloadMessageContent(p_messageHotmail,
-					new FileOutputStream(p_mlMessage.getCheminPhysique()));
+					new FileOutputStream(aMessage.getCheminPhysique()));
 		} catch (FileNotFoundException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la recuperation du mail");
 		} catch (DeltaSyncException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la recuperation du mail");
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la recuperation du mail");
 		}
 
-		p_mlMessage = getMessagePourBase(p_mlMessage, textArea, p_progressPJ);
+		aMessage = getMessagePourBase(aMessage, textArea, p_progressPJ);
 
-		return p_mlMessage;
+		return aMessage;
 	}
 
 	public static MlMessage getMessagePourBase(MlMessage p_messagePourBase,
@@ -278,10 +274,10 @@ public final class methodeHotmail {
 					.recupContenuMail(p_messagePourBase, p_progressPJ, mime,
 							p_textArea));
 		} catch (FileNotFoundException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la récupération du message");
 		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la récupération du message");
 		}
 		return p_messagePourBase;
@@ -297,15 +293,15 @@ public final class methodeHotmail {
 			client.getInbox();
 
 		} catch (AuthenticationException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur au test de connexion");
 			return false;
 		} catch (DeltaSyncException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur au test de connexion");
 			return false;
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur au test de connexion");
 			return false;
 		}

@@ -1,7 +1,6 @@
 package importMail;
 
 import fenetre.comptes.EnDossierBase;
-import fenetre.principale.Main;
 import fenetre.principale.jtree.ActionTree;
 import imap.util.messageUtilisateur;
 import imap.util.methodeImap;
@@ -29,6 +28,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
+import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
@@ -38,7 +38,7 @@ import tools.ReadFile;
 import bdd.BDRequette;
 
 public class thread_Import extends Thread {
-
+	private final static String TAG = "thread_Import";
 	private final JTree tree;
 	private int idCompte;
 	private final JProgressBar progressPJ;
@@ -84,8 +84,8 @@ public class thread_Import extends Thread {
 		path[2] = EnDossierBase.RECEPTION.getLib();
 
 		TreePath treePathInitial = new TreePath(path);
-		Main.setNomCompte(choixCompte);
-		Main.setTreePath(treePathInitial);
+		ComposantVisuelCommun.setNomCompte(choixCompte);
+		ComposantVisuelCommun.setTreePath(treePathInitial);
 		// tree.setSelectionPath(treePathInitial);
 		scrollPane.setVisible(true);
 		jTextArea.setVisible(true);
@@ -170,15 +170,15 @@ public class thread_Import extends Thread {
 				// .getTime()));
 
 			} catch (FileNotFoundException e) {
-				messageUtilisateur.affMessageException(e, "le fichier "
+				messageUtilisateur.affMessageException(TAG, e, "le fichier "
 						+ cheminPhysique + " est introuvable");
 
 			} catch (MessagingException e) {
-				messageUtilisateur.affMessageException(e,
+				messageUtilisateur.affMessageException(TAG, e,
 						"Erreur de format eml");
 
 			} catch (IOException e) {
-				messageUtilisateur.affMessageException(e,
+				messageUtilisateur.affMessageException(TAG, e,
 						"impossible d'acceder au fichier " + cheminPhysique);
 			}
 			bd.createNewMessage(messagePourBase);
@@ -215,10 +215,10 @@ public class thread_Import extends Thread {
 				// recuperePieceJointe(p_complet, p_prefixeNomFichier, b, o);
 			}
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la recuperation du mail");
 		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la recuperation du mail");
 		}
 
@@ -258,13 +258,13 @@ public class thread_Import extends Thread {
 
 			}
 		} catch (FileNotFoundException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur Decodage MultiPart");
 		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur Decodage MultiPart");
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur Decodage MultiPart");
 		}
 
@@ -407,7 +407,7 @@ public class thread_Import extends Thread {
 									+ " message(s) trouvé(s)");
 
 						} catch (IOException e) {
-							messageUtilisateur.affMessageException(e,
+							messageUtilisateur.affMessageException(TAG, e,
 									"impossible d'acceder au repertoire :\n\r");
 						}
 					}
@@ -438,7 +438,7 @@ public class thread_Import extends Thread {
 				}
 
 			} catch (IOException e) {
-				messageUtilisateur.affMessageException(e,
+				messageUtilisateur.affMessageException(TAG, e,
 						"Erreur pendant le parcoursdes sous dossiers");
 			}
 			lstMessage.addAll(lstMessge);
@@ -464,7 +464,7 @@ public class thread_Import extends Thread {
 		bd.createNewDossier(idCompte, idDossierParent, nomDossier, "");
 		tree.getModel().valueForPathChanged(newTp, ActionTree.AJOUTER);
 		// tree.setSelectionPath(newTp);
-		Main.setTreePath(newTp);
+		ComposantVisuelCommun.setTreePath(newTp);
 		bd.closeConnexion();
 		return newTp;
 		// tree.setSelectionPath(newTp.getParentPath());

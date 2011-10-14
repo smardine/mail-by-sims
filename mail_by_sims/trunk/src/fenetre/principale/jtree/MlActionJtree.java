@@ -14,12 +14,12 @@ import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 
+import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
-import fenetre.principale.Main;
 import fenetre.principale.jTable.MyTableModel;
 
 public class MlActionJtree implements TreeSelectionListener,
@@ -87,7 +87,7 @@ public class MlActionJtree implements TreeSelectionListener,
 			newPath = p_event.getNewLeadSelectionPath();
 		}
 		if (null == p_event) {
-			newPath = Main.getTreePath();
+			newPath = ComposantVisuelCommun.getTreePath();
 		}
 		if (null != newPath) {
 			valoriseTreeEtNomCompte(newPath);
@@ -110,14 +110,15 @@ public class MlActionJtree implements TreeSelectionListener,
 				if ((cpt.getNomCompte()).contains((CharSequence) p_path
 						.getLastPathComponent())) {
 					// on est dans le cas [superroot,gmail]
-					Main.setNomCompte((String) p_path.getLastPathComponent());
+					ComposantVisuelCommun.setNomCompte((String) p_path
+							.getLastPathComponent());
 				} else {
 					String[] tabChaine = p_path.toString().split(",");
 					if (tabChaine.length > 1) {
-						Main.setNomCompte(tabChaine[1].trim());
+						ComposantVisuelCommun.setNomCompte(tabChaine[1].trim());
 					}
 				}
-				Main.setTreePath(p_path);
+				ComposantVisuelCommun.setTreePath(p_path);
 				tree.setSelectionPath(p_path);
 
 			}
@@ -129,20 +130,22 @@ public class MlActionJtree implements TreeSelectionListener,
 	@Override
 	public void treeCollapsed(TreeExpansionEvent p_event) {
 
-		valoriseTreeEtNomCompte(Main.getTreePath());
+		valoriseTreeEtNomCompte(ComposantVisuelCommun.getTreePath());
 
 	}
 
 	@Override
 	public void treeExpanded(TreeExpansionEvent p_event) {
 
-		TreePath newPath = Main.getTreePath();
+		TreePath newPath = ComposantVisuelCommun.getTreePath();
 		if (null != newPath) {
 			String nomDossierRacine = newPath.getLastPathComponent().toString();
 			BDRequette bd = new BDRequette();
-			ArrayList<String> lstSousDossier = bd.getListeSousDossier(bd
-					.getIdDossier(nomDossierRacine, bd.getIdComptes(Main
-							.getNomCompte())));
+			ArrayList<String> lstSousDossier = bd
+					.getListeSousDossier(bd
+							.getIdDossier(nomDossierRacine, bd
+									.getIdComptes(ComposantVisuelCommun
+											.getNomCompte())));
 			bd.closeConnexion();
 			if (lstSousDossier.size() > 0) {
 				TreePath un = new TreePath(newPath.toString().replace("[", "")
@@ -167,7 +170,8 @@ public class MlActionJtree implements TreeSelectionListener,
 						.getLastPathComponent();
 
 				if (!bd.getListeDeComptes().contains(dossierChoisi)) {
-					int idCompte = bd.getIdComptes(Main.getNomCompte());
+					int idCompte = bd.getIdComptes(ComposantVisuelCommun
+							.getNomCompte());
 					int idDossierChoisi = bd.getIdDossier(dossierChoisi,
 							idCompte);
 					MlListeMessage listeMessage = bd.getListeDeMessage(

@@ -33,7 +33,7 @@ import tools.WriteFile;
  * @author sims
  */
 public class BDRequette {
-
+	private final String TAG=this.getClass().getSimpleName();
 	private final Connection laConnexion;
 
 	/**
@@ -58,8 +58,8 @@ public class BDRequette {
 			resultatRequete = state.execute(requete);
 
 		} catch (final SQLException e) {
-			messageUtilisateur.affMessageException(e,
-					"erreur a l'execution d'une requete");
+			messageUtilisateur.affMessageException(TAG,
+					e, "erreur a l'execution d'une requete");
 			Historique.ecrire("Message d'erreur: " + e
 					+ "\n\r sur la requete : " + requete);
 
@@ -80,8 +80,8 @@ public class BDRequette {
 				state.close();
 
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(e,
-						"erreur a l'execution d'une requete");
+				messageUtilisateur.affMessageException(TAG,
+						e, "erreur a l'execution d'une requete");
 				Historique.ecrire("Message d'erreur: " + e
 						+ "\n\r sur la requete : " + requete);
 
@@ -117,12 +117,12 @@ public class BDRequette {
 			resultatRequete = true;
 
 		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(e,
-					"Erreur à l'insertion d'un blob");
+			messageUtilisateur.affMessageException(TAG,
+					e, "Erreur à l'insertion d'un blob");
 			return false;
 		} catch (FileNotFoundException e) {
-			messageUtilisateur.affMessageException(e,
-					"impossible de trouver le fichier");
+			messageUtilisateur.affMessageException(TAG,
+					e, "impossible de trouver le fichier");
 			return false;
 		} finally {
 			try {
@@ -136,10 +136,10 @@ public class BDRequette {
 				inputDestinataire.close();
 
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(e,
-						"Erreur à l'insertion d'un blob");
+				messageUtilisateur.affMessageException(TAG,
+						e, "Erreur à l'insertion d'un blob");
 			} catch (IOException e) {
-				messageUtilisateur.affMessageException(e, "fichier non trouvé");
+				messageUtilisateur.affMessageException(TAG, e, "fichier non trouvé");
 
 			}
 		}
@@ -216,8 +216,8 @@ public class BDRequette {
 			}
 
 		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(e,
-					"Impossible de recuperer le nombre de champ dans la table "
+			messageUtilisateur.affMessageException(TAG,
+					e, "Impossible de recuperer le nombre de champ dans la table "
 							+ p_table.getNomTable());
 		} finally {
 			try {
@@ -227,8 +227,8 @@ public class BDRequette {
 				// peut
 				// faire un rollback
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(e,
-						"Impossible de fermer la base");
+				messageUtilisateur.affMessageException(TAG,
+						e, "Impossible de fermer la base");
 			}
 
 		}
@@ -454,7 +454,7 @@ public class BDRequette {
 
 		} catch (SQLException e) {
 			Historique.ecrire("Erreur SQL :" + e);
-			messageUtilisateur.affMessageException(e, "Erreur SQL");
+			messageUtilisateur.affMessageException(TAG, e, "Erreur SQL");
 		} finally {
 			try {
 				jeuEnregistrements.close();
@@ -462,8 +462,8 @@ public class BDRequette {
 				laConnexion.rollback();
 
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(e,
-						"Impossible de fermer la transaction");
+				messageUtilisateur.affMessageException(TAG,
+						e, "Impossible de fermer la transaction");
 			}
 
 		}
@@ -501,8 +501,8 @@ public class BDRequette {
 				jeuEnregistrements.close();
 				state.close();
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(e,
-						"Impossible de fermer la transaction");
+				messageUtilisateur.affMessageException(TAG,
+						e, "Impossible de fermer la transaction");
 			}// c'est une lecture, pas de commit;
 
 		}
@@ -543,8 +543,8 @@ public class BDRequette {
 				jeuEnregistrements.close();
 				state.close();
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(e,
-						"Impossible de fermer la transaction");
+				messageUtilisateur.affMessageException(TAG,
+						e, "Impossible de fermer la transaction");
 			}
 
 		}
@@ -703,12 +703,12 @@ public class BDRequette {
 			resultatRequete = true;
 
 		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(e,
-					"Erreur à l'insertion d'un blob");
+			messageUtilisateur.affMessageException(TAG,
+					e, "Erreur à l'insertion d'un blob");
 			return false;
 		} catch (FileNotFoundException e) {
-			messageUtilisateur.affMessageException(e,
-					"impossible de trouver le fichier");
+			messageUtilisateur.affMessageException(TAG,
+					e, "impossible de trouver le fichier");
 			return false;
 		} finally {
 			try {
@@ -721,11 +721,11 @@ public class BDRequette {
 				inPieceJointe.close();
 
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(e,
-						"Erreur à l'insertion d'un blob");
+				messageUtilisateur.affMessageException(TAG,
+						e, "Erreur à l'insertion d'un blob");
 				return false;
 			} catch (IOException e) {
-				messageUtilisateur.affMessageException(e, "fichier non trouvé");
+				messageUtilisateur.affMessageException(TAG, e, "fichier non trouvé");
 				return false;
 
 			}
@@ -744,8 +744,8 @@ public class BDRequette {
 		try {
 			f.createNewFile();
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(e,
-					"impossible de créer le fichier " + f.getName());
+			messageUtilisateur.affMessageException(TAG,
+					e, "impossible de créer le fichier " + f.getName());
 			return null;
 		}
 		WriteFile.WriteFullFile(contenu, reptempo + "\\temfile" + p_extension);
@@ -884,22 +884,22 @@ public class BDRequette {
 				fos.close();
 			}
 		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(e,
-					"Erreur Affichage du message");
+			messageUtilisateur.affMessageException(TAG,
+					e, "Erreur Affichage du message");
 		} catch (FileNotFoundException e) {
-			messageUtilisateur.affMessageException(e,
-					"Impossible d'afficher le message");
+			messageUtilisateur.affMessageException(TAG,
+					e, "Impossible d'afficher le message");
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(e,
-					"Impossible d'afficher le message");
+			messageUtilisateur.affMessageException(TAG,
+					e, "Impossible d'afficher le message");
 		} finally {
 			try {
 				resultSet.close();
 				laConnexion.rollback();
 
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(e,
-						"Impossible de fermer la transaction");
+				messageUtilisateur.affMessageException(TAG,
+						e, "Impossible de fermer la transaction");
 			}
 
 		}
@@ -1009,8 +1009,8 @@ public class BDRequette {
 		try {
 			laConnexion.close();
 		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(e,
-					"Impossible de fermer la base");
+			messageUtilisateur.affMessageException(TAG,
+					e, "Impossible de fermer la base");
 		}
 
 	}
@@ -1045,7 +1045,7 @@ public class BDRequette {
 			sb.append("'" + nomDossier + "')");
 			if (!executeRequete(sb.toString())) {
 				messageUtilisateur
-						.affMessageErreur("Erreur a la creation du dossier "
+						.affMessageErreur(TAG, "Erreur a la creation du dossier "
 								+ nomDossier + " pour le compte "
 								+ p_compte.getNomCompte());
 				return false;

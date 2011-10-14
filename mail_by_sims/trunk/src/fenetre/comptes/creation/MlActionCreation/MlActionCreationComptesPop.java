@@ -19,6 +19,7 @@ import fenetre.comptes.creation.CreationComptesPop;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class MlActionCreationComptesPop implements ActionListener {
+	private final String TAG = this.getClass().getSimpleName();
 	private JTextField adresse;
 	private JTextField pop;
 	private JTextField smtp;
@@ -86,7 +87,9 @@ public class MlActionCreationComptesPop implements ActionListener {
 			boolean resultatTestBal = methodePop.testBalPop(compteMail);
 			if (!resultatTestBal) {
 				messageUtilisateur
-						.affMessageErreur("Le test de connexion a votre boite aux lettres à échoué.\r\nVeuillez vérifier voter saisie");
+						.affMessageErreur(
+								TAG,
+								"Le test de connexion a votre boite aux lettres à échoué.\r\nVeuillez vérifier voter saisie");
 				return;
 			}
 			if (resultatTestBal) {
@@ -109,8 +112,8 @@ public class MlActionCreationComptesPop implements ActionListener {
 							lstDossierBase);
 				}
 				if (!result) {
-					messageUtilisateur
-							.affMessageErreur("le compte n'a pas été correctement enregistré");
+					messageUtilisateur.affMessageErreur(TAG,
+							"le compte n'a pas été correctement enregistré");
 				} else {
 					messageUtilisateur
 							.affMessageInfo("Le compte à été créer correctement");
@@ -135,8 +138,8 @@ public class MlActionCreationComptesPop implements ActionListener {
 		if (utilityCreation.verifAdresseEtNom(adresse, nomCompte)
 				|| utilityCreation.verifPopSmtp(pop, smtp)
 				|| utilityCreation.verifUserPassword(user, password)) {
-			messageUtilisateur
-					.affMessageErreur("Veuillez vérifier votre saisie");
+			messageUtilisateur.affMessageErreur(TAG,
+					"Veuillez vérifier votre saisie");
 			return false;
 		}
 		return true;

@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import javax.swing.DefaultListModel;
 
 public final class ReadFile {
+	private final static String TAG = "ReadFile";
 
 	private ReadFile() {
 
@@ -137,7 +138,7 @@ public final class ReadFile {
 			}
 			entree.close();
 		} catch (Exception e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Impossible de lire le fichier " + p_chemin);
 		}
 		return sb.toString();

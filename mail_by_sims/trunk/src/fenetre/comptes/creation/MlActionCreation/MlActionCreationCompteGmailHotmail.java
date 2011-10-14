@@ -20,6 +20,7 @@ import fenetre.comptes.creation.CreationComptesGmailHotmail;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class MlActionCreationCompteGmailHotmail implements ActionListener {
+	private final String TAG = this.getClass().getSimpleName();
 	private JTextField adresse;
 	private JTextField password;
 	private JTextField nomCompte;
@@ -69,7 +70,9 @@ public class MlActionCreationCompteGmailHotmail implements ActionListener {
 			boolean resultConnexion = testConnexionMlCompte(compteMail);
 			if (!resultConnexion) {
 				messageUtilisateur
-						.affMessageErreur("Le test de connexion a votre boite aux lettres à échoué.\r\nMerci de vérifier votre saisie");
+						.affMessageErreur(
+								TAG,
+								"Le test de connexion a votre boite aux lettres à échoué.\r\nMerci de vérifier votre saisie");
 				return;
 			} else {
 				enregistrementMlCompte(compteMail);
@@ -108,8 +111,8 @@ public class MlActionCreationCompteGmailHotmail implements ActionListener {
 		}
 
 		if (!result) {
-			messageUtilisateur
-					.affMessageErreur("le compte n'a pas été correctement enregistré");
+			messageUtilisateur.affMessageErreur(TAG,
+					"le compte n'a pas été correctement enregistré");
 		} else {
 			messageUtilisateur
 					.affMessageInfo("Le compte à été créer correctement");
@@ -159,8 +162,8 @@ public class MlActionCreationCompteGmailHotmail implements ActionListener {
 	private boolean verifChamp() {
 		if (utilityCreation.verifAdresseEtNom(adresse, nomCompte) || //
 				utilityCreation.verifChampPassword(password)) {
-			messageUtilisateur
-					.affMessageErreur("Veuillez vérifier votre saisie");
+			messageUtilisateur.affMessageErreur(TAG,
+					"Veuillez vérifier votre saisie");
 			return false;
 		}
 		return true;

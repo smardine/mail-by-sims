@@ -11,11 +11,11 @@ import javax.swing.event.TreeModelListener;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreePath;
 
+import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
-import fenetre.principale.Main;
 
 public class ArborescenceBoiteMail implements TreeModel {
 	private final String root; // The root identifier
@@ -89,7 +89,7 @@ public class ArborescenceBoiteMail implements TreeModel {
 
 	private String getCompte() {
 
-		return Main.getNomCompte();
+		return ComposantVisuelCommun.getNomCompte();
 
 	}
 

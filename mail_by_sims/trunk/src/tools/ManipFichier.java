@@ -9,7 +9,13 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 
-public class ManipFichier {
+public final class ManipFichier {
+	/**
+	 * Constructeur privé pour classe utilitaire
+	 */
+	private ManipFichier() {
+
+	}
 
 	/**
 	 * Deplace un fichier
@@ -106,22 +112,24 @@ public class ManipFichier {
 
 	/**
 	 * Affiche une boite de dialogue pour l'ouverture d'un fichier
-	 * @param CheminAafficher -String definit le chemin a afficher, si celui ci
-	 *            n'existe pas, ce sera le repertoire de l'install qui apparait
-	 * @param TexteTitre -String Le texte affiché en haut de la fenetre de
+	 * @param p_cheminAafficher -String definit le chemin a afficher, si celui
+	 *            ci n'existe pas, ce sera le repertoire de l'install qui
+	 *            apparait
+	 * @param p_texteTitre -String Le texte affiché en haut de la fenetre de
 	 *            selection
 	 * @return nomdossier+nomfichier -String
 	 */
-	public static String OpenFile(final String CheminAafficher,
-			final String TexteTitre) {
+	public static String OpenFile(final String p_cheminAafficher,
+			final String p_texteTitre) {
 
 		String nomfichier;
 		String nomdossier;
 
 		final JFrame frame = new JFrame();
-		final FileDialog fd = new FileDialog(frame, TexteTitre, FileDialog.LOAD);
+		final FileDialog fd = new FileDialog(frame, p_texteTitre,
+				FileDialog.LOAD);
 
-		fd.setDirectory(CheminAafficher);
+		fd.setDirectory(p_cheminAafficher);
 		fd.setVisible(true);
 		nomfichier = fd.getFile();
 		nomdossier = fd.getDirectory();
@@ -163,31 +171,31 @@ public class ManipFichier {
 
 	/**
 	 * Suppresion du contenu d'un repertoire avec un filtre sur l'extension
-	 * @param RepAVider - File repertoire à vider.
-	 * @param extension -Final String extension sous la forme ".eml"
+	 * @param p_repAVider - File repertoire à vider.
+	 * @param p_extension -Final String extension sous la forme ".eml"
 	 */
-	public static void DeleteContenuRepertoireAvecFiltre(final File RepAVider,
-			final String extension) {
-		if (RepAVider.isDirectory()) {
-			final File[] list = RepAVider.listFiles(new FilenameFilter() {
+	public static void DeleteContenuRepertoireAvecFiltre(
+			final File p_repAVider, final String p_extension) {
+		if (p_repAVider.isDirectory()) {
+			final File[] list = p_repAVider.listFiles(new FilenameFilter() {
 				public boolean accept(final File dir, final String name) {
-					return name.toLowerCase().endsWith(extension);
+					return name.toLowerCase().endsWith(p_extension);
 				}
 			});
 			if (list != null) {
 				for (int i = 0; i < list.length; i++) {
 					// Appel récursif sur les sous-répertoires
-					DeleteContenuRepertoireAvecFiltre(list[i], extension);
+					DeleteContenuRepertoireAvecFiltre(list[i], p_extension);
 				}
 			} else {
-				System.err.println(RepAVider + " : Erreur de lecture.");
+				System.err.println(p_repAVider + " : Erreur de lecture.");
 			}
 
 		}
 
-		if (RepAVider.isFile()) {
+		if (p_repAVider.isFile()) {
 			// listModel.addElement (RepAVider.getName());
-			RepAVider.delete();
+			p_repAVider.delete();
 			// nbFichier++;
 			// nbFichierLabel.setText("Nombre de fichier(s) a traiter:"+nbFichier);
 
@@ -210,7 +218,7 @@ public class ManipFichier {
 	}
 
 	public static boolean copier(final File source, final File destination,
-			final JProgressBar ProgressBar) {
+			final JProgressBar p_progressBar) {
 		boolean resultat = false;
 
 		// Declaration des flux
@@ -235,8 +243,8 @@ public class ManipFichier {
 				progressionEnCours = (100 * destination.length())
 						/ source.length();
 				final int progression = (int) progressionEnCours;
-				ProgressBar.setValue(progression);
-				ProgressBar.setString(progression + " %");
+				p_progressBar.setValue(progression);
+				p_progressBar.setString(progression + " %");
 
 			}
 

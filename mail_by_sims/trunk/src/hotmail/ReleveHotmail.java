@@ -21,25 +21,17 @@ import com.googlecode.jdeltasync.Folder;
 import com.googlecode.jdeltasync.Message;
 
 public class ReleveHotmail {
+	private final String TAG = this.getClass().getSimpleName();
 
-	// private final String user;
-	// private final String password;
-	// private final String host;
-	// private final int idCompte;
 	private final JProgressBar progressBar;
 	private final boolean isSynchro;
 	private final JTextArea textArea;
 	private final JProgressBar progressPJ;
 
-	public ReleveHotmail(MlCompteMail p_compteMail,
-	/* String p_host, */JProgressBar progress,
+	public ReleveHotmail(MlCompteMail p_compteMail, JProgressBar progress,
 			JProgressBar p_progressPieceJointe, JTextArea p_textArea,
 			boolean p_isSynchro) {
 
-		// this.user = p_user;
-		// this.password = p_password;
-		// // this.host = p_host;
-		// this.idCompte = p_idCpt;
 		this.progressBar = progress;
 		this.textArea = p_textArea;
 		this.progressPJ = p_progressPieceJointe;
@@ -110,14 +102,14 @@ public class ReleveHotmail {
 				bd.closeConnexion();
 
 			} catch (AuthenticationException e) {
-				messageUtilisateur
-						.affMessageException(e, "Erreur de connexion");
+				messageUtilisateur.affMessageException(TAG, e,
+						"Erreur de connexion");
 				return;
 			} catch (DeltaSyncException e) {
-				messageUtilisateur.affMessageException(e,
+				messageUtilisateur.affMessageException(TAG, e,
 						"Erreur de protocole DeltaSync");
 			} catch (IOException e) {
-				messageUtilisateur.affMessageException(e, "Erreur E/S");
+				messageUtilisateur.affMessageException(TAG, e, "Erreur E/S");
 			}
 		}
 		client.disconnect();

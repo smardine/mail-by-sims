@@ -34,11 +34,11 @@ import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
 import javax.swing.tree.TreePath;
 
+import mdl.ComposantVisuelCommun;
 import mdl.MlListeMessage;
 import verification.Thread_Verif;
 import bdd.BDAcces;
 import fenetre.EnTitreFenetre;
-import fenetre.comptes.EnDossierBase;
 import fenetre.principale.MlAction.EnActionMain;
 import fenetre.principale.MlAction.MlActionMain;
 import fenetre.principale.MlAction.MlActionMainCombo;
@@ -54,8 +54,8 @@ import fenetre.principale.jtree.MlActionJtree;
 public class Main extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private static TreePath treePath;
-	private static String nomCompte;
+	private TreePath treePath;
+	private String nomCompte;
 	private JPanel panelPrincipal = null;
 	private JDesktopPane panelBouton = null;
 	private JDesktopPane panelTree = null;
@@ -77,7 +77,7 @@ public class Main extends JFrame {
 	private JMenuItem jMenuExplorer;
 	private JMenuItem jMenuHistorique;
 	private JMenuItem jMenuContact;
-	private static XTableColumnModel ColoneModel;
+	private final XTableColumnModel ColoneModel;
 	private final MyTableModel tableModel;
 	private JMenu jMenuImportExport;
 	private JMenuItem jMenuItemImporter; // @jve:decl-index=0:
@@ -606,6 +606,8 @@ public class Main extends JFrame {
 				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
 				jScrollPane3));
 
+		ComposantVisuelCommun.setJList(jList);
+
 	}
 
 	/**
@@ -797,33 +799,33 @@ public class Main extends JFrame {
 		return jMenuContact;
 	}
 
-	/**
-	 * @param treePath the treePath to set
-	 */
-	public static void setTreePath(TreePath treePath) {
-		Main.treePath = treePath;
-	}
-
-	public static void setNomCompte(String p_compte) {
-		Main.nomCompte = p_compte;
-	}
-
-	public static String getNomCompte() {
-		return Main.nomCompte;
-	}
-
-	/**
-	 * @return the treePath
-	 */
-	public static TreePath getTreePath() {
-		if (treePath == null) {
-			return new TreePath(EnDossierBase.ROOT.getLib());
-		}
-		return treePath;
-	}
-
-	public static XTableColumnModel getColumnModel() {
-		return ColoneModel;
-	}
+	// /**
+	// * @param treePath the treePath to set
+	// */
+	// public static void setTreePath(TreePath treePath) {
+	// Main.treePath = treePath;
+	// }
+	//
+	// public static void setNomCompte(String p_compte) {
+	// Main.nomCompte = p_compte;
+	// }
+	//
+	// public static String getNomCompte() {
+	// return Main.nomCompte;
+	// }
+	//
+	// /**
+	// * @return the treePath
+	// */
+	// public static TreePath getTreePath() {
+	// if (treePath == null) {
+	// return new TreePath(EnDossierBase.ROOT.getLib());
+	// }
+	// return treePath;
+	// }
+	//
+	// public static XTableColumnModel getColumnModel() {
+	// return ColoneModel;
+	// }
 
 } // @jve:decl-index=0:visual-constraint="10,10"

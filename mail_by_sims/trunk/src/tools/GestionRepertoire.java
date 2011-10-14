@@ -9,6 +9,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 
 public final class GestionRepertoire {
+	private static final String TAG = "GestionRepertoire";
 
 	private GestionRepertoire() {
 
@@ -63,7 +64,7 @@ public final class GestionRepertoire {
 			nomdossier = file.getCanonicalPath();
 
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Impossible d'acceder au dossier choisi");
 		}
 

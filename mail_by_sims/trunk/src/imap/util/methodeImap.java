@@ -28,6 +28,7 @@ import com.sun.mail.imap.AppendUID;
 import com.sun.mail.imap.IMAPFolder;
 
 public final class methodeImap {
+	private final static String TAG = "methodeImap";
 
 	private methodeImap() {
 
@@ -45,7 +46,7 @@ public final class methodeImap {
 		try {
 			fldr = (IMAPFolder) p_store.getFolder(p_fldrName);
 		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Impossible de se connecter au dossier " + p_fldrName);
 
 		}
@@ -62,11 +63,11 @@ public final class methodeImap {
 
 		} catch (MessagingException e) {
 			if (e instanceof javax.mail.FolderNotFoundException) {
-				messageUtilisateur.affMessageException(e,
+				messageUtilisateur.affMessageException(TAG, e,
 						"Pas de sous dossier a ce repertoire " + p_fldrName);
 				return null;
 			}
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Impossible d'obtenir la liste des sous dossiers du repertoire "
 							+ p_fldrName);
 
@@ -87,7 +88,7 @@ public final class methodeImap {
 			store = session.getStore("imaps");
 			store.connect(host, user, password);
 		} catch (Exception e) {
-			messageUtilisateur.affMessageException(e, "Erreur connexion");
+			messageUtilisateur.affMessageException(TAG, e, "Erreur connexion");
 			return;
 		}
 		BDRequette bd = new BDRequette();
@@ -138,11 +139,12 @@ public final class methodeImap {
 							+ imapFolder.getFullName());
 					imapFolder.close(false);
 				} catch (MessagingException e) {
-					messageUtilisateur.affMessageException(e,
+					messageUtilisateur.affMessageException(TAG, e,
 							"Erreur connexion");
 				}
 			} catch (MessagingException e) {
-				messageUtilisateur.affMessageException(e, "Erreur connexion");
+				messageUtilisateur.affMessageException(TAG, e,
+						"Erreur connexion");
 				// return;
 			}
 
@@ -150,7 +152,7 @@ public final class methodeImap {
 		try {
 			store.close();
 		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e, "Erreur connexion");
+			messageUtilisateur.affMessageException(TAG, e, "Erreur connexion");
 		}
 
 		bd.closeConnexion();
@@ -186,9 +188,10 @@ public final class methodeImap {
 				bd.deleteMessageRecu(m.getIdMessage());
 			}
 		} catch (NumberFormatException e) {
-			messageUtilisateur.affMessageException(e, "Erreur conversion UID");
+			messageUtilisateur.affMessageException(TAG, e,
+					"Erreur conversion UID");
 		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e, "Erreur connexion");
+			messageUtilisateur.affMessageException(TAG, e, "Erreur connexion");
 		}
 	}
 
@@ -308,7 +311,7 @@ public final class methodeImap {
 			imapFolder.close(false);
 
 		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la releve des messages");
 		} finally {
 			bd.closeConnexion();
@@ -336,8 +339,11 @@ public final class methodeImap {
 
 	public static MlListeMessage deplaceMessage(
 			MlListeMessage p_listeMessageASupprimer, IMAPFolder p_src,
-			IMAPFolder p_dest) {
+			IMAPFolder p_dest, JProgressBar p_progress) {
 		try {
+			p_progress.setValue(0);
+			p_progress.setString("maj sur le serveur");
+			p_progress.setIndeterminate(true);
 			p_src.open(Folder.READ_WRITE);
 			p_dest.open(Folder.READ_WRITE);
 			Message[] tabMessIMAP = new Message[p_listeMessageASupprimer.size()];
@@ -345,22 +351,28 @@ public final class methodeImap {
 				Message messImap = p_src.getMessageByUID(Long
 						.parseLong(p_listeMessageASupprimer.get(i)
 								.getUIDMessage()));
+
 				tabMessIMAP[i] = messImap;
 			}
-
+			if (tabMessIMAP == null) {
+				return p_listeMessageASupprimer;
+			}
 			AppendUID[] tabNewUId = p_dest.appendUIDMessages(tabMessIMAP);
+			p_progress.setIndeterminate(false);
 			for (int i = 0; i < tabNewUId.length; i++) {
+				int nbMessage = i + 1;
+				p_progress.setValue((100 * nbMessage) / tabNewUId.length);
+				p_progress.setString("maj message " + i + " sur "
+						+ tabNewUId.length);
 				// on recupere les nouveaux uid et on met a jour les message
-				Message messImapOriginial = p_src.getMessageByUID(Long
-						.parseLong(p_listeMessageASupprimer.get(i)
-								.getUIDMessage()));
+				Message messImapOriginial = tabMessIMAP[i];
 				messImapOriginial.setFlag(Flags.Flag.DELETED, true);
 				p_listeMessageASupprimer.get(i).setUIDMessage(
 						"" + tabNewUId[i].uid);
 			}
 
 		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(e,
+			messageUtilisateur.affMessageException(TAG, e,
 					"Impossible de copier le message depuis " + p_src.getName()
 							+ " vers " + p_dest.getName());
 		} finally {
@@ -371,7 +383,7 @@ public final class methodeImap {
 				p_dest.close(false);
 
 			} catch (MessagingException e) {
-				messageUtilisateur.affMessageException(e,
+				messageUtilisateur.affMessageException(TAG, e,
 						"Impossible de fermer le dossier");
 			}
 

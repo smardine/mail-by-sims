@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import javax.swing.DefaultListModel;
 import javax.swing.JTree;
 
+import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import bdd.BDRequette;
@@ -16,6 +17,7 @@ import fenetre.comptes.creation.choixFAI;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class MlActionComptes implements ActionListener {
+	private final String TAG = this.getClass().getSimpleName();
 	private final GestionCompte fenetre;
 	private final JTree tree;
 
@@ -38,7 +40,7 @@ public class MlActionComptes implements ActionListener {
 							"Question?",
 							"Etes vous sur de vouloir supprimer ce compte? Vous supprimerez egalement tous les messages qui y sont associés!!");
 			if (reponse == REPONSE.OUI) {
-				String nomCompte = (String) GestionCompte.jList
+				String nomCompte = (String) ComposantVisuelCommun.getJList()
 						.getSelectedValue();
 
 				BDRequette bd = new BDRequette();
@@ -48,15 +50,15 @@ public class MlActionComptes implements ActionListener {
 							.affMessageInfo("Suppression du compte réussie");
 					// on recupere la liste des comptes et on l'affiche
 					MlListeCompteMail lst = bd.getListeDeComptes();
-					DefaultListModel model = (DefaultListModel) GestionCompte.jList
-							.getModel();
+					DefaultListModel model = (DefaultListModel) ComposantVisuelCommun
+							.getJList().getModel();
 					model.clear();
 					for (MlCompteMail cpt : lst) {
 						model.addElement(cpt.getNomCompte());
 					}
 				} else {
-					messageUtilisateur
-							.affMessageErreur("Erreur lors de la suppression du compte");
+					messageUtilisateur.affMessageErreur(TAG,
+							"Erreur lors de la suppression du compte");
 				}
 				bd.closeConnexion();
 

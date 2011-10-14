@@ -27,7 +27,6 @@ import com.sun.mail.pop3.POP3Folder;
 
 public final class methodePop {
 
-	@SuppressWarnings("unused")
 	private static MlCompteMail comptePop;
 	private static POP3Folder folder;
 	private static JTextArea text;

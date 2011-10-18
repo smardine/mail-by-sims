@@ -1,12 +1,13 @@
 package tools;
 
-import imap.util.messageUtilisateur;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+
+import releve.imap.util.messageUtilisateur;
 
 public class RecupDate {
 	private final static String TAG = "RecupDate";

@@ -1,8 +1,5 @@
 package fenetre.principale.jTable;
 
-import imap.thread_deplaceOuSuppr;
-import imap.util.REPONSE;
-import imap.util.messageUtilisateur;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,6 +10,10 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
+
+import releve.imap.thread_deplaceOuSuppr;
+import releve.imap.util.REPONSE;
+import releve.imap.util.messageUtilisateur;
 
 import fenetre.principale.MlAction.EnActionMain;
 

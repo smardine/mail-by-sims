@@ -1,6 +1,5 @@
 package bdd;
 
-import imap.util.messageUtilisateur;
 
 import java.io.File;
 import java.sql.Connection;
@@ -15,6 +14,7 @@ import javax.swing.JOptionPane;
 
 import org.firebirdsql.management.FBManager;
 
+import releve.imap.util.messageUtilisateur;
 import tools.Historique;
 
 /**

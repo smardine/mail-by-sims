@@ -1,6 +1,5 @@
 package fenetre.principale.MlAction;
 
-import imap.thread_SynchroImap;
 import importMail.thread_Import;
 
 import java.awt.event.ActionEvent;
@@ -11,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 
+import releve.imap.thread_SynchroImap;
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.OpenWithDefaultViewer;

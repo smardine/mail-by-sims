@@ -1,6 +1,5 @@
 package tools;
 
-import imap.util.messageUtilisateur;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
@@ -12,6 +11,8 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 
 import javax.swing.DefaultListModel;
+
+import releve.imap.util.messageUtilisateur;
 
 public final class ReadFile {
 	private final static String TAG = "ReadFile";

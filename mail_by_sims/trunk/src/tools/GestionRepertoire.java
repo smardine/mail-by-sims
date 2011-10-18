@@ -1,12 +1,13 @@
 package tools;
 
-import imap.util.messageUtilisateur;
 
 import java.io.File;
 import java.io.IOException;
 
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+
+import releve.imap.util.messageUtilisateur;
 
 public final class GestionRepertoire {
 	private static final String TAG = "GestionRepertoire";

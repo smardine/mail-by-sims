@@ -1,20 +1,15 @@
 package fenetre.comptes.creation.MlActionCreation;
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.JTextField;
 import javax.swing.JTree;
 
 import mdl.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
-import releve.pop.methodePop;
-import bdd.BDRequette;
+import factory.CompteMailFactory;
 import fenetre.comptes.EnDefFournisseur;
-import fenetre.comptes.EnDossierBase;
 import fenetre.comptes.creation.CreationComptesPop;
 import fenetre.comptes.gestion.GestionCompte;
 
@@ -83,8 +78,8 @@ public class MlActionCreationComptesPop implements ActionListener {
 			compteMail.setUserName(user.getText());
 			compteMail.setPassword(password.getText());
 			compteMail.setTypeCompte(defFournisseur.getTypeCompte());
-
-			boolean resultatTestBal = methodePop.testBalPop(compteMail);
+			CompteMailFactory crea = new CompteMailFactory();
+			boolean resultatTestBal = crea.testBal(compteMail);
 			if (!resultatTestBal) {
 				messageUtilisateur
 						.affMessageErreur(
@@ -93,24 +88,7 @@ public class MlActionCreationComptesPop implements ActionListener {
 				return;
 			}
 			if (resultatTestBal) {
-				BDRequette bd = new BDRequette();
-				boolean result = bd.createNewCompte(compteMail);
-				if (result) {
-					int idCpt = bd.getIdComptes(nomCompte.getText());
-					compteMail.setIdCompte(idCpt);
-					// creation des dossiers de base (boite de reception,
-					// message
-					// envoyé, corbeille, spam) avec un id Dossierparent=0
-					List<String> lstDossierBase = new ArrayList<String>();
-					EnDossierBase[] lstEnum = EnDossierBase.values();
-					for (EnDossierBase dossier : lstEnum) {
-						if (dossier != EnDossierBase.ROOT) {
-							lstDossierBase.add(dossier.getLib());
-						}
-					}
-					result = bd.createListeDossierDeBase(compteMail,
-							lstDossierBase);
-				}
+				boolean result = crea.creationCompteMail(compteMail);
 				if (!result) {
 					messageUtilisateur.affMessageErreur(TAG,
 							"le compte n'a pas été correctement enregistré");
@@ -118,20 +96,15 @@ public class MlActionCreationComptesPop implements ActionListener {
 					messageUtilisateur
 							.affMessageInfo("Le compte à été créer correctement");
 					fenetre.dispose();
-
 					new GestionCompte(tree);
 				}
-
-				bd.closeConnexion();
 			}
-
 		}
 		if (EnActionCreationComptes.ANNULER.getLib().equals(
 				p_arg0.getActionCommand())) {
 			// simple fermeture de la fenetre.
 			fenetre.dispose();
 		}
-
 	}
 
 	private boolean verifChamp() {

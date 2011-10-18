@@ -1,6 +1,5 @@
 package releve.hotmail.util;
 
-
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -27,7 +26,6 @@ import tools.GestionRepertoire;
 import bdd.BDRequette;
 
 import com.googlecode.jdeltasync.AuthenticationException;
-import com.googlecode.jdeltasync.DeltaSyncClient;
 import com.googlecode.jdeltasync.DeltaSyncClientHelper;
 import com.googlecode.jdeltasync.DeltaSyncException;
 import com.googlecode.jdeltasync.Message;
@@ -284,30 +282,30 @@ public final class methodeHotmail {
 
 	}
 
-	public static boolean testBalHotmail(MlCompteMail p_compte) {
-		DeltaSyncClientHelper client = new DeltaSyncClientHelper(
-				new DeltaSyncClient(), p_compte.getUserName(), p_compte
-						.getPassword());
-		try {
-			client.login();
-			client.getInbox();
-
-		} catch (AuthenticationException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur au test de connexion");
-			return false;
-		} catch (DeltaSyncException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur au test de connexion");
-			return false;
-		} catch (IOException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur au test de connexion");
-			return false;
-		}
-		return true;
-
-	}
+	// public static boolean testBalHotmail(MlCompteMail p_compte) {
+	// DeltaSyncClientHelper client = new DeltaSyncClientHelper(
+	// new DeltaSyncClient(), p_compte.getUserName(), p_compte
+	// .getPassword());
+	// try {
+	// client.login();
+	// client.getInbox();
+	//
+	// } catch (AuthenticationException e) {
+	// messageUtilisateur.affMessageException(TAG, e,
+	// "Erreur au test de connexion");
+	// return false;
+	// } catch (DeltaSyncException e) {
+	// messageUtilisateur.affMessageException(TAG, e,
+	// "Erreur au test de connexion");
+	// return false;
+	// } catch (IOException e) {
+	// messageUtilisateur.affMessageException(TAG, e,
+	// "Erreur au test de connexion");
+	// return false;
+	// }
+	// return true;
+	//
+	// }
 
 	public static void miseAJourMessagerie(BDRequette p_bd,
 			DeltaSyncClientHelper p_client, MlCompteMail p_compteMail,

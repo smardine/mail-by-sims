@@ -3,7 +3,6 @@
  */
 package releve.imap;
 
-
 import java.util.Properties;
 
 import javax.mail.Folder;
@@ -14,6 +13,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
+import releve.thread_VerifNewMess;
 import releve.imap.listener.messageListener;
 import releve.imap.util.messageUtilisateur;
 import releve.imap.util.methodeImap;
@@ -134,6 +134,7 @@ public class ReleveGmail {
 			Properties props, IMAPFolder[] lstSousDossier, Store p_store) {
 		if (lstSousDossier != null) {
 			for (IMAPFolder fldr : lstSousDossier) {
+
 				messageListener listener = new messageListener(p_compteMail,
 						fldr);
 				fldr.addMessageChangedListener(listener);
@@ -155,6 +156,12 @@ public class ReleveGmail {
 						traiteListeDossier(cptMail, progressBar, progressPJ,
 								bd, props, lstFolder, p_store);
 						continue;
+					}
+					try {
+						new thread_VerifNewMess(cptMail, fldr, p_store).start();
+					} catch (MessagingException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
 					}
 					Historique.ecrireReleveBal(cptMail,
 							"Création d'un nouveau dossier: "

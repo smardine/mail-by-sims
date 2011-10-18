@@ -23,7 +23,7 @@ public enum EnDefFournisseur {
 	CLUB_INTERNET("Club Internet", "pop3.club-internet.fr", 110,
 			"smtp-auth.sfr.fr", 25, EnTypeCompte.POP), //
 	DARTY_BOX("Darty Box", "pop.dbmail.com", 110, "smtpauth.dbmail.com", 25,
-			EnTypeCompte.POP), //
+			EnTypeCompte.HOTMAIL), //
 	EST_VIDEO_COMMUNICATION("Est Video Communication", "pop.evhr.net", 110,
 			"smtp.evhr.net", 25, EnTypeCompte.POP), //
 	FREE("Free", "pop.free.fr", 110, "smtp.free.fr", 25, EnTypeCompte.POP), //

@@ -1,7 +1,5 @@
 package releve.imap.util;
 
-import fenetre.comptes.EnDossierBase;
-
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
@@ -11,7 +9,6 @@ import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.NoSuchProviderException;
 import javax.mail.Session;
 import javax.mail.Store;
 import javax.swing.JProgressBar;
@@ -26,6 +23,8 @@ import bdd.BDRequette;
 
 import com.sun.mail.imap.AppendUID;
 import com.sun.mail.imap.IMAPFolder;
+
+import fenetre.comptes.EnDossierBase;
 
 public final class methodeImap {
 	private final static String TAG = "methodeImap";
@@ -404,43 +403,43 @@ public final class methodeImap {
 
 	}
 
-	public static boolean testBalIMAP(MlCompteMail p_compte) {
-		Properties props = System.getProperties();
-		props.setProperty("mail.store.protocol", "imaps");
-		props.setProperty("mail.imap.socketFactory.class",
-				"javax.net.ssl.SSLSocketFactory");
-		props.setProperty("mail.imap.socketFactory.fallback", "false");
-		props.setProperty("mail.imaps.partialfetch", "false");
-
-		Session session = Session.getInstance(props);
-
-		// Get a Store object
-		Store store = null;
-
-		try {
-			store = session.getStore("imaps");
-			store.connect(p_compte.getServeurReception(), p_compte
-					.getUserName(), p_compte.getPassword());
-
-			IMAPFolder inbox = (IMAPFolder) store.getFolder("INBOX");
-			inbox.open(Folder.READ_ONLY);
-			// int nbMessageDansInbox = f.getMessageCount();
-			inbox.close(false);
-		} catch (NoSuchProviderException e) {
-			// erreur de protocole
-			return false;
-		} catch (MessagingException e) {
-			// erreur de connexion
-			return false;
-		} finally {
-			try {
-				store.close();
-			} catch (MessagingException e) {
-				return false;
-			}
-		}
-
-		return true;
-	}
+	// public static boolean testBalIMAP(MlCompteMail p_compte) {
+	// Properties props = System.getProperties();
+	// props.setProperty("mail.store.protocol", "imaps");
+	// props.setProperty("mail.imap.socketFactory.class",
+	// "javax.net.ssl.SSLSocketFactory");
+	// props.setProperty("mail.imap.socketFactory.fallback", "false");
+	// props.setProperty("mail.imaps.partialfetch", "false");
+	//
+	// Session session = Session.getInstance(props);
+	//
+	// // Get a Store object
+	// Store store = null;
+	//
+	// try {
+	// store = session.getStore("imaps");
+	// store.connect(p_compte.getServeurReception(), p_compte
+	// .getUserName(), p_compte.getPassword());
+	//
+	// IMAPFolder inbox = (IMAPFolder) store.getFolder("INBOX");
+	// inbox.open(Folder.READ_ONLY);
+	// // int nbMessageDansInbox = f.getMessageCount();
+	// inbox.close(false);
+	// } catch (NoSuchProviderException e) {
+	// // erreur de protocole
+	// return false;
+	// } catch (MessagingException e) {
+	// // erreur de connexion
+	// return false;
+	// } finally {
+	// try {
+	// store.close();
+	// } catch (MessagingException e) {
+	// return false;
+	// }
+	// }
+	//
+	// return true;
+	// }
 
 }

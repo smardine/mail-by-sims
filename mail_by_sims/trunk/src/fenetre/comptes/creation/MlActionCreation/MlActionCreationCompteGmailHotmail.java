@@ -1,8 +1,5 @@
 package fenetre.comptes.creation.MlActionCreation;
 
-import hotmail.util.methodeHotmail;
-import imap.util.messageUtilisateur;
-import imap.util.methodeImap;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,6 +8,10 @@ import java.util.List;
 
 import javax.swing.JTextField;
 import javax.swing.JTree;
+
+import releve.hotmail.util.methodeHotmail;
+import releve.imap.util.messageUtilisateur;
+import releve.imap.util.methodeImap;
 
 import mdl.MlCompteMail;
 import bdd.BDRequette;

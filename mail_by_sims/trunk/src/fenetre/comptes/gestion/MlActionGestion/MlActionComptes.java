@@ -1,13 +1,14 @@
 package fenetre.comptes.gestion.MlActionGestion;
 
-import imap.util.REPONSE;
-import imap.util.messageUtilisateur;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JTree;
+
+import releve.imap.util.REPONSE;
+import releve.imap.util.messageUtilisateur;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;

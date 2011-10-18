@@ -1,6 +1,5 @@
 package fenetre.comptes.creation.MlActionCreation;
 
-import imap.util.messageUtilisateur;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +10,8 @@ import javax.swing.JTextField;
 import javax.swing.JTree;
 
 import mdl.MlCompteMail;
-import pop.util.methodePop;
+import releve.imap.util.messageUtilisateur;
+import releve.pop.methodePop;
 import bdd.BDRequette;
 import fenetre.comptes.EnDefFournisseur;
 import fenetre.comptes.EnDossierBase;

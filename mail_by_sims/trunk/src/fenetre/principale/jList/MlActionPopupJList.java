@@ -1,6 +1,5 @@
 package fenetre.principale.jList;
 
-import imap.util.messageUtilisateur;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -10,6 +9,7 @@ import java.util.ArrayList;
 import javax.swing.JList;
 import javax.swing.JTable;
 
+import releve.imap.util.messageUtilisateur;
 import tools.ManipFichier;
 import tools.OpenWithDefaultViewer;
 import bdd.BDRequette;

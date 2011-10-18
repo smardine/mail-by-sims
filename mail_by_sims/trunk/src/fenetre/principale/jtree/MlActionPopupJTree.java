@@ -1,13 +1,14 @@
 package fenetre.principale.jtree;
 
-import imap.util.REPONSE;
-import imap.util.messageUtilisateur;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
+
+import releve.imap.util.REPONSE;
+import releve.imap.util.messageUtilisateur;
 
 import mdl.ComposantVisuelCommun;
 import bdd.BDRequette;

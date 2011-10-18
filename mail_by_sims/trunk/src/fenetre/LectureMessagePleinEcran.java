@@ -1,6 +1,5 @@
 package fenetre;
 
-import imap.util.messageUtilisateur;
 
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
@@ -21,6 +20,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.text.Document;
+
+import releve.imap.util.messageUtilisateur;
 
 import bdd.BDRequette;
 import fenetre.principale.EnNomComposant;

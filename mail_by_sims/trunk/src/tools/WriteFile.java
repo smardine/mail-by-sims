@@ -1,6 +1,5 @@
 package tools;
 
-import imap.util.messageUtilisateur;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
@@ -9,6 +8,8 @@ import java.util.ArrayList;
 import java.util.Vector;
 
 import javax.swing.JOptionPane;
+
+import releve.imap.util.messageUtilisateur;
 
 public final class WriteFile {
 	private final static String TAG = "WriteFile";

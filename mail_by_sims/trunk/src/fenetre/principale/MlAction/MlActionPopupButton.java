@@ -1,6 +1,5 @@
 package fenetre.principale.MlAction;
 
-import imap.thread_SynchroImap;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -8,6 +7,8 @@ import java.awt.event.ActionListener;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+
+import releve.imap.thread_SynchroImap;
 
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;

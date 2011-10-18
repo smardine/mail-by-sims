@@ -1,6 +1,5 @@
 package bdd;
 
-import imap.util.messageUtilisateur;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -23,6 +22,7 @@ import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
+import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.RecupDate;

@@ -2,8 +2,6 @@ package importMail;
 
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.jtree.ActionTree;
-import imap.util.messageUtilisateur;
-import imap.util.methodeImap;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,6 +31,8 @@ import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
+import releve.imap.util.messageUtilisateur;
+import releve.imap.util.methodeImap;
 import tools.GestionRepertoire;
 import tools.ReadFile;
 import bdd.BDRequette;

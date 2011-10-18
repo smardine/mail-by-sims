@@ -5,7 +5,6 @@ package releve.pop;
  * @author ISSAMBN pushmailp3a@gmail.com comericsson
  */
 
-
 import java.util.Properties;
 
 import javax.mail.Folder;
@@ -54,20 +53,11 @@ public class ClientMail {
 		Session sess = Session.getDefaultInstance(prop, null);
 		sess.setDebug(true);
 
-		// prop.list(System.out);
-
-		/* No comment ;-) */
-
-		/* Création de l'object qui va récupéré le contenu de la boite */
-		// System.out.println("obtention d'un objet store");
-
 		try {
-			if (st == null) {
-				st = sess.getStore("pop3");
-				if (!st.isConnected()) {
 
-					st.connect(host, Identifiant, MotDePasse);
-				}
+			st = sess.getStore("pop3");
+			if (!st.isConnected()) {
+				st.connect(host, Identifiant, MotDePasse);
 			}
 
 			POP3Folder f = (POP3Folder) st.getFolder("INBOX");
@@ -84,8 +74,8 @@ public class ClientMail {
 			releve.pop.methodePop.releveCompte(comptePop, f, text,
 					progressReleve, progressPieceJointe);
 
-			f.close(false);
-			st.close();
+			// f.close(false);
+			// st.close();
 
 		} catch (NoSuchProviderException e) {
 			methodeImap.afficheText(text, "connexion impossible au compte pop");

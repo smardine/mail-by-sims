@@ -16,9 +16,6 @@ import javax.mail.event.MessageCountListener;
 
 import mdl.MlCompteMail;
 
-import com.sun.mail.imap.IMAPFolder;
-import com.sun.mail.imap.IMAPMessage;
-
 /**
  * @author smardine
  */
@@ -54,18 +51,15 @@ public class messageListener implements MessageChangedListener,
 		System.out.println("source: " + p_arg0.getSource());
 		System.out.println("message converné" + p_arg0.getMessage());
 
+		// try {
+		// if (fldr instanceof IMAPFolder
+		// && p_arg0.getMessage() instanceof IMAPMessage) {
+		// System.out.println("uid du message: "
+		// + ((IMAPFolder) fldr).getUID(p_arg0.getMessage()));
+		// }
+
 		try {
-			if (fldr instanceof IMAPFolder
-					&& p_arg0.getMessage() instanceof IMAPMessage) {
-				System.out.println("uid du message: "
-						+ ((IMAPFolder) fldr).getUID(p_arg0.getMessage()));
-			}
 			System.out.println(p_arg0.getMessage().getFrom().toString());
-		} catch (MessagingException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		try {
 			System.out.println(p_arg0.getMessage().getSubject());
 		} catch (MessagingException e) {
 			// TODO Auto-generated catch block

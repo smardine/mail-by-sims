@@ -14,7 +14,6 @@ import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import releve.thread_VerifNewMess;
-import releve.imap.listener.messageListener;
 import releve.imap.util.messageUtilisateur;
 import releve.imap.util.methodeImap;
 import tools.Historique;
@@ -135,11 +134,11 @@ public class ReleveGmail {
 		if (lstSousDossier != null) {
 			for (IMAPFolder fldr : lstSousDossier) {
 
-				messageListener listener = new messageListener(p_compteMail,
-						fldr);
-				fldr.addMessageChangedListener(listener);
-				fldr.addFolderListener(listener);
-				fldr.addMessageCountListener(listener);
+				// messageListener listener = new messageListener(p_compteMail,
+				// fldr);
+				// fldr.addMessageChangedListener(listener);
+				// fldr.addFolderListener(listener);
+				// fldr.addMessageCountListener(listener);
 				int idDossier = -1;
 				idDossier = verifieConnaissanceDossier(p_compteMail, bd, fldr);
 				if (idDossier == (-1)) {// si le sous dossier est

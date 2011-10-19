@@ -1,19 +1,13 @@
 package releve.hotmail.util;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.Properties;
 
-import javax.mail.Address;
 import javax.mail.Folder;
 import javax.mail.MessagingException;
-import javax.mail.Session;
 import javax.mail.Store;
-import javax.mail.internet.MimeMessage;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
@@ -29,6 +23,8 @@ import com.googlecode.jdeltasync.AuthenticationException;
 import com.googlecode.jdeltasync.DeltaSyncClientHelper;
 import com.googlecode.jdeltasync.DeltaSyncException;
 import com.googlecode.jdeltasync.Message;
+
+import factory.MessageFactory;
 
 public final class methodeHotmail {
 	private final static String TAG = "methodeHotmail";
@@ -218,69 +214,98 @@ public final class methodeHotmail {
 			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la recuperation du mail");
 		}
-
-		aMessage = getMessagePourBase(aMessage, textArea, p_progressPJ);
+		MessageFactory fact = new MessageFactory();
+		aMessage = fact.createMessagePourBase(aMessage, textArea, p_progressPJ);
 
 		return aMessage;
 	}
 
-	public static MlMessage getMessagePourBase(MlMessage p_messagePourBase,
-			JTextArea p_textArea, JProgressBar p_progressPJ) {
-
-		/** On simule la reception d'un message */
-		Properties props = System.getProperties();
-		props.put("mail.host", "smtp.dummydomain.com");
-		props.put("mail.transport.protocol", "smtp");
-
-		Session mailSession = Session.getDefaultInstance(props, null);
-		/***/
-		// int messNumber = 1;
-
-		String cheminPhysique = p_messagePourBase.getCheminPhysique();
-		InputStream source;
-
-		try {
-			source = new FileInputStream(cheminPhysique);
-			MimeMessage mime;
-
-			mime = new MimeMessage(mailSession, source);
-			p_messagePourBase.setSujet(mime.getSubject());
-			p_messagePourBase.setDateReception(mime.getSentDate());
-			p_messagePourBase.setExpediteur(mime.getFrom()[0].toString());
-			// ******************************//
-			ArrayList<String> listeDestinataires = new ArrayList<String>(mime
-					.getAllRecipients().length);
-			for (Address uneAdresse : mime.getAllRecipients()) {
-				listeDestinataires.add(uneAdresse.toString());
-			}
-			p_messagePourBase.setDestinataire(listeDestinataires);
-			if (p_messagePourBase.getUIDMessage() == null) {
-				if (mime.getContentID() != null) {
-					p_messagePourBase.setUIDMessage(mime.getContentID());
-				} else {
-					p_messagePourBase.setUIDMessage(""
-							+ System.currentTimeMillis());// getMessageID());
-				}
-			}
-
-			/**
-			 * il faut decoder le message de maniere a voir si il y a des piece
-			 * jointe
-			 */
-
-			p_messagePourBase.setContenu(importMail.thread_Import
-					.recupContenuMail(p_messagePourBase, p_progressPJ, mime,
-							p_textArea));
-		} catch (FileNotFoundException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur a la récupération du message");
-		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur a la récupération du message");
-		}
-		return p_messagePourBase;
-
-	}
+	// public static MlMessage getMessagePourBase(MlMessage p_messagePourBase,
+	// JTextArea p_textArea, JProgressBar p_progressPJ) {
+	//
+	// /** On simule la reception d'un message */
+	// Properties props = System.getProperties();
+	// props.put("mail.host", "smtp.dummydomain.com");
+	// props.put("mail.transport.protocol", "smtp");
+	//
+	// Session mailSession = Session.getDefaultInstance(props, null);
+	// /***/
+	// // int messNumber = 1;
+	//
+	// String cheminPhysique = p_messagePourBase.getCheminPhysique();
+	// InputStream source;
+	//
+	// try {
+	// source = new FileInputStream(cheminPhysique);
+	// MimeMessage mime;
+	//
+	// mime = new MimeMessage(mailSession, source);
+	// p_messagePourBase.setSujet(mime.getSubject());
+	// p_messagePourBase.setDateReception(mime.getSentDate());
+	// p_messagePourBase.setExpediteur(mime.getFrom()[0].toString());
+	// // ******************************//
+	// try {
+	// // liste des destinataires
+	// ArrayList<String> listeDestinataires = new ArrayList<String>(
+	// mime.getRecipients(RecipientType.TO).length);
+	// for (Address uneAdresse : mime.getRecipients(RecipientType.TO)) {
+	// listeDestinataires.add(uneAdresse.toString());
+	// }
+	// p_messagePourBase.setDestinataire(listeDestinataires);
+	// // liste des madresse en copy
+	// if (null != mime.getRecipients(RecipientType.CC)) {
+	// ArrayList<String> listCopyTo = new ArrayList<String>(mime
+	// .getRecipients(RecipientType.CC).length);
+	// for (Address uneAdress : mime
+	// .getRecipients(RecipientType.CC)) {
+	// listCopyTo.add(uneAdress.toString());
+	// }
+	// p_messagePourBase.setDestinataireCopy(listCopyTo);
+	// }
+	//
+	// // liste des adresse en copie cachée
+	// if (null != mime.getRecipients(RecipientType.BCC)) {
+	// ArrayList<String> listBCC = new ArrayList<String>(mime
+	// .getRecipients(RecipientType.BCC).length);
+	// for (Address uneAdress : mime
+	// .getRecipients(RecipientType.BCC)) {
+	// listBCC.add(uneAdress.toString());
+	// }
+	// p_messagePourBase.setDestinataireCache(listBCC);
+	// }
+	//
+	// } catch (AddressException e) {
+	// System.out.println(e.getMessage());
+	//
+	// }
+	//
+	// if (p_messagePourBase.getUIDMessage() == null) {
+	// if (mime.getContentID() != null) {
+	// p_messagePourBase.setUIDMessage(mime.getContentID());
+	// } else {
+	// p_messagePourBase.setUIDMessage(""
+	// + System.currentTimeMillis());// getMessageID());
+	// }
+	// }
+	//
+	// /**
+	// * il faut decoder le message de maniere a voir si il y a des piece
+	// * jointe
+	// */
+	//
+	// p_messagePourBase.setContenu(importMail.thread_Import
+	// .recupContenuMail(p_messagePourBase, p_progressPJ, mime,
+	// p_textArea));
+	// } catch (FileNotFoundException e) {
+	// messageUtilisateur.affMessageException(TAG, e,
+	// "Erreur a la récupération du message");
+	// } catch (MessagingException e) {
+	// messageUtilisateur.affMessageException(TAG, e,
+	// "Erreur a la récupération du message");
+	// }
+	// return p_messagePourBase;
+	//
+	// }
 
 	// public static boolean testBalHotmail(MlCompteMail p_compte) {
 	// DeltaSyncClientHelper client = new DeltaSyncClientHelper(

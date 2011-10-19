@@ -32,7 +32,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
-import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlListeMessage;
@@ -54,8 +53,8 @@ import fenetre.principale.jtree.MlActionJtree;
 public class Main extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	private TreePath treePath;
-	private String nomCompte;
+	// private TreePath treePath;
+	// private String nomCompte;
 	private JPanel panelPrincipal = null;
 	private JDesktopPane panelBouton = null;
 	private JDesktopPane panelTree = null;
@@ -95,8 +94,8 @@ public class Main extends JFrame {
 	private JProgressBar jProgressBarPieceJointe = null;
 	private JTextArea jTextArea = null;
 	private JScrollPane jScrollPane3 = null;
-	private JButton jButton = null;
-	private JButton jButton1 = null;
+	private JButton btChoixSynchro = null;
+	private JButton btChoixReleve = null;
 
 	/**
 	 * This method initializes panelBouton
@@ -445,8 +444,8 @@ public class Main extends JFrame {
 			jPanel.add(getJButtonRecevoir(), null);
 			jPanel.add(getJButtonEnvoyer(), null);
 			jPanel.add(getJButtonNewMessage(), null);
-			jPanel.add(getJButton(), null);
-			jPanel.add(getJButton1(), null);
+			jPanel.add(getBtChoixSynchro(), null);
+			jPanel.add(getBtChoixReleve(), null);
 		}
 		return jPanel;
 	}
@@ -514,31 +513,31 @@ public class Main extends JFrame {
 	}
 
 	/**
-	 * This method initializes jButton
+	 * This method initializes btChoixSynchro
 	 * @return javax.swing.JButton
 	 */
-	private JButton getJButton() {
-		if (jButton == null) {
-			jButton = new JButton();
-			jButton.setBounds(new Rectangle(50, 0, 20, 50));
-			jButton.setIcon(new ImageIcon(getClass().getResource(
+	private JButton getBtChoixSynchro() {
+		if (btChoixSynchro == null) {
+			btChoixSynchro = new JButton();
+			btChoixSynchro.setBounds(new Rectangle(50, 0, 20, 50));
+			btChoixSynchro.setIcon(new ImageIcon(getClass().getResource(
 					"/img_fleche_bas.png")));
 		}
-		return jButton;
+		return btChoixSynchro;
 	}
 
 	/**
-	 * This method initializes jButton1
+	 * This method initializes btChoixReleve
 	 * @return javax.swing.JButton
 	 */
-	private JButton getJButton1() {
-		if (jButton1 == null) {
-			jButton1 = new JButton();
-			jButton1.setBounds(new Rectangle(120, 0, 20, 50));
-			jButton1.setIcon(new ImageIcon(getClass().getResource(
+	private JButton getBtChoixReleve() {
+		if (btChoixReleve == null) {
+			btChoixReleve = new JButton();
+			btChoixReleve.setBounds(new Rectangle(120, 0, 20, 50));
+			btChoixReleve.setIcon(new ImageIcon(getClass().getResource(
 					"/img_fleche_bas.png")));
 		}
-		return jButton1;
+		return btChoixReleve;
 	}
 
 	/**
@@ -599,14 +598,16 @@ public class Main extends JFrame {
 		btSupprMessage.addActionListener(new MlActionPopupJTable(jTable, jList,
 				jProgressBarReleve, jTextArea, jScrollPane3));
 		jMenuCompte.addActionListener(new MlActionMain(jTree));
-		jButton.addMouseListener(new MlActionMainCombo(false,
+		btChoixSynchro.addMouseListener(new MlActionMainCombo(false,
 				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
 				jScrollPane3));
-		jButton1.addMouseListener(new MlActionMainCombo(true,
+		btChoixReleve.addMouseListener(new MlActionMainCombo(true,
 				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
 				jScrollPane3));
 
-		ComposantVisuelCommun.setJList(jList);
+		ComposantVisuelCommun.setJListPJ(jList);
+		ComposantVisuelCommun.setbtChoixSynchro(btChoixSynchro);
+		ComposantVisuelCommun.setbtChoixReleve(btChoixReleve);
 
 	}
 

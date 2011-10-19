@@ -55,6 +55,13 @@ public class CompteMailFactory {
 
 	}
 
+	public boolean suppressionCompteMail(MlCompteMail p_cpt) {
+		BDRequette bd = new BDRequette();
+		boolean result = bd.deleteCompte(p_cpt.getIdCompte());
+		bd.closeConnexion();
+		return result;
+	}
+
 	/**
 	 * @param p_compteMail
 	 * @return
@@ -87,7 +94,9 @@ public class CompteMailFactory {
 							new DeltaSyncClient(), p_compteMail.getUserName(),
 							p_compteMail.getPassword());
 					client.login();
-					client.getInbox();
+					if (null != client.getInbox()) {
+						return true;
+					}
 					return false;
 			}
 			st.connect(p_compteMail.getServeurReception(), p_compteMail
@@ -110,5 +119,4 @@ public class CompteMailFactory {
 
 		return true;
 	}
-
 }

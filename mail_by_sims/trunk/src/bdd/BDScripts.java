@@ -11,6 +11,7 @@ public class BDScripts {
 	private ArrayList<String> version4;
 	private ArrayList<String> version5;
 	private ArrayList<String> version6;
+	private ArrayList<String> version7;
 
 	public BDScripts() {
 
@@ -24,6 +25,7 @@ public class BDScripts {
 		allversion.addAll(getVersion4());
 		allversion.addAll(getVersion5());
 		allversion.addAll(getVersion6());
+		allversion.addAll(getVersion7());
 		return allversion;
 	}
 
@@ -261,6 +263,34 @@ public class BDScripts {
 				.add("CREATE INDEX IDX_PIECE_JOINTE2 ON PIECE_JOINTE (NOM_PIECE_JOINTE);");
 		version6.add("UPDATE PARAM SET VERSION_BASE=6;");
 		return version6;
+	}
+
+	/**
+	 * @return
+	 */
+	public ArrayList<String> getVersion7() {
+		version7 = new ArrayList<String>();
+		version7.add("ALTER TABLE MAIL_RECU ADD DESTINATAIRE_COPY Blob;");
+		version7.add("ALTER TABLE MAIL_RECU ADD DESTINATAIRE_CACHE Blob;");
+		version7.add("ALTER TABLE MAIL_RECU ALTER ID_COMPTE POSITION 1;");
+
+		version7
+				.add("ALTER TABLE MAIL_RECU ALTER ID_DOSSIER_STOCKAGE POSITION 2;");
+		version7.add("ALTER TABLE MAIL_RECU ALTER ID_MESSAGE_RECU POSITION 3;");
+		version7.add("ALTER TABLE MAIL_RECU ALTER UID_MESSAGE POSITION 4;");
+		version7.add("ALTER TABLE MAIL_RECU ALTER EXPEDITEUR POSITION 5;");
+		version7.add("ALTER TABLE MAIL_RECU ALTER DESTINATAIRE POSITION 6;");
+		version7
+				.add("ALTER TABLE MAIL_RECU ALTER DESTINATAIRE_COPY POSITION 7;");
+		version7
+				.add("ALTER TABLE MAIL_RECU ALTER DESTINATAIRE_CACHE POSITION 8;");
+		version7.add("ALTER TABLE MAIL_RECU ALTER SUJET POSITION 9;");
+		version7.add("ALTER TABLE MAIL_RECU ALTER CONTENU POSITION 10;");
+		version7.add("ALTER TABLE MAIL_RECU ALTER DATE_RECEPTION POSITION 11;");
+		version7.add("ALTER TABLE MAIL_RECU ALTER STATUT POSITION 12;");
+		version7.add("UPDATE PARAM SET VERSION_BASE=7;");
+
+		return version7;
 	}
 
 }

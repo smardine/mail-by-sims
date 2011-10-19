@@ -1,6 +1,5 @@
 package bdd;
 
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -33,7 +32,7 @@ import tools.WriteFile;
  * @author sims
  */
 public class BDRequette {
-	private final String TAG=this.getClass().getSimpleName();
+	private final String TAG = this.getClass().getSimpleName();
 	private final Connection laConnexion;
 
 	/**
@@ -58,8 +57,8 @@ public class BDRequette {
 			resultatRequete = state.execute(requete);
 
 		} catch (final SQLException e) {
-			messageUtilisateur.affMessageException(TAG,
-					e, "erreur a l'execution d'une requete");
+			messageUtilisateur.affMessageException(TAG, e,
+					"erreur a l'execution d'une requete");
 			Historique.ecrire("Message d'erreur: " + e
 					+ "\n\r sur la requete : " + requete);
 
@@ -80,8 +79,8 @@ public class BDRequette {
 				state.close();
 
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG,
-						e, "erreur a l'execution d'une requete");
+				messageUtilisateur.affMessageException(TAG, e,
+						"erreur a l'execution d'une requete");
 				Historique.ecrire("Message d'erreur: " + e
 						+ "\n\r sur la requete : " + requete);
 
@@ -94,35 +93,38 @@ public class BDRequette {
 	/**
 	 * On execute simplement une requete sur la base
 	 * @param requete -String la recherche effectuée (delete, truncate...)
-	 * @param p_fDestinataires
+	 * @param p_fDest
+	 * @param p_fDestCache
+	 * @param p_fDestCopy
 	 * @return vrai si ca a marché, sinon faux
 	 */
 	private boolean executeRequeteWithBlob(String requete, File p_fContenu,
-			File p_fDestinataires) {
+			File p_fDest, File p_fDestCopy, File p_fDestCache) {
 
 		PreparedStatement ps = null;
 		FileInputStream inputContenu = null;
 		FileInputStream inputDestinataire = null;
+		FileInputStream inputDestCopy = null;
+		FileInputStream inputDestcache = null;
 		boolean resultatRequete = false;
 		try {
 			ps = laConnexion.prepareStatement(requete);
+			inputDestinataire = checkFileForBlob(p_fDest);
+			inputDestCopy = checkFileForBlob(p_fDestCopy);
+			inputDestcache = checkFileForBlob(p_fDestCache);
+			inputContenu = checkFileForBlob(p_fContenu);
 
-			inputDestinataire = new FileInputStream(p_fDestinataires);
-			inputContenu = new FileInputStream(p_fContenu);
-			ps.setBinaryStream(1, inputDestinataire, (int) p_fDestinataires
-					.length());
-			ps.setBinaryStream(2, inputContenu, (int) p_fContenu.length());
+			ps = checkBinaryStreamForBlob(ps, 1, inputDestinataire, p_fDest);
+			ps = checkBinaryStreamForBlob(ps, 2, inputDestCopy, p_fDestCopy);
+			ps = checkBinaryStreamForBlob(ps, 3, inputDestcache, p_fDestCache);
+			ps = checkBinaryStreamForBlob(ps, 4, inputContenu, p_fContenu);
 
 			ps.executeUpdate();
 			resultatRequete = true;
 
 		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(TAG,
-					e, "Erreur à l'insertion d'un blob");
-			return false;
-		} catch (FileNotFoundException e) {
-			messageUtilisateur.affMessageException(TAG,
-					e, "impossible de trouver le fichier");
+			messageUtilisateur.affMessageException(TAG, e,
+					"Erreur à l'insertion d'un blob");
 			return false;
 		} finally {
 			try {
@@ -131,19 +133,70 @@ public class BDRequette {
 				} else {
 					laConnexion.rollback();
 				}
-				ps.close();
-				inputContenu.close();
-				inputDestinataire.close();
+				if (ps != null) {
+					ps.close();
+				}
+				checkBinarayStreamOnClose(inputContenu);
+				checkBinarayStreamOnClose(inputDestinataire);
+				checkBinarayStreamOnClose(inputDestCopy);
+				checkBinarayStreamOnClose(inputDestcache);
 
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG,
-						e, "Erreur à l'insertion d'un blob");
+				messageUtilisateur.affMessageException(TAG, e,
+						"Erreur à l'insertion d'un blob");
 			} catch (IOException e) {
-				messageUtilisateur.affMessageException(TAG, e, "fichier non trouvé");
-
+				messageUtilisateur.affMessageException(TAG, e,
+						"fichier non trouvé");
 			}
 		}
 		return true;
+	}
+
+	/**
+	 * @param p_inputStream
+	 * @throws IOException
+	 */
+	private void checkBinarayStreamOnClose(FileInputStream p_inputStream)
+			throws IOException {
+		if (p_inputStream != null) {
+			p_inputStream.close();
+		}
+	}
+
+	/**
+	 * @param p_ps
+	 * @param p_i
+	 * @param p_inputDestinataire
+	 * @param p_fDestinataires
+	 * @return
+	 * @throws SQLException
+	 */
+	private PreparedStatement checkBinaryStreamForBlob(PreparedStatement p_ps,
+			int p_idxParam, FileInputStream p_inputStream, File p_fileToBlob)
+			throws SQLException {
+		if (null != p_inputStream && null != p_fileToBlob) {
+			p_ps.setBinaryStream(p_idxParam, p_inputStream, (int) p_fileToBlob
+					.length());
+		} else {
+			p_ps.setBinaryStream(p_idxParam, p_inputStream, 0);
+		}
+
+		return p_ps;
+	}
+
+	/**
+	 * @param p_fDestinataires
+	 * @return
+	 */
+	private FileInputStream checkFileForBlob(File p_fileForBlob) {
+		if (p_fileForBlob != null && p_fileForBlob.exists()) {
+			try {
+				return new FileInputStream(p_fileForBlob);
+			} catch (FileNotFoundException e) {
+				return null;
+			}
+		}
+		return null;
 	}
 
 	/**
@@ -216,8 +269,8 @@ public class BDRequette {
 			}
 
 		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(TAG,
-					e, "Impossible de recuperer le nombre de champ dans la table "
+			messageUtilisateur.affMessageException(TAG, e,
+					"Impossible de recuperer le nombre de champ dans la table "
 							+ p_table.getNomTable());
 		} finally {
 			try {
@@ -227,8 +280,8 @@ public class BDRequette {
 				// peut
 				// faire un rollback
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG,
-						e, "Impossible de fermer la base");
+				messageUtilisateur.affMessageException(TAG, e,
+						"Impossible de fermer la base");
 			}
 
 		}
@@ -462,8 +515,8 @@ public class BDRequette {
 				laConnexion.rollback();
 
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG,
-						e, "Impossible de fermer la transaction");
+				messageUtilisateur.affMessageException(TAG, e,
+						"Impossible de fermer la transaction");
 			}
 
 		}
@@ -501,8 +554,8 @@ public class BDRequette {
 				jeuEnregistrements.close();
 				state.close();
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG,
-						e, "Impossible de fermer la transaction");
+				messageUtilisateur.affMessageException(TAG, e,
+						"Impossible de fermer la transaction");
 			}// c'est une lecture, pas de commit;
 
 		}
@@ -543,8 +596,8 @@ public class BDRequette {
 				jeuEnregistrements.close();
 				state.close();
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG,
-						e, "Impossible de fermer la transaction");
+				messageUtilisateur.affMessageException(TAG, e,
+						"Impossible de fermer la transaction");
 			}
 
 		}
@@ -563,19 +616,26 @@ public class BDRequette {
 		ArrayList<String> lstSousDossier = getListeSousDossier(p_idDossier);
 		for (String dossier : lstSousDossier) {
 			deleteDossier(p_idCompte, getIdDossier(dossier, p_idCompte));
-
 		}
 		String requette = "DELETE FROM DOSSIER WHERE ID_COMPTE='" + p_idCompte
 				+ "' AND ID_DOSSIER='" + p_idDossier + "'";
-		String requetteBis = "DELETE FROM MAIL_RECU WHERE ID_COMPTE='"
-				+ p_idCompte + "' AND ID_DOSSIER_STOCKAGE='" + p_idDossier
-				+ "'";
-		if (executeRequete(requette)) {
-			// si on a reussi a supprimer le dossier en base,
-			// on suppr tt les mails enregistés
-			return executeRequete(requetteBis);
+		// String requetteBis = "DELETE FROM MAIL_RECU WHERE ID_COMPTE='"
+		// + p_idCompte + "' AND ID_DOSSIER_STOCKAGE='" + p_idDossier
+		// + "'";
+		// pour chaque dossier, on supprime la liste des messages associés
+		for (MlMessage unMessage : getListeDeMessage(p_idCompte, p_idDossier)) {
+			if (!deleteMessageRecu(unMessage.getIdMessage())) {
+				return false;
+			}
 		}
-		return false;
+		// on a fini de supprimer les messages (et les pj en cascade)
+		// on peut supprimer le dossier
+		return executeRequete(requette);
+		// // si on a reussi a supprimer le dossier en base,
+		// // on suppr tt les mails enregistés
+		// return executeRequete(requetteBis);
+		// }
+		// return false;
 
 	}
 
@@ -620,13 +680,16 @@ public class BDRequette {
 		String uidMessage = m.getUIDMessage();
 		String expediteur = encodeHTMLforBase(m.getExpediteur());
 		ArrayList<String> listeDestinataire = m.getDestinataire();
-		StringBuilder sbDest = new StringBuilder();
-		for (String dest : listeDestinataire) {
-			sbDest.append(dest);
-		}
-		String destinataires = sbDest.toString();
-		File fileToBlobDestinataires = createFileForBlob(destinataires,
-				"destinataires");
+		ArrayList<String> listCopy = m.getDestinataireCopy();
+		ArrayList<String> listCachee = m.getDestinataireCache();
+
+		File fileToBlobDestinataires = createBlobFileFromArraylist(
+				listeDestinataire, "destinataire");
+		File fileToBlobDestCopy = createBlobFileFromArraylist(listCopy,
+				"dest_copy");
+		File fileToBlobDestHide = createBlobFileFromArraylist(listCachee,
+				"hide_dest");
+
 		String sujet = encodeHTMLforBase(m.getSujet());
 		String contenu = m.getContenu();
 		File fileToBlobContenu = createFileForBlob(contenu, "contenu");
@@ -634,19 +697,21 @@ public class BDRequette {
 		String dateReception = RecupDate.getTimeStamp(m.getDateReception());
 
 		int tailleStringBuilder = uidMessage.length() + expediteur.length()
-				+ destinataires.length() + sujet.length() + 500;
+		/* + destinataires.length() */+ sujet.length() + 500;
 		// on construit la requette
 		StringBuilder requette = new StringBuilder(tailleStringBuilder);
 		requette.ensureCapacity(tailleStringBuilder);
 		requette.append("INSERT INTO MAIL_RECU");
 		requette
-				.append("(ID_COMPTE, ID_DOSSIER_STOCKAGE, UID_MESSAGE, EXPEDITEUR, DESTINATAIRE, SUJET,CONTENU,DATE_RECEPTION,STATUT)");
+				.append("(ID_COMPTE, ID_DOSSIER_STOCKAGE, UID_MESSAGE, EXPEDITEUR, DESTINATAIRE,DESTINATAIRE_COPY,DESTINATAIRE_CACHE, SUJET,CONTENU,DATE_RECEPTION,STATUT)");
 		requette.append("VALUES (");
 		requette.append("'" + idCompte + "','");
 		requette.append(idDossierStockage + "','");
 		requette.append(uidMessage + "','");
 		requette.append(expediteur + "',");
-		requette.append("?,'");
+		requette.append("?,");// lstDest
+		requette.append("?,");// lstDestCC
+		requette.append("?,'");// lstDestBCC
 		requette.append(sujet + "',");
 		requette.append("?,'");// c'est pour le contenu qui sera stocké dans un
 		// blob
@@ -657,22 +722,22 @@ public class BDRequette {
 		// on l'execute
 
 		boolean succes = executeRequeteWithBlob(requette.toString(),
-				fileToBlobContenu, fileToBlobDestinataires);
+				fileToBlobContenu, fileToBlobDestinataires, fileToBlobDestCopy,
+				fileToBlobDestHide);
 		if (succes) {
-			File f = new File(m.getCheminPhysique());
-			if (f.exists()) {
-				if (!f.delete()) {
-					f.deleteOnExit();
-				}
-			}
+
 			// on recupere le nouvel id du message que l'on vient d'enregistrer
 			String getMaxId = "SELECT max (ID_MESSAGE_RECU) FROM MAIL_RECU a";
 			String maxId = get1Champ(getMaxId);
 			System.out
 					.println("l'id de message que l'on vient d'enregistrer est: "
 							+ maxId);
-			fileToBlobContenu.delete();
-			fileToBlobDestinataires.delete();
+			verifEtSuppressionBlob(new File(m.getCheminPhysique()));
+			verifEtSuppressionBlob(fileToBlobContenu);
+			verifEtSuppressionBlob(fileToBlobDestinataires);
+			verifEtSuppressionBlob(fileToBlobDestCopy);
+			verifEtSuppressionBlob(fileToBlobDestHide);
+
 			// on insere le contenu en base
 			// si des pieces jointe sont presente, on enregistre leur chemin en
 			// base avec l'id du message
@@ -684,6 +749,37 @@ public class BDRequette {
 
 		}
 
+	}
+
+	/**
+	 * @param p_file
+	 */
+	private void verifEtSuppressionBlob(File p_file) {
+		if (null != p_file && p_file.exists()) {
+
+			if (!p_file.delete()) {
+				p_file.deleteOnExit();
+			}
+		}
+	}
+
+	/**
+	 * @param p_listeDestinataire
+	 * @param p_string
+	 * @return
+	 */
+	private File createBlobFileFromArraylist(ArrayList<String> p_liste,
+			String p_extension) {
+		if (p_liste == null) {
+			return null;
+		}
+		StringBuilder sbDest = new StringBuilder();
+		for (String dest : p_liste) {
+			sbDest.append(dest);
+		}
+		String destinataires = sbDest.toString();
+		File fileToBlob = createFileForBlob(destinataires, p_extension);
+		return fileToBlob;
 	}
 
 	private boolean enregistrePieceJointe(String maxId, File p_PieceJointe) {
@@ -703,12 +799,12 @@ public class BDRequette {
 			resultatRequete = true;
 
 		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(TAG,
-					e, "Erreur à l'insertion d'un blob");
+			messageUtilisateur.affMessageException(TAG, e,
+					"Erreur à l'insertion d'un blob");
 			return false;
 		} catch (FileNotFoundException e) {
-			messageUtilisateur.affMessageException(TAG,
-					e, "impossible de trouver le fichier");
+			messageUtilisateur.affMessageException(TAG, e,
+					"impossible de trouver le fichier");
 			return false;
 		} finally {
 			try {
@@ -721,11 +817,12 @@ public class BDRequette {
 				inPieceJointe.close();
 
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG,
-						e, "Erreur à l'insertion d'un blob");
+				messageUtilisateur.affMessageException(TAG, e,
+						"Erreur à l'insertion d'un blob");
 				return false;
 			} catch (IOException e) {
-				messageUtilisateur.affMessageException(TAG, e, "fichier non trouvé");
+				messageUtilisateur.affMessageException(TAG, e,
+						"fichier non trouvé");
 				return false;
 
 			}
@@ -744,8 +841,8 @@ public class BDRequette {
 		try {
 			f.createNewFile();
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(TAG,
-					e, "impossible de créer le fichier " + f.getName());
+			messageUtilisateur.affMessageException(TAG, e,
+					"impossible de créer le fichier " + f.getName());
 			return null;
 		}
 		WriteFile.WriteFullFile(contenu, reptempo + "\\temfile" + p_extension);
@@ -884,22 +981,22 @@ public class BDRequette {
 				fos.close();
 			}
 		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(TAG,
-					e, "Erreur Affichage du message");
+			messageUtilisateur.affMessageException(TAG, e,
+					"Erreur Affichage du message");
 		} catch (FileNotFoundException e) {
-			messageUtilisateur.affMessageException(TAG,
-					e, "Impossible d'afficher le message");
+			messageUtilisateur.affMessageException(TAG, e,
+					"Impossible d'afficher le message");
 		} catch (IOException e) {
-			messageUtilisateur.affMessageException(TAG,
-					e, "Impossible d'afficher le message");
+			messageUtilisateur.affMessageException(TAG, e,
+					"Impossible d'afficher le message");
 		} finally {
 			try {
 				resultSet.close();
 				laConnexion.rollback();
 
 			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG,
-						e, "Impossible de fermer la transaction");
+				messageUtilisateur.affMessageException(TAG, e,
+						"Impossible de fermer la transaction");
 			}
 
 		}
@@ -989,6 +1086,12 @@ public class BDRequette {
 
 	}
 
+	/**
+	 * Cette fonction parcours tout les dossier enregistré du compte mail 1 par
+	 * 1 pour supprimer en cascade les messages et PJ associées.
+	 * @param p_idCompte
+	 * @return resultat
+	 */
 	public boolean deleteCompte(int p_idCompte) {
 		ArrayList<String> lsiteDossier = getListeDossier(p_idCompte);
 		for (String unDossier : lsiteDossier) {
@@ -1009,8 +1112,8 @@ public class BDRequette {
 		try {
 			laConnexion.close();
 		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(TAG,
-					e, "Impossible de fermer la base");
+			messageUtilisateur.affMessageException(TAG, e,
+					"Impossible de fermer la base");
 		}
 
 	}
@@ -1044,10 +1147,9 @@ public class BDRequette {
 			sb.append(0 + ",");
 			sb.append("'" + nomDossier + "')");
 			if (!executeRequete(sb.toString())) {
-				messageUtilisateur
-						.affMessageErreur(TAG, "Erreur a la creation du dossier "
-								+ nomDossier + " pour le compte "
-								+ p_compte.getNomCompte());
+				messageUtilisateur.affMessageErreur(TAG,
+						"Erreur a la creation du dossier " + nomDossier
+								+ " pour le compte " + p_compte.getNomCompte());
 				return false;
 			}
 

@@ -9,6 +9,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
 import java.util.Date;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListModel;
@@ -35,8 +37,10 @@ import javax.swing.border.EtchedBorder;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlListeMessage;
+import releve.imap.thread_SynchroImap;
 import verification.Thread_Verif;
 import bdd.BDAcces;
+import bdd.BDRequette;
 import fenetre.EnTitreFenetre;
 import fenetre.principale.MlAction.EnActionMain;
 import fenetre.principale.MlAction.MlActionMain;
@@ -53,7 +57,7 @@ import fenetre.principale.jtree.MlActionJtree;
 public class Main extends JFrame {
 
 	private static final long serialVersionUID = 1L;
-	// private TreePath treePath;
+	private Thread threadReleveAuto;
 	// private String nomCompte;
 	private JPanel panelPrincipal = null;
 	private JDesktopPane panelBouton = null;
@@ -96,6 +100,7 @@ public class Main extends JFrame {
 	private JScrollPane jScrollPane3 = null;
 	private JButton btChoixSynchro = null;
 	private JButton btChoixReleve = null;
+	private Timer timer = null; // @jve:decl-index=0:visual-constraint="31,619"
 
 	/**
 	 * This method initializes panelBouton
@@ -541,6 +546,18 @@ public class Main extends JFrame {
 	}
 
 	/**
+	 * This method initializes timer
+	 * @return java.util.Timer
+	 */
+	private Timer getTimer() {
+		if (timer == null) {
+			timer = new Timer();
+
+		}
+		return timer;
+	}
+
+	/**
 	 * @param args
 	 */
 	public static void main(String[] args) {
@@ -609,6 +626,21 @@ public class Main extends JFrame {
 		ComposantVisuelCommun.setbtChoixSynchro(btChoixSynchro);
 		ComposantVisuelCommun.setbtChoixReleve(btChoixReleve);
 
+		timer = getTimer();
+		TimerTask task = new TimerTask() {
+
+			@Override
+			public void run() {
+				BDRequette bd = new BDRequette();
+				threadReleveAuto = new thread_SynchroImap(jProgressBarReleve,
+						jProgressBarPieceJointe, jTextArea, jScrollPane3,
+						false, bd.getListeDeComptes());
+
+				threadReleveAuto.start();
+			}
+		};
+		timer.schedule(task, 1000, 300000);
+
 	}
 
 	/**
@@ -630,6 +662,9 @@ public class Main extends JFrame {
 		this.addWindowListener(new java.awt.event.WindowAdapter() {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent e) {
+				if (threadReleveAuto.isAlive()) {
+					threadReleveAuto.interrupt();
+				}
 				System.exit(0);
 			}
 		});

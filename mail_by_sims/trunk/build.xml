@@ -63,6 +63,7 @@
                 <exclude name="resizable/MyMouseInputAdapter.java"/>
                 <exclude name="resizable/ResizableBorder.java"/>
                 <exclude name="resizable/ResizableComponent.java"/>
+                <exclude name="releve/imap/listener/messageListener.java"/>
             </fileset>
         </copy>
         <copy includeemptydirs="false" todir="bin">
@@ -105,6 +106,7 @@
             <exclude name="resizable/MyMouseInputAdapter.java"/>
             <exclude name="resizable/ResizableBorder.java"/>
             <exclude name="resizable/ResizableComponent.java"/>
+            <exclude name="releve/imap/listener/messageListener.java"/>
             <classpath refid="Mail by sims.classpath"/>
         </javac>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">

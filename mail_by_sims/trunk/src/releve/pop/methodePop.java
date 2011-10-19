@@ -1,10 +1,9 @@
 package releve.pop;
 
-import importMail.thread_Import;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 
-import java.util.ArrayList;
-
-import javax.mail.Address;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.swing.JProgressBar;
@@ -18,6 +17,8 @@ import tools.Historique;
 import bdd.BDRequette;
 
 import com.sun.mail.pop3.POP3Folder;
+
+import factory.MessageFactory;
 
 public final class methodePop {
 
@@ -50,7 +51,7 @@ public final class methodePop {
 					+ count);
 			// Message numbers start at 1
 			int nbActu = 1;
-			// MlListeMessage lstMessage = new MlListeMessage();
+
 			Message[] lstMessagesPop = folder.getMessages();
 
 			for (int i = lstMessagesPop.length; i > 0; i--) {
@@ -68,31 +69,19 @@ public final class methodePop {
 							.RecupRepTravail()
 							+ "/tempo/" + System.currentTimeMillis() + ".eml");
 
-					messPourBase.setContenu(thread_Import.recupContenuMail(
-							messPourBase, p_progressPJ, m, text));
-					messPourBase.setDateReception(m.getReceivedDate());
-					ArrayList<String> listeDestinataires;
-					if (null != m.getAllRecipients()) {// si on connait la
-						// taille de
-						// la liste, on la fixe
-						listeDestinataires = new ArrayList<String>(m
-								.getAllRecipients().length);
-						for (Address uneAdresse : m.getAllRecipients()) {
-							listeDestinataires.add(uneAdresse.toString());
-						}
-					} else {
-						listeDestinataires = new ArrayList<String>(1);
-						listeDestinataires.add("Destinataire(s) masqué(s)");
-					}
+					m.writeTo(new FileOutputStream(messPourBase
+							.getCheminPhysique()));
+					MessageFactory fact = new MessageFactory();
+					messPourBase = fact.createMessagePourBase(messPourBase,
+							text, p_progressPJ);
 
-					messPourBase.setDestinataire(listeDestinataires);
-					messPourBase.setExpediteur(m.getFrom()[0].toString());
 					messPourBase.setIdCompte(p_comptePop.getIdCompte());
 					messPourBase.setIdDossier(verifieRegle(messPourBase
 							.getExpediteur(), p_comptePop.getIdInbox()));
+					// pour un message de compte pop, il faut le lien avec le
+					// dossier parent pour pouvoir recuperer l'UID
 					messPourBase.setUIDMessage("" + folder.getUID(m));
-					messPourBase.setSujet(m.getSubject());
-					// lstMessage.add(messPourBase);
+
 					methodeImap.afficheText(text,
 							"Enregistrement du message dans la base");
 					bd.createNewMessage(messPourBase);
@@ -100,6 +89,12 @@ public final class methodePop {
 			}
 
 		} catch (MessagingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}

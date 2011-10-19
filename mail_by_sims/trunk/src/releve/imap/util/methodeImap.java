@@ -1,10 +1,11 @@
 package releve.imap.util;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Properties;
 
-import javax.mail.Address;
 import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
@@ -24,6 +25,7 @@ import bdd.BDRequette;
 import com.sun.mail.imap.AppendUID;
 import com.sun.mail.imap.IMAPFolder;
 
+import factory.MessageFactory;
 import fenetre.comptes.EnDossierBase;
 
 public final class methodeImap {
@@ -279,38 +281,23 @@ public final class methodeImap {
 					messPourBase.setCheminPhysique(GestionRepertoire
 							.RecupRepTravail()
 							+ "/tempo/" + System.currentTimeMillis() + ".eml");
+					m.writeTo(new FileOutputStream(messPourBase
+							.getCheminPhysique()));
+					MessageFactory fact = new MessageFactory();
 
-					messPourBase.setContenu(importMail.thread_Import
-							.recupContenuMail(messPourBase, p_progressPJ, m,
-									textArea));
-					messPourBase.setDateReception(m.getReceivedDate());
-					ArrayList<String> listeDestinataires;
-					if (null != m.getAllRecipients()) {// si on connait la
-						// taille de
-						// la liste, on la fixe
-						listeDestinataires = new ArrayList<String>(m
-								.getAllRecipients().length);
-						for (Address uneAdresse : m.getAllRecipients()) {
-							listeDestinataires.add(uneAdresse.toString());
-						}
-					} else {
-						listeDestinataires = new ArrayList<String>(1);
-						listeDestinataires.add("Destinataire(s) masqué(s)");
-					}
+					messPourBase = fact.createMessagePourBase(messPourBase,
+							textArea, p_progressPJ);
 
-					messPourBase.setDestinataire(listeDestinataires);
-					messPourBase.setExpediteur(m.getFrom()[0].toString());
 					messPourBase.setIdCompte(p_compteMail.getIdCompte());
 					messPourBase.setIdDossier(verifieRegle(messPourBase
 							.getExpediteur(), p_idDossier));
 					messPourBase.setUIDMessage("" + imapFolder.getUID(m));
-					messPourBase.setSujet(m.getSubject());
+					// messPourBase.setSujet(m.getSubject());
 					afficheText(textArea,
 							"Enregistrement du message dans la base");
 					Historique.ecrireReleveBal(p_compteMail,
 							"Enregistrement du message dans la base");
 					bd.createNewMessage(messPourBase);
-
 				}
 
 			}
@@ -324,6 +311,12 @@ public final class methodeImap {
 		} catch (MessagingException e) {
 			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la releve des messages");
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		} finally {
 			bd.closeConnexion();
 		}

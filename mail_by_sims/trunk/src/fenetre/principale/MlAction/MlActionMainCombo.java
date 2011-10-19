@@ -35,28 +35,31 @@ public class MlActionMainCombo implements MouseListener {
 
 	}
 
+	public void refreshPopup() {
+		getJPopupMenu();
+		return;
+	}
+
 	/**
 	 * This method initializes jPopupMenu
 	 * @return javax.swing.JPopupMenu
 	 */
 	private JPopupMenu getJPopupMenu() {
-		if (popUpMenu == null) {
-			popUpMenu = new JPopupMenu();
-			BDRequette bd = new BDRequette();
-			MlListeCompteMail lstCpt = bd.getListeDeComptes();
-			bd.closeConnexion();
-			if (releveOuSynchro) {
-				popUpMenu.add(creerNouveauItem("Relever tous les comptes"));
-			} else {
-				popUpMenu
-						.add(creerNouveauItem("Synchroniser tous les comptes"));
-			}
 
-			for (MlCompteMail cpt : lstCpt) {
-				popUpMenu.add(creerNouveauItem(cpt.getNomCompte()));
-			}
-
+		popUpMenu = new JPopupMenu();
+		BDRequette bd = new BDRequette();
+		MlListeCompteMail lstCpt = bd.getListeDeComptes();
+		bd.closeConnexion();
+		if (releveOuSynchro) {
+			popUpMenu.add(creerNouveauItem("Relever tous les comptes"));
+		} else {
+			popUpMenu.add(creerNouveauItem("Synchroniser tous les comptes"));
 		}
+
+		for (MlCompteMail cpt : lstCpt) {
+			popUpMenu.add(creerNouveauItem(cpt.getNomCompte()));
+		}
+
 		return popUpMenu;
 	}
 

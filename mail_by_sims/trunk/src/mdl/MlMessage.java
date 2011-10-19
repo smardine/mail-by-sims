@@ -14,6 +14,8 @@ public class MlMessage {
 	private String cheminPhysique;
 	private String expediteur;
 	private ArrayList<String> destinataire;
+	private ArrayList<String> destinataireCopy;
+	private ArrayList<String> destinataireCache;
 	private String sujet;
 	private String contenu;
 	private Date dateReception;
@@ -121,6 +123,34 @@ public class MlMessage {
 	 */
 	public void setDestinataire(ArrayList<String> destinataire) {
 		this.destinataire = destinataire;
+	}
+
+	/**
+	 * @param destinataireCopy the destinataireCopy to set
+	 */
+	public void setDestinataireCopy(ArrayList<String> destinataireCopy) {
+		this.destinataireCopy = destinataireCopy;
+	}
+
+	/**
+	 * @return the destinataireCopy
+	 */
+	public ArrayList<String> getDestinataireCopy() {
+		return destinataireCopy;
+	}
+
+	/**
+	 * @param destinataireCache the destinataireCache to set
+	 */
+	public void setDestinataireCache(ArrayList<String> destinataireCache) {
+		this.destinataireCache = destinataireCache;
+	}
+
+	/**
+	 * @return the destinataireCache
+	 */
+	public ArrayList<String> getDestinataireCache() {
+		return destinataireCache;
 	}
 
 	/**

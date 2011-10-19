@@ -1,6 +1,5 @@
 package bdd;
 
-
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,6 +11,7 @@ import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
 
+import org.firebirdsql.management.FBMaintenanceManager;
 import org.firebirdsql.management.FBManager;
 
 import releve.imap.util.messageUtilisateur;
@@ -27,9 +27,10 @@ public class BDAcces {
 	private boolean etatConnexion;
 	private Connection connexion;
 	private FBManager firebirdManager;
-	final String VERSION_BASE = "6";
+	final String VERSION_BASE = "7";
 
 	private boolean ttACreer;
+	private FBMaintenanceManager maintenance;
 
 	/**
 	 * constructeur
@@ -66,6 +67,12 @@ public class BDAcces {
 			fbManager.setServer(parametres.getHOSTNAME());
 			fbManager.setPort(3050);
 			fbManager.setFileName(parametres.getEmplacementBase());
+
+			maintenance = new FBMaintenanceManager();
+			maintenance.setDatabase(parametres.getEmplacementBase());
+			maintenance.setHost(parametres.getHOSTNAME());
+			maintenance.setUser(parametres.getUSER());
+			maintenance.setPassword(parametres.getPASSWORD());
 
 			try {
 				fbManager.start();
@@ -140,6 +147,10 @@ public class BDAcces {
 				}
 				if ("5".equals(versionActuelle)) {
 					LanceMiseAJour(se, scripts.getVersion6());
+					verifVersionBDD(true);
+				}
+				if ("6".equals(versionActuelle)) {
+					LanceMiseAJour(se, scripts.getVersion7());
 					verifVersionBDD(true);
 				}
 			}
@@ -262,5 +273,19 @@ public class BDAcces {
 
 	public boolean isExist() {
 		return isDataBaseExist(parametres.getEmplacementBase());
+	}
+
+	/**
+	 * @param maintenance the maintenance to set
+	 */
+	public void setMaintenanceManager(FBMaintenanceManager maintenance) {
+		this.maintenance = maintenance;
+	}
+
+	/**
+	 * @return the maintenance
+	 */
+	public FBMaintenanceManager getMaintenanceManager() {
+		return maintenance;
 	}
 }

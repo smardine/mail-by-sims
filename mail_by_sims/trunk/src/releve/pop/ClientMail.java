@@ -16,7 +16,6 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
-import releve.imap.listener.messageListener;
 import releve.imap.util.messageUtilisateur;
 import releve.imap.util.methodeImap;
 import tools.Historique;
@@ -61,9 +60,9 @@ public class ClientMail {
 			}
 
 			POP3Folder f = (POP3Folder) st.getFolder("INBOX");
-			f.addFolderListener(new messageListener(comptePop, f));
-			f.addMessageChangedListener(new messageListener(comptePop, f));
-			f.addMessageCountListener(new messageListener(comptePop, f));
+			// f.addFolderListener(new messageListener(comptePop, f));
+			// f.addMessageChangedListener(new messageListener(comptePop, f));
+			// f.addMessageCountListener(new messageListener(comptePop, f));
 			methodeImap.afficheText(text, "Ouverture de la boite de reception");
 			Historique.ecrireReleveBal(comptePop,
 					"Ouverture de la boite de reception");

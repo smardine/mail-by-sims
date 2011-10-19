@@ -13,6 +13,7 @@ import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 
+import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import bdd.BDRequette;
@@ -49,6 +50,8 @@ public class GestionCompte extends JFrame {
 		for (MlCompteMail cpt : lst) {
 			modelList.addElement(cpt.getNomCompte());
 		}
+
+		ComposantVisuelCommun.setJListCompteMail(jList);
 	}
 
 	/**

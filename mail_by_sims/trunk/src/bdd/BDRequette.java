@@ -1004,7 +1004,17 @@ public class BDRequette {
 
 	}
 
+	/**
+	 * savoir si l'uid est connu de la base
+	 * @param uid - l'UID du message que l'on est en train de relever
+	 * @param p_idDossier - l'id du dossier dans lequel on fait la recherche
+	 * @return true si le message n'est pas present, false si le message est
+	 *         deja en base
+	 */
 	public boolean verifieAbscenceUID(String uid, int p_idDossier) {
+		if (null == uid) {
+			return true;// le message N'EST PAS EN BASE
+		}
 		String requete = "SELECT count (*) from MAIL_RECU a where a.UID_MESSAGE='"
 				+ uid.trim() + "' and a.ID_DOSSIER_STOCKAGE=" + p_idDossier;
 		return ("0".equals(get1Champ(requete)));

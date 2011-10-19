@@ -61,8 +61,8 @@ public final class methodePop {
 						+ ": Releve de " + folder.getFullName() + " :"
 						+ pourcent + " %");
 				Message m = lstMessagesPop[i - 1];
-				if (bd.verifieAbscenceUID(folder.getUID(m), p_comptePop
-						.getIdInbox())) {
+				String uidMessage = folder.getUID(m);
+				if (bd.verifieAbscenceUID(uidMessage, p_comptePop.getIdInbox())) {
 					MlMessage messPourBase = new MlMessage();
 
 					messPourBase.setCheminPhysique(GestionRepertoire
@@ -80,7 +80,11 @@ public final class methodePop {
 							.getExpediteur(), p_comptePop.getIdInbox()));
 					// pour un message de compte pop, il faut le lien avec le
 					// dossier parent pour pouvoir recuperer l'UID
-					messPourBase.setUIDMessage("" + folder.getUID(m));
+					if (uidMessage == null) {
+						messPourBase.setUIDMessage("");
+					} else {
+						messPourBase.setUIDMessage("" + folder.getUID(m));
+					}
 
 					methodeImap.afficheText(text,
 							"Enregistrement du message dans la base");

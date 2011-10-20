@@ -120,6 +120,7 @@ public class MlActionJtree implements TreeSelectionListener,
 				}
 				ComposantVisuelCommun.setTreePath(p_path);
 				tree.setSelectionPath(p_path);
+				ComposantVisuelCommun.setTree(tree);
 
 			}
 

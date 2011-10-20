@@ -13,13 +13,14 @@ import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
-import releve.thread_VerifNewMess;
 import releve.imap.util.messageUtilisateur;
 import releve.imap.util.methodeImap;
 import tools.Historique;
 import bdd.BDRequette;
 
 import com.sun.mail.imap.IMAPFolder;
+
+import factory.DossierFactory;
 
 /**
  * @author smardine
@@ -139,47 +140,32 @@ public class ReleveGmail {
 				// fldr.addMessageChangedListener(listener);
 				// fldr.addFolderListener(listener);
 				// fldr.addMessageCountListener(listener);
-				int idDossier = -1;
-				idDossier = verifieConnaissanceDossier(p_compteMail, bd, fldr);
+				if ("[Gmail]".equals(fldr.getFullName())) {
+					// ce n'est pas vraiment un repertoire,
+					// c'est plus un conteneur
+					// on recupere juste ses sous dossier et on continue
+					IMAPFolder[] lstFolder = methodeImap.getSousDossierIMAP(
+							p_store, fldr.getFullName());
+
+					traiteListeDossier(cptMail, progressBar, progressPJ, bd,
+							props, lstFolder, p_store);
+					continue;
+				}
+
+				DossierFactory fact = new DossierFactory(fldr, p_compteMail);
+				fact.isDossierDejaPresentEnBase();
+				int idDossier = fact.getIdDossier();
+
 				if (idDossier == (-1)) {// si le sous dossier est
 					// inconnu
 					// de la base, on en créer un
 
-					if ("[Gmail]".equals(fldr.getFullName())) {
-						// ce n'est pas vraiment un repertoire,
-						// c'est plus un conteneur
-						// on recupere juste ses sous dossier et on continue
-						IMAPFolder[] lstFolder = methodeImap
-								.getSousDossierIMAP(p_store, fldr.getFullName());
-
-						traiteListeDossier(cptMail, progressBar, progressPJ,
-								bd, props, lstFolder, p_store);
-						continue;
-					}
-					try {
-						new thread_VerifNewMess(cptMail, fldr, p_store).start();
-					} catch (MessagingException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
 					Historique.ecrireReleveBal(cptMail,
 							"Création d'un nouveau dossier: "
 									+ fldr.getFullName());
-					if (fldr.getFullName().contains("[Gmail]")) {
-						// de cette facon, les dossier
-						// "Important","Tous les messages"...
-						// seront a la racine du compte dans le jtree
-						bd.createNewDossier(p_compteMail.getIdCompte(), 0, fldr
-								.getName(), fldr.getFullName());
-					} else {
-						// sinon, les dossiers créés le seront sous INBOX
-						bd.createNewDossier(p_compteMail.getIdCompte(),
-								p_compteMail.getIdInbox(), fldr.getName(), fldr
-										.getFullName());
-					}
+					fact.createNewDossierEnBase();
+					idDossier = fact.getIdDossier();
 
-					idDossier = bd.getIdDossier(fldr.getName(), p_compteMail
-							.getIdCompte());
 				}
 				methodeImap.releveImap(props, p_compteMail, p_progress,
 						p_progressPJ, idDossier, fldr, textArea);
@@ -195,65 +181,30 @@ public class ReleveGmail {
 
 	}
 
-	/**
-	 * @param p_compteMail
-	 * @param bd
-	 * @param fldr
-	 * @return
-	 */
-	private int verifieConnaissanceDossier(MlCompteMail p_compteMail,
-			BDRequette bd, IMAPFolder fldr) {
-		int idDossier;
-		if (isInbox(fldr)) {
-			idDossier = p_compteMail.getIdInbox();
-		} else if (isBrouillon(fldr)) {
-			idDossier = p_compteMail.getIdBrouillons();
-		} else if (isCorbeille(fldr)) {
-			idDossier = p_compteMail.getIdCorbeille();
-		} else if (isEnvoye(fldr)) {
-			idDossier = p_compteMail.getIdEnvoye();
-		} else if (isSpam(fldr)) {
-			idDossier = p_compteMail.getIdSpam();
-		} else {
-			idDossier = bd.getIdDossier(fldr.getName(), p_compteMail
-					.getIdCompte());
-		}
-		return idDossier;
-	}
-
-	/**
-	 * @param folder
-	 * @return
-	 */
-	private boolean isCorbeille(IMAPFolder folder) {
-		return folder.getFullName().equals("[Gmail]/Trash") || //
-				folder.getFullName().equals("[Gmail]/Corbeille");
-	}
-
-	/**
-	 * @param folder
-	 * @return
-	 */
-	private boolean isEnvoye(IMAPFolder folder) {
-		return folder.getFullName().equals("[Gmail]/Sent Mail") || //
-				folder.getFullName().equals("[Gmail]/Messages envoyés");
-	}
-
-	/**
-	 * @param folder
-	 * @return
-	 */
-	private boolean isBrouillon(IMAPFolder folder) {
-		return folder.getFullName().equals("[Gmail]/Drafts") || //
-				folder.getFullName().equals("[Gmail]/Brouillons");
-	}
-
-	private boolean isInbox(IMAPFolder folder) {
-		return folder.getFullName().equals("INBOX");
-	}
-
-	private boolean isSpam(IMAPFolder folder) {
-		return folder.getFullName().equals("[Gmail]/Spam");
-	}
+	// /**
+	// * @param p_compteMail
+	// * @param bd
+	// * @param fldr
+	// * @return
+	// */
+	// private int verifieConnaissanceDossier(MlCompteMail p_compteMail,
+	// BDRequette bd, IMAPFolder fldr) {
+	// int idDossier;
+	// if (isInbox(fldr)) {
+	// idDossier = p_compteMail.getIdInbox();
+	// } else if (isBrouillon(fldr)) {
+	// idDossier = p_compteMail.getIdBrouillons();
+	// } else if (isCorbeille(fldr)) {
+	// idDossier = p_compteMail.getIdCorbeille();
+	// } else if (isEnvoye(fldr)) {
+	// idDossier = p_compteMail.getIdEnvoye();
+	// } else if (isSpam(fldr)) {
+	// idDossier = p_compteMail.getIdSpam();
+	// } else {
+	// idDossier = bd.getIdDossier(fldr.getName(), p_compteMail
+	// .getIdCompte());
+	// }
+	// return idDossier;
+	// }
 
 }

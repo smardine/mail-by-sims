@@ -112,13 +112,18 @@ public class ArborescenceBoiteMail implements TreeModel {
 	}
 
 	public boolean isLeaf(Object node) {
-		// String idCompte = BDRequette.getIdComptes(getCompte());
-		// String idDossier = BDRequette.getIdDossier((String) node, idCompte);
+		return false;
+		// BDRequette bd = new BDRequette();
+		// int idCompte = bd.getIdComptes(getCompte());
+		// int idDossier = bd.getIdDossier((String) node, idCompte);
+		//
+		// return bd.getListeSousDossier(idDossier).size() == 0;
+
 		// if (BDRequette.getnbMessage(idDossier) > 0) {
 		// return false;
 		// }
 		// return true;
-		return false;
+		// return false;
 
 	}
 

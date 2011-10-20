@@ -5,6 +5,7 @@ package mdl;
 
 import javax.swing.JButton;
 import javax.swing.JList;
+import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
 /**
@@ -17,6 +18,7 @@ public final class ComposantVisuelCommun {
 	private static JList listCompteMail;
 	private static JButton btChoixSynchro;
 	private static JButton btChoixReleve;
+	private static JTree tree;
 
 	/**
 	 * Constructeur privé pour classe utilitaire
@@ -80,6 +82,17 @@ public final class ComposantVisuelCommun {
 
 	public static JButton getBtChoixReleve() {
 		return btChoixReleve;
+	}
+
+	/**
+	 * @param p_jTree
+	 */
+	public static void setTree(JTree p_jTree) {
+		tree = p_jTree;
+	}
+
+	public static JTree getJTree() {
+		return tree;
 	}
 
 }

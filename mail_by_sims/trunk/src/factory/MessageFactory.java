@@ -55,12 +55,16 @@ public class MessageFactory {
 			// ******************************//
 			try {
 				// liste des destinataires
-				ArrayList<String> listeDestinataires = new ArrayList<String>(
-						mime.getRecipients(RecipientType.TO).length);
-				for (Address uneAdresse : mime.getRecipients(RecipientType.TO)) {
-					listeDestinataires.add(uneAdresse.toString());
+				if (null != mime.getRecipients(RecipientType.TO)) {
+					ArrayList<String> listeDestinataires = new ArrayList<String>(
+							mime.getRecipients(RecipientType.TO).length);
+					for (Address uneAdresse : mime
+							.getRecipients(RecipientType.TO)) {
+						listeDestinataires.add(uneAdresse.toString());
+					}
+					p_message.setDestinataire(listeDestinataires);
 				}
-				p_message.setDestinataire(listeDestinataires);
+
 				// liste des madresse en copy
 				if (null != mime.getRecipients(RecipientType.CC)) {
 					ArrayList<String> listCopyTo = new ArrayList<String>(mime

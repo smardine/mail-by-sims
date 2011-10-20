@@ -8,6 +8,7 @@ public enum EnStructureTable {
 	COMPTES_SERVEURPOP("SERVEUR_POP"), //
 	DOSSIER_ID("ID_DOSSIER"), //
 	DOSSIER_NOM("NOM_DOSSIER"), //
+	DOSSIER_NOM_INTERNET("NOM_INTERNET"), //
 	;
 
 	private String nomChamp;

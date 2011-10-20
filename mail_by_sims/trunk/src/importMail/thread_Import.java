@@ -1,8 +1,5 @@
 package importMail;
 
-import fenetre.comptes.EnDossierBase;
-import fenetre.principale.jtree.ActionTree;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -36,6 +33,8 @@ import releve.imap.util.methodeImap;
 import tools.GestionRepertoire;
 import tools.ReadFile;
 import bdd.BDRequette;
+import fenetre.comptes.EnDossierBase;
+import fenetre.principale.jtree.ActionTree;
 
 public class thread_Import extends Thread {
 	private final static String TAG = "thread_Import";
@@ -86,6 +85,7 @@ public class thread_Import extends Thread {
 		TreePath treePathInitial = new TreePath(path);
 		ComposantVisuelCommun.setNomCompte(choixCompte);
 		ComposantVisuelCommun.setTreePath(treePathInitial);
+		ComposantVisuelCommun.setTree(tree);
 		// tree.setSelectionPath(treePathInitial);
 		scrollPane.setVisible(true);
 		jTextArea.setVisible(true);
@@ -465,6 +465,7 @@ public class thread_Import extends Thread {
 		tree.getModel().valueForPathChanged(newTp, ActionTree.AJOUTER);
 		// tree.setSelectionPath(newTp);
 		ComposantVisuelCommun.setTreePath(newTp);
+		ComposantVisuelCommun.setTree(tree);
 		bd.closeConnexion();
 		return newTp;
 		// tree.setSelectionPath(newTp.getParentPath());

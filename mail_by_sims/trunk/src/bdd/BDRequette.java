@@ -335,11 +335,37 @@ public class BDRequette {
 	public int getIdDossier(String p_nomDossier, int p_idCompte) {
 
 		String requete = "Select " + EnStructureTable.DOSSIER_ID.getNomChamp()
-				+ " from " + EnTable.DOSSIER.getNomTable() + " where "
+				+ " from " + EnTable.DOSSIER.getNomTable() + " where ("
 				+ EnStructureTable.DOSSIER_NOM.getNomChamp() + " ='"
 				+ p_nomDossier + "' AND "
-				+ EnStructureTable.COMPTES_ID.getNomChamp() + "='" + p_idCompte
-				+ "'";
+				+ EnStructureTable.COMPTES_ID.getNomChamp() + "=" + p_idCompte
+				+ ")";
+
+		if ("".equals(get1Champ(requete))) {
+			return -1;
+		} else {
+			return Integer.parseInt(get1Champ(requete));
+		}
+
+	}
+
+	/**
+	 * Obtenir l'id d'un dossier a partir de son nom et d'un id de compte
+	 * @param p_nomDossier
+	 * @param p_idCompte
+	 * @return
+	 */
+	public int getIdDossierWithFullName(String p_nomDossier, String p_fullName,
+			int p_idCompte) {
+
+		String requete = "Select " + EnStructureTable.DOSSIER_ID.getNomChamp()
+				+ " from " + EnTable.DOSSIER.getNomTable() + " where ("
+				+ EnStructureTable.DOSSIER_NOM.getNomChamp() + " ='"
+				+ p_nomDossier + "' AND "
+				+ EnStructureTable.DOSSIER_NOM_INTERNET.getNomChamp() + "='"
+				+ p_fullName + "' AND "
+				+ EnStructureTable.COMPTES_ID.getNomChamp() + "=" + p_idCompte
+				+ ")";
 
 		if ("".equals(get1Champ(requete))) {
 			return -1;
@@ -615,27 +641,20 @@ public class BDRequette {
 
 		ArrayList<String> lstSousDossier = getListeSousDossier(p_idDossier);
 		for (String dossier : lstSousDossier) {
-			deleteDossier(p_idCompte, getIdDossier(dossier, p_idCompte));
+			deleteDossier(p_idCompte, getIdDossierWithFullName(dossier,
+					getNomInternetDossier(p_idDossier), p_idCompte));
 		}
 		String requette = "DELETE FROM DOSSIER WHERE ID_COMPTE='" + p_idCompte
 				+ "' AND ID_DOSSIER='" + p_idDossier + "'";
-		// String requetteBis = "DELETE FROM MAIL_RECU WHERE ID_COMPTE='"
-		// + p_idCompte + "' AND ID_DOSSIER_STOCKAGE='" + p_idDossier
-		// + "'";
+
 		// pour chaque dossier, on supprime la liste des messages associés
 		for (MlMessage unMessage : getListeDeMessage(p_idCompte, p_idDossier)) {
 			if (!deleteMessageRecu(unMessage.getIdMessage())) {
 				return false;
 			}
 		}
-		// on a fini de supprimer les messages (et les pj en cascade)
-		// on peut supprimer le dossier
+
 		return executeRequete(requette);
-		// // si on a reussi a supprimer le dossier en base,
-		// // on suppr tt les mails enregistés
-		// return executeRequete(requetteBis);
-		// }
-		// return false;
 
 	}
 
@@ -1084,6 +1103,13 @@ public class BDRequette {
 
 	}
 
+	public String getNomInternetDossier(int p_idDossierStockage) {
+		String script = "SELECT a.NOM_INTERNET FROM DOSSIER a WHERE a.ID_DOSSIER="
+				+ p_idDossierStockage;
+		return get1Champ(script);
+
+	}
+
 	public ArrayList<String> getCompteByID(int p_idCompte) {
 		String script = "SELECT a.NOM_COMPTE," + " a.SERVEUR_POP,"
 				+ " a.PORT_POP," + " a.SERVEUR_SMTP," + " a.PORT_SMTP,"
@@ -1209,6 +1235,15 @@ public class BDRequette {
 		String requete = "UPDATE MAIL_RECU a set a.UID_MESSAGE='"
 				+ p_m.getUIDMessage() + "' where ID_MESSAGE_RECU="
 				+ p_m.getIdMessage();
+		return executeRequete(requete);
+
+	}
+
+	public boolean updateNomDossierInternet(int p_idDossier,
+			String p_nomDossierInternet, int p_idDossierParent) {
+		String requete = "UPDATE DOSSIER a set a.NOM_INTERNET='"
+				+ p_nomDossierInternet.trim() + "', a.ID_DOSSIER_PARENT="
+				+ p_idDossierParent + " where a.ID_DOSSIER=" + p_idDossier;
 		return executeRequete(requete);
 
 	}

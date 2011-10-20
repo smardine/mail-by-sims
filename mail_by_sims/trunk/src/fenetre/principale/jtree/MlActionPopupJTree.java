@@ -1,16 +1,14 @@
 package fenetre.principale.jtree;
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
+import mdl.ComposantVisuelCommun;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
-
-import mdl.ComposantVisuelCommun;
 import bdd.BDRequette;
 
 public class MlActionPopupJTree implements ActionListener {
@@ -55,6 +53,7 @@ public class MlActionPopupJTree implements ActionListener {
 				tree.getModel().valueForPathChanged(newTreePath,
 						ActionTree.AJOUTER);
 				tree.setSelectionPath(newTreePath);
+				ComposantVisuelCommun.setTree(tree);
 
 			}
 			bd.closeConnexion();

@@ -4,21 +4,26 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import releve.imap.util.messageUtilisateur;
+import tools.Historique;
+
 public class ScriptExecutor {
+	private final String TAG = "ScriptExecutor";
+	private int i;
+	private final String CMDTERMINATOR = "SET TERM ";
+	private final int SIZETERMINATOR = CMDTERMINATOR.length();
+	private final char TERMINATOR = ';';
+	private char terminator = TERMINATOR, newterminator = TERMINATOR;
+	private boolean comment, hassql = false;
+	private StringBuilder sql;
+	private String onesql;
+	private Statement stmt = null;
 
 	public ScriptExecutor() {
 	}
 
 	boolean executeScriptSQL(Connection conn, String p_script) {
-		int i;
-		final String CMDTERMINATOR = "SET TERM ";
-		final int SIZETERMINATOR = CMDTERMINATOR.length();
-		final char TERMINATOR = ';';
-		char terminator = TERMINATOR, newterminator = TERMINATOR;
-		boolean comment, hassql = false;
-		StringBuilder sql;
-		String onesql;
-		Statement stmt = null;
+
 		try {
 			comment = false;
 			sql = new StringBuilder();
@@ -76,14 +81,17 @@ public class ScriptExecutor {
 				stmt.executeBatch();
 			return true;
 		} catch (Exception e) {
-			e.printStackTrace();
+			messageUtilisateur.affMessageException(TAG, e,
+					"erreur à l'execution du script");
+			Historique.ecrire(p_script);
 			return false;
 		} finally {
 			try {
 				stmt.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				messageUtilisateur.affMessageException(TAG, e,
+						"erreur à l'execution du script");
+				Historique.ecrire(p_script);
 			}
 		}
 	}

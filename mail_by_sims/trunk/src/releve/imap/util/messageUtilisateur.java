@@ -17,14 +17,18 @@ public final class messageUtilisateur {
 		if (p_exception == null) {
 			// JOptionPane.showMessageDialog(null, null, p_titre,
 			// JOptionPane.ERROR_MESSAGE);
-			Historique.ecrire(p_tag + " Exception relevée: \n" + p_titre);
+			Historique.ecrire("[EXCEPTION]" + p_tag + " Exception relevée: \n"
+					+ p_titre);
 		} else {
 			// JOptionPane.showMessageDialog(null, p_exception.getClass() + " "
 			// + p_exception.getMessage(), p_titre,
 			// JOptionPane.ERROR_MESSAGE);
-			Historique.ecrire(p_tag + " Titre: " + p_titre);
-			Historique.ecrire("Exception dans " + p_exception.getClass());
-			Historique.ecrire("Cause de l'erreur: " + p_exception.getMessage());
+			Historique.ecrire("[EXCEPTION] " + p_tag + " " + p_titre);
+			Throwable instack = p_exception.fillInStackTrace();
+			for (StackTraceElement s : instack.getStackTrace()) {
+				Historique.ecrire("[EXCEPTION] " + s.toString());
+			}
+
 		}
 
 	}

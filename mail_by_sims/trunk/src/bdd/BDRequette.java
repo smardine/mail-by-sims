@@ -1030,7 +1030,7 @@ public class BDRequette {
 	 * @return true si le message n'est pas present, false si le message est
 	 *         deja en base
 	 */
-	public boolean verifieAbscenceUID(String uid, int p_idDossier) {
+	public boolean isMessageUIDAbsent(String uid, int p_idDossier) {
 		if (null == uid) {
 			return true;// le message N'EST PAS EN BASE
 		}
@@ -1040,9 +1040,9 @@ public class BDRequette {
 
 	}
 
-	public boolean verifieAbscenceUID(long p_uid, int p_idDossier) {
+	public boolean isMessageUIDAbsent(long p_uid, int p_idDossier) {
 
-		return verifieAbscenceUID("" + p_uid, p_idDossier);
+		return isMessageUIDAbsent("" + p_uid, p_idDossier);
 	}
 
 	public boolean isMessageLu(int p_idMessageRecu) {

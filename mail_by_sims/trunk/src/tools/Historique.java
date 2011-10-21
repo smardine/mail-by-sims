@@ -2,6 +2,7 @@ package tools;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -98,6 +99,10 @@ public final class Historique {
 			return "";
 		}
 		return sb.toString();
+	}
+
+	public static File getHistorique() {
+		return new File(GestionRepertoire.RecupRepTravail() + "/historique.txt");
 	}
 
 }

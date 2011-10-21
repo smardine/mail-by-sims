@@ -150,7 +150,7 @@ public final class methodeHotmail {
 					+ p_folder.getName() + " :" + pourcent + " %");
 
 			BDRequette bd = new BDRequette();
-			if (bd.verifieAbscenceUID(messageHotmail.getId(), p_idDossier)) {
+			if (bd.isMessageUIDAbsent(messageHotmail.getId(), p_idDossier)) {
 				MlMessage messPourBase = new MlMessage();
 				messPourBase.setUIDMessage(messageHotmail.getId());
 				messPourBase.setCheminPhysique(GestionRepertoire

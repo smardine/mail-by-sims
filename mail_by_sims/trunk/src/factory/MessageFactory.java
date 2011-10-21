@@ -55,40 +55,12 @@ public class MessageFactory {
 			// ******************************//
 			try {
 				// liste des destinataires
-				if (null != mime.getRecipients(RecipientType.TO)) {
-					ArrayList<String> listeDestinataires = new ArrayList<String>(
-							mime.getRecipients(RecipientType.TO).length);
-					for (Address uneAdresse : mime
-							.getRecipients(RecipientType.TO)) {
-						listeDestinataires.add(uneAdresse.toString());
-					}
-					p_message.setDestinataire(listeDestinataires);
-				}
-
-				// liste des madresse en copy
-				if (null != mime.getRecipients(RecipientType.CC)) {
-					ArrayList<String> listCopyTo = new ArrayList<String>(mime
-							.getRecipients(RecipientType.CC).length);
-					for (Address uneAdress : mime
-							.getRecipients(RecipientType.CC)) {
-						listCopyTo.add(uneAdress.toString());
-					}
-					p_message.setDestinataireCopy(listCopyTo);
-				}
-
-				// liste des adresse en copie cachée
-				if (null != mime.getRecipients(RecipientType.BCC)) {
-					ArrayList<String> listBCC = new ArrayList<String>(mime
-							.getRecipients(RecipientType.BCC).length);
-					for (Address uneAdress : mime
-							.getRecipients(RecipientType.BCC)) {
-						listBCC.add(uneAdress.toString());
-					}
-					p_message.setDestinataireCache(listBCC);
-				}
+				valoriseListeDestCopyEtcache(mime, p_message);
 
 			} catch (AddressException e) {
-				System.out.println(e.getMessage());
+				messageUtilisateur.affMessageException(TAG, e,
+						"erreur a la recupération des adresses");
+
 			}
 
 			if (p_message.getUIDMessage() == null) {
@@ -114,6 +86,45 @@ public class MessageFactory {
 					"Erreur a la récupération du message");
 		}
 		return p_message;
+	}
+
+	/**
+	 * @param p_mime
+	 * @param p_message
+	 * @return
+	 * @throws MessagingException
+	 */
+	private void valoriseListeDestCopyEtcache(MimeMessage p_mime,
+			MlMessage p_message) throws MessagingException {
+		if (null != p_mime.getRecipients(RecipientType.TO)) {
+			ArrayList<String> listeDestinataires = new ArrayList<String>(p_mime
+					.getRecipients(RecipientType.TO).length);
+			for (Address uneAdresse : p_mime.getRecipients(RecipientType.TO)) {
+				listeDestinataires.add(uneAdresse.toString());
+			}
+			p_message.setDestinataire(listeDestinataires);
+		}
+
+		// liste des madresse en copy
+		if (null != p_mime.getRecipients(RecipientType.CC)) {
+			ArrayList<String> listCopyTo = new ArrayList<String>(p_mime
+					.getRecipients(RecipientType.CC).length);
+			for (Address uneAdress : p_mime.getRecipients(RecipientType.CC)) {
+				listCopyTo.add(uneAdress.toString());
+			}
+			p_message.setDestinataireCopy(listCopyTo);
+		}
+
+		// liste des adresse en copie cachée
+		if (null != p_mime.getRecipients(RecipientType.BCC)) {
+			ArrayList<String> listBCC = new ArrayList<String>(p_mime
+					.getRecipients(RecipientType.BCC).length);
+			for (Address uneAdress : p_mime.getRecipients(RecipientType.BCC)) {
+				listBCC.add(uneAdress.toString());
+			}
+			p_message.setDestinataireCache(listBCC);
+		}
+		return;
 	}
 
 }

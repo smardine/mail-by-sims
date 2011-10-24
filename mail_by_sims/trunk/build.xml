@@ -74,12 +74,6 @@
                 <exclude name="**/*.java"/>
             </fileset>
         </copy>
-        <copy includeemptydirs="false" todir="bin">
-            <fileset dir="test">
-                <exclude name="**/*.launch"/>
-                <exclude name="**/*.java"/>
-            </fileset>
-        </copy>
     </target>
     <target name="clean">
         <delete dir="bin"/>
@@ -123,10 +117,6 @@
             <src path="Images"/>
             <classpath refid="Mail by sims.classpath"/>
         </javac>
-        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
-            <src path="test"/>
-            <classpath refid="Mail by sims.classpath"/>
-        </javac>
     </target>
     <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
     <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
@@ -147,11 +137,11 @@
             <classpath refid="Mail by sims.classpath"/>
         </java>
     </target>
-    <target name="CompteMailFactoryTest">
+    <target name="TestSuiteClientMail">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="test.CompteMailFactoryTest" todir="${junit.output.dir}"/>
+            <test name="test.TestSuiteClientMail" todir="${junit.output.dir}"/>
             <classpath refid="Mail by sims.classpath"/>
         </junit>
     </target>

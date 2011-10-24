@@ -149,4 +149,40 @@
             <report format="frames" todir="${junit.output.dir}"/>
         </junitreport>
     </target>
+		 <!-- Define the Sonar task if this hasn't been done in a common script -->
+  <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
+    <classpath path="C:\hudson\tools\my_ant\lib" />
+ </taskdef>
+  
+  <!-- Add the target -->
+  <target name="sonar">
+    <!-- The workDir directory is used by Sonar to store temporary files -->
+    <sonar:sonar workDir="./" key="org.example:example" version="0.1-SNAPSHOT" xmlns:sonar="antlib:org.sonar.ant">
+	<property key="sonar.host.url" value="http://172.30.3.55:1234/sonar/" />
+      <!-- source directories (required) -->
+      <sources>
+        <path location="./src" />
+      </sources>
+ 
+      <!-- list of properties (optional) -->
+	  <property key="sonar.projectgroupId" value="fr.simscorps"/>
+      <property key="sonar.projectName" value="client mail" />
+      <property key="sonar.dynamicAnalysis" value="false" />
+ 
+      <!-- test source directories (optional) -->
+      <tests>
+        <path location="./src/test" />
+      </tests>
+ 
+      <!-- binaries directories, which contain for example the compiled Java bytecode (optional) -->
+      <binaries>
+        <path location="./bin" />
+      </binaries>
+ 
+      <!-- path to libraries (optional). These libraries are for example used by the Java Findbugs plugin -->
+      <libraries>
+        <path location="./lib/mail.jar,.lib/deltasync.jar,./lib/jaybird_full_2_1_6.jar,./lib/junit.jar,./lib/activation.jar" />
+      </libraries>
+    </sonar:sonar>
+  </target>
 </project>

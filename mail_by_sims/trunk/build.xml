@@ -157,7 +157,7 @@
   <!-- Add the target -->
   <target name="sonar">
     <!-- The workDir directory is used by Sonar to store temporary files -->
-    <sonar:sonar workDir="./" key="org.example:example" version="0.1-SNAPSHOT" xmlns:sonar="antlib:org.sonar.ant">
+    <sonar:sonar workDir="./" key="fr.simscorps:client.mail" version="0.1-SNAPSHOT" xmlns:sonar="antlib:org.sonar.ant">
 	<property key="sonar.host.url" value="http://172.30.3.55:1234/sonar/" />
       <!-- source directories (required) -->
       <sources>
@@ -165,7 +165,7 @@
       </sources>
  
       <!-- list of properties (optional) -->
-	  <property key="sonar.projectgroupId" value="fr.simscorps"/>
+	  <property key="sonar.projectgroupId" value=""/>
       <property key="sonar.projectName" value="client mail" />
       <property key="sonar.dynamicAnalysis" value="false" />
  

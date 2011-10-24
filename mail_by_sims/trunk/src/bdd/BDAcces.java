@@ -29,7 +29,7 @@ public class BDAcces {
 	private FBManager firebirdManager;
 	final String VERSION_BASE = "7";
 
-	private boolean ttACreer;
+	private boolean ttACreer = false;
 	private FBMaintenanceManager maintenance;
 
 	/**
@@ -102,7 +102,9 @@ public class BDAcces {
 								"ALERTE", JOptionPane.ERROR_MESSAGE);
 				System.exit(0);
 			}
-
+			if (ttACreer) {
+				verifVersionBDD(true);
+			}
 			// try {
 			// verifVersionBDD(exist);
 			// } catch (SQLException e) {

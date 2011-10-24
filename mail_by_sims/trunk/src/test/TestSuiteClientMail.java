@@ -1,8 +1,11 @@
 package test;
 
+import java.io.File;
+
 import junit.framework.Test;
 import junit.framework.TestCase;
 import junit.framework.TestSuite;
+import bdd.BDParam;
 
 /**
  * 
@@ -14,10 +17,14 @@ import junit.framework.TestSuite;
 public class TestSuiteClientMail extends TestCase {
 
 	public static Test suite() {
+		BDParam params = new BDParam();
+		File fichierDatabase = new File(params.getEmplacementBase());
+		if (fichierDatabase.exists()) {
+			fichierDatabase.delete();
+		}
 		TestSuite suite = new TestSuite();
 		suite.addTestSuite(CompteMailFactoryTest.class);
 		return suite;
 
 	}
-
 }

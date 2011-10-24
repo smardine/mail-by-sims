@@ -64,10 +64,18 @@
                 <exclude name="resizable/ResizableBorder.java"/>
                 <exclude name="resizable/ResizableComponent.java"/>
                 <exclude name="releve/imap/listener/messageListener.java"/>
+                <exclude name="releve/thread_VerifNewMess.java"/>
+                <exclude name="releve/pop/methodePop.java"/>
             </fileset>
         </copy>
         <copy includeemptydirs="false" todir="bin">
             <fileset dir="Images">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="test">
                 <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
             </fileset>
@@ -107,10 +115,16 @@
             <exclude name="resizable/ResizableBorder.java"/>
             <exclude name="resizable/ResizableComponent.java"/>
             <exclude name="releve/imap/listener/messageListener.java"/>
+            <exclude name="releve/thread_VerifNewMess.java"/>
+            <exclude name="releve/pop/methodePop.java"/>
             <classpath refid="Mail by sims.classpath"/>
         </javac>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="Images"/>
+            <classpath refid="Mail by sims.classpath"/>
+        </javac>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="test"/>
             <classpath refid="Mail by sims.classpath"/>
         </javac>
     </target>
@@ -133,11 +147,11 @@
             <classpath refid="Mail by sims.classpath"/>
         </java>
     </target>
-    <target name="MlCompteMailTest">
+    <target name="CompteMailFactoryTest">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
-            <test name="test.MlCompteMailTest" todir="${junit.output.dir}"/>
+            <test name="test.CompteMailFactoryTest" todir="${junit.output.dir}"/>
             <classpath refid="Mail by sims.classpath"/>
         </junit>
     </target>
@@ -149,40 +163,4 @@
             <report format="frames" todir="${junit.output.dir}"/>
         </junitreport>
     </target>
-		 <!-- Define the Sonar task if this hasn't been done in a common script -->
-  <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
-    <classpath path="C:\hudson\tools\my_ant\lib" />
- </taskdef>
-  
-  <!-- Add the target -->
-  <target name="sonar">
-    <!-- The workDir directory is used by Sonar to store temporary files -->
-    <sonar:sonar workDir="./" key="fr.simscorps:client.mail" version="0.1-SNAPSHOT" xmlns:sonar="antlib:org.sonar.ant">
-	<property key="sonar.host.url" value="http://172.30.3.55:1234/sonar/" />
-      <!-- source directories (required) -->
-      <sources>
-        <path location="./src" />
-      </sources>
- 
-      <!-- list of properties (optional) -->
-	  <property key="sonar.projectgroupId" value=""/>
-      <property key="sonar.projectName" value="client mail" />
-      <property key="sonar.dynamicAnalysis" value="false" />
- 
-      <!-- test source directories (optional) -->
-      <tests>
-        <path location="./src/test" />
-      </tests>
- 
-      <!-- binaries directories, which contain for example the compiled Java bytecode (optional) -->
-      <binaries>
-        <path location="./bin" />
-      </binaries>
- 
-      <!-- path to libraries (optional). These libraries are for example used by the Java Findbugs plugin -->
-      <libraries>
-        <path location="./lib/mail.jar,.lib/deltasync.jar,./lib/jaybird_full_2_1_6.jar,./lib/junit.jar,./lib/activation.jar" />
-      </libraries>
-    </sonar:sonar>
-  </target>
 </project>

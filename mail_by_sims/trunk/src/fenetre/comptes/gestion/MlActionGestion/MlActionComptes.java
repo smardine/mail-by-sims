@@ -12,6 +12,7 @@ import mdl.MlListeCompteMail;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
 import bdd.BDRequette;
+import exception.DonneeAbsenteException;
 import factory.CompteMailFactory;
 import fenetre.comptes.creation.choixFAI;
 import fenetre.comptes.gestion.GestionCompte;
@@ -43,8 +44,13 @@ public class MlActionComptes implements ActionListener {
 				String nomCompte = (String) ComposantVisuelCommun
 						.getJListCompteMail().getSelectedValue();
 				CompteMailFactory fact = new CompteMailFactory();
-				boolean result = fact.suppressionCompteMail(new MlCompteMail(
-						nomCompte));
+				boolean result;
+				try {
+					result = fact.suppressionCompteMail(new MlCompteMail(
+							nomCompte));
+				} catch (DonneeAbsenteException e) {
+					result = false;
+				}
 				// BDRequette bd = new BDRequette();
 				// boolean result = bd.deleteCompte(bd.getIdComptes(nomCompte));
 				if (result) {

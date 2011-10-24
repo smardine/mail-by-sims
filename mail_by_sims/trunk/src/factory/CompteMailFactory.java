@@ -18,6 +18,7 @@ import bdd.BDRequette;
 import com.googlecode.jdeltasync.DeltaSyncClient;
 import com.googlecode.jdeltasync.DeltaSyncClientHelper;
 
+import exception.DonneeAbsenteException;
 import fenetre.comptes.EnDossierBase;
 
 /**
@@ -55,7 +56,8 @@ public class CompteMailFactory {
 
 	}
 
-	public boolean suppressionCompteMail(MlCompteMail p_cpt) {
+	public boolean suppressionCompteMail(MlCompteMail p_cpt)
+			throws DonneeAbsenteException {
 		BDRequette bd = new BDRequette();
 		boolean result = bd.deleteCompte(p_cpt.getIdCompte());
 		bd.closeConnexion();

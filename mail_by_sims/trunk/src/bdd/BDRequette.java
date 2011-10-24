@@ -26,6 +26,7 @@ import tools.GestionRepertoire;
 import tools.Historique;
 import tools.RecupDate;
 import tools.WriteFile;
+import exception.DonneeAbsenteException;
 
 /**
  * cette classe s'occupe uniquement des requetes
@@ -909,11 +910,20 @@ public class BDRequette {
 	public MlListeMessage getListeDeMessage(int p_idCompte,
 			int p_idDossierChoisi) {
 		MlListeMessage lstMessage = new MlListeMessage();
-		String requette = "SELECT " + "a.ID_MESSAGE_RECU, " + "a.UID_MESSAGE, "
-				+ "a.EXPEDITEUR, " + "a.DESTINATAIRE, " + "a.SUJET, "
-				+ "a.CONTENU, " + "a.DATE_RECEPTION " + "FROM MAIL_RECU a "
-				+ "where a.ID_COMPTE='" + p_idCompte
-				+ "' and a.ID_DOSSIER_STOCKAGE='" + p_idDossierChoisi
+		String requette = "SELECT " //
+				+ "a.ID_MESSAGE_RECU, " // idx0
+				+ "a.UID_MESSAGE, "// idx1
+				+ "a.EXPEDITEUR, " // idx2
+				+ "a.DESTINATAIRE, a.DESTINATAIRE_COPY,a.DESTINATAIRE_CACHE, " // idx
+																				// 3,4,5
+				+ "a.SUJET, "// idx6
+				+ "a.CONTENU, " // idx7
+				+ "a.DATE_RECEPTION " // idx8
+				+ "FROM MAIL_RECU a " //
+				+ "where a.ID_COMPTE='"
+				+ p_idCompte
+				+ "' and a.ID_DOSSIER_STOCKAGE='"
+				+ p_idDossierChoisi
 				+ "' ORDER BY a.DATE_RECEPTION DESC";
 		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(requette);
 		for (int i = 0; i < lstResultat.size(); i++) {
@@ -922,16 +932,36 @@ public class BDRequette {
 			m.setIdMessage(Integer.parseInt(unEnregistrement.get(0)));
 			m.setUIDMessage(unEnregistrement.get(1));
 			m.setExpediteur(decodeHTMLFromBase(unEnregistrement.get(2)));
-			String[] tabDestinaire = unEnregistrement.get(3).split(";");
-			ArrayList<String> lstDest = new ArrayList<String>();
-			for (String des : tabDestinaire) {
-				lstDest.add(des);
+
+			if (unEnregistrement.get(3) != null) {// DESTINATAIRE
+				String[] tabDestinaire = unEnregistrement.get(3).split(";");
+				ArrayList<String> lstDest = new ArrayList<String>();
+				for (String des : tabDestinaire) {
+					lstDest.add(des);
+				}
+				m.setDestinataire(lstDest);
 			}
-			m.setDestinataire(lstDest);
-			m.setSujet(decodeHTMLFromBase(unEnregistrement.get(4)));
-			m.setContenu(unEnregistrement.get(5));
+			if (unEnregistrement.get(4) != null) {// DESTINATAIRE COPY
+				String[] tabDestinaire = unEnregistrement.get(4).split(";");
+				ArrayList<String> lstDest = new ArrayList<String>();
+				for (String des : tabDestinaire) {
+					lstDest.add(des);
+				}
+				m.setDestinataireCopy(lstDest);
+			}
+			if (unEnregistrement.get(5) != null) {// DESTINATAIRE CACHE
+				String[] tabDestinaire = unEnregistrement.get(5).split(";");
+				ArrayList<String> lstDest = new ArrayList<String>();
+				for (String des : tabDestinaire) {
+					lstDest.add(des);
+				}
+				m.setDestinataireCache(lstDest);
+			}
+
+			m.setSujet(decodeHTMLFromBase(unEnregistrement.get(6)));
+			m.setContenu(unEnregistrement.get(7));
 			m.setDateReception(RecupDate.getdateFromTimeStamp((unEnregistrement
-					.get(6))));
+					.get(8))));
 
 			lstMessage.add(m);
 
@@ -1127,8 +1157,13 @@ public class BDRequette {
 	 * 1 pour supprimer en cascade les messages et PJ associées.
 	 * @param p_idCompte
 	 * @return resultat
+	 * @throws DonneeAbsenteException
 	 */
-	public boolean deleteCompte(int p_idCompte) {
+	public boolean deleteCompte(int p_idCompte) throws DonneeAbsenteException {
+		if (p_idCompte == 0) {
+			throw new DonneeAbsenteException(TAG,
+					"le compte à supprimé n'existe pas en base");
+		}
 		ArrayList<String> lsiteDossier = getListeDossier(p_idCompte);
 		for (String unDossier : lsiteDossier) {
 			deleteDossier(p_idCompte, getIdDossier(unDossier, p_idCompte));

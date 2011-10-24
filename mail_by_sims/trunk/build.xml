@@ -145,6 +145,15 @@
             <classpath refid="Mail by sims.classpath"/>
         </junit>
     </target>
+    <target name="Mail by sims">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.CompteMailFactoryTest" todir="${junit.output.dir}"/>
+            <test name="test.TestSuiteClientMail" todir="${junit.output.dir}"/>
+            <classpath refid="Mail by sims.classpath"/>
+        </junit>
+    </target>
     <target name="junitreport">
         <junitreport todir="${junit.output.dir}">
             <fileset dir="${junit.output.dir}">

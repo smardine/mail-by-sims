@@ -4,7 +4,8 @@
               To include a user specific buildfile here, simply create one in the same
               directory with the processing instruction <?eclipse.ant.import?>
               as the first entry and export the buildfile again. -->
-<project basedir="." default="build" name="Mail by sims">
+<project basedir="." default="sonar" name="Mail by sims">
+	 <property name="junit.output.dir" value="junit"/>
 	 <!-- Define the Sonar task if this hasn't been done in a common script -->
   <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
     <classpath path="C:\hudson\tools\my_ant\lib" />
@@ -27,7 +28,7 @@
  
       <!-- test source directories (optional) -->
       <tests>
-        <path location="./test/test" />
+        <path location="${junit.output.dir}" />
       </tests>
  
       <!-- binaries directories, which contain for example the compiled Java bytecode (optional) -->

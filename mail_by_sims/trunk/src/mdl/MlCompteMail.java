@@ -64,20 +64,22 @@ public class MlCompteMail {
 					setPassword(defCompte.get(6));
 					break;
 				case 7:
-					if ("imap".equals(defCompte.get(7))) {
-						setTypeCompte(EnTypeCompte.IMAP);
-					} else if ("pop".equals(defCompte.get(7))) {
-						setTypeCompte(EnTypeCompte.POP);
-					} else if ("gmail".equals(defCompte.get(7))) {
-						setTypeCompte(EnTypeCompte.GMAIL);
-					} else if ("hotmail".equals(defCompte.get(7))) {
-						setTypeCompte(EnTypeCompte.HOTMAIL);
-					}
+					traiteTypeCompte(defCompte);
 					break;
 
 			}
 		}// fin de for
 
+		initDossierDeBase(bd);
+
+		bd.closeConnexion();
+
+	}
+
+	/**
+	 * @param bd
+	 */
+	private void initDossierDeBase(BDRequette bd) {
 		EnDossierBase[] lstDossierBase = EnDossierBase.values();
 		for (EnDossierBase unDossier : lstDossierBase) {
 			switch (unDossier) {
@@ -100,9 +102,21 @@ public class MlCompteMail {
 					break;
 			}
 		}
+	}
 
-		bd.closeConnexion();
-
+	/**
+	 * @param defCompte
+	 */
+	private void traiteTypeCompte(ArrayList<String> defCompte) {
+		if ("imap".equals(defCompte.get(7))) {
+			setTypeCompte(EnTypeCompte.IMAP);
+		} else if ("pop".equals(defCompte.get(7))) {
+			setTypeCompte(EnTypeCompte.POP);
+		} else if ("gmail".equals(defCompte.get(7))) {
+			setTypeCompte(EnTypeCompte.GMAIL);
+		} else if ("hotmail".equals(defCompte.get(7))) {
+			setTypeCompte(EnTypeCompte.HOTMAIL);
+		}
 	}
 
 	/**

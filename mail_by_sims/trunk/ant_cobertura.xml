@@ -132,7 +132,7 @@
   </target>
 
   <target name="cover-test" depends="instrument">
-    <junit dir="./" failureproperty="test.failure" printsummary="yes" 
+    <junit dir="./test" failureproperty="test.failure" printsummary="yes" 
       fork="true" haltonerror="true">
         <classpath location="${cobertura.jar.file}"/>
         <classpath location="${cob.instrumented.dir}"/>

@@ -84,7 +84,9 @@
 	</target>
 	
 	<target name="cover-report" depends="testsuite">
+		 <echo>envoi du rapport depuis ${reports.xml.dir}/coverage.xml</echo>
 		<cobertura-report format="xml" destdir="${reports.xml.dir}" srcdir="${test.dir}" />
+		
 	</target>
 	
   
@@ -105,7 +107,7 @@
       <property key="sonar.projectVersion" value="0.1-SNAPSHOT" /> 
       <property key="sonar.cobertura.reportsPath" value="${reports.xml.dir}/coverage.xml"/>
      
-    	 <echo>envoi du rapport depuis ${reports.xml.dir}/coverage.xml</echo>
+    	
  
       <!-- test source directories (optional) -->
       <tests>

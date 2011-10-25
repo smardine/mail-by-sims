@@ -9,7 +9,11 @@
  <property name="cobertura_jar_dir" value="./lib/cobertura.jar"/>
  <property name ="libdir" value="./lib/" />
  <property name="deltasynclib" value="${libdir}/libdeltasync/"/>
-	
+ 
+ 
+<taskdef classpath="${cobertura_jar_dir}" resource="tasks.properties" />
+
+
 	<target name="instrument">
 	  <cobertura-instrument todir="${instrumented.classes}">
 	    <fileset dir="${classesdir}">

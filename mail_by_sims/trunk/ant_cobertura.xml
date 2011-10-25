@@ -39,6 +39,9 @@
 	      <fileset dir="${deltasynclib}">
 	      	<include name="*.jar"/>
 	      </fileset>
+	      <fileset dir="${instrumented.classes}">
+	      	<include name="*.jar"/>
+	      </fileset>
 	      <pathelement path="${testclassesdir}" />
 	      <pathelement path="${classesdir}" />
 	    </classpath>

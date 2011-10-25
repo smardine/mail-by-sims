@@ -150,6 +150,9 @@
 		</fileset>
 	</batchtest>
     </junit>
+    <mkdir dir="${junit.report.dir}"/>
+
+    
   </target>
   
   <!-- run this target to generate the coverage reports -->

@@ -57,15 +57,12 @@
 				-->
 				<sysproperty key="net.sourceforge.cobertura.datafile"
 					file="${basedir}/cobertura.ser" />
-
 				<!--
 					Note the classpath order: instrumented classes are before the
 					original (uninstrumented) classes.  This is important.
 				-->
 				<classpath location="${instrumented.dir}" />
 				<classpath location="${classes.dir}" />
-				
-
 				<!--
 					The instrumented classes reference classes used by the
 					Cobertura runtime, so Cobertura and its dependencies
@@ -74,12 +71,14 @@
 				<classpath refid="cobertura.classpath" />
 
 				<formatter type="xml" />
-				<test name="${testcase}" todir="${reports.xml.dir}" if="testcase" />
-				<batchtest todir="${reports.xml.dir}" unless="testcase">
+				<test name="test.TestSuiteClientMail" todir="${reports.xml.dir}" />
+				
+			<!-- 
+			<batchtest todir="${reports.xml.dir}" unless="testcase">
 					<fileset dir="${test.dir}">
 						<include name="**/*Test.java" />
 					</fileset>
-				</batchtest>
+				</batchtest>-->
 			</junit>
 	</target>
 	

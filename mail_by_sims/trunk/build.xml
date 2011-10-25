@@ -156,7 +156,7 @@
             <classpath refid="Mail by sims.classpath"/>
         </java>
     </target>
-    <target name="TestSuiteClientMail (1)">
+    <target name="TestSuiteClientMail">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>

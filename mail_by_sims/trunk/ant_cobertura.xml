@@ -19,6 +19,9 @@
 	    <fileset dir="${classesdir}">
 	      <include name="**/*.class"/>
 	    </fileset>
+	    <fileset dir="${instrumented.classes}">
+	      	<include name="**/*.jar"/>
+	     </fileset>
 	  </cobertura-instrument>
 	</target>
 	
@@ -39,9 +42,7 @@
 	      <fileset dir="${deltasynclib}">
 	      	<include name="*.jar"/>
 	      </fileset>
-	      <fileset dir="${instrumented.classes}">
-	      	<include name="*.jar"/>
-	      </fileset>
+	      
 	      <pathelement path="${testclassesdir}" />
 	      <pathelement path="${classesdir}" />
 	    </classpath>

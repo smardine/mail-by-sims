@@ -26,7 +26,7 @@
  
       <!-- test source directories (optional) -->
       <tests>
-        <path location="./junit" />
+        <path location="./test" />
       </tests>
  
       <!-- binaries directories, which contain for example the compiled Java bytecode (optional) -->

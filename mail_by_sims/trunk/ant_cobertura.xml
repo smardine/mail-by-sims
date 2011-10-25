@@ -11,8 +11,8 @@
   <property name="version.number" value="1.0" />
   <property name="build.number" value="1984" />
   <property name="lib.dir" value="lib" />
-  <property name="lib.cobertura.dir" value="${lib.dir}" />
-  <property name="cobertura.jar.file" value="${lib.dir}/cobertura.jar" />
+  <property name="lib.cobertura.dir" value="${lib.dir}/cobertura" />
+  <property name="cobertura.jar.file" value="${lib.cobertura.dir}/cobertura.jar" />
   <property name="src.tests.dir" value="test" />
   <property name="cob.ser.file" value="cobertura.ser" />
 

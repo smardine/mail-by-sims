@@ -66,10 +66,37 @@
   
    <target name="compile" depends="prepare">
     <echo>=== COMPILE ===</echo>
-        <echo>Compiling ${src.dir} files ...</echo>
-    <javac debug="on" srcdir="${src.dir}" destdir="${dest.dir.classes}" includes="com/**">
+        <echo>Compiling ${src.dir} files ... to ${dest.dir.classes} </echo>
+    <javac debug="on" srcdir="${src.dir}" destdir="${dest.dir.classes}" >
       <classpath refid="build.class.path" />
-      <!-- classpath refid="cobertura.classpath" -->
+     <src path="src"/>
+            <exclude name="fenetre/TreeExpandRowAndMakeRowVisible.java"/>
+            <exclude name="JTree/TreeExpandRowAndMakeRowVisible.java"/>
+            <exclude name="layout/BoxLayoutDemo2.java"/>
+            <exclude name="html/gui.java"/>
+            <exclude name="html/fetchMail.java"/>
+            <exclude name="fenetre/test.java"/>
+            <exclude name="fenetre/test1.java"/>
+            <exclude name="fenetre/test2.java"/>
+            <exclude name="fenetre/test3.java"/>
+            <exclude name="fenetre/test4.java"/>
+            <exclude name="jseparator/"/>
+            <exclude name="Mail/"/>
+            <exclude name="fenetre/principale/RightClick.java"/>
+            <exclude name="fenetre/principale/DocumentViewer.java"/>
+            <exclude name="fenetre/principale/Main_old.java"/>
+            <exclude name="fenetre/principale/test.java"/>
+            <exclude name="fenetre/ReleveMessagerie.java"/>
+            <exclude name="fenetre/principale/MlAction/MlActionBouton.java"/>
+            <exclude name="resizable/ComponentEventDemo.java"/>
+            <exclude name="resizable/JResizer.java"/>
+            <exclude name="resizable/MyMouseInputAdapter.java"/>
+            <exclude name="resizable/ResizableBorder.java"/>
+            <exclude name="resizable/ResizableComponent.java"/>
+            <exclude name="releve/imap/listener/messageListener.java"/>
+            <exclude name="releve/thread_VerifNewMess.java"/>
+            <exclude name="releve/pop/methodePop.java"/>
+            <classpath refid="Mail by sims.classpath"/>
     </javac>
 
     <!-- compile files on the src-tests path -->

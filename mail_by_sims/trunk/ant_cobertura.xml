@@ -73,7 +73,7 @@
   </path>
     <taskdef classpathref="cobertura.classpath" resource="tasks.properties"/>
   
-  <target name="instrument" depends="compile">
+  <target name="instrument">
     <cobertura-instrument todir="${cob.instrumented.dir}">
       <fileset dir="${dest.dir.classes}">
         <include name="**/*.class"/>

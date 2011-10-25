@@ -5,7 +5,7 @@
  <property name="testreportdir" value="./target/cobertura"/>
  <property name="classesdir" value="./bin/"/>
  <property name="testclassesdir" value="./test"/>
- <property name="instrumented.classes" value="./target/instrumented-classes"/>
+ <property name="instrumented.classes" value="./lib/lib_cobertura/"/>
  <property name="cobertura_jar_dir" value="./lib/cobertura.jar"/>
  <property name ="libdir" value="./lib/" />
  <property name="deltasynclib" value="${libdir}/libdeltasync/"/>

@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<!-- WARNING: Eclipse auto-generated file.
-              Any modifications will be overwritten.
-              To include a user specific buildfile here, simply create one in the same
-              directory with the processing instruction <?eclipse.ant.import?>
-              as the first entry and export the buildfile again. -->
+
 <project basedir="." default="sonar" name="Mail by sims">
 	 <property name="junit.output.dir" value="junit"/>
 	 <!-- Define the Sonar task if this hasn't been done in a common script -->
@@ -22,13 +18,15 @@
       </sources>
  
       <!-- list of properties (optional) -->
-	  <property key="sonar.projectgroupId" value=""/>
-      <property key="sonar.projectName" value="client mail" />
-      <property key="sonar.dynamicAnalysis" value="false" />
+      <property key="sonar.dynamicAnalysis" value="reuseReports" />
+      <property key="sonar.cobertura.reportPath" value="./target/cobertura/coverage.xml" />
+      <property key="sonar.java.source" value="1.5" />
+	  <property key="sonar.projectName" value="client mail" />
+      <property key="sonar.projectVersion" value="${build}" />       
  
       <!-- test source directories (optional) -->
       <tests>
-        <path location="${junit.output.dir}" />
+        <path location="./src" />
       </tests>
  
       <!-- binaries directories, which contain for example the compiled Java bytecode (optional) -->
@@ -38,7 +36,7 @@
  
       <!-- path to libraries (optional). These libraries are for example used by the Java Findbugs plugin -->
       <libraries>
-        <path location="./lib/mail.jar,./lib/deltasync.jar,./lib/jaybird_full_2_1_6.jar,./lib/junit.jar,./lib/activation.jar,./lib/libdeltasync/apache-mime4j-0.5.jar" />
+       <path location="./lib/**,./lib/libdeltasync/**" />
       </libraries>
     </sonar:sonar>
   </target>

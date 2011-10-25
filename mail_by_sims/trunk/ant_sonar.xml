@@ -43,9 +43,7 @@
 			        <include name="**/*.class" />
 			        <exclude name="**/*Test.class" />
 			    </fileset>
-			    <fileset dir="${jars.dir}">
-			        <include name="**/*.jar" />
-			    </fileset>
+			    
 			</cobertura-instrument>
 	</target>
 	

@@ -11,9 +11,9 @@
   <property name="version.number" value="1.0" />
   <property name="build.number" value="1984" />
   <property name="lib.dir" value="lib" />
-  <property name="lib.cobertura.dir" value="${lib.dir}/cobertura-1.9" />
-  <property name="cobertura.jar.file" value="${lib.dir}/cobertura-1.9/cobertura.jar" />
-  <property name="src.tests.dir" value="src-tests" />
+  <property name="lib.cobertura.dir" value="${lib.dir}" />
+  <property name="cobertura.jar.file" value="${lib.dir}/cobertura.jar" />
+  <property name="src.tests.dir" value="test" />
   <property name="cob.ser.file" value="cobertura.ser" />
 
   <property environment="env" />
@@ -62,6 +62,55 @@
     <mkdir dir="${cob.reports.html.dir}" />
     <mkdir dir="${cob.coverage.xml.dir}" />
     <mkdir dir="${cob.coverage.html.dir}" />
+  </target>
+  
+   <target name="compile" depends="prepare">
+    <echo>=== COMPILE ===</echo>
+        <echo>Compiling ${src.dir} files ...</echo>
+    <javac debug="on" srcdir="${src.dir}" destdir="${dest.dir.classes}" includes="com/**">
+      <classpath refid="build.class.path" />
+      <!-- classpath refid="cobertura.classpath" -->
+    </javac>
+
+    <!-- compile files on the src-tests path -->
+        <echo>Compiling ${src.tests.dir} files ...</echo>
+    <javac debug="on" srcdir="${src.tests.dir}" destdir="${dest.dir.classes}" includes="com/**">
+      <classpath refid="build.class.path" />
+      <!-- classpath refid="cobertura.classpath" -->
+    </javac>
+  </target>
+
+      
+ 
+
+  <!-- classpath for test needs to include the dist/classes directory -->
+  <path id="classpath.test">
+    <pathelement location="${dest.dir.classes}" />
+    <fileset dir="lib">
+      <include name="**/*.jar" />
+    </fileset>
+  </path>
+
+  <!-- may want to modify this, and only allow deployment if the tests run -->
+  <target name="test" description="Run JUnit Tests" depends="compile">
+    <echo>=== UNIT TESTS ===</echo>
+    <delete>
+      <fileset dir="${reports.dir}" includes="**/TEST-*.txt"/>
+    </delete>
+    <junit dir="./" printsummary="yes" fork="yes" haltonfailure="yes">
+      <formatter type="plain"/>
+      <batchtest fork="yes" todir="${reports.dir}">
+          <fileset dir="${dest.dir.classes}">
+            <include name="**/Test*"/>
+            <include name="**/*Tests*"/>
+            <exclude name="**/AllTests*"/>
+          <exclude name="**/TestingUtils*"/>
+          </fileset>
+          </batchtest>
+      <classpath>
+              <path refid="classpath.test"/>
+        </classpath>
+    </junit>
   </target>
   
    <!-- cobertura task definition -->

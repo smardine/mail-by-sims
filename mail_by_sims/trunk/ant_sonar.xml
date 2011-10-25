@@ -21,7 +21,7 @@
  
       <!-- list of properties (optional) -->
       <property key="sonar.dynamicAnalysis" value="reuseReports" />
-      <property key="sonar.cobertura.reportPath" value="./cobertura/report/junit-xml/TEST-test.TestSuiteClientMail.xml.xml" />
+      <property key="sonar.cobertura.reportPath" value="./cobertura/report/junit-xml/TEST-test.TestSuiteClientMail.xml" />
       <property key="sonar.projectName" value="client mail" />
       <property key="sonar.java.source" value="1.5" />
       <property key="sonar.projectVersion" value="${build.number}" />      

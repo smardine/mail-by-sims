@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<project basedir="." default="sonar" name="Mail by sims">
+<project basedir="." default="coverage-report" name="Mail by sims">
 
   <!-- project-specific variables -->
   <property name="package.name" value="wikitex.jar" />
@@ -102,10 +102,7 @@
       <formatter type="plain"/>
       <batchtest fork="yes" todir="${reports.dir}">
           <fileset dir="${dest.dir.classes}">
-            <include name="**/Test*"/>
-            <include name="**/*Tests*"/>
-            <exclude name="**/AllTests*"/>
-          <exclude name="**/TestingUtils*"/>
+            <include name="**/TestSuiteClientMail.java"/>           
           </fileset>
           </batchtest>
       <classpath>
@@ -132,23 +129,26 @@
   </target>
 
   <target name="cover-test" depends="instrument">
-    <junit dir="./test" failureproperty="test.failure" printsummary="yes" 
-      fork="true" haltonerror="true">
-       <echo>Testing ./test files ... to ${reports.dir}</echo>
+    <junit dir="./test" failureproperty="test.failure" printsummary="yes" fork="true" haltonerror="true">
+    <sysproperty key="net.sourceforge.cobertura.datafile" file="${basedir}/cobertura.ser" />
         <classpath location="${cobertura.jar.file}"/>
         <classpath location="${cob.instrumented.dir}"/>
       <classpath>
               <path refid="build.class.path"/>
         </classpath>
+        <classpath location="${dest.dir.classes}"/>
       <batchtest fork="yes" todir="${reports.dir}">
           <fileset dir="${cob.instrumented.dir}">
-            <include name="**/Test*"/>
-            <include name="**/*Tests*"/>
-            <include name="org/jaxen/javabean/*Test*" />
-          <exclude name="**/TestingUtils*"/>
-            <exclude name="**/AllTests*"/>
+            <include name="**/TestSuiteClientMail.java"/>
           </fileset>
-          </batchtest>
+      </batchtest>
+      <formatter type="xml" />
+	<test name="test suite complet" todir="${cob.reports.xml.dir}" if="testcase" />
+	<batchtest todir="${cob.reports.xml.dir}" unless="testcase">
+		<fileset dir="./test">
+			<include name="**/TestSuiteClientMail.java" />
+		</fileset>
+	</batchtest>
     </junit>
   </target>
   

@@ -36,7 +36,8 @@
  
       <!-- path to libraries (optional). These libraries are for example used by the Java Findbugs plugin -->
       <libraries>
-       <path location="./lib/**,./lib/libdeltasync/**" />
+       <path location="./lib/**" />
+      	<path location="./lib/libdeltasync/**"/>
       </libraries>
     </sonar:sonar>
   </target>

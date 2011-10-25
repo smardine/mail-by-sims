@@ -98,7 +98,7 @@
     <delete>
       <fileset dir="${reports.dir}" includes="**/TEST-*.txt"/>
     </delete>
-    <junit dir="./" printsummary="yes" fork="yes" haltonfailure="yes">
+    <junit dir="./test" printsummary="yes" fork="yes" haltonfailure="yes">
       <formatter type="plain"/>
       <batchtest fork="yes" todir="${reports.dir}">
           <fileset dir="${dest.dir.classes}">

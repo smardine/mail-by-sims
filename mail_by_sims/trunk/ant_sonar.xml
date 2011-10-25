@@ -21,7 +21,7 @@
 	        <include name="lib/**/*.jar" />
 	    </fileset>
 		<fileset dir="${jars.dir}">
-			<include name="junit.jar"/>
+			<include name="**/*.jar"/>
 		</fileset>
 	</path>
 
@@ -63,6 +63,7 @@
 				-->
 				<classpath location="${instrumented.dir}" />
 				<classpath location="${classes.dir}" />
+			
 				<!--
 					The instrumented classes reference classes used by the
 					Cobertura runtime, so Cobertura and its dependencies

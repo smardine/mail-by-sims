@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project basedir="." default="sonar" name="Mail by sims">
+
+ <property name="testreportdir" value="./target/cobertura"/>
+ <property name="classesdir" value="./bin/"/>
+ <property name="testclassesdir" value="./test"/>
+ <property name="instrumented.classes" value="./target/instrumented-classes"/>
+ <property name="cobertura_jar_dir" value="./lib/cobertura.jar"/>
+ <property name ="libdir" value="./lib/" />
+ <property name="deltasynclib" value="${libdir}/libdeltasync/"/>
+	
+	<target name="instrument">
+	  <cobertura-instrument todir="${instrumented.classes}">
+	    <fileset dir="${classesdir}">
+	      <include name="**/*.class"/>
+	    </fileset>
+	  </cobertura-instrument>
+	</target>
+	
+	<target name="cover-test" depends="instrument">
+	  <mkdir dir="${testreportdir}" />
+	  <junit dir="./" failureproperty="test.failure" printSummary="yes" 
+	         fork="true" haltonerror="true">
+	    <!-- Normally you can create this task by copying your existing JUnit
+	         target, changing its name, and adding these next two lines.
+	         You may need to change the locations to point to wherever 
+	         you've put the cobertura.jar file and the instrumented classes. -->
+	    <classpath location="${cobertura_jar_dir}"/>
+	    <classpath location="${instrumented.classes}"/>
+	    <classpath>
+	      <fileset dir="${libdir}">
+	        <include name="*.jar" />
+	      </fileset>
+	      <fileset dir="${deltasynclib}">
+	      	<include name="*.jar"/>
+	      </fileset>
+	      <pathelement path="${testclassesdir}" />
+	      <pathelement path="${classesdir}" />
+	    </classpath>
+	    <batchtest todir="${testreportdir}">
+	      <fileset dir="${testclassesdir}">
+	        <include name="**/*Test.java" />
+	      </fileset>
+	    </batchtest>
+	  </junit>
+	</target>
+	
+	<target name="coverage-report" depends="cover-test">
+ 		<cobertura-report srcdir="src/" destdir="cobertura"/>
+	</target>
+</project>

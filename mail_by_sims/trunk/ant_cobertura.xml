@@ -74,7 +74,7 @@
     </javac>
 
     <!-- compile files on the src-tests path -->
-        <echo>Compiling ${src.tests.dir} files ...</echo>
+        <echo>Compiling ${src.tests.dir} files ... to ${dest.dir.classes}</echo>
     <javac debug="on" srcdir="${src.tests.dir}" destdir="${dest.dir.classes}" >
       <classpath refid="build.class.path" />
       <!-- classpath refid="cobertura.classpath" -->
@@ -134,6 +134,7 @@
   <target name="cover-test" depends="instrument">
     <junit dir="./test" failureproperty="test.failure" printsummary="yes" 
       fork="true" haltonerror="true">
+       <echo>Testing ./test files ... to ${reports.dir}</echo>
         <classpath location="${cobertura.jar.file}"/>
         <classpath location="${cob.instrumented.dir}"/>
       <classpath>

@@ -38,8 +38,8 @@
  
       <!-- path to libraries (optional). These libraries are for example used by the Java Findbugs plugin -->
       <libraries>
-       <path location="./lib/mail.jar,./lib/deltasync.jar,./lib/jaybird_full_2_1_6.jar,./lib/junit.jar,./lib/activation.jar,./lib/libdeltasync/apache-mime4j-0.5.jar,./lib/libdeltasync/commons-codec-1.5.jar,./lib/libdeltasync/commons-logging-1.1.1.jar,./lib/libdeltasync/httpclient-4.1.1.jar" />
-      	<path location="./lib/libdeltasync/**/"/>
+       <path location="./lib/**/" />
+       <path location="./lib/libdeltasync/**/"/>
       
       </libraries>
     </sonar:sonar>

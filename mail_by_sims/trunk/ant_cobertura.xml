@@ -75,7 +75,7 @@
 
     <!-- compile files on the src-tests path -->
         <echo>Compiling ${src.tests.dir} files ...</echo>
-    <javac debug="on" srcdir="${src.tests.dir}" destdir="${dest.dir.classes}" includes="com/**">
+    <javac debug="on" srcdir="${src.tests.dir}" destdir="${dest.dir.classes}" >
       <classpath refid="build.class.path" />
       <!-- classpath refid="cobertura.classpath" -->
     </javac>

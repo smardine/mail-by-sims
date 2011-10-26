@@ -74,8 +74,7 @@
 				<formatter type="xml" />
 				<test name="test.TestSuiteClientMail" todir="${reports.xml.dir}" />
 				
-			
-		<!--	<batchtest todir="${reports.xml.dir}" unless="testcase">
+				<!--<batchtest todir="${reports.xml.dir}" unless="testcase">
 					<fileset dir="${test.dir}">
 						<include name="**/*Test*.java" />
 					</fileset>

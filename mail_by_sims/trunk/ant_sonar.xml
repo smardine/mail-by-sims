@@ -103,7 +103,7 @@
       <property key="sonar.java.source" value="1.5" />
       <property key="sonar.projectVersion" value="0.1-SNAPSHOT" /> 
       <property key="sonar.phase" value="generate-sources"/>
-      <property key="sonar.cobertura.reportsPath" value="${reports.xml.dir}/coverage.xml"/>
+      <property key="sonar.cobertura.reportPath" value="${reports.xml.dir}/coverage.xml"/>
       <property key="sonar.surefire.reportsPath"  value="${reports.xml.dir}/TESTS-test.TestSuiteClientMail.xml" />
      
     	

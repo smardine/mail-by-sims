@@ -1,6 +1,5 @@
 package releve.imap;
 
-
 import javax.swing.JList;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
@@ -8,12 +7,12 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.tree.TreePath;
 
-import releve.imap.util.methodeImap;
-
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
+import releve.thread_SynchroImap;
+import releve.imap.util.messageUtilisateur;
 import bdd.BDRequette;
 import fenetre.principale.jTable.MlActionJtable;
 import fenetre.principale.jTable.MyTableModel;
@@ -85,19 +84,19 @@ public class thread_deplaceOuSuppr extends Thread {
 
 			if (m.getIdDossier() != cpt.getIdCorbeille()) {
 				lstADepl.add(m);
-				methodeImap.afficheText(textArea, "message° " + nbMessTraite++
-						+ " à deplacer vers la corbeille");
+				messageUtilisateur.afficheText(textArea, "message° "
+						+ nbMessTraite++ + " à deplacer vers la corbeille");
 
 			} else {
 				lstASuppr.add(m);
-				methodeImap.afficheText(textArea, "message° " + nbMessTraite++
-						+ " à supprimer");
+				messageUtilisateur.afficheText(textArea, "message° "
+						+ nbMessTraite++ + " à supprimer");
 			}
 
 		}// fin de for
 		BDRequette bd = new BDRequette();
 		if (lstADepl.size() > 0) {
-			methodeImap.afficheText(textArea,
+			messageUtilisateur.afficheText(textArea,
 					"Déplacement du ou des messages vers la corbeille");
 			thread_SynchroImap t = new thread_SynchroImap(progressBar,
 					progressBar, textArea, scroll, false, null);
@@ -106,13 +105,14 @@ public class thread_deplaceOuSuppr extends Thread {
 
 		}
 		if (lstASuppr.size() > 0) {
-			methodeImap.afficheText(textArea, "Supression du ou des messages");
+			messageUtilisateur.afficheText(textArea,
+					"Supression du ou des messages");
 			thread_SynchroImap t = new thread_SynchroImap(progressBar,
 					progressBar, textArea, scroll, false, null);
 			t.SupprMessage(lstASuppr);
-			for (MlMessage m : lstASuppr) {
-				bd.deleteMessageRecu(m.getIdMessage());
-			}
+			// for (MlMessage m : lstASuppr) {
+			// bd.deleteMessageRecu(m.getIdMessage());
+			// }
 		}
 		bd.closeConnexion();
 	}

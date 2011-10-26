@@ -1,6 +1,6 @@
-package releve.imap;
+package releve;
 
-
+import javax.mail.MessagingException;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -9,8 +9,10 @@ import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
 import releve.hotmail.ReleveHotmail;
-import releve.imap.util.methodeImap;
+import releve.imap.ReleveGmail;
+import releve.imap.util.messageUtilisateur;
 import releve.pop.ClientMail;
+import factory.DeplaceOuSupprFactory;
 
 public class thread_SynchroImap extends Thread {
 
@@ -20,6 +22,7 @@ public class thread_SynchroImap extends Thread {
 	private final JProgressBar progressPieceJointe;
 	private final JScrollPane scrollPane;
 	private final MlListeCompteMail listeDeCompte;
+	private final String TAG = this.getClass().getSimpleName();;
 
 	public thread_SynchroImap(JProgressBar p_progressBarReleve,
 			JProgressBar p_progressPieceJointe, JTextArea jTextArea,
@@ -53,19 +56,19 @@ public class thread_SynchroImap extends Thread {
 	private void definiCompteARelever(MlCompteMail cpt) {
 		switch (cpt.getTypeCompte()) {
 			case POP:
-				methodeImap.afficheText(textArea, "Releve du compte "
+				messageUtilisateur.afficheText(textArea, "Releve du compte "
 						+ cpt.getNomCompte());
 				new ClientMail(cpt, progress, progressPieceJointe, textArea);
 				break;
 			case GMAIL:
-				methodeImap.afficheText(textArea, "Releve du compte "
+				messageUtilisateur.afficheText(textArea, "Releve du compte "
 						+ cpt.getNomCompte());
 				new ReleveGmail(cpt.getIdCompte(), cpt.getUserName(), cpt
 						.getPassword(), cpt.getServeurReception(), progress,
 						progressPieceJointe, textArea, isSynchro);
 				break;
 			case HOTMAIL:
-				methodeImap.afficheText(textArea, "Releve du compte "
+				messageUtilisateur.afficheText(textArea, "Releve du compte "
 						+ cpt.getNomCompte());
 				new ReleveHotmail(cpt, /* cpt.getServeurReception(), */
 				progress, progressPieceJointe, textArea, isSynchro);
@@ -101,8 +104,17 @@ public class thread_SynchroImap extends Thread {
 				.getIdCompte());
 		switch (cpt.getTypeCompte()) {
 			case GMAIL:
-				new MajServeurGmail(p_listeMessageASupprimer, cpt, progress,
-						textArea, true);
+				DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt,
+						p_listeMessageASupprimer, progress);
+				try {
+					fact.supprMessage();
+				} catch (MessagingException e) {
+					messageUtilisateur
+							.affMessageException(TAG, e,
+									"erreur à la suppression des messages dans la corbeille");
+				}
+				// new MajServeurGmail(p_listeMessageASupprimer, cpt, progress,
+				// textArea, true);
 				break;
 			case HOTMAIL:
 				break;
@@ -118,7 +130,17 @@ public class thread_SynchroImap extends Thread {
 		MlCompteMail cpt = new MlCompteMail(p_listMess.get(0).getIdCompte());
 		switch (cpt.getTypeCompte()) {
 			case GMAIL:
-				new MajServeurGmail(p_listMess, cpt, progress, textArea, false);
+				DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt,
+						p_listMess, progress);
+				try {
+					fact.deplaceMessageVersCorbeille();
+				} catch (MessagingException e) {
+					messageUtilisateur
+							.affMessageException(TAG, e,
+									"erreur au deplacement des messages vers la corbeille");
+				}
+				// new MajServeurGmail(p_listMess, cpt, progress, textArea,
+				// false);
 				break;
 			case HOTMAIL:
 				break;

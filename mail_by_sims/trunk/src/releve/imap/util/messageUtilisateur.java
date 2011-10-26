@@ -3,6 +3,7 @@ package releve.imap.util;
 import java.util.ArrayList;
 
 import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
 
 import tools.Historique;
 
@@ -15,15 +16,16 @@ public final class messageUtilisateur {
 	public static void affMessageException(String p_tag, Exception p_exception,
 			String p_titre) {
 		if (p_exception == null) {
-			// JOptionPane.showMessageDialog(null, null, p_titre,
-			// JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, null, p_titre,
+					JOptionPane.ERROR_MESSAGE);
 			Historique.ecrire("[EXCEPTION]" + p_tag + " Exception relevée: \n"
 					+ p_titre);
 		} else {
-			// JOptionPane.showMessageDialog(null, p_exception.getClass() + " "
-			// + p_exception.getMessage(), p_titre,
-			// JOptionPane.ERROR_MESSAGE);
-			Historique.ecrire("[EXCEPTION] " + p_tag + " " + p_titre);
+			JOptionPane.showMessageDialog(null, p_exception.getClass() + " "
+					+ p_exception.getMessage(), p_titre,
+					JOptionPane.ERROR_MESSAGE);
+			Historique.ecrire("[EXCEPTION] " + p_tag + " " + p_titre + " "
+					+ p_exception.toString());
 			Throwable instack = p_exception.fillInStackTrace();
 			for (StackTraceElement s : instack.getStackTrace()) {
 				Historique.ecrire("[EXCEPTION] " + s.toString());
@@ -78,6 +80,13 @@ public final class messageUtilisateur {
 
 		return (String) JOptionPane.showInputDialog(null, p_message, p_titre,
 				JOptionPane.QUESTION_MESSAGE, null, tabObj, tabObj[0]);
+
+	}
+
+	public static void afficheText(JTextArea p_textArea, String p_text) {
+
+		p_textArea.append(p_text + "\n");
+		p_textArea.setCaretPosition(p_textArea.getDocument().getLength());
 
 	}
 

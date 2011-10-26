@@ -13,6 +13,10 @@ import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
+
+import com.googlecode.jdeltasync.AuthenticationException;
+import com.googlecode.jdeltasync.DeltaSyncException;
+
 import factory.ReleveFactory;
 
 public class ClientMail {
@@ -39,6 +43,12 @@ public class ClientMail {
 			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la releve du compte " + comptePop.getNomCompte());
 		} catch (IOException e) {
+			messageUtilisateur.affMessageException(TAG, e,
+					"Erreur a la releve du compte " + comptePop.getNomCompte());
+		} catch (AuthenticationException e) {
+			messageUtilisateur.affMessageException(TAG, e,
+					"Erreur a la releve du compte " + comptePop.getNomCompte());
+		} catch (DeltaSyncException e) {
 			messageUtilisateur.affMessageException(TAG, e,
 					"Erreur a la releve du compte " + comptePop.getNomCompte());
 		}

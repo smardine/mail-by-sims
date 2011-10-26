@@ -29,6 +29,51 @@ public class SynchroFactory {
 		this.progress = p_progressBar;
 	}
 
+	public void synchroniseUnDossierDeltaSync(
+			com.googlecode.jdeltasync.Folder p_folder,
+			com.googlecode.jdeltasync.Message[] p_lstMessageHotmail) {
+		BDRequette bd = new BDRequette();
+		DossierFactory dossierFact = new DossierFactory(p_folder, compteMail);
+		dossierFact.isDossierDejaPresentEnBase();
+
+		int messBaseCount = bd.getnbMessageParDossier(compteMail.getIdCompte(),
+				dossierFact.getIdDossier());
+		int nbMessASynchroniser = p_lstMessageHotmail.length - messBaseCount;
+
+		if (nbMessASynchroniser >= 0) {
+			// meme nb de message pas de recherche de mess supprimé a
+			// faire
+			return;
+		}
+
+		MlListeMessage listeMessage = bd.getListeDeMessage(compteMail
+				.getIdCompte(), dossierFact.getIdDossier());
+		int nbActu = 0;
+		for (MlMessage m : listeMessage) {
+			nbActu++;
+			int pourcent = (nbActu * 100) / listeMessage.size();
+			progress.setValue(pourcent);
+			progress.setString("Maj dossier " + p_folder.getName() + " : "
+					+ pourcent + " %");
+
+			if (!verifUIDDeltaMessage(m.getUIDMessage(), p_lstMessageHotmail)) {
+				bd.deleteMessageRecu(m.getIdMessage());
+			}
+
+		}
+
+	}
+
+	public boolean verifUIDDeltaMessage(String p_uidMessage,
+			com.googlecode.jdeltasync.Message[] p_lstMessagesHotmail) {
+		for (com.googlecode.jdeltasync.Message m : p_lstMessagesHotmail) {
+			if (p_uidMessage.equals(m.getId())) {
+				return true;
+			}
+		}
+		return false;
+	}
+
 	public void synchroniseUnDossier(Folder p_folder) throws MessagingException {
 		BDRequette bd = new BDRequette();
 		if (!p_folder.isOpen()) {

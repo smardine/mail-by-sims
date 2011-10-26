@@ -18,7 +18,7 @@ public class IconRenderer extends DefaultTableCellRenderer {
 	public Component getTableCellRendererComponent(JTable table, Object obj,
 			boolean isSelected, boolean hasFocus, int row, int column) {
 		txtIcon i = (txtIcon) obj;
-		if (obj == i) {
+		if (obj.equals(i)) {
 			setIcon(i.imageIcon);
 			setText(i.txt);
 		}

@@ -1,6 +1,5 @@
 package tools;
 
-
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -39,13 +38,11 @@ public class RecupDate {
 	 * @return la date formatée -String
 	 */
 	public static String date() {
-		final String dat = dateFormat.format(actuelle);
-		return dat;
+		return dateFormat.format(actuelle);
 	}
 
 	public static String dateSeulement() {
-		final String dat = dateSeulement.format(actuelle);
-		return dat;
+		return dateSeulement.format(actuelle);
 	}
 
 	/**
@@ -53,13 +50,11 @@ public class RecupDate {
 	 * @return la date formatée -String
 	 */
 	public static String dateEtHeure() {
-		final String dat = dateEtHeure.format(actuelle);
-		return dat;
+		return dateEtHeure.format(actuelle);
 	}
 
 	public static String dateEtHeureArchive() {
-		final String dat = dateEtHeureArchive.format(actuelle);
-		return dat;
+		return dateEtHeureArchive.format(actuelle);
 	}
 
 	public static String LongToDate(final long dateAConvertir) {

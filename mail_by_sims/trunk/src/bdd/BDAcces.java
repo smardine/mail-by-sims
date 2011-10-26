@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 
@@ -77,7 +77,9 @@ public class BDAcces {
 			try {
 				fbManager.start();
 			} catch (Exception e2) {
-				System.out.println("impossible de lancer la connexion");
+				messageUtilisateur.affMessageException(TAG, e2,
+						"impossible de se connecter a la base");
+
 			}
 
 			try {
@@ -163,13 +165,12 @@ public class BDAcces {
 
 	/**
 	 * @param se
-	 * @param versionApasser
+	 * @param p_list
 	 * @throws SQLException
 	 */
-	private void LanceMiseAJour(ScriptExecutor se,
-			ArrayList<String> versionApasser) {
+	private void LanceMiseAJour(ScriptExecutor se, List<String> p_list) {
 		boolean succes;
-		for (String s : versionApasser) {
+		for (String s : p_list) {
 			succes = se.executeScriptSQL(connexion, s);
 			if (!succes) {
 				try {
@@ -197,7 +198,7 @@ public class BDAcces {
 	private boolean isDataBaseExist(String p_emplacementBase) {
 		File f = new File(p_emplacementBase);
 		File d = new File(p_emplacementBase.substring(0, p_emplacementBase
-				.lastIndexOf("\\")));
+				.lastIndexOf('\\')));
 		if (f.exists()) {// le fichier de base existe
 			return true;
 		}

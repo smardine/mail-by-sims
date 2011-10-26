@@ -3,6 +3,7 @@ package mdl;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import tools.RecupDate;
 import bdd.BDRequette;
@@ -13,14 +14,14 @@ public class MlMessage {
 	private int idCompte;
 	private String cheminPhysique;
 	private String expediteur;
-	private ArrayList<String> destinataire;
-	private ArrayList<String> destinataireCopy;
-	private ArrayList<String> destinataireCache;
+	private List<String> destinataire;
+	private List<String> destinataireCopy;
+	private List<String> destinataireCache;
 	private String sujet;
 	private String contenu;
 	private Date dateReception;
 	private String uIDMessage;
-	private ArrayList<File> listePieceJointe;
+	private List<File> listePieceJointe;
 	private int idMessage;
 
 	public MlMessage() {
@@ -29,16 +30,24 @@ public class MlMessage {
 
 	public MlMessage(int p_idMessage) {
 		super();
+		constructMessage(p_idMessage);
+
+	}
+
+	/**
+	 * @param p_idMessage
+	 */
+	private void constructMessage(int p_idMessage) {
 		BDRequette bd = new BDRequette();
-		ArrayList<ArrayList<String>> lstChamp = bd.getMessageById(p_idMessage);
+		List<ArrayList<String>> lstChamp = bd.getMessageById(p_idMessage);
 		for (int i = 0; i < lstChamp.size(); i++) {
-			ArrayList<String> unEnregistrement = lstChamp.get(i);
+			List<String> unEnregistrement = lstChamp.get(i);
 
 			setIdMessage(Integer.parseInt(unEnregistrement.get(0)));
 			setUIDMessage(unEnregistrement.get(1));
 			setExpediteur(bd.decodeHTMLFromBase(unEnregistrement.get(2)));
 			String[] tabDestinaire = unEnregistrement.get(3).split(";");
-			ArrayList<String> lstDest = new ArrayList<String>();
+			List<String> lstDest = new ArrayList<String>();
 			for (String des : tabDestinaire) {
 				lstDest.add(des);
 			}
@@ -114,42 +123,42 @@ public class MlMessage {
 	/**
 	 * @return the destinataire
 	 */
-	public ArrayList<String> getDestinataire() {
+	public List<String> getDestinataire() {
 		return destinataire;
 	}
 
 	/**
 	 * @param destinataire the destinataire to set
 	 */
-	public void setDestinataire(ArrayList<String> destinataire) {
+	public void setDestinataire(List<String> destinataire) {
 		this.destinataire = destinataire;
 	}
 
 	/**
 	 * @param destinataireCopy the destinataireCopy to set
 	 */
-	public void setDestinataireCopy(ArrayList<String> destinataireCopy) {
+	public void setDestinataireCopy(List<String> destinataireCopy) {
 		this.destinataireCopy = destinataireCopy;
 	}
 
 	/**
 	 * @return the destinataireCopy
 	 */
-	public ArrayList<String> getDestinataireCopy() {
+	public List<String> getDestinataireCopy() {
 		return destinataireCopy;
 	}
 
 	/**
 	 * @param destinataireCache the destinataireCache to set
 	 */
-	public void setDestinataireCache(ArrayList<String> destinataireCache) {
+	public void setDestinataireCache(List<String> destinataireCache) {
 		this.destinataireCache = destinataireCache;
 	}
 
 	/**
 	 * @return the destinataireCache
 	 */
-	public ArrayList<String> getDestinataireCache() {
+	public List<String> getDestinataireCache() {
 		return destinataireCache;
 	}
 
@@ -212,14 +221,14 @@ public class MlMessage {
 	/**
 	 * @param listePieceJointe the listePieceJointe to set
 	 */
-	public void setListePieceJointe(ArrayList<File> listePieceJointe) {
+	public void setListePieceJointe(List<File> listePieceJointe) {
 		this.listePieceJointe = listePieceJointe;
 	}
 
 	/**
 	 * @return the listePieceJointe
 	 */
-	public ArrayList<File> getListePieceJointe() {
+	public List<File> getListePieceJointe() {
 		return listePieceJointe;
 	}
 

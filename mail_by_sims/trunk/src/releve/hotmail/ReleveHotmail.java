@@ -15,6 +15,11 @@ import com.googlecode.jdeltasync.DeltaSyncException;
 import factory.ReleveFactory;
 
 public class ReleveHotmail {
+	/**
+	 * 
+	 */
+	private static final String ERREUR_A_LA_RELEVE_DU_COMPTE = "Erreur a la releve du compte ";
+
 	private final String TAG = this.getClass().getSimpleName();
 
 	private final JProgressBar progressBar;
@@ -22,8 +27,7 @@ public class ReleveHotmail {
 	private final JProgressBar progressPJ;
 
 	public ReleveHotmail(MlCompteMail p_compteMail, JProgressBar progress,
-			JProgressBar p_progressPieceJointe, JTextArea p_textArea,
-			boolean p_isSynchro) {
+			JProgressBar p_progressPieceJointe, JTextArea p_textArea) {
 
 		this.progressBar = progress;
 		this.textArea = p_textArea;
@@ -34,19 +38,19 @@ public class ReleveHotmail {
 			releve.releveCourier();
 		} catch (AuthenticationException e) {
 			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur a la releve du compte "
+					ReleveHotmail.ERREUR_A_LA_RELEVE_DU_COMPTE
 							+ p_compteMail.getNomCompte());
 		} catch (MessagingException e) {
 			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur a la releve du compte "
+					ReleveHotmail.ERREUR_A_LA_RELEVE_DU_COMPTE
 							+ p_compteMail.getNomCompte());
 		} catch (IOException e) {
 			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur a la releve du compte "
+					ReleveHotmail.ERREUR_A_LA_RELEVE_DU_COMPTE
 							+ p_compteMail.getNomCompte());
 		} catch (DeltaSyncException e) {
 			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur a la releve du compte "
+					ReleveHotmail.ERREUR_A_LA_RELEVE_DU_COMPTE
 							+ p_compteMail.getNomCompte());
 		}
 

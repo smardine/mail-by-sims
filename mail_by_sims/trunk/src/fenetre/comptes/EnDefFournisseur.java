@@ -1,6 +1,7 @@
 package fenetre.comptes;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public enum EnDefFournisseur {
 
@@ -119,7 +120,7 @@ public enum EnDefFournisseur {
 		return this.typeCompte;
 	}
 
-	public static final ArrayList<EnDefFournisseur> getComptePop() {
+	public static final List<EnDefFournisseur> getComptePop() {
 		ArrayList<EnDefFournisseur> lst = new ArrayList<EnDefFournisseur>();
 		for (EnDefFournisseur uneEnum : values()) {
 			if (uneEnum.getTypeCompte() == EnTypeCompte.POP) {

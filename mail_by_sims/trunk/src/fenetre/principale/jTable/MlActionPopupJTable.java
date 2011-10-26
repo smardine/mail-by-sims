@@ -1,6 +1,5 @@
 package fenetre.principale.jTable;
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -14,7 +13,6 @@ import javax.swing.JTextArea;
 import releve.imap.thread_deplaceOuSuppr;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
-
 import fenetre.principale.MlAction.EnActionMain;
 
 public class MlActionPopupJTable implements ActionListener {
@@ -81,7 +79,7 @@ public class MlActionPopupJTable implements ActionListener {
 
 		lst.add("traiter l'expediteur " + expediteur + " comme indésirable");
 		lst.add("Traiter le nom de dommaine "
-				+ expediteur.substring(expediteur.lastIndexOf("@"))
+				+ expediteur.substring(expediteur.lastIndexOf('@'))
 				+ " comme indésirable");
 		String choix = messageUtilisateur.afficheChoixMultiple(
 				"Courrier indésirable", "Que voulez-vous faire", lst);
@@ -90,7 +88,7 @@ public class MlActionPopupJTable implements ActionListener {
 				.equals(choix)) {
 
 		} else if (("Traiter le nom de dommaine "
-				+ expediteur.substring(expediteur.lastIndexOf("@")) + " comme indésirable")
+				+ expediteur.substring(expediteur.lastIndexOf('@')) + " comme indésirable")
 				.equals(choix)) {
 
 		}

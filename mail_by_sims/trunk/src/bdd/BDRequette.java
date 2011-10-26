@@ -33,6 +33,10 @@ import exception.DonneeAbsenteException;
  * @author sims
  */
 public class BDRequette {
+	/**
+	 * 
+	 */
+	private static final String IMPOSSIBLE_DE_FERMER_LA_TRANSACTION = "Impossible de fermer la transaction";
 	private final String TAG = this.getClass().getSimpleName();
 	private final Connection laConnexion;
 
@@ -225,9 +229,8 @@ public class BDRequette {
 			}
 
 		} catch (final SQLException e) {
-			System.out.println(e);
-			Historique.ecrire("Message d'erreur: " + e
-					+ "\n\r sur la requete : " + requete);
+			messageUtilisateur.affMessageException(TAG, e, "sur la requete : "
+					+ requete);
 			return false;
 		} finally {
 			try {
@@ -297,7 +300,7 @@ public class BDRequette {
 	public MlListeCompteMail getListeDeComptes() {
 		String requete = "Select " + EnStructureTable.COMPTES_ID.getNomChamp()
 				+ " from " + EnTable.COMPTES.getNomTable();
-		ArrayList<String> lst = getListeDeChamp(requete);
+		List<String> lst = getListeDeChamp(requete);
 		MlListeCompteMail listeCompte = new MlListeCompteMail();
 		for (String s : lst) {
 			MlCompteMail cpt = new MlCompteMail(Integer.parseInt(s));
@@ -382,7 +385,7 @@ public class BDRequette {
 	 * @param p_idCompte
 	 * @return
 	 */
-	public ArrayList<String> getListeSousDossierBase(int p_idCompte) {
+	public List<String> getListeSousDossierBase(int p_idCompte) {
 		String requete = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_COMPTE='"
 				+ p_idCompte
 				+ "' and a.ID_DOSSIER_PARENT=0 ORDER BY a.NOM_DOSSIER";
@@ -405,7 +408,7 @@ public class BDRequette {
 	 * @param p_idDossier
 	 * @return
 	 */
-	public ArrayList<String> getListeSousDossier(int p_idDossier) {
+	public List<String> getListeSousDossier(int p_idDossier) {
 		String requete = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_DOSSIER_PARENT='"
 				+ p_idDossier + "' ORDER BY a.NOM_DOSSIER";
 		return getListeDeChamp(requete);
@@ -543,7 +546,7 @@ public class BDRequette {
 
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(TAG, e,
-						"Impossible de fermer la transaction");
+						BDRequette.IMPOSSIBLE_DE_FERMER_LA_TRANSACTION);
 			}
 
 		}
@@ -555,7 +558,7 @@ public class BDRequette {
 	 * @param p_requete
 	 * @return
 	 */
-	private ArrayList<String> getListeDeChamp(String p_requete) {
+	private List<String> getListeDeChamp(String p_requete) {
 		Statement state = null;
 		ResultSet jeuEnregistrements = null;
 		ArrayList<String> lst = new ArrayList<String>();
@@ -582,7 +585,7 @@ public class BDRequette {
 				state.close();
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(TAG, e,
-						"Impossible de fermer la transaction");
+						BDRequette.IMPOSSIBLE_DE_FERMER_LA_TRANSACTION);
 			}// c'est une lecture, pas de commit;
 
 		}
@@ -594,8 +597,7 @@ public class BDRequette {
 	 * @param p_requete
 	 * @return
 	 */
-	private ArrayList<ArrayList<String>> getListeDenregistrement(
-			String p_requete) {
+	private List<ArrayList<String>> getListeDenregistrement(String p_requete) {
 		Statement state = null;
 		ResultSet jeuEnregistrements = null;
 		ArrayList<ArrayList<String>> lstRetour = new ArrayList<ArrayList<String>>();
@@ -624,7 +626,7 @@ public class BDRequette {
 				state.close();
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(TAG, e,
-						"Impossible de fermer la transaction");
+						BDRequette.IMPOSSIBLE_DE_FERMER_LA_TRANSACTION);
 			}
 
 		}
@@ -640,7 +642,7 @@ public class BDRequette {
 	 */
 	public boolean deleteDossier(int p_idCompte, int p_idDossier) {
 
-		ArrayList<String> lstSousDossier = getListeSousDossier(p_idDossier);
+		List<String> lstSousDossier = getListeSousDossier(p_idDossier);
 		for (String dossier : lstSousDossier) {
 			deleteDossier(p_idCompte, getIdDossierWithFullName(dossier,
 					getNomInternetDossier(p_idDossier), p_idCompte));
@@ -661,7 +663,7 @@ public class BDRequette {
 
 	public boolean deleteMessageRecu(int p_idMessage) {
 		// on commence par effacer les piece jointe associées au message.
-		ArrayList<String> lstPieceJointe = getListeIdPieceJointe(p_idMessage);
+		List<String> lstPieceJointe = getListeIdPieceJointe(p_idMessage);
 		for (String pieceJointe : lstPieceJointe) {
 			String requete = "DELETE FROM PIECE_JOINTE WHERE ID_PIECE_JOINTE='"
 					+ pieceJointe + "'";
@@ -675,19 +677,19 @@ public class BDRequette {
 
 	}
 
-	public ArrayList<String> getListeIdPieceJointe(int p_idMessage) {
+	public List<String> getListeIdPieceJointe(int p_idMessage) {
 		String requette = "SELECT a.ID_PIECE_JOINTE FROM PIECE_JOINTE a where a.ID_MESSAGE='"
 				+ p_idMessage + "' ORDER BY a.ID_PIECE_JOINTE";
 		return getListeDeChamp(requette);
 	}
 
-	public ArrayList<String> getListNomPieceJointe(int p_idMessage) {
+	public List<String> getListeNomPieceJointe(int p_idMessage) {
 		String requette = "SELECT a.NOM_PIECE_JOINTE FROM PIECE_JOINTE a where a.ID_MESSAGE='"
 				+ p_idMessage + "' ORDER BY a.ID_PIECE_JOINTE";
 		return getListeDeChamp(requette);
 	}
 
-	public ArrayList<String> getListeDossier(int p_idComptes) {
+	public List<String> getListeDossier(int p_idComptes) {
 		String requette = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_COMPTE='"
 				+ p_idComptes + "' ORDER BY a.NOM_DOSSIER";
 		return getListeDeChamp(requette);
@@ -699,15 +701,14 @@ public class BDRequette {
 		int idDossierStockage = m.getIdDossier();
 		String uidMessage = m.getUIDMessage();
 		String expediteur = encodeHTMLforBase(m.getExpediteur());
-		ArrayList<String> listeDestinataire = m.getDestinataire();
-		ArrayList<String> listCopy = m.getDestinataireCopy();
-		ArrayList<String> listCachee = m.getDestinataireCache();
+		List<String> listeDestinataire = m.getDestinataire();
+		List<String> listCopy = m.getDestinataireCopy();
+		List<String> listCachee = m.getDestinataireCache();
 
-		File fileToBlobDestinataires = createBlobFileFromArraylist(
+		File fileToBlobDestinataires = createBlobFileFromlist(
 				listeDestinataire, "destinataire");
-		File fileToBlobDestCopy = createBlobFileFromArraylist(listCopy,
-				"dest_copy");
-		File fileToBlobDestHide = createBlobFileFromArraylist(listCachee,
+		File fileToBlobDestCopy = createBlobFileFromlist(listCopy, "dest_copy");
+		File fileToBlobDestHide = createBlobFileFromlist(listCachee,
 				"hide_dest");
 
 		String sujet = encodeHTMLforBase(m.getSujet());
@@ -749,9 +750,8 @@ public class BDRequette {
 			// on recupere le nouvel id du message que l'on vient d'enregistrer
 			String getMaxId = "SELECT max (ID_MESSAGE_RECU) FROM MAIL_RECU a";
 			String maxId = get1Champ(getMaxId);
-			System.out
-					.println("l'id de message que l'on vient d'enregistrer est: "
-							+ maxId);
+			// ("l'id de message que l'on vient d'enregistrer est: "
+			// + maxId);
 			verifEtSuppressionBlob(new File(m.getCheminPhysique()));
 			verifEtSuppressionBlob(fileToBlobContenu);
 			verifEtSuppressionBlob(fileToBlobDestinataires);
@@ -788,8 +788,7 @@ public class BDRequette {
 	 * @param p_string
 	 * @return
 	 */
-	private File createBlobFileFromArraylist(ArrayList<String> p_liste,
-			String p_extension) {
+	private File createBlobFileFromlist(List<String> p_liste, String p_extension) {
 		if (p_liste == null) {
 			return null;
 		}
@@ -798,8 +797,7 @@ public class BDRequette {
 			sbDest.append(dest);
 		}
 		String destinataires = sbDest.toString();
-		File fileToBlob = createFileForBlob(destinataires, p_extension);
-		return fileToBlob;
+		return createFileForBlob(destinataires, p_extension);
 	}
 
 	private boolean enregistrePieceJointe(String maxId, File p_PieceJointe) {
@@ -915,7 +913,7 @@ public class BDRequette {
 				+ "a.UID_MESSAGE, "// idx1
 				+ "a.EXPEDITEUR, " // idx2
 				+ "a.DESTINATAIRE, a.DESTINATAIRE_COPY,a.DESTINATAIRE_CACHE, " // idx
-																				// 3,4,5
+				// 3,4,5
 				+ "a.SUJET, "// idx6
 				+ "a.CONTENU, " // idx7
 				+ "a.DATE_RECEPTION " // idx8
@@ -925,7 +923,7 @@ public class BDRequette {
 				+ "' and a.ID_DOSSIER_STOCKAGE='"
 				+ p_idDossierChoisi
 				+ "' ORDER BY a.DATE_RECEPTION DESC";
-		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(requette);
+		List<ArrayList<String>> lstResultat = getListeDenregistrement(requette);
 		for (int i = 0; i < lstResultat.size(); i++) {
 			ArrayList<String> unEnregistrement = lstResultat.get(i);
 			MlMessage m = new MlMessage();
@@ -1045,7 +1043,7 @@ public class BDRequette {
 
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(TAG, e,
-						"Impossible de fermer la transaction");
+						BDRequette.IMPOSSIBLE_DE_FERMER_LA_TRANSACTION);
 			}
 
 		}
@@ -1092,13 +1090,13 @@ public class BDRequette {
 
 	}
 
-	public ArrayList<ArrayList<String>> getMessageById(int p_idMessage) {
+	public List<ArrayList<String>> getMessageById(int p_idMessage) {
 		String script = "SELECT a.ID_MESSAGE_RECU, a.UID_MESSAGE, a.EXPEDITEUR, a.DESTINATAIRE, "
 				+ "a.SUJET, a.CONTENU, a.DATE_RECEPTION, a.ID_DOSSIER_STOCKAGE,a.ID_COMPTE"
 				+ " FROM MAIL_RECU a WHERE a.ID_MESSAGE_RECU=" + p_idMessage;
 
 		// MlMessage m = new MlMessage();
-		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(script);
+		List<ArrayList<String>> lstResultat = getListeDenregistrement(script);
 		// for (int i = 0; i < lstResultat.size(); i++) {
 		// ArrayList<String> unEnregistrement = lstResultat.get(i);
 		//
@@ -1140,13 +1138,13 @@ public class BDRequette {
 
 	}
 
-	public ArrayList<String> getCompteByID(int p_idCompte) {
+	public List<String> getCompteByID(int p_idCompte) {
 		String script = "SELECT a.NOM_COMPTE," + " a.SERVEUR_POP,"
 				+ " a.PORT_POP," + " a.SERVEUR_SMTP," + " a.PORT_SMTP,"
 				+ " a.USERNAME," + " a.PWD," + " a.TYPE_COMPTE"
 				+ " FROM COMPTES" + " a where a.ID_COMPTE=" + p_idCompte;
 
-		ArrayList<ArrayList<String>> lstResultat = getListeDenregistrement(script);
+		List<ArrayList<String>> lstResultat = getListeDenregistrement(script);
 
 		return lstResultat.get(0);
 
@@ -1164,7 +1162,7 @@ public class BDRequette {
 			throw new DonneeAbsenteException(TAG,
 					"le compte à supprimé n'existe pas en base");
 		}
-		ArrayList<String> lsiteDossier = getListeDossier(p_idCompte);
+		List<String> lsiteDossier = getListeDossier(p_idCompte);
 		for (String unDossier : lsiteDossier) {
 			deleteDossier(p_idCompte, getIdDossier(unDossier, p_idCompte));
 		}

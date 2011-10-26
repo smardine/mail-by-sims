@@ -272,8 +272,8 @@ public class DossierFactory {
 				nomDossierParent = fldr.getParent().getName();
 				nomDossierParentComplet = fldr.getParent().getFullName();
 			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				Historique.ecrireReleveBal(cptMail, fldr.getFullName(),
+						"impossible de trouver le dossier parent");
 			}
 			int idDossierParent = bd.getIdDossierWithFullName(nomDossierParent,
 					nomDossierParentComplet, cptMail.getIdCompte());

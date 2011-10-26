@@ -7,7 +7,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JEditorPane;
@@ -20,6 +20,7 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.text.Document;
 
+import releve.imap.util.messageUtilisateur;
 import bdd.BDRequette;
 import fenetre.LectureMessagePleinEcran;
 import fenetre.principale.MlAction.EnActionMain;
@@ -40,6 +41,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 	private JMenuItem MarquerSpam;
 
 	private static JEditorPane editor;
+	private static final String TAG = MlActionJtable.class.getSimpleName();
 
 	public MlActionJtable(JTable p_table, JEditorPane jEditorPane, JList jList,
 			JProgressBar p_progress, JTextArea p_text, JScrollPane p_scroll) {
@@ -196,8 +198,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 				try {
 					editor.setPage("file:///" + contenu.getAbsolutePath());
 					// affichage des piece jointe dans la liste (si il y en a)
-					ArrayList<String> lstPj = bd
-							.getListNomPieceJointe(idMessage);
+					List<String> lstPj = bd.getListeNomPieceJointe(idMessage);
 					DefaultListModel model = (DefaultListModel) jList
 							.getModel();
 					int nbLigne = model.getSize();
@@ -211,8 +212,8 @@ public class MlActionJtable implements MouseListener, ActionListener {
 
 					}
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					messageUtilisateur.affMessageException(TAG, e,
+							"impossible d'afficher le mail");
 				}
 			}
 

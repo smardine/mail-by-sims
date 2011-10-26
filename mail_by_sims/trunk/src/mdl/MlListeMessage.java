@@ -1,6 +1,7 @@
 package mdl;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MlListeMessage extends ArrayList<MlMessage> {
 
@@ -8,13 +9,13 @@ public class MlListeMessage extends ArrayList<MlMessage> {
 	 * 
 	 */
 	private static final long serialVersionUID = -6787933564954722125L;
-	private final ArrayList<MlMessage> list = new ArrayList<MlMessage>();
+	private final List<MlMessage> list = new ArrayList<MlMessage>();
 
 	public MlListeMessage() {
 
 	}
 
-	public ArrayList<MlMessage> getlist() {
+	public List<MlMessage> getlist() {
 		return list;
 	}
 

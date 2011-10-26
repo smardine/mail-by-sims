@@ -3,6 +3,7 @@ package fenetre.principale.jtree;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -142,7 +143,7 @@ public class MlActionJtree implements TreeSelectionListener,
 		if (null != newPath) {
 			String nomDossierRacine = newPath.getLastPathComponent().toString();
 			BDRequette bd = new BDRequette();
-			ArrayList<String> lstSousDossier = bd
+			List<String> lstSousDossier = bd
 					.getListeSousDossier(bd
 							.getIdDossier(nomDossierRacine, bd
 									.getIdComptes(ComposantVisuelCommun
@@ -243,11 +244,10 @@ public class MlActionJtree implements TreeSelectionListener,
 	 * @return
 	 */
 	private TreePath getPathFromEvent(MouseEvent e) {
-		TreePath selPath = tree.getPathForLocation(e.getX(), e.getY());
-		return selPath;
+		return tree.getPathForLocation(e.getX(), e.getY());
 	}
 
-	private ArrayList<String> getListeDossierdeBase() {
+	private List<String> getListeDossierdeBase() {
 		ArrayList<String> lstDossierBase = new ArrayList<String>(4);
 		EnDossierBase[] lstEnum = EnDossierBase.values();
 		for (EnDossierBase dossier : lstEnum) {

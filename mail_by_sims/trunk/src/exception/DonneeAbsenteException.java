@@ -16,6 +16,7 @@ public class DonneeAbsenteException extends Exception {
 	private final String cause;
 
 	public DonneeAbsenteException(String p_tag, String p_cause) {
+		super(p_tag + p_cause);
 		this.TAG = p_tag;
 		this.cause = p_cause;
 

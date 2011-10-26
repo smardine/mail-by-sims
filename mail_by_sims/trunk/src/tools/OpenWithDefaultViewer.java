@@ -4,7 +4,11 @@ import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
 
+import exception.DonneeAbsenteException;
+
 public final class OpenWithDefaultViewer {
+
+	private static String TAG = OpenWithDefaultViewer.class.getSimpleName();
 
 	private OpenWithDefaultViewer() {
 
@@ -16,7 +20,12 @@ public final class OpenWithDefaultViewer {
 	 */
 	public static void open(final String toOpen) {
 		if (toOpen == null) {
-			throw new NullPointerException();
+			try {
+				throw new DonneeAbsenteException(TAG, "impossible d'ouvrir "
+						+ toOpen);
+			} catch (DonneeAbsenteException e) {
+				return;
+			}
 		}
 		if (!Desktop.isDesktopSupported()) {
 			return;

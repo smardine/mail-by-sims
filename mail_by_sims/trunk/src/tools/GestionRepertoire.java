@@ -1,6 +1,5 @@
 package tools;
 
-
 import java.io.File;
 import java.io.IOException;
 
@@ -22,7 +21,7 @@ public final class GestionRepertoire {
 	 */
 	public static String RecupRepTravail() {
 		final File dir = new File(".");
-		String sAppliDir = new String();
+		String sAppliDir = "";
 		try {
 			sAppliDir = dir.getCanonicalPath();
 		} catch (final Exception e1) {
@@ -39,8 +38,9 @@ public final class GestionRepertoire {
 		final JFileChooser chooser = new JFileChooser();
 		final int returnVal = chooser.showOpenDialog(null);
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
-			System.out.println("You chose to open this file: "
+			Historique.ecrire("You chose to open this file: "
 					+ chooser.getSelectedFile().getName());
+
 		}
 		return chooser.getSelectedFile().getName();
 

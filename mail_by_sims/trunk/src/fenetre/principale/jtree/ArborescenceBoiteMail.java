@@ -1,7 +1,7 @@
 package fenetre.principale.jtree;
 
-import java.util.ArrayList;
 import java.util.Enumeration;
+import java.util.List;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -14,15 +14,18 @@ import javax.swing.tree.TreePath;
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
+import releve.imap.util.messageUtilisateur;
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
 
 public class ArborescenceBoiteMail implements TreeModel {
 	private final String root; // The root identifier
 
-	private final Vector<TreeModelListener> listeners; // Declare the listeners
+	private final List<TreeModelListener> listeners; // Declare the listeners
 	// vector
 	private final MlListeCompteMail lstCpt;
+
+	private final String TAG = this.getClass().getSimpleName();
 
 	public ArborescenceBoiteMail() {
 		BDRequette bd = new BDRequette();
@@ -51,14 +54,14 @@ public class ArborescenceBoiteMail implements TreeModel {
 		}
 		for (MlCompteMail compte : lstCpt) {
 			if (compte.getNomCompte().equals(parent)) {
-				ArrayList<String> list = bd.getListeSousDossierBase(compte
+				List<String> list = bd.getListeSousDossierBase(compte
 						.getIdCompte());
 				bd.closeConnexion();
 				return list.get(index);
 			}
 		}
 		int idCompte = bd.getIdComptes(getCompte());
-		ArrayList<String> list = bd.getListeSousDossier(bd.getIdDossier(
+		List<String> list = bd.getListeSousDossier(bd.getIdDossier(
 				(String) parent, idCompte));
 		bd.closeConnexion();
 		return list.get(index);
@@ -129,13 +132,13 @@ public class ArborescenceBoiteMail implements TreeModel {
 
 	public void addTreeModelListener(TreeModelListener l) {
 		if (l != null && !listeners.contains(l)) {
-			listeners.addElement(l);
+			((Vector<TreeModelListener>) listeners).addElement(l);
 		}
 	}
 
 	public void removeTreeModelListener(TreeModelListener l) {
 		if (l != null) {
-			listeners.removeElement(l);
+			((Vector<TreeModelListener>) listeners).removeElement(l);
 		}
 	}
 
@@ -158,13 +161,16 @@ public class ArborescenceBoiteMail implements TreeModel {
 					break;
 			}
 		} catch (Exception e) {
-			System.out.println(e.getMessage());
+			messageUtilisateur.affMessageException(TAG, e, "Dans l'action "
+					+ (ActionTree) newValue);
+
 		}
 
 	}
 
 	public void fireTreeNodesInserted(TreeModelEvent e) {
-		Enumeration<TreeModelListener> listenerCount = listeners.elements();
+		Enumeration<TreeModelListener> listenerCount = ((Vector<TreeModelListener>) listeners)
+				.elements();
 		while (listenerCount.hasMoreElements()) {
 			TreeModelListener listener = listenerCount.nextElement();
 			listener.treeNodesInserted(e);
@@ -172,7 +178,8 @@ public class ArborescenceBoiteMail implements TreeModel {
 	}
 
 	public void fireTreeNodesRemoved(TreeModelEvent e) {
-		Enumeration<TreeModelListener> listenerCount = listeners.elements();
+		Enumeration<TreeModelListener> listenerCount = ((Vector<TreeModelListener>) listeners)
+				.elements();
 		while (listenerCount.hasMoreElements()) {
 			TreeModelListener listener = listenerCount.nextElement();
 			listener.treeNodesRemoved(e);
@@ -181,7 +188,8 @@ public class ArborescenceBoiteMail implements TreeModel {
 	}
 
 	public void fireTreeNodesChanged(TreeModelEvent e) {
-		Enumeration<TreeModelListener> listenerCount = listeners.elements();
+		Enumeration<TreeModelListener> listenerCount = ((Vector<TreeModelListener>) listeners)
+				.elements();
 		while (listenerCount.hasMoreElements()) {
 			TreeModelListener listener = listenerCount.nextElement();
 			listener.treeNodesChanged(e);
@@ -190,7 +198,8 @@ public class ArborescenceBoiteMail implements TreeModel {
 	}
 
 	public void fireTreeStructureChanged(TreeModelEvent e) {
-		Enumeration<TreeModelListener> listenerCount = listeners.elements();
+		Enumeration<TreeModelListener> listenerCount = ((Vector<TreeModelListener>) listeners)
+				.elements();
 		while (listenerCount.hasMoreElements()) {
 			TreeModelListener listener = listenerCount.nextElement();
 			listener.treeStructureChanged(e);

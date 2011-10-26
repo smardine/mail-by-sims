@@ -21,16 +21,18 @@ import factory.ReleveFactory;
  * @author smardine
  */
 public class ReleveGmail {
+	/**
+	 * 
+	 */
+	private static final String ERREUR_A_LA_RELEVE_DU_COMPTE = "Erreur a la releve du compte ";
 	private final String TAG = this.getClass().getSimpleName();
 	private final JProgressBar progressBar;
 	private final JProgressBar progressPJ;
 	private final MlCompteMail cptMail;
 
-	public ReleveGmail(int p_idCompte, String p_user, String p_password,
-			String p_host, JProgressBar progress,
-			JProgressBar p_progressPieceJointe, JTextArea textArea,
-			boolean p_isSynchro) {
-		this.cptMail = new MlCompteMail(p_idCompte);
+	public ReleveGmail(MlCompteMail p_commpteMail, JProgressBar progress,
+			JProgressBar p_progressPieceJointe, JTextArea textArea) {
+		this.cptMail = p_commpteMail;
 		this.progressBar = progress;
 		this.progressPJ = p_progressPieceJointe;
 
@@ -40,16 +42,20 @@ public class ReleveGmail {
 			releve.releveCourier();
 		} catch (MessagingException e) {
 			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur a la releve du compte " + cptMail.getNomCompte());
+					ReleveGmail.ERREUR_A_LA_RELEVE_DU_COMPTE
+							+ cptMail.getNomCompte());
 		} catch (IOException e) {
 			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur a la releve du compte " + cptMail.getNomCompte());
+					ReleveGmail.ERREUR_A_LA_RELEVE_DU_COMPTE
+							+ cptMail.getNomCompte());
 		} catch (AuthenticationException e) {
 			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur a la releve du compte " + cptMail.getNomCompte());
+					ReleveGmail.ERREUR_A_LA_RELEVE_DU_COMPTE
+							+ cptMail.getNomCompte());
 		} catch (DeltaSyncException e) {
 			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur a la releve du compte " + cptMail.getNomCompte());
+					ReleveGmail.ERREUR_A_LA_RELEVE_DU_COMPTE
+							+ cptMail.getNomCompte());
 		}
 	}
 

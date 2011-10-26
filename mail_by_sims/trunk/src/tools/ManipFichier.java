@@ -9,7 +9,11 @@ import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JProgressBar;
 
+import releve.imap.util.messageUtilisateur;
+
 public final class ManipFichier {
+	private static String TAG = "ManipFichier";
+
 	/**
 	 * Constructeur privé pour classe utilitaire
 	 */
@@ -188,7 +192,9 @@ public final class ManipFichier {
 					DeleteContenuRepertoireAvecFiltre(list[i], p_extension);
 				}
 			} else {
-				System.err.println(p_repAVider + " : Erreur de lecture.");
+				messageUtilisateur.affMessageErreur(TAG, p_repAVider
+						+ " : Erreur de lecture.");
+
 			}
 
 		}

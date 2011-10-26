@@ -18,7 +18,7 @@ public class thread_SynchroImap extends Thread {
 
 	private static JProgressBar progress;
 	private final JTextArea textArea;
-	private final boolean isSynchro;
+
 	private final JProgressBar progressPieceJointe;
 	private final JScrollPane scrollPane;
 	private final MlListeCompteMail listeDeCompte;
@@ -26,13 +26,11 @@ public class thread_SynchroImap extends Thread {
 
 	public thread_SynchroImap(JProgressBar p_progressBarReleve,
 			JProgressBar p_progressPieceJointe, JTextArea jTextArea,
-			JScrollPane p_scroll, boolean p_isSynchro,
-			MlListeCompteMail p_mlListeCompteMail) {// ,
+			JScrollPane p_scroll, MlListeCompteMail p_mlListeCompteMail) {// ,
 
 		this.textArea = jTextArea;
 		thread_SynchroImap.progress = p_progressBarReleve;
 		this.progressPieceJointe = p_progressPieceJointe;
-		this.isSynchro = p_isSynchro;
 		this.scrollPane = p_scroll;
 		this.listeDeCompte = p_mlListeCompteMail;
 
@@ -54,24 +52,17 @@ public class thread_SynchroImap extends Thread {
 	 * @param cpt
 	 */
 	private void definiCompteARelever(MlCompteMail cpt) {
+		messageUtilisateur.afficheText(textArea, "Releve du compte "
+				+ cpt.getNomCompte());
 		switch (cpt.getTypeCompte()) {
 			case POP:
-				messageUtilisateur.afficheText(textArea, "Releve du compte "
-						+ cpt.getNomCompte());
 				new ClientMail(cpt, progress, progressPieceJointe, textArea);
 				break;
 			case GMAIL:
-				messageUtilisateur.afficheText(textArea, "Releve du compte "
-						+ cpt.getNomCompte());
-				new ReleveGmail(cpt.getIdCompte(), cpt.getUserName(), cpt
-						.getPassword(), cpt.getServeurReception(), progress,
-						progressPieceJointe, textArea, isSynchro);
+				new ReleveGmail(cpt, progress, progressPieceJointe, textArea);
 				break;
 			case HOTMAIL:
-				messageUtilisateur.afficheText(textArea, "Releve du compte "
-						+ cpt.getNomCompte());
-				new ReleveHotmail(cpt, /* cpt.getServeurReception(), */
-				progress, progressPieceJointe, textArea, isSynchro);
+				new ReleveHotmail(cpt, progress, progressPieceJointe, textArea);
 				break;
 			case IMAP:
 				break;

@@ -21,12 +21,26 @@ import fenetre.principale.jtree.utiljTree;
 public class DossierFactory {
 
 	private final Folder fldr;
+	private final com.googlecode.jdeltasync.Folder deltaFldr;
 	private final MlCompteMail cptMail;
 	private final BDRequette bd;
 	private int idDossier = -1;
 
 	public DossierFactory(Folder p_fldr, MlCompteMail p_compteMail) {
+		this.deltaFldr = null;
 		this.fldr = p_fldr;
+		this.cptMail = p_compteMail;
+		this.bd = new BDRequette();
+	}
+
+	/**
+	 * @param p_folder
+	 * @param p_compteMail
+	 */
+	public DossierFactory(com.googlecode.jdeltasync.Folder p_folder,
+			MlCompteMail p_compteMail) {
+		this.fldr = null;
+		this.deltaFldr = p_folder;
 		this.cptMail = p_compteMail;
 		this.bd = new BDRequette();
 	}
@@ -45,10 +59,94 @@ public class DossierFactory {
 				verifGmail(imapF);
 				break;
 			case HOTMAIL:
+				verifHotmail(deltaFldr);
 
 		}
 
 		return;
+	}
+
+	/**
+	 * @param p_deltaFldr
+	 */
+	private void verifHotmail(com.googlecode.jdeltasync.Folder p_deltaFldr) {
+		if (isInboxDelta(p_deltaFldr)) {
+			idDossier = cptMail.getIdInbox();
+			bd.updateNomDossierInternet(idDossier, p_deltaFldr.getName(), 0);
+		} else if (isBrouillonDelta(p_deltaFldr)) {
+			idDossier = cptMail.getIdBrouillons();
+			bd.updateNomDossierInternet(idDossier, p_deltaFldr.getName(), 0);
+		} else if (isCorbeilleDelta(p_deltaFldr)) {
+			idDossier = cptMail.getIdCorbeille();
+			bd.updateNomDossierInternet(idDossier, p_deltaFldr.getName(), 0);
+		} else if (isEnvoyeDelta(p_deltaFldr)) {
+			idDossier = cptMail.getIdEnvoye();
+			bd.updateNomDossierInternet(idDossier, p_deltaFldr.getName(), 0);
+		} else if (isSpamDelta(p_deltaFldr)) {
+			idDossier = cptMail.getIdSpam();
+			bd.updateNomDossierInternet(idDossier, p_deltaFldr.getName(), 0);
+		} else {
+			idDossier = bd.getIdDossierWithFullName(p_deltaFldr.getName(),
+					p_deltaFldr.getName(), cptMail.getIdCompte());
+
+		}
+	}
+
+	/**
+	 * @param p_deltaFldr
+	 * @return
+	 */
+	private boolean isSpamDelta(com.googlecode.jdeltasync.Folder p_deltaFldr) {
+		if ("Junk".equals(p_deltaFldr.getName())) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @param p_deltaFldr
+	 * @return
+	 */
+	private boolean isEnvoyeDelta(com.googlecode.jdeltasync.Folder p_deltaFldr) {
+		if ("Sent".equals(p_deltaFldr.getName())) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @param p_deltaFldr
+	 * @return
+	 */
+	private boolean isCorbeilleDelta(
+			com.googlecode.jdeltasync.Folder p_deltaFldr) {
+		if ("Deleted".equals(p_deltaFldr.getName())) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @param p_deltaFldr
+	 * @return
+	 */
+	private boolean isBrouillonDelta(
+			com.googlecode.jdeltasync.Folder p_deltaFldr) {
+		if ("Drafts".equals(p_deltaFldr.getName())) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * @param p_deltaFldr
+	 * @return
+	 */
+	private boolean isInboxDelta(com.googlecode.jdeltasync.Folder p_deltaFldr) {
+		if ("Inbox".equals(p_deltaFldr.getName())) {
+			return true;
+		}
+		return false;
 	}
 
 	/**
@@ -86,7 +184,13 @@ public class DossierFactory {
 					// nom mais dans un endroit différent, il faut pouvoir le
 					// recuperer
 					try {
-
+						Historique.ecrireReleveBal(cptMail, p_imapF
+								.getFullName(), "Le repertoire "
+								+ p_imapF.getFullName()
+								+ " à été déplacée sur le serveur");
+						Historique.ecrireReleveBal(cptMail, p_imapF
+								.getFullName(),
+								"mise a jour de la base de données");
 						int idDossierParent;
 
 						idDossierParent = bd.getIdDossierWithFullName(p_imapF
@@ -98,7 +202,8 @@ public class DossierFactory {
 					} catch (MessagingException e) {
 						Historique
 								.ecrireReleveBal(cptMail,
-										"erreur a la recuperatio nde l'idDossierParent");
+										p_imapF.getFullName(),
+										"erreur a la recuperation de l'idDossierParent");
 						return;
 					}
 				}

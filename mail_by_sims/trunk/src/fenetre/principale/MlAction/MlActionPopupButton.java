@@ -8,7 +8,7 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import releve.imap.thread_SynchroImap;
+import releve.thread_SynchroImap;
 
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;

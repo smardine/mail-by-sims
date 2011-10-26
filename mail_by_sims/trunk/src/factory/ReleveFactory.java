@@ -18,11 +18,14 @@ import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import mdl.MlMessage;
-import releve.imap.util.methodeImap;
+import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.Historique;
 import bdd.BDRequette;
 
+import com.googlecode.jdeltasync.DeltaSyncClient;
+import com.googlecode.jdeltasync.DeltaSyncClientHelper;
+import com.googlecode.jdeltasync.DeltaSyncException;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.pop3.POP3Folder;
 
@@ -43,6 +46,8 @@ public class ReleveFactory {
 	private final JProgressBar progressPJ;
 	private final JTextArea textArea;
 
+	private DeltaSyncClientHelper client;
+
 	public ReleveFactory(MlCompteMail p_cpt, JProgressBar p_progressCompte,
 			JProgressBar p_progressPJ, JTextArea p_textArea) {
 		this.compteMail = p_cpt;
@@ -52,7 +57,8 @@ public class ReleveFactory {
 		this.bd = new BDRequette();
 	}
 
-	public void releveCourier() throws MessagingException, IOException {
+	public void releveCourier() throws MessagingException, IOException,
+			DeltaSyncException {
 
 		switch (compteMail.getTypeCompte()) {
 			case POP:
@@ -66,7 +72,7 @@ public class ReleveFactory {
 				}
 
 				releveDossier((POP3Folder) st.getFolder("INBOX"));
-
+				st.close();
 				break;
 			case GMAIL:
 			case IMAP:
@@ -84,23 +90,147 @@ public class ReleveFactory {
 							.getUserName(), compteMail.getPassword());
 				}
 
-				methodeImap.afficheText(textArea, "Releve des dossiers");
-				Historique.ecrireReleveBal(compteMail, "Releve des dossiers");
-				for (Folder f : st.getPersonalNamespaces()) {
+				messageUtilisateur.afficheText(textArea, "Releve des dossiers");
 
+				for (Folder f : st.getPersonalNamespaces()) {
 					for (Folder unSousDossier : getSousDossier(f)) {
 						releveDossier((IMAPFolder) unSousDossier);
 					}
-
 				}
+				st.close();
 
 				break;
 			case HOTMAIL:
+				client = new DeltaSyncClientHelper(new DeltaSyncClient(),
+						compteMail.getUserName(), compteMail.getPassword());
+				client.login();
+				com.googlecode.jdeltasync.Folder[] lstFolder = client
+						.getFolders();
+				for (com.googlecode.jdeltasync.Folder unDossier : lstFolder) {
+					releveDossierDeltaSync(unDossier);
+					client.getStore().resetFolders(compteMail.getUserName());
+				}
+				client.disconnect();
 				break;
 		}
 		// folder.close(false);
 		bd.closeConnexion();
-		st.close();
+
+	}
+
+	/**
+	 * @param p_folder
+	 * @throws IOException
+	 * @throws DeltaSyncException
+	 */
+	private void releveDossierDeltaSync(
+			com.googlecode.jdeltasync.Folder p_folder)
+			throws DeltaSyncException, IOException {
+		DossierFactory fact = new DossierFactory(p_folder, compteMail);
+		fact.isDossierDejaPresentEnBase();
+		int idDossier = fact.getIdDossier();
+
+		com.googlecode.jdeltasync.Message[] lstMess = checkMessDeltaARelever(
+				p_folder, idDossier);
+		releveListeMessageDelta(lstMess, p_folder, idDossier);
+	}
+
+	/**
+	 * @param p_lstMess
+	 * @param p_folder
+	 * @param p_idDossier
+	 * @throws IOException
+	 * @throws DeltaSyncException
+	 * @throws FileNotFoundException
+	 */
+	private void releveListeMessageDelta(
+			com.googlecode.jdeltasync.Message[] p_lstMess,
+			com.googlecode.jdeltasync.Folder p_folder, int p_idDossier)
+			throws FileNotFoundException, DeltaSyncException, IOException {
+		if (p_lstMess == null) {
+			return;
+		}
+		progressCompte.setValue(0);
+		progressCompte.setString(compteMail.getNomCompte() + ": Releve de "
+				+ p_folder.getName());
+		com.googlecode.jdeltasync.Message[] lstMessages = p_lstMess;
+		int nbActu = 1;
+		for (int i = lstMessages.length; i > 0; i--) {
+			int pourcent = (nbActu++ * 100) / lstMessages.length;
+			progressCompte.setValue(pourcent);
+			progressCompte.setString(compteMail.getNomCompte() + ": Releve de "
+					+ p_folder.getName() + " :" + pourcent + " %");
+			com.googlecode.jdeltasync.Message m = lstMessages[i - 1];
+			String uidMessage = m.getId();
+			if (uidMessage == null
+					|| bd.isMessageUIDAbsent(uidMessage, p_idDossier)) {
+				MlMessage messPourBase = new MlMessage();
+				messPourBase.setCheminPhysique(GestionRepertoire
+						.RecupRepTravail()
+						+ "/tempo/" + System.currentTimeMillis() + ".eml");
+				client.downloadMessageContent(m, new FileOutputStream(
+						messPourBase.getCheminPhysique()));
+
+				MessageFactory fact = new MessageFactory();
+				messPourBase = fact.createMessagePourBase(messPourBase,
+						textArea, progressPJ);
+
+				messPourBase.setIdCompte(compteMail.getIdCompte());
+				RegleCourrierFactory couFact = new RegleCourrierFactory(
+						compteMail, m, p_idDossier);
+				messPourBase.setIdDossier(couFact.getIdDestinationCourrier());
+
+				if (uidMessage == null) {
+					messPourBase.setUIDMessage("");
+				} else {
+					messPourBase.setUIDMessage(uidMessage);
+				}
+
+				messageUtilisateur.afficheText(textArea,
+						"Enregistrement du message dans la base");
+				bd.createNewMessage(messPourBase);
+			}// fin de isMessageUIDAbsent
+		}// fin de parcour des message
+	}
+
+	/**
+	 * @param p_folder
+	 * @param p_idDossier
+	 * @return
+	 * @throws IOException
+	 * @throws DeltaSyncException
+	 */
+	private com.googlecode.jdeltasync.Message[] checkMessDeltaARelever(
+			com.googlecode.jdeltasync.Folder p_folder, int p_idDossier)
+			throws DeltaSyncException, IOException {
+		com.googlecode.jdeltasync.Message[] lstMessagesHotmail = client
+				.getMessages(p_folder);
+		int messBaseCount = bd.getnbMessageParDossier(compteMail.getIdCompte(),
+				p_idDossier);
+		int nbMessARelever = lstMessagesHotmail.length - messBaseCount;
+		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
+				"Ouverture du dossier ");
+		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
+				"Nombre de messages dans le dossier: "
+						+ lstMessagesHotmail.length);
+		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
+				"Nombre de message a relever: " + nbMessARelever);
+
+		if (nbMessARelever < 0) {
+			// il y a moin de message sur le serveur qu'en
+			// base, il faut faire une synchro
+			SynchroFactory synchro = new SynchroFactory(compteMail,
+					progressCompte);
+			synchro.synchroniseUnDossierDeltaSync(p_folder, lstMessagesHotmail);
+			progressCompte.setValue(100);
+			progressCompte.setString(compteMail.getNomCompte() + ": Releve de "
+					+ p_folder.getName() + " :" + 100 + " %");
+
+			return checkMessDeltaARelever(p_folder, p_idDossier);
+		}
+
+		return client.getMessages(p_folder);
+
 	}
 
 	/**
@@ -160,12 +290,12 @@ public class ReleveFactory {
 				p_idDossier);
 		int nbMessARelever = imapcount - messBaseCount;
 
-		Historique.ecrireReleveBal(compteMail, "Ouverture du dossier "
-				+ p_folder.getFullName());
-		Historique.ecrireReleveBal(compteMail,
+		Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
+				"Ouverture du dossier ");
+		Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
 				"Nombre de messages dans le dossier: " + imapcount);
-		Historique.ecrireReleveBal(compteMail, "Nombre de message a relever: "
-				+ nbMessARelever);
+		Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
+				"Nombre de message a relever: " + nbMessARelever);
 
 		if (nbMessARelever < 0) {
 			// il y a moin de message sur le serveur qu'en
@@ -232,7 +362,7 @@ public class ReleveFactory {
 					messPourBase.setUIDMessage(uidMessage);
 				}
 
-				methodeImap.afficheText(textArea,
+				messageUtilisateur.afficheText(textArea,
 						"Enregistrement du message dans la base");
 				bd.createNewMessage(messPourBase);
 			}// fin de isMessageUIDAbsent

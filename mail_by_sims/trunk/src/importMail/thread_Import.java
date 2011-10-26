@@ -29,7 +29,6 @@ import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import releve.imap.util.messageUtilisateur;
-import releve.imap.util.methodeImap;
 import tools.GestionRepertoire;
 import tools.ReadFile;
 import bdd.BDRequette;
@@ -126,8 +125,9 @@ public class thread_Import extends Thread {
 		int messNumber = 1;
 		for (MlMessage messagePourBase : listeDeMessage) {
 			String cheminPhysique = messagePourBase.getCheminPhysique();
-			methodeImap.afficheText(p_jTextArea, "importation du message "
-					+ messNumber++ + "sur " + listeDeMessage.size());
+			messageUtilisateur.afficheText(p_jTextArea,
+					"importation du message " + messNumber++ + "sur "
+							+ listeDeMessage.size());
 			// System.out.println("importation du message " + messNumber++
 			// + "sur " + listeDeMessage.size());
 			p_progressBar.setString("Message " + messNumber + "/"
@@ -199,7 +199,8 @@ public class thread_Import extends Thread {
 		StringBuilder sb = new StringBuilder();
 		// int messageNumber = p_messageJavaMail.getMessageNumber();
 		// String messageName = p_messageJavaMail.getFileName();
-		methodeImap.afficheText(textArea, "Recupération du contenu du message");
+		messageUtilisateur.afficheText(textArea,
+				"Recupération du contenu du message");
 		Object o;
 		try {
 			o = p_messageJavaMail.getContent();
@@ -303,7 +304,7 @@ public class thread_Import extends Thread {
 				|| fileName.contains("iso") || fileName.contains("utf")) {
 			fileName = decodeurIso(fileName);
 		}
-		methodeImap
+		messageUtilisateur
 				.afficheText(textArea,
 						"Recuperation d'une piece jointe dont le nom est \n"
 								+ fileName);
@@ -402,9 +403,9 @@ public class thread_Import extends Thread {
 						try {
 							message.setCheminPhysique(f.getCanonicalPath());
 							lstMessage.add(message);
-							methodeImap.afficheText(p_jTextArea, lstMessage
-									.size()
-									+ " message(s) trouvé(s)");
+							messageUtilisateur
+									.afficheText(p_jTextArea, lstMessage.size()
+											+ " message(s) trouvé(s)");
 
 						} catch (IOException e) {
 							messageUtilisateur.affMessageException(TAG, e,
@@ -424,7 +425,7 @@ public class thread_Import extends Thread {
 			m.setIdDossier(bd.getIdDossier(nomDossier, idCompte));
 		}
 		for (File f : lstSousDossier) {
-			methodeImap.afficheText(p_jTextArea, "creation du dossier:"
+			messageUtilisateur.afficheText(p_jTextArea, "creation du dossier:"
 					+ f.getName());
 
 			MlListeMessage lstMessge = null;

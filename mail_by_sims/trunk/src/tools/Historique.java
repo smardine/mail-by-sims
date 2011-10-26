@@ -54,8 +54,10 @@ public final class Historique {
 
 	}
 
-	public static void ecrireReleveBal(MlCompteMail p_compteMail, String p_text) {
-		ecrire("[" + p_compteMail.getNomCompte() + "] " + p_text);
+	public static void ecrireReleveBal(MlCompteMail p_compteMail,
+			String p_foldername, String p_text) {
+		ecrire("[" + p_compteMail.getNomCompte() + "] [" + p_foldername + "]"
+				+ p_text);
 	}
 
 	/**

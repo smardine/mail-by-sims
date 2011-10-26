@@ -10,7 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 
-import releve.imap.thread_SynchroImap;
+import releve.thread_SynchroImap;
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.OpenWithDefaultViewer;

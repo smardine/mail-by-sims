@@ -89,6 +89,8 @@
   
   <!-- Add the target -->
   <target name="sonar" depends="cover-report">
+  	<buildnumber/>
+  	  
     <!-- The workDir directory is used by Sonar to store temporary files -->
     <sonar:sonar workDir="./" key="fr.simscorps:client.mail" version="0.1-SNAPSHOT" xmlns:sonar="antlib:org.sonar.ant">
 	<property key="sonar.host.url" value="http://172.30.3.55:1234/sonar/" />
@@ -96,12 +98,13 @@
       <sources>
         <path location="./src" />
       </sources>
- 
+     
+
       <!-- list of properties (optional) -->
       <property key="sonar.dynamicAnalysis" value="reuseReports" />
       <property key="sonar.projectName" value="client mail" />
       <property key="sonar.java.source" value="1.5" />
-      <property key="sonar.projectVersion" value="0.1-SNAPSHOT" /> 
+      <property key="sonar.projectVersion" value="${build.number}-SNAPSHOT" /> 
       <property key="sonar.phase" value="generate-sources"/>
       <property key="sonar.cobertura.reportPath" value="${reports.xml.dir}/coverage.xml"/>
       <property key="sonar.surefire.reportsPath"  value="${reports.xml.dir}/TESTS-test.TestSuiteClientMail.xml" />

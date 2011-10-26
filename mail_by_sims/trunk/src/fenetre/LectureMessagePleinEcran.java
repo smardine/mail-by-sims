@@ -1,6 +1,5 @@
 package fenetre;
 
-
 import java.awt.BorderLayout;
 import java.awt.ComponentOrientation;
 import java.awt.Dimension;
@@ -8,7 +7,7 @@ import java.awt.Font;
 import java.awt.Rectangle;
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JDesktopPane;
@@ -22,7 +21,6 @@ import javax.swing.JTable;
 import javax.swing.text.Document;
 
 import releve.imap.util.messageUtilisateur;
-
 import bdd.BDRequette;
 import fenetre.principale.EnNomComposant;
 import fenetre.principale.MlActionHtmlPane;
@@ -51,13 +49,13 @@ public class LectureMessagePleinEcran extends JFrame {
 		modelList = new DefaultListModel();
 		jList.setModel(modelList);
 		jList.addMouseListener(new MlActionjList(p_table, jList));
-		afficheContenuMail(p_idMessage, jList);
+		afficheContenuMail(p_idMessage);
 		BDRequette bd = new BDRequette();
 		this.setTitle(bd.getSujetFromId(p_idMessage));
 		bd.closeConnexion();
 	}
 
-	private void afficheContenuMail(int p_idMessage, JList p_jList) {
+	private void afficheContenuMail(int p_idMessage) {
 		BDRequette bd = new BDRequette();
 		File contenu = bd.getContenuFromId(p_idMessage, true);
 
@@ -72,7 +70,7 @@ public class LectureMessagePleinEcran extends JFrame {
 		}
 
 		// affichage des piece jointe dans la liste (si il y en a)
-		ArrayList<String> lstPj = bd.getListNomPieceJointe(p_idMessage);
+		List<String> lstPj = bd.getListeNomPieceJointe(p_idMessage);
 		bd.closeConnexion();
 		DefaultListModel model = (DefaultListModel) jList.getModel();
 		int nbLigne = model.getSize();

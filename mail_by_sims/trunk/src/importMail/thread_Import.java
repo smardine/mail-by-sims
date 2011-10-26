@@ -30,6 +30,7 @@ import mdl.MlListeMessage;
 import mdl.MlMessage;
 import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
+import tools.Historique;
 import tools.ReadFile;
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
@@ -73,7 +74,7 @@ public class thread_Import extends Thread {
 
 		// parcour du repertoire de facon recursive
 		// les fichiers avec l'extension ".fol"contienne le nom du repertoire
-		System.out.println(choixCompte);
+		Historique.ecrire("choix du compte: " + choixCompte);
 		idCompte = bd.getIdComptes(choixCompte);
 
 		Object[] path = new Object[3];
@@ -99,7 +100,8 @@ public class thread_Import extends Thread {
 		enregistreMessageEnBase(listeDeMessage, progressBar, progressPJ,
 				jTextArea);
 
-		System.out.println("fin de l'enregistrement des message en base");
+		Historique.ecrire("fin de l'enregistrement des messages en base");
+
 		bd.closeConnexion();
 		scrollPane.setVisible(false);
 		jTextArea.setVisible(false);
@@ -128,8 +130,7 @@ public class thread_Import extends Thread {
 			messageUtilisateur.afficheText(p_jTextArea,
 					"importation du message " + messNumber++ + "sur "
 							+ listeDeMessage.size());
-			// System.out.println("importation du message " + messNumber++
-			// + "sur " + listeDeMessage.size());
+
 			p_progressBar.setString("Message " + messNumber + "/"
 					+ listeDeMessage.size());
 			p_progressBar.setValue((100 * messNumber) / listeDeMessage.size());
@@ -212,8 +213,8 @@ public class thread_Import extends Thread {
 				// p_prefixeNomFichier);
 
 			} else if (o instanceof InputStream) {
-				System.out.println("on ne devrait jamais passé par là");
-				// recuperePieceJointe(p_complet, p_prefixeNomFichier, b, o);
+				// "on ne devrait jamais passé par là";
+
 			}
 		} catch (IOException e) {
 			messageUtilisateur.affMessageException(TAG, e,
@@ -244,7 +245,8 @@ public class thread_Import extends Thread {
 					}
 
 				} else if (o2 instanceof Multipart) {
-					System.out.print("**MultiPart Imbriqué.  ");
+					Historique.ecrire("**MultiPart Imbriqué.  ");
+
 					Multipart mp2 = (Multipart) o2;
 					decodeMultipart(p_mlMessage, mp2, sb, textArea,
 							p_progressPJ);// ,
@@ -298,8 +300,6 @@ public class thread_Import extends Thread {
 			fileName = "inconnu";
 		}
 
-		System.out.println("**C'est une piece jointe dont le nom est :"
-				+ fileName);
 		if (fileName.contains("ISO") || fileName.contains("UTF")
 				|| fileName.contains("iso") || fileName.contains("utf")) {
 			fileName = decodeurIso(fileName);

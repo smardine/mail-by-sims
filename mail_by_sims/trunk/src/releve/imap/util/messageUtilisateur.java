@@ -1,6 +1,6 @@
 package releve.imap.util;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
@@ -71,7 +71,7 @@ public final class messageUtilisateur {
 	}
 
 	public static String afficheChoixMultiple(String p_titre, String p_message,
-			ArrayList<String> p_valeurPossible) {
+			List<String> p_valeurPossible) {
 
 		Object[] tabObj = new Object[p_valeurPossible.size()];
 		for (int i = 0; i < p_valeurPossible.size(); i++) {

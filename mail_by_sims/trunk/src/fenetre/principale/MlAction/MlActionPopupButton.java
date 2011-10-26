@@ -1,6 +1,5 @@
 package fenetre.principale.MlAction;
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -8,10 +7,9 @@ import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
-import releve.thread_SynchroImap;
-
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
+import releve.thread_SynchroImap;
 import bdd.BDRequette;
 
 public class MlActionPopupButton implements ActionListener {
@@ -39,38 +37,36 @@ public class MlActionPopupButton implements ActionListener {
 		if ("[releve ]Relever tous les comptes".equals(actionCommand)) {
 
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, false, bd
-							.getListeDeComptes());
+					pbPieceJointe, text, scrollPane, bd.getListeDeComptes());
 
 			t.start();
 
 		} else if ("[synchro ]Synchroniser tous les comptes"
 				.equals(actionCommand)) {
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, true, bd
-							.getListeDeComptes());
+					pbPieceJointe, text, scrollPane, bd.getListeDeComptes());
 			t.start();
 		} else if (actionCommand.contains("[releve ]")) {
 			String nomCompte = actionCommand.substring(actionCommand
-					.lastIndexOf("]") + 1);
+					.lastIndexOf(']') + 1);
 
 			MlListeCompteMail lst = new MlListeCompteMail();
 			MlCompteMail cpt = new MlCompteMail(nomCompte);
 			cpt.setNomCompte(nomCompte);
 			lst.add(cpt);
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, false, lst);
+					pbPieceJointe, text, scrollPane, lst);
 			t.start();
 
 		} else if (actionCommand.contains("[synchro ]")) {
 			String nomCompte = actionCommand.substring(actionCommand
-					.lastIndexOf("]") + 1);
+					.lastIndexOf(']') + 1);
 			MlListeCompteMail lst = new MlListeCompteMail();
 			MlCompteMail cpt = new MlCompteMail(nomCompte);
 			cpt.setNomCompte(nomCompte);
 			lst.add(cpt);
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, true, lst);
+					pbPieceJointe, text, scrollPane, lst);
 			t.start();
 		}
 		bd.closeConnexion();

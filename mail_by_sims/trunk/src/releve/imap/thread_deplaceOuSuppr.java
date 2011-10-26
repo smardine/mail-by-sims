@@ -99,7 +99,7 @@ public class thread_deplaceOuSuppr extends Thread {
 			messageUtilisateur.afficheText(textArea,
 					"Déplacement du ou des messages vers la corbeille");
 			thread_SynchroImap t = new thread_SynchroImap(progressBar,
-					progressBar, textArea, scroll, false, null);
+					progressBar, textArea, scroll, null);
 			t.DeplaceMessageVersCorbeille(lstADepl);
 			bd.deplaceMessageVersCorbeille(lstADepl);
 
@@ -108,7 +108,7 @@ public class thread_deplaceOuSuppr extends Thread {
 			messageUtilisateur.afficheText(textArea,
 					"Supression du ou des messages");
 			thread_SynchroImap t = new thread_SynchroImap(progressBar,
-					progressBar, textArea, scroll, false, null);
+					progressBar, textArea, scroll, null);
 			t.SupprMessage(lstASuppr);
 			// for (MlMessage m : lstASuppr) {
 			// bd.deleteMessageRecu(m.getIdMessage());

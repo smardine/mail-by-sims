@@ -40,11 +40,13 @@ public class ScriptExecutor {
 						if (onesql.length() > 0) {
 							hassql = true;
 							stmt.addBatch(onesql);
-							System.out.println(onesql);
+							// System.out.println(onesql);
 						}
 						sql = new StringBuilder();
-						if (newterminator != terminator)
+						if (newterminator != terminator) {
 							terminator = newterminator;
+						}
+
 					} else if (p_script.charAt(i) == '/'
 							&& p_script.charAt(i + 1) == '*') { //
 						// comment start
@@ -56,12 +58,14 @@ public class ScriptExecutor {
 										.equalsIgnoreCase(CMDTERMINATOR)) {
 							i += SIZETERMINATOR;
 							while (i < p_script.length()) {
-								if (p_script.charAt(i) == ' ')
+								if (p_script.charAt(i) == ' ') {
 									// jump out white spaces between "SET TERM"
 									// and new terminator
 									i++;
-								else
+								} else {
 									break;
+								}
+
 							}
 							newterminator = p_script.charAt(i);
 						} else {
@@ -77,8 +81,9 @@ public class ScriptExecutor {
 					}
 				}
 			}
-			if (hassql)
+			if (hassql) {
 				stmt.executeBatch();
+			}
 			return true;
 		} catch (Exception e) {
 			messageUtilisateur.affMessageException(TAG, e,

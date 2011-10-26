@@ -4,7 +4,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -40,8 +40,7 @@ public class choixFAI extends JFrame {
 		super();
 		this.tree = p_tree;
 		initialize();
-		ArrayList<EnDefFournisseur> lstComptePop = EnDefFournisseur
-				.getComptePop();
+		List<EnDefFournisseur> lstComptePop = EnDefFournisseur.getComptePop();
 
 		for (int i = 0; i < lstComptePop.size(); i++) {
 			// String cptName = lstComptePop.get(i).getLib();

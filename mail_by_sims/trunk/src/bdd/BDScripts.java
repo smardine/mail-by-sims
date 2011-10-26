@@ -1,23 +1,52 @@
 package bdd;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class BDScripts {
 
-	private ArrayList<String> allversion;
-	private ArrayList<String> version1;
-	private ArrayList<String> version2;
-	private ArrayList<String> version3;
-	private ArrayList<String> version4;
-	private ArrayList<String> version5;
-	private ArrayList<String> version6;
-	private ArrayList<String> version7;
+	/**
+	 * 
+	 */
+	private static final String GRANT_DELETE_INSERT_REFERENCES_SELECT_UPDATE_ON = "GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON ";
+	/**
+	 * 
+	 */
+	private static final String END2 = "END^ ";
+	/**
+	 * 
+	 */
+	private static final String SET_TERM2 = "SET TERM ; ^ ";
+	/**
+	 * 
+	 */
+	private static final String SET_TERM = "SET TERM ^ ; ";
+	/**
+	 * 
+	 */
+	private static final String END = "END ";
+	/**
+	 * 
+	 */
+	private static final String ACTIVE_BEFORE_INSERT_POSITION_0 = "ACTIVE BEFORE INSERT POSITION 0 ";
+	/**
+	 * 
+	 */
+	private static final String ID_COMPTE_INTEGER = "ID_COMPTE Integer, ";
+	private List<String> allversion;
+	private List<String> version1;
+	private List<String> version2;
+	private List<String> version3;
+	private List<String> version4;
+	private List<String> version5;
+	private List<String> version6;
+	private List<String> version7;
 
 	public BDScripts() {
 
 	}
 
-	public ArrayList<String> getAll() {
+	public List<String> getAll() {
 		allversion = new ArrayList<String>();
 		allversion.addAll(getVersion1());
 		allversion.addAll(getVersion2());
@@ -29,7 +58,7 @@ public class BDScripts {
 		return allversion;
 	}
 
-	public ArrayList<String> getVersion1() {
+	public List<String> getVersion1() {
 		version1 = new ArrayList<String>();
 		String generator = "CREATE GENERATOR GEN_BLACK_LISTE_ID;"
 				+ " CREATE GENERATOR GEN_COMPTES_ID;"
@@ -53,7 +82,7 @@ public class BDScripts {
 		version1.add(createTablePieceJointe);
 
 		String createTableComptes = "CREATE TABLE COMPTES ( "
-				+ "ID_COMPTE Integer, " + "NOM_COMPTE Varchar(500), "
+				+ BDScripts.ID_COMPTE_INTEGER + "NOM_COMPTE Varchar(500), "
 				+ "SERVEUR_POP Varchar(500), " + "PORT_POP Bigint, "
 				+ "SERVEUR_SMTP Varchar(500), " + "PORT_SMTP Integer, "
 				+ "USERNAME Varchar(500), " + "PWD Varchar(500), "
@@ -61,19 +90,19 @@ public class BDScripts {
 		version1.add(createTableComptes);
 
 		String createTableDossier = "CREATE TABLE DOSSIER ( "
-				+ "ID_COMPTE Integer, " + "ID_DOSSIER Integer, "
+				+ BDScripts.ID_COMPTE_INTEGER + "ID_DOSSIER Integer, "
 				+ "ID_DOSSIER_PARENT Integer, " + "NOM_DOSSIER Varchar(500) "
 				+ ");";
 		version1.add(createTableDossier);
 
 		String createTableMailEnvoye = "CREATE TABLE MAIL_ENVOYE ( "
-				+ "ID_COMPTE Integer, " + "ID_MESSAGE_ENVOYE Integer, "
+				+ BDScripts.ID_COMPTE_INTEGER + "ID_MESSAGE_ENVOYE Integer, "
 				+ "UID_MESSAGE Varchar(1000), " + "EXPEDITEUR Varchar(500), "
 				+ "DESTINATAIRE Blob sub_type 0, " + "SUJET Varchar(1000), "
 				+ "CONTENU Blob sub_type 0, " + "DATE_ENVOI Timestamp );";
 		version1.add(createTableMailEnvoye);
 		String createTableMailRecu = "CREATE TABLE MAIL_RECU ( "
-				+ "ID_COMPTE Integer, " + "ID_DOSSIER_STOCKAGE Integer, "
+				+ BDScripts.ID_COMPTE_INTEGER + "ID_DOSSIER_STOCKAGE Integer, "
 				+ "ID_MESSAGE_RECU Integer, " + "UID_MESSAGE Varchar(1000), "
 				+ "EXPEDITEUR Varchar(500), "
 				+ "DESTINATAIRE Blob sub_type 0, " + "SUJET Varchar(1000), "
@@ -94,7 +123,7 @@ public class BDScripts {
 
 		String createTriggerBlackList = "SET TERM  !; "
 				+ "CREATE TRIGGER BLACK_LISTE_BI FOR BLACK_LISTE "
-				+ "ACTIVE BEFORE INSERT POSITION 0 "
+				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0
 				+ "AS DECLARE VARIABLE tmp DECIMAL(18,0); "
 				+ "BEGIN "
 				+ "IF (NEW.ID_BLACKLIST IS NULL) "
@@ -102,44 +131,44 @@ public class BDScripts {
 				+ "ELSE BEGIN tmp = GEN_ID(GEN_BLACK_LISTE_ID, 0); "
 				+ "if (tmp < new.ID_BLACKLIST) "
 				+ "then tmp = GEN_ID(GEN_BLACK_LISTE_ID, new.ID_BLACKLIST-tmp); "
-				+ "END " + "END ! " + "SET TERM ; ! ";
+				+ BDScripts.END + "END ! " + "SET TERM ; ! ";
 		version1.add(createTriggerBlackList);
-		String createTriggerDossier = "SET TERM ^ ; "
+		String createTriggerDossier = BDScripts.SET_TERM
 				+ "CREATE TRIGGER DOSSIER_BI FOR DOSSIER "
-				+ "ACTIVE BEFORE INSERT POSITION 0 "
+				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0
 				+ "AS DECLARE VARIABLE tmp DECIMAL(18,0); " + "BEGIN "
 				+ "IF (NEW.ID_DOSSIER IS NULL) "
 				+ "THEN NEW.ID_DOSSIER = GEN_ID(GEN_DOSSIER_ID, 1); "
 				+ "ELSE BEGIN tmp = GEN_ID(GEN_DOSSIER_ID, 0); "
 				+ "if (tmp < new.ID_DOSSIER) "
 				+ "then tmp = GEN_ID(GEN_DOSSIER_ID, new.ID_DOSSIER-tmp); "
-				+ "END " + "END^ " + "SET TERM ; ^ ";
+				+ BDScripts.END + BDScripts.END2 + BDScripts.SET_TERM2;
 		version1.add(createTriggerDossier);
-		String createTriggerComptes = "SET TERM ^ ; "
+		String createTriggerComptes = BDScripts.SET_TERM
 				+ "CREATE TRIGGER ID_COMPTE FOR COMPTES "
-				+ "ACTIVE BEFORE INSERT POSITION 0 " + "AS "
+				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0 + "AS "
 				+ "DECLARE VARIABLE tmp DECIMAL(18,0); "
 				+ "BEGIN IF (NEW.ID_COMPTE IS NULL) "
 				+ "THEN NEW.ID_COMPTE = GEN_ID(GEN_COMPTES_ID, 1); "
 				+ "ELSE BEGIN tmp = GEN_ID(GEN_COMPTES_ID, 0); "
 				+ "if (tmp < new.ID_COMPTE) "
 				+ "then tmp = GEN_ID(GEN_COMPTES_ID, new.ID_COMPTE-tmp); "
-				+ "END " + "END^ " + "SET TERM ; ^ ";
+				+ BDScripts.END + BDScripts.END2 + BDScripts.SET_TERM2;
 		version1.add(createTriggerComptes);
-		String createTriggerMailEnvoye = "SET TERM ^ ; "
+		String createTriggerMailEnvoye = BDScripts.SET_TERM
 				+ "CREATE TRIGGER MAIL_ENVOYE_BI FOR MAIL_ENVOYE "
-				+ "ACTIVE BEFORE INSERT POSITION 0 "
+				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0
 				+ "AS DECLARE VARIABLE tmp DECIMAL(18,0); "
 				+ "BEGIN IF (NEW.ID_MESSAGE_ENVOYE IS NULL) "
 				+ "THEN NEW.ID_MESSAGE_ENVOYE = GEN_ID(GEN_MAIL_ENVOYE_ID, 1); "
 				+ "ELSE BEGIN tmp = GEN_ID(GEN_MAIL_ENVOYE_ID, 0); "
 				+ "if (tmp < new.ID_MESSAGE_ENVOYE) "
 				+ "then tmp = GEN_ID(GEN_MAIL_ENVOYE_ID, new.ID_MESSAGE_ENVOYE-tmp);"
-				+ " END " + "END^ " + "SET TERM ; ^ ";
+				+ " END " + BDScripts.END2 + BDScripts.SET_TERM2;
 		version1.add(createTriggerMailEnvoye);
-		String createTriggerMailRecu = "SET TERM ^ ; "
+		String createTriggerMailRecu = BDScripts.SET_TERM
 				+ "CREATE TRIGGER MAIL_RECU_BI FOR MAIL_RECU "
-				+ "ACTIVE BEFORE INSERT POSITION 0 "
+				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0
 				+ "AS "
 				+ "DECLARE VARIABLE tmp DECIMAL(18,0); "
 				+ "BEGIN IF (NEW.ID_MESSAGE_RECU IS NULL) "
@@ -147,24 +176,24 @@ public class BDScripts {
 				+ "ELSE BEGIN tmp = GEN_ID(GEN_MAIL_RECU_ID, 0); "
 				+ "if (tmp < new.ID_MESSAGE_RECU) "
 				+ "then tmp = GEN_ID(GEN_MAIL_RECU_ID, new.ID_MESSAGE_RECU-tmp); "
-				+ "END " + "END^ " + "SET TERM ; ^ ";
+				+ BDScripts.END + BDScripts.END2 + BDScripts.SET_TERM2;
 		version1.add(createTriggerMailRecu);
 
-		String createTriggerRegles = "SET TERM ^ ; "
+		String createTriggerRegles = BDScripts.SET_TERM
 				+ "CREATE TRIGGER RELGES_BI FOR REGLES "
-				+ "ACTIVE BEFORE INSERT POSITION 0 " + "AS "
+				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0 + "AS "
 				+ "DECLARE VARIABLE tmp DECIMAL(18,0); "
 				+ "BEGIN IF (NEW.ID_REGLE IS NULL) "
 				+ "THEN NEW.ID_REGLE = GEN_ID(GEN_RELGES_ID, 1); "
 				+ "ELSE BEGIN tmp = GEN_ID(GEN_RELGES_ID, 0); "
 				+ "if (tmp < new.ID_REGLE) "
 				+ "then tmp = GEN_ID(GEN_RELGES_ID, new.ID_REGLE-tmp); "
-				+ "END " + "END^ " + "SET TERM ; ^";
+				+ BDScripts.END + BDScripts.END2 + "SET TERM ; ^";
 		version1.add(createTriggerRegles);
 
-		String createTriggerPieceJointe = "SET TERM ^ ; "
+		String createTriggerPieceJointe = BDScripts.SET_TERM
 				+ "CREATE TRIGGER PIECE_JOINTE_BI FOR PIECE_JOINTE "
-				+ "ACTIVE BEFORE INSERT POSITION 0 "
+				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0
 				+ "AS "
 				+ "DECLARE VARIABLE tmp DECIMAL(18,0); "
 				+ "BEGIN IF (NEW.ID_PIECE_JOINTE IS NULL) "
@@ -172,7 +201,7 @@ public class BDScripts {
 				+ "ELSE BEGIN tmp = GEN_ID(GEN_PIECE_JOINTE_ID, 0); "
 				+ "if (tmp < NEW.ID_PIECE_JOINTE) "
 				+ "then tmp = GEN_ID(GEN_PIECE_JOINTE_ID, new.ID_PIECE_JOINTE-tmp); "
-				+ "END " + "END^ " + "SET TERM ; ^";
+				+ BDScripts.END + BDScripts.END2 + "SET TERM ; ^";
 		version1.add(createTriggerPieceJointe);
 
 		String createIndex = "CREATE INDEX IDX_BLACK_LISTE1 ON BLACK_LISTE (ID_BLACKLIST) ;"
@@ -187,21 +216,21 @@ public class BDScripts {
 				+ "CREATE INDEX IDX_PIECE_JOINTE_ID_PJ ON PIECE_JOINTE (ID_PIECE_JOINTE);";
 		version1.add(createIndex);
 
-		String createGrant = "GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON "
+		String createGrant = BDScripts.GRANT_DELETE_INSERT_REFERENCES_SELECT_UPDATE_ON
 				+ "BLACK_LISTE TO  SYSDBA WITH GRANT OPTION; "
-				+ "GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON "
+				+ BDScripts.GRANT_DELETE_INSERT_REFERENCES_SELECT_UPDATE_ON
 				+ "COMPTES TO  SYSDBA WITH GRANT OPTION; "
-				+ "GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON "
+				+ BDScripts.GRANT_DELETE_INSERT_REFERENCES_SELECT_UPDATE_ON
 				+ "DOSSIER TO  SYSDBA WITH GRANT OPTION; "
-				+ "GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON "
+				+ BDScripts.GRANT_DELETE_INSERT_REFERENCES_SELECT_UPDATE_ON
 				+ "MAIL_ENVOYE TO  SYSDBA WITH GRANT OPTION; "
-				+ "GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON "
+				+ BDScripts.GRANT_DELETE_INSERT_REFERENCES_SELECT_UPDATE_ON
 				+ "MAIL_RECU TO  SYSDBA WITH GRANT OPTION; "
-				+ "GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON "
+				+ BDScripts.GRANT_DELETE_INSERT_REFERENCES_SELECT_UPDATE_ON
 				+ "PARAM TO  SYSDBA WITH GRANT OPTION; "
-				+ "GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON "
+				+ BDScripts.GRANT_DELETE_INSERT_REFERENCES_SELECT_UPDATE_ON
 				+ "REGLES TO  SYSDBA WITH GRANT OPTION; "
-				+ "GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON "
+				+ BDScripts.GRANT_DELETE_INSERT_REFERENCES_SELECT_UPDATE_ON
 				+ "PIECE_JOINTE TO  SYSDBA WITH GRANT OPTION;";
 		version1.add(createGrant);
 
@@ -210,7 +239,7 @@ public class BDScripts {
 		return version1;
 	}
 
-	public ArrayList<String> getVersion2() {
+	public List<String> getVersion2() {
 		version2 = new ArrayList<String>();
 		String script = "ALTER TABLE MAIL_RECU " + "ADD STATUT Char(1) "
 				+ "CHARACTER SET ISO8859_1 NOT NULL COLLATE FR_FR; ";
@@ -221,7 +250,7 @@ public class BDScripts {
 		return version2;
 	}
 
-	public ArrayList<String> getVersion3() {
+	public List<String> getVersion3() {
 		version3 = new ArrayList<String>();
 		version3.add("ALTER TABLE COMPTES " + "ADD TYPE_COMPTE Varchar(7) "
 				+ "CHARACTER SET ISO8859_1 NOT NULL " + "COLLATE FR_FR; ");
@@ -231,7 +260,7 @@ public class BDScripts {
 		return version3;
 	}
 
-	public ArrayList<String> getVersion4() {
+	public List<String> getVersion4() {
 		version4 = new ArrayList<String>();
 		version4
 				.add("CREATE INDEX IDX_MAIL_RECU_ID_COMPTE ON MAIL_RECU (ID_COMPTE);");
@@ -243,7 +272,7 @@ public class BDScripts {
 		return version4;
 	}
 
-	public ArrayList<String> getVersion5() {
+	public List<String> getVersion5() {
 		version5 = new ArrayList<String>();
 		version5
 				.add("ALTER TABLE DOSSIER ADD NOM_INTERNET Varchar(999) CHARACTER SET ISO8859_1;");
@@ -251,7 +280,7 @@ public class BDScripts {
 		return version5;
 	}
 
-	public ArrayList<String> getVersion6() {
+	public List<String> getVersion6() {
 		version6 = new ArrayList<String>();
 		version6.add("CREATE INDEX IDX_NOM_DOSSIER ON DOSSIER (NOM_DOSSIER);");
 		version6
@@ -268,7 +297,7 @@ public class BDScripts {
 	/**
 	 * @return
 	 */
-	public ArrayList<String> getVersion7() {
+	public List<String> getVersion7() {
 		version7 = new ArrayList<String>();
 		version7.add("ALTER TABLE MAIL_RECU ADD DESTINATAIRE_COPY Blob;");
 		version7.add("ALTER TABLE MAIL_RECU ADD DESTINATAIRE_CACHE Blob;");

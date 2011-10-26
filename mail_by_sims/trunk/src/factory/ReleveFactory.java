@@ -36,6 +36,11 @@ import fenetre.comptes.EnTypeCompte;
  */
 public class ReleveFactory {
 
+	/**
+	 * 
+	 */
+	private static final String RELEVE_DE = ": Releve de ";
+
 	private final MlCompteMail compteMail;
 
 	private Properties props;
@@ -146,20 +151,21 @@ public class ReleveFactory {
 	private void releveListeMessageDelta(
 			com.googlecode.jdeltasync.Message[] p_lstMess,
 			com.googlecode.jdeltasync.Folder p_folder, int p_idDossier)
-			throws FileNotFoundException, DeltaSyncException, IOException {
+			throws DeltaSyncException, IOException {
 		if (p_lstMess == null) {
 			return;
 		}
 		progressCompte.setValue(0);
-		progressCompte.setString(compteMail.getNomCompte() + ": Releve de "
-				+ p_folder.getName());
+		progressCompte.setString(compteMail.getNomCompte()
+				+ ReleveFactory.RELEVE_DE + p_folder.getName());
 		com.googlecode.jdeltasync.Message[] lstMessages = p_lstMess;
 		int nbActu = 1;
 		for (int i = lstMessages.length; i > 0; i--) {
 			int pourcent = (nbActu++ * 100) / lstMessages.length;
 			progressCompte.setValue(pourcent);
-			progressCompte.setString(compteMail.getNomCompte() + ": Releve de "
-					+ p_folder.getName() + " :" + pourcent + " %");
+			progressCompte.setString(compteMail.getNomCompte()
+					+ ReleveFactory.RELEVE_DE + p_folder.getName() + " :"
+					+ pourcent + " %");
 			com.googlecode.jdeltasync.Message m = lstMessages[i - 1];
 			String uidMessage = m.getId();
 			if (uidMessage == null
@@ -223,8 +229,9 @@ public class ReleveFactory {
 					progressCompte);
 			synchro.synchroniseUnDossierDeltaSync(p_folder, lstMessagesHotmail);
 			progressCompte.setValue(100);
-			progressCompte.setString(compteMail.getNomCompte() + ": Releve de "
-					+ p_folder.getName() + " :" + 100 + " %");
+			progressCompte.setString(compteMail.getNomCompte()
+					+ ReleveFactory.RELEVE_DE + p_folder.getName() + " :" + 100
+					+ " %");
 
 			return checkMessDeltaARelever(p_folder, p_idDossier);
 		}
@@ -304,8 +311,9 @@ public class ReleveFactory {
 					progressCompte);
 			synchro.synchroniseUnDossier(p_folder);
 			progressCompte.setValue(100);
-			progressCompte.setString(compteMail.getNomCompte() + ": Releve de "
-					+ p_folder.getFullName() + " :" + 100 + " %");
+			progressCompte.setString(compteMail.getNomCompte()
+					+ ReleveFactory.RELEVE_DE + p_folder.getFullName() + " :"
+					+ 100 + " %");
 
 			return checkMessARelever(p_folder, p_idDossier);
 		}
@@ -326,15 +334,16 @@ public class ReleveFactory {
 			return;
 		}
 		progressCompte.setValue(0);
-		progressCompte.setString(compteMail.getNomCompte() + ": Releve de "
-				+ p_folder.getFullName());
+		progressCompte.setString(compteMail.getNomCompte()
+				+ ReleveFactory.RELEVE_DE + p_folder.getFullName());
 		Message[] lstMessages = p_listeMessages;
 		int nbActu = 1;
 		for (int i = lstMessages.length; i > 0; i--) {
 			int pourcent = (nbActu++ * 100) / lstMessages.length;
 			progressCompte.setValue(pourcent);
-			progressCompte.setString(compteMail.getNomCompte() + ": Releve de "
-					+ p_folder.getFullName() + " :" + pourcent + " %");
+			progressCompte.setString(compteMail.getNomCompte()
+					+ ReleveFactory.RELEVE_DE + p_folder.getFullName() + " :"
+					+ pourcent + " %");
 			Message m = lstMessages[i - 1];
 			String uidMessage = getUIdMessage(p_folder, m);
 			if (uidMessage == null

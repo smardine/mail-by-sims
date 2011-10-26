@@ -1,10 +1,9 @@
 package fenetre.principale.jList;
 
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.JList;
 import javax.swing.JTable;
@@ -66,7 +65,7 @@ public class MlActionPopupJList implements ActionListener {
 		int idMessage = jTableHelper.getReelIdMessage(table, table
 				.getSelectedRow());
 		BDRequette bd = new BDRequette();
-		ArrayList<String> lstPJ = bd.getListNomPieceJointe(idMessage);
+		List<String> lstPJ = bd.getListeNomPieceJointe(idMessage);
 		String emplacementEnregistrement = ManipFichier.OpenFolder();
 
 		for (String unePJ : lstPJ) {

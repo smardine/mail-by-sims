@@ -1,6 +1,6 @@
 package mdl;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
@@ -38,7 +38,7 @@ public class MlCompteMail {
 
 	private void initialiseCompte(int p_idCompte) {
 		BDRequette bd = new BDRequette();
-		ArrayList<String> defCompte = bd.getCompteByID(p_idCompte);
+		List<String> defCompte = bd.getCompteByID(p_idCompte);
 
 		for (int i = 0; i < defCompte.size(); i++) {
 			switch (i) {
@@ -105,16 +105,16 @@ public class MlCompteMail {
 	}
 
 	/**
-	 * @param defCompte
+	 * @param p_defCompte
 	 */
-	private void traiteTypeCompte(ArrayList<String> defCompte) {
-		if ("imap".equals(defCompte.get(7))) {
+	private void traiteTypeCompte(List<String> p_defCompte) {
+		if ("imap".equals(p_defCompte.get(7))) {
 			setTypeCompte(EnTypeCompte.IMAP);
-		} else if ("pop".equals(defCompte.get(7))) {
+		} else if ("pop".equals(p_defCompte.get(7))) {
 			setTypeCompte(EnTypeCompte.POP);
-		} else if ("gmail".equals(defCompte.get(7))) {
+		} else if ("gmail".equals(p_defCompte.get(7))) {
 			setTypeCompte(EnTypeCompte.GMAIL);
-		} else if ("hotmail".equals(defCompte.get(7))) {
+		} else if ("hotmail".equals(p_defCompte.get(7))) {
 			setTypeCompte(EnTypeCompte.HOTMAIL);
 		}
 	}

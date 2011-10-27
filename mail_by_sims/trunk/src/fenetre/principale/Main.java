@@ -62,7 +62,7 @@ public class Main extends JFrame {
 	private JDesktopPane panelHTML = null;
 	private JButton btNewMessage = null;
 	private JButton btSupprMessage = null;
-	private JButton btEnvoyerRecevoir = null;
+
 	private JTree jTree = null;
 	private JEditorPane htmlPane = null;
 	private JScrollPane jScrollPane = null;
@@ -94,7 +94,6 @@ public class Main extends JFrame {
 	private JProgressBar jProgressBarPieceJointe = null;
 	private JTextArea jTextArea = null;
 	private JScrollPane jScrollPane3 = null;
-	private JButton btChoixSynchro = null;
 	private JButton btChoixReleve = null;
 	private Timer timer = null; // @jve:decl-index=0:visual-constraint="31,619"
 
@@ -199,7 +198,7 @@ public class Main extends JFrame {
 		if (btNewMessage == null) {
 			btNewMessage = new JButton();
 			btNewMessage.setText("");
-			btNewMessage.setBounds(new Rectangle(190, 0, 50, 50));
+			btNewMessage.setBounds(new Rectangle(120, 0, 50, 50));
 			btNewMessage.setIcon(new ImageIcon(getClass().getResource(
 					"/nouveau_message.png")));
 		}
@@ -215,28 +214,11 @@ public class Main extends JFrame {
 			btSupprMessage = new JButton();
 			btSupprMessage.setText("");
 			btSupprMessage.setActionCommand(EnActionMain.SUPPRIMER.getLib());
-			btSupprMessage.setBounds(new Rectangle(240, 0, 50, 50));
+			btSupprMessage.setBounds(new Rectangle(170, 0, 50, 50));
 			btSupprMessage.setIcon(new ImageIcon(getClass().getResource(
 					"/supprimer.png")));
 		}
 		return btSupprMessage;
-	}
-
-	/**
-	 * This method initializes btEnvoyerRecevoir
-	 * @return javax.swing.JButton
-	 */
-	private JButton getJButtonEnvoyer_Recevoir() {
-		if (btEnvoyerRecevoir == null) {
-			btEnvoyerRecevoir = new JButton();
-			btEnvoyerRecevoir.setText("");
-			btEnvoyerRecevoir.setIcon(new ImageIcon(getClass().getResource(
-					"/envoyer_recevoir.png")));
-			btEnvoyerRecevoir.setBounds(new Rectangle(0, 0, 50, 50));
-			btEnvoyerRecevoir.setActionCommand(EnActionMain.ENVOYER_RECEVOIR
-					.getLib());
-		}
-		return btEnvoyerRecevoir;
 	}
 
 	/**
@@ -382,7 +364,7 @@ public class Main extends JFrame {
 			btRecevoir = new JButton();
 			btRecevoir.setIcon(new ImageIcon(getClass().getResource(
 					"/recevoir.png")));
-			btRecevoir.setBounds(new Rectangle(70, 0, 50, 50));
+			btRecevoir.setBounds(new Rectangle(0, 0, 50, 50));
 			btRecevoir.setActionCommand(EnActionMain.RECEVOIR.getLib());
 
 		}
@@ -398,7 +380,7 @@ public class Main extends JFrame {
 			btEnvoyer = new JButton();
 			btEnvoyer.setIcon(new ImageIcon(getClass().getResource(
 					"/envoyer.png")));
-			btEnvoyer.setBounds(new Rectangle(140, 0, 50, 50));
+			btEnvoyer.setBounds(new Rectangle(70, 0, 50, 50));
 			btEnvoyer.setActionCommand(EnActionMain.ENVOYER.getLib());
 		}
 		return btEnvoyer;
@@ -424,7 +406,7 @@ public class Main extends JFrame {
 		if (jTabbedPane == null) {
 			jTabbedPane = new JTabbedPane();
 			jTabbedPane.setLocation(new Point(0, 0));
-			jTabbedPane.setSize(new Dimension(290, 75));
+			jTabbedPane.setSize(new Dimension(220, 75));
 			jTabbedPane
 					.addTab("Gestion Messages", null, getJPanel(),
 							"Acces aux fonction d'envoi, reception, synchronisation...");
@@ -440,12 +422,10 @@ public class Main extends JFrame {
 		if (jPanel == null) {
 			jPanel = new JPanel();
 			jPanel.setLayout(null);
-			jPanel.add(getJButtonEnvoyer_Recevoir(), null);
 			jPanel.add(getJButtonSupprMessage(), null);
 			jPanel.add(getJButtonRecevoir(), null);
 			jPanel.add(getJButtonEnvoyer(), null);
 			jPanel.add(getJButtonNewMessage(), null);
-			jPanel.add(getBtChoixSynchro(), null);
 			jPanel.add(getBtChoixReleve(), null);
 		}
 		return jPanel;
@@ -458,7 +438,7 @@ public class Main extends JFrame {
 	private JProgressBar getJProgressBar() {
 		if (jProgressBarReleve == null) {
 			jProgressBarReleve = new JProgressBar();
-			jProgressBarReleve.setBounds(new Rectangle(296, 2, 238, 23));
+			jProgressBarReleve.setBounds(new Rectangle(223, 0, 310, 25));
 			jProgressBarReleve.setStringPainted(true);
 			jProgressBarReleve.setBackground(new Color(238, 238, 238));
 			jProgressBarReleve.setForeground(Color.blue);
@@ -474,7 +454,7 @@ public class Main extends JFrame {
 	private JProgressBar getJProgressBarPieceJointe() {
 		if (jProgressBarPieceJointe == null) {
 			jProgressBarPieceJointe = new JProgressBar();
-			jProgressBarPieceJointe.setBounds(new Rectangle(294, 47, 239, 24));
+			jProgressBarPieceJointe.setBounds(new Rectangle(223, 25, 310, 25));
 			jProgressBarPieceJointe.setStringPainted(true);
 
 			jProgressBarPieceJointe.setVisible(false);
@@ -514,27 +494,13 @@ public class Main extends JFrame {
 	}
 
 	/**
-	 * This method initializes btChoixSynchro
-	 * @return javax.swing.JButton
-	 */
-	private JButton getBtChoixSynchro() {
-		if (btChoixSynchro == null) {
-			btChoixSynchro = new JButton();
-			btChoixSynchro.setBounds(new Rectangle(50, 0, 20, 50));
-			btChoixSynchro.setIcon(new ImageIcon(getClass().getResource(
-					"/img_fleche_bas.png")));
-		}
-		return btChoixSynchro;
-	}
-
-	/**
 	 * This method initializes btChoixReleve
 	 * @return javax.swing.JButton
 	 */
 	private JButton getBtChoixReleve() {
 		if (btChoixReleve == null) {
 			btChoixReleve = new JButton();
-			btChoixReleve.setBounds(new Rectangle(120, 0, 20, 50));
+			btChoixReleve.setBounds(new Rectangle(50, 0, 20, 50));
 			btChoixReleve.setIcon(new ImageIcon(getClass().getResource(
 					"/img_fleche_bas.png")));
 		}
@@ -602,9 +568,7 @@ public class Main extends JFrame {
 		jMenuItemReleve.addActionListener(new MlActionMain(jTree,
 				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
 				jScrollPane3));
-		btEnvoyerRecevoir.addActionListener(new MlActionMain(jTree,
-				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
-				jScrollPane3));
+
 		btRecevoir.addActionListener(new MlActionMain(jTree,
 				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
 				jScrollPane3));
@@ -613,15 +577,11 @@ public class Main extends JFrame {
 		btSupprMessage.addActionListener(new MlActionPopupJTable(jTable, jList,
 				jProgressBarReleve, jTextArea, jScrollPane3));
 		jMenuCompte.addActionListener(new MlActionMain(jTree));
-		btChoixSynchro.addMouseListener(new MlActionMainCombo(false,
-				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
-				jScrollPane3));
-		btChoixReleve.addMouseListener(new MlActionMainCombo(true,
+		btChoixReleve.addMouseListener(new MlActionMainCombo(
 				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
 				jScrollPane3));
 
 		ComposantVisuelCommun.setJListPJ(jList);
-		ComposantVisuelCommun.setbtChoixSynchro(btChoixSynchro);
 		ComposantVisuelCommun.setbtChoixReleve(btChoixReleve);
 		ComposantVisuelCommun.setTree(jTree);
 

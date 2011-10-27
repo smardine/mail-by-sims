@@ -37,14 +37,14 @@ public final class messageUtilisateur {
 
 	public static void affMessageErreur(String p_tag, String p_message) {
 
-		// JOptionPane.showMessageDialog(null, p_message,
-		// "Une erreur est survenue", JOptionPane.ERROR_MESSAGE);
+		JOptionPane.showMessageDialog(null, p_message,
+				"Une erreur est survenue", JOptionPane.ERROR_MESSAGE);
 		Historique.ecrire(p_tag + " [ERROR] " + p_message);
 	}
 
 	public static void affMessageInfo(String p_message) {
-		// JOptionPane.showMessageDialog(null, p_message, "Pour information",
-		// JOptionPane.INFORMATION_MESSAGE);
+		JOptionPane.showMessageDialog(null, p_message, "Pour information",
+				JOptionPane.INFORMATION_MESSAGE);
 		Historique.ecrire("[INFO] " + p_message);
 
 	}

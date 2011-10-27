@@ -3,7 +3,6 @@
  */
 package factory;
 
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
@@ -92,9 +91,7 @@ public class ReleveFactory {
 				client.disconnect();
 				break;
 		}
-		// folder.close(false);
 		bd.closeConnexion();
-
 	}
 
 	/**
@@ -120,7 +117,6 @@ public class ReleveFactory {
 	 * @param p_idDossier
 	 * @throws IOException
 	 * @throws DeltaSyncException
-	 * @throws FileNotFoundException
 	 */
 	private void releveListeMessageDelta(
 			com.googlecode.jdeltasync.Message[] p_lstMess,
@@ -218,7 +214,6 @@ public class ReleveFactory {
 	 * @param p_folder
 	 * @throws MessagingException
 	 * @throws IOException
-	 * @throws FileNotFoundException
 	 */
 	private void releveDossier(Folder p_folder) throws MessagingException,
 			IOException {
@@ -275,12 +270,12 @@ public class ReleveFactory {
 				"Ouverture du dossier ");
 		Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
 				"Nombre de messages dans le dossier: " + imapcount);
-		Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
-				"Nombre de message a relever: " + nbMessARelever);
 
 		if (nbMessARelever < 0) {
 			// il y a moin de message sur le serveur qu'en
 			// base, il faut faire une synchro
+			Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
+					"Mise a jour du dossier necessaire");
 			SynchroFactory synchro = new SynchroFactory(compteMail,
 					progressCompte);
 			synchro.synchroniseUnDossier(p_folder);
@@ -293,6 +288,8 @@ public class ReleveFactory {
 		}
 		Message[] tabMessageARelever = p_folder.getMessages(
 				(imapcount - nbMessARelever) + 1, imapcount);
+		Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
+				"Nombre de message a relever: " + nbMessARelever);
 		return tabMessageARelever;
 	}
 
@@ -300,7 +297,6 @@ public class ReleveFactory {
 	 * @param p_idDossier
 	 * @throws MessagingException
 	 * @throws IOException
-	 * @throws FileNotFoundException
 	 */
 	private void releveListeMessage(Message[] p_listeMessages, Folder p_folder,
 			int p_idDossier) throws MessagingException, IOException {

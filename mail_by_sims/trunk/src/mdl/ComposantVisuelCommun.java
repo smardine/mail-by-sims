@@ -16,7 +16,6 @@ public final class ComposantVisuelCommun {
 	private static String nomCompte;
 	private static TreePath treepath;
 	private static JList listCompteMail;
-	private static JButton btChoixSynchro;
 	private static JButton btChoixReleve;
 	private static JTree tree;
 
@@ -60,17 +59,6 @@ public final class ComposantVisuelCommun {
 
 	public static JList getJListCompteMail() {
 		return listCompteMail;
-	}
-
-	/**
-	 * @param p_btChoixSynchro
-	 */
-	public static void setbtChoixSynchro(JButton p_btChoixSynchro) {
-		btChoixSynchro = p_btChoixSynchro;
-	}
-
-	public static JButton getBtChoixSynchro() {
-		return btChoixSynchro;
 	}
 
 	/**

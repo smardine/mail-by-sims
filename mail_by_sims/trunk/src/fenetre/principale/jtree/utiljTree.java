@@ -20,18 +20,12 @@ public final class utiljTree {
 		p_tree.setModel(new ArborescenceBoiteMail());
 		p_tree.setSelectionPath(originalTreePath);
 		p_tree.setSelectionRows(originalSelectionRow);
-		for (MouseListener alistener : ComposantVisuelCommun.getBtChoixReleve()
+		for (MouseListener unListener : ComposantVisuelCommun.getBtChoixReleve()
 				.getMouseListeners()) {
-			if (alistener instanceof MlActionMainCombo) {
-				((MlActionMainCombo) alistener).refreshPopup();
+			if (unListener instanceof MlActionMainCombo) {
+				((MlActionMainCombo) unListener).refreshPopup();
 			}
 
-		}
-		for (MouseListener aListener : ComposantVisuelCommun
-				.getBtChoixSynchro().getMouseListeners()) {
-			if (aListener instanceof MlActionMainCombo) {
-				((MlActionMainCombo) aListener).refreshPopup();
-			}
 		}
 
 	}

@@ -71,15 +71,7 @@ public class MlActionMain implements ActionListener {
 					pbPieceJointe, text, scrollPane);
 			t.start();
 		}
-		if (e.getActionCommand().equals(EnActionMain.ENVOYER_RECEVOIR.getLib())) {
-			BDRequette bd = new BDRequette();
 
-			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, bd.getListeDeComptes());
-			t.start();
-			bd.closeConnexion();
-
-		}
 		if (e.getActionCommand().equals(EnActionMain.RECEVOIR.getLib())) {
 			BDRequette bd = new BDRequette();
 			thread_SynchroImap t = new thread_SynchroImap(pbReleve,

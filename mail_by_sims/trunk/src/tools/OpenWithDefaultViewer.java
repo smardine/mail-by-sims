@@ -4,6 +4,7 @@ import java.awt.Desktop;
 import java.io.File;
 import java.net.URI;
 
+import releve.imap.util.messageUtilisateur;
 import exception.DonneeAbsenteException;
 
 public final class OpenWithDefaultViewer {
@@ -40,7 +41,13 @@ public final class OpenWithDefaultViewer {
 
 	public static void launchBrowser(String url) {
 		if (url == null) {
-			throw new NullPointerException();
+			try {
+				throw new DonneeAbsenteException(TAG,
+						"l'url doit etre renseignée");
+			} catch (DonneeAbsenteException e) {
+				messageUtilisateur.affMessageException(TAG, e,
+						"Erreur de programation, l'url doit etre renseignée");
+			}
 		}
 		if (!Desktop.isDesktopSupported()) {
 			return;
@@ -52,5 +59,4 @@ public final class OpenWithDefaultViewer {
 			Historique.ecrire("Message d'erreur: " + e);
 		}
 	}
-
 }

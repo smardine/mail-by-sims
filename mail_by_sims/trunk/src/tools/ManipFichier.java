@@ -53,46 +53,7 @@ public final class ManipFichier {
 	 * @return resultat -Boolean vrai si ca a marché
 	 */
 	public static boolean copier(final File source, final File destination) {
-		boolean resultat = false;
-
-		// Declaration des flux
-		java.io.FileInputStream sourceFile = null;
-		java.io.FileOutputStream destinationFile = null;
-
-		try {
-			// Création du fichier :
-			destination.createNewFile();
-
-			// Ouverture des flux
-			sourceFile = new java.io.FileInputStream(source);
-			destinationFile = new java.io.FileOutputStream(destination);
-
-			// Lecture par segment de 0.5Mo
-			final byte buffer[] = new byte[512 * 1024];
-			int nbLecture;
-
-			while ((nbLecture = sourceFile.read(buffer)) != -1) {
-				destinationFile.write(buffer, 0, nbLecture);
-			}
-
-			// Copie réussie
-			resultat = true;
-		} catch (final java.io.FileNotFoundException f) {
-
-		} catch (final java.io.IOException e) {
-
-		} finally {
-			// Quoi qu'il arrive, on ferme les flux
-			try {
-				sourceFile.close();
-			} catch (final Exception e) {
-			}
-			try {
-				destinationFile.close();
-			} catch (final Exception e) {
-			}
-		}
-		return (resultat);
+		return copier(source, destination, null);
 	}
 
 	/**
@@ -246,11 +207,13 @@ public final class ManipFichier {
 
 			while ((nbLecture = sourceFile.read(buffer)) != -1) {
 				destinationFile.write(buffer, 0, nbLecture);
-				progressionEnCours = (100 * destination.length())
-						/ source.length();
-				final int progression = (int) progressionEnCours;
-				p_progressBar.setValue(progression);
-				p_progressBar.setString(progression + " %");
+				if (p_progressBar != null) {
+					progressionEnCours = (100 * destination.length())
+							/ source.length();
+					final int progression = (int) progressionEnCours;
+					p_progressBar.setValue(progression);
+					p_progressBar.setString(progression + " %");
+				}
 
 			}
 

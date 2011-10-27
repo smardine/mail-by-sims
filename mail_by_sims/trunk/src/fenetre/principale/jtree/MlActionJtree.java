@@ -164,29 +164,25 @@ public class MlActionJtree implements TreeSelectionListener,
 	@Override
 	public void mousePressed(MouseEvent e) {
 		BDRequette bd = new BDRequette();
-		if (!bd.getListeDeComptes().contains(getPathFromEvent(e))) {
+		if (!bd.getListeDeComptes().contains(getPathFromEvent(e))
+				&& null != getPathFromEvent(e)) {
 			// affiche le contenu de la base correspondant a ce que l'on a
 			// cliqué
-			if (null != getPathFromEvent(e)) {
-				String dossierChoisi = (String) getPathFromEvent(e)
-						.getLastPathComponent();
 
-				if (!bd.getListeDeComptes().contains(dossierChoisi)) {
-					int idCompte = bd.getIdComptes(ComposantVisuelCommun
-							.getNomCompte());
-					int idDossierChoisi = bd.getIdDossier(dossierChoisi,
-							idCompte);
-					MlListeMessage listeMessage = bd.getListeDeMessage(
-							idCompte, idDossierChoisi);
+			String dossierChoisi = (String) getPathFromEvent(e)
+					.getLastPathComponent();
 
-					MyTableModel modelDetable = (MyTableModel) table.getModel();
-					modelDetable.valorisetable(listeMessage);
-					// table.setVisible(true);
+			if (!bd.getListeDeComptes().contains(dossierChoisi)) {
+				int idCompte = bd.getIdComptes(ComposantVisuelCommun
+						.getNomCompte());
+				int idDossierChoisi = bd.getIdDossier(dossierChoisi, idCompte);
+				MlListeMessage listeMessage = bd.getListeDeMessage(idCompte,
+						idDossierChoisi);
 
-				}
-
+				MyTableModel modelDetable = (MyTableModel) table.getModel();
+				modelDetable.valorisetable(listeMessage);
+				// table.setVisible(true);
 			}
-
 		}
 		bd.closeConnexion();
 	}

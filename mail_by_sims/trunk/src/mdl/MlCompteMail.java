@@ -43,25 +43,25 @@ public class MlCompteMail {
 		for (int i = 0; i < defCompte.size(); i++) {
 			switch (i) {
 				case 0:
-					setNomCompte(defCompte.get(0));
+					this.nomCompte = (defCompte.get(0));
 					break;
 				case 1:
-					setServeurReception(defCompte.get(1));
+					this.serveurReception = (defCompte.get(1));
 					break;
 				case 2:
-					setPortPop(Long.parseLong(defCompte.get(2)));
+					this.portPop = (Long.parseLong(defCompte.get(2)));
 					break;
 				case 3:
-					setServeurSMTP(defCompte.get(3));
+					this.serveurSMTP = (defCompte.get(3));
 					break;
 				case 4:
-					setPortSMTP(Long.parseLong(defCompte.get(4)));
+					this.portSMTP = (Long.parseLong(defCompte.get(4)));
 					break;
 				case 5:
-					setUserName(defCompte.get(5));
+					this.userName = (defCompte.get(5));
 					break;
 				case 6:
-					setPassword(defCompte.get(6));
+					this.password = (defCompte.get(6));
 					break;
 				case 7:
 					traiteTypeCompte(defCompte);
@@ -84,21 +84,24 @@ public class MlCompteMail {
 		for (EnDossierBase unDossier : lstDossierBase) {
 			switch (unDossier) {
 				case RECEPTION:
-					setIdInbox(bd.getIdDossier(unDossier.getLib(), idCompte));
+					this.idInbox = (bd.getIdDossier(unDossier.getLib(),
+							idCompte));
 					break;
 				case BROUILLON:
-					setIdBrouillons(bd.getIdDossier(unDossier.getLib(),
+					this.idBrouillons = (bd.getIdDossier(unDossier.getLib(),
 							idCompte));
 					break;
 				case SPAM:
-					setIdSpam(bd.getIdDossier(unDossier.getLib(), idCompte));
-					break;
-				case CORBEILLE:
-					setIdCorbeille(bd
+					this.idSpam = (bd
 							.getIdDossier(unDossier.getLib(), idCompte));
 					break;
+				case CORBEILLE:
+					this.idCorbeille = (bd.getIdDossier(unDossier.getLib(),
+							idCompte));
+					break;
 				case ENVOYES:
-					setIdEnvoye(bd.getIdDossier(unDossier.getLib(), idCompte));
+					this.idEnvoye = (bd.getIdDossier(unDossier.getLib(),
+							idCompte));
 					break;
 			}
 		}
@@ -109,13 +112,13 @@ public class MlCompteMail {
 	 */
 	private void traiteTypeCompte(List<String> p_defCompte) {
 		if ("imap".equals(p_defCompte.get(7))) {
-			setTypeCompte(EnTypeCompte.IMAP);
+			this.typeCompte = (EnTypeCompte.IMAP);
 		} else if ("pop".equals(p_defCompte.get(7))) {
-			setTypeCompte(EnTypeCompte.POP);
+			this.typeCompte = (EnTypeCompte.POP);
 		} else if ("gmail".equals(p_defCompte.get(7))) {
-			setTypeCompte(EnTypeCompte.GMAIL);
+			this.typeCompte = (EnTypeCompte.GMAIL);
 		} else if ("hotmail".equals(p_defCompte.get(7))) {
-			setTypeCompte(EnTypeCompte.HOTMAIL);
+			this.typeCompte = (EnTypeCompte.HOTMAIL);
 		}
 	}
 

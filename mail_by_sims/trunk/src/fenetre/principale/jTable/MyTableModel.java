@@ -24,9 +24,8 @@ public class MyTableModel extends AbstractTableModel {
 	private final XTableColumnModel coloneModel;
 
 	// private final MlListeMessage rowValues = new MlListeMessage();
-	public MyTableModel(MlListeMessage p_liste, XTableColumnModel p_coloneModel) {
+	public MyTableModel(XTableColumnModel p_coloneModel) {
 
-		valorisetable(p_liste);
 		this.coloneModel = p_coloneModel;
 		coloneModel.addColumn(new TableColumn(0), "n°");
 		coloneModel.addColumn(new TableColumn(1), "Date de reception");

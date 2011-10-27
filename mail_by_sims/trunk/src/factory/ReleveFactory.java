@@ -6,12 +6,10 @@ package factory;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.Properties;
 
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.mail.Session;
 import javax.mail.Store;
 import javax.swing.JProgressBar;
 import javax.swing.JTextArea;
@@ -43,8 +41,6 @@ public class ReleveFactory {
 
 	private final MlCompteMail compteMail;
 
-	private Properties props;
-	private Session session;
 	private Store st;
 	private final BDRequette bd;
 	private final JProgressBar progressCompte;
@@ -64,37 +60,15 @@ public class ReleveFactory {
 
 	public void releveCourier() throws MessagingException, IOException,
 			DeltaSyncException {
-
+		StoreFactory storeFact = new StoreFactory(compteMail);
+		st = storeFact.getConnectedStore();
 		switch (compteMail.getTypeCompte()) {
 			case POP:
-				props = System.getProperties();
-				session = Session.getDefaultInstance(props, null);
-				session.setDebug(true);
-				st = session.getStore("pop3");
-				if (!st.isConnected()) {
-					st.connect(compteMail.getServeurReception(), compteMail
-							.getUserName(), compteMail.getPassword());
-				}
-
 				releveDossier((POP3Folder) st.getFolder("INBOX"));
 				st.close();
 				break;
 			case GMAIL:
 			case IMAP:
-				props = System.getProperties();
-
-				props.setProperty("mail.store.protocol", "imaps");
-				props.setProperty("mail.imap.socketFactory.class",
-						"javax.net.ssl.SSLSocketFactory");
-				props.setProperty("mail.imap.socketFactory.fallback", "false");
-				props.setProperty("mail.imaps.partialfetch", "false");
-				session = Session.getInstance(props);
-				st = session.getStore("imaps");
-				if (!st.isConnected()) {
-					st.connect(compteMail.getServeurReception(), compteMail
-							.getUserName(), compteMail.getPassword());
-				}
-
 				messageUtilisateur.afficheText(textArea, "Releve des dossiers");
 
 				for (Folder f : st.getPersonalNamespaces()) {

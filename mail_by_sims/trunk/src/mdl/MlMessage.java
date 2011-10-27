@@ -43,10 +43,11 @@ public class MlMessage {
 		for (int i = 0; i < lstChamp.size(); i++) {
 			List<String> unEnregistrement = lstChamp.get(i);
 
-			setIdMessage(Integer.parseInt(unEnregistrement.get(0)));
-			setUIDMessage(unEnregistrement.get(1));
+			this.idMessage = (Integer.parseInt(unEnregistrement.get(0)));
+			this.uIDMessage = (unEnregistrement.get(1));
 			if (unEnregistrement.get(2) != null) {
-				setExpediteur(bd.decodeHTMLFromBase(unEnregistrement.get(2)));
+				this.expediteur = (bd.decodeHTMLFromBase(unEnregistrement
+						.get(2)));
 			}
 			if (unEnregistrement.get(3) != null) {
 				String[] tabDestinaire = unEnregistrement.get(3).split(";");
@@ -54,7 +55,7 @@ public class MlMessage {
 				for (String des : tabDestinaire) {
 					lstDest.add(des);
 				}
-				setDestinataire(lstDest);
+				this.destinataire = (lstDest);
 			}
 			if (unEnregistrement.get(4) != null) {
 				String[] tabDestinaireCopy = unEnregistrement.get(4).split(";");
@@ -62,7 +63,7 @@ public class MlMessage {
 				for (String des : tabDestinaireCopy) {
 					lstDest.add(des);
 				}
-				setDestinataireCopy(lstDest);
+				this.destinataireCopy = (lstDest);
 			}
 			if (unEnregistrement.get(5) != null) {
 				String[] tabDestinaireCache = unEnregistrement.get(5)
@@ -71,17 +72,18 @@ public class MlMessage {
 				for (String des : tabDestinaireCache) {
 					lstDest.add(des);
 				}
-				setDestinataireCache(lstDest);
+				this.destinataireCache = (lstDest);
 			}
 
-			setSujet(bd.decodeHTMLFromBase(unEnregistrement.get(6)));
-			setContenu(unEnregistrement.get(7));
-			setDateReception(RecupDate.getdateFromTimeStamp((unEnregistrement
-					.get(8))));
-			setIdDossier(Integer.parseInt(unEnregistrement.get(9)));
-			setNomDossier(bd.getNomDossier(Integer.parseInt(unEnregistrement
-					.get(9))));
-			setIdCompte(Integer.parseInt(unEnregistrement.get(10)));
+			this.sujet = (bd.decodeHTMLFromBase(unEnregistrement.get(6)));
+			this.contenu = (unEnregistrement.get(7));
+			this.dateReception = (RecupDate
+					.getdateFromTimeStamp((unEnregistrement.get(8))));
+			this.idDossier = (Integer.parseInt(unEnregistrement.get(9)));
+			this.NomDossier = (bd.getNomDossier(Integer
+					.parseInt(unEnregistrement.get(9))));
+
+			this.idCompte = (Integer.parseInt(unEnregistrement.get(10)));
 
 		}
 	}

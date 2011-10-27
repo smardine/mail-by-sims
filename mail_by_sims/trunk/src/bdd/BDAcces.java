@@ -103,7 +103,8 @@ public class BDAcces {
 				System.exit(0);
 			}
 			if (ttACreer) {
-				verifVersionBDD(true);
+				verifVersionBDD();
+				ttACreer = false;
 			}
 			// try {
 			// verifVersionBDD(exist);
@@ -116,7 +117,7 @@ public class BDAcces {
 
 	}
 
-	public boolean verifVersionBDD(boolean p_exist) {
+	public boolean verifVersionBDD() {
 
 		if (ttACreer) {// la base n'existait pas quand on s'y est
 			// connecté, il faut passer les scripts de
@@ -133,27 +134,27 @@ public class BDAcces {
 				BDScripts scripts = new BDScripts();
 				if ("1".equals(versionActuelle)) {
 					LanceMiseAJour(se, scripts.getVersion2());
-					verifVersionBDD(true);
+					verifVersionBDD();
 				}
 				if ("2".equals(versionActuelle)) {
 					LanceMiseAJour(se, scripts.getVersion3());
-					verifVersionBDD(true);
+					verifVersionBDD();
 				}
 				if ("3".equals(versionActuelle)) {
 					LanceMiseAJour(se, scripts.getVersion4());
-					verifVersionBDD(true);
+					verifVersionBDD();
 				}
 				if ("4".equals(versionActuelle)) {
 					LanceMiseAJour(se, scripts.getVersion5());
-					verifVersionBDD(true);
+					verifVersionBDD();
 				}
 				if ("5".equals(versionActuelle)) {
 					LanceMiseAJour(se, scripts.getVersion6());
-					verifVersionBDD(true);
+					verifVersionBDD();
 				}
 				if ("6".equals(versionActuelle)) {
 					LanceMiseAJour(se, scripts.getVersion7());
-					verifVersionBDD(true);
+					verifVersionBDD();
 				}
 			}
 		}

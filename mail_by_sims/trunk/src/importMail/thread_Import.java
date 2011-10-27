@@ -245,8 +245,6 @@ public class thread_Import extends Thread {
 					}
 
 				} else if (o2 instanceof Multipart) {
-					Historique.ecrire("**MultiPart Imbriqué.  ");
-
 					Multipart mp2 = (Multipart) o2;
 					decodeMultipart(p_mlMessage, mp2, sb, textArea,
 							p_progressPJ);// ,

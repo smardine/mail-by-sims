@@ -86,11 +86,12 @@ public class MlActionPopupJTable implements ActionListener {
 
 		if (("traiter l'expediteur " + expediteur + " comme indésirable")
 				.equals(choix)) {
+			messageUtilisateur.affMessageInfo("Not yet implemented");
 
 		} else if (("Traiter le nom de dommaine "
 				+ expediteur.substring(expediteur.lastIndexOf('@')) + " comme indésirable")
 				.equals(choix)) {
-
+			messageUtilisateur.affMessageInfo("Not yet implemented");
 		}
 
 	}
@@ -101,17 +102,19 @@ public class MlActionPopupJTable implements ActionListener {
 	private void traiteSupprimer() {
 		int[] tabIdLigneSelectionnee = table.getSelectedRows();
 		REPONSE reponse = REPONSE.NON;
-		if (tabIdLigneSelectionnee.length == 1) {
+		if (tabIdLigneSelectionnee.length == 0) {
+			messageUtilisateur
+					.affMessageInfo("Merci de d'abord selectionner un message  à supprimer");
+		} else if (tabIdLigneSelectionnee.length == 1) {
 			reponse = messageUtilisateur.affMessageQuestionOuiNon(
 					"Suppression de message",
 					"Voulez vous vraiment supprimer ce message?");
-		} else {
-			if (tabIdLigneSelectionnee.length > 1) {
-				reponse = messageUtilisateur.affMessageQuestionOuiNon(
-						"Suppression de message",
-						"Voulez vous vraiment supprimer tous ces messages?");
-			}
+		} else if (tabIdLigneSelectionnee.length > 1) {
+			reponse = messageUtilisateur.affMessageQuestionOuiNon(
+					"Suppression de message",
+					"Voulez vous vraiment supprimer tous ces messages?");
 		}
+
 		if (reponse == REPONSE.OUI) {
 
 			thread_deplaceOuSuppr t = new thread_deplaceOuSuppr(table, list,

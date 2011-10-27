@@ -11,6 +11,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTree;
 
 import releve.thread_SynchroImap;
+import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.OpenWithDefaultViewer;
@@ -62,6 +63,7 @@ public class MlActionMain implements ActionListener {
 			Historique.lire();
 		}
 		if (e.getActionCommand().equals(EnActionMain.CONTACT.getLib())) {
+			messageUtilisateur.affMessageInfo("not yet implemented");
 
 		}
 		if (e.getActionCommand().equals(EnActionMain.IMPORTER.getLib())) {

@@ -48,4 +48,11 @@ public class RegleCourrierFactory {
 
 	}
 
+	/**
+	 * @return the deltaMessage
+	 */
+	public com.googlecode.jdeltasync.Message getDeltaMessage() {
+		return deltaMessage;
+	}
+
 }

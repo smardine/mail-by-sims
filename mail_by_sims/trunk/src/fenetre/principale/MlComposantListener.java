@@ -53,22 +53,15 @@ public class MlComposantListener implements ComponentListener {
 				panelPrincipal.getComponent(i).setSize(dim);
 				panelPrincipal.getComponent(i).repaint();
 
-			}
-			if (EnNomComposant.PANEL_BOUTON.getLib().equals(nomCompo)) {
-				// dim = EnNomComposant.PANEL_BOUTON.calculNouvelleDimension(
-				// largeur, hauteur);
-				// System.out.println("taille bouton=" + dim);
-
-			}
-			if (EnNomComposant.PANEL_HTML.getLib().equals(nomCompo)) {
+			} else if (EnNomComposant.PANEL_HTML.getLib().equals(nomCompo)) {
 				dim = EnNomComposant.PANEL_HTML.calculNouvelleDimension(
 						largeur, hauteur);
 				// System.out.println("taille html=" + dim);
 				panelPrincipal.getComponent(i).setSize(dim);
 				panelPrincipal.getComponent(i).repaint();
 
-			}
-			if (EnNomComposant.PANEL_TABLE_ET_LISTE.getLib().equals(nomCompo)) {
+			} else if (EnNomComposant.PANEL_TABLE_ET_LISTE.getLib().equals(
+					nomCompo)) {
 				dim = EnNomComposant.PANEL_TABLE_ET_LISTE
 						.calculNouvelleDimension(largeur, hauteur);
 				// System.out.println("taille table et liste=" + dim);

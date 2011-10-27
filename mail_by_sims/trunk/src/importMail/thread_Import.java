@@ -213,7 +213,7 @@ public class thread_Import extends Thread {
 				// p_prefixeNomFichier);
 
 			} else if (o instanceof InputStream) {
-				// "on ne devrait jamais passé par là";
+				Historique.ecrire("on ne devrait jamais passer par là");
 
 			}
 		} catch (IOException e) {

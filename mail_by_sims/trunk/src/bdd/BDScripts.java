@@ -8,6 +8,10 @@ public class BDScripts {
 	/**
 	 * 
 	 */
+	private static final String AS = "AS ";
+	/**
+	 * 
+	 */
 	private static final String GRANT_DELETE_INSERT_REFERENCES_SELECT_UPDATE_ON = "GRANT DELETE, INSERT, REFERENCES, SELECT, UPDATE ON ";
 	/**
 	 * 
@@ -146,7 +150,7 @@ public class BDScripts {
 		version1.add(createTriggerDossier);
 		String createTriggerComptes = BDScripts.SET_TERM
 				+ "CREATE TRIGGER ID_COMPTE FOR COMPTES "
-				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0 + "AS "
+				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0 + BDScripts.AS
 				+ "DECLARE VARIABLE tmp DECIMAL(18,0); "
 				+ "BEGIN IF (NEW.ID_COMPTE IS NULL) "
 				+ "THEN NEW.ID_COMPTE = GEN_ID(GEN_COMPTES_ID, 1); "
@@ -169,7 +173,7 @@ public class BDScripts {
 		String createTriggerMailRecu = BDScripts.SET_TERM
 				+ "CREATE TRIGGER MAIL_RECU_BI FOR MAIL_RECU "
 				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0
-				+ "AS "
+				+ BDScripts.AS
 				+ "DECLARE VARIABLE tmp DECIMAL(18,0); "
 				+ "BEGIN IF (NEW.ID_MESSAGE_RECU IS NULL) "
 				+ "THEN NEW.ID_MESSAGE_RECU = GEN_ID(GEN_MAIL_RECU_ID, 1); "
@@ -181,7 +185,7 @@ public class BDScripts {
 
 		String createTriggerRegles = BDScripts.SET_TERM
 				+ "CREATE TRIGGER RELGES_BI FOR REGLES "
-				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0 + "AS "
+				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0 + BDScripts.AS
 				+ "DECLARE VARIABLE tmp DECIMAL(18,0); "
 				+ "BEGIN IF (NEW.ID_REGLE IS NULL) "
 				+ "THEN NEW.ID_REGLE = GEN_ID(GEN_RELGES_ID, 1); "
@@ -194,7 +198,7 @@ public class BDScripts {
 		String createTriggerPieceJointe = BDScripts.SET_TERM
 				+ "CREATE TRIGGER PIECE_JOINTE_BI FOR PIECE_JOINTE "
 				+ BDScripts.ACTIVE_BEFORE_INSERT_POSITION_0
-				+ "AS "
+				+ BDScripts.AS
 				+ "DECLARE VARIABLE tmp DECIMAL(18,0); "
 				+ "BEGIN IF (NEW.ID_PIECE_JOINTE IS NULL) "
 				+ "THEN NEW.ID_PIECE_JOINTE = GEN_ID(GEN_PIECE_JOINTE_ID, 1); "

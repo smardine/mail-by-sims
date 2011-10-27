@@ -166,16 +166,16 @@ public class ReleveFactory {
 			progressCompte.setString(compteMail.getNomCompte()
 					+ ReleveFactory.RELEVE_DE + p_folder.getName() + " :"
 					+ pourcent + " %");
-			com.googlecode.jdeltasync.Message m = lstMessages[i - 1];
-			String uidMessage = m.getId();
+			com.googlecode.jdeltasync.Message messageDelta = lstMessages[i - 1];
+			String uidMessage = messageDelta.getId();
 			if (uidMessage == null
 					|| bd.isMessageUIDAbsent(uidMessage, p_idDossier)) {
 				MlMessage messPourBase = new MlMessage();
 				messPourBase.setCheminPhysique(GestionRepertoire
 						.RecupRepTravail()
 						+ "/tempo/" + System.currentTimeMillis() + ".eml");
-				client.downloadMessageContent(m, new FileOutputStream(
-						messPourBase.getCheminPhysique()));
+				client.downloadMessageContent(messageDelta,
+						new FileOutputStream(messPourBase.getCheminPhysique()));
 
 				MessageFactory fact = new MessageFactory();
 				messPourBase = fact.createMessagePourBase(messPourBase,
@@ -183,7 +183,7 @@ public class ReleveFactory {
 
 				messPourBase.setIdCompte(compteMail.getIdCompte());
 				RegleCourrierFactory couFact = new RegleCourrierFactory(
-						compteMail, m, p_idDossier);
+						compteMail, messageDelta, p_idDossier);
 				messPourBase.setIdDossier(couFact.getIdDestinationCourrier());
 
 				if (uidMessage == null) {
@@ -344,8 +344,8 @@ public class ReleveFactory {
 			progressCompte.setString(compteMail.getNomCompte()
 					+ ReleveFactory.RELEVE_DE + p_folder.getFullName() + " :"
 					+ pourcent + " %");
-			Message m = lstMessages[i - 1];
-			String uidMessage = getUIdMessage(p_folder, m);
+			Message messageJavaMail = lstMessages[i - 1];
+			String uidMessage = getUIdMessage(p_folder, messageJavaMail);
 			if (uidMessage == null
 					|| bd.isMessageUIDAbsent(uidMessage, p_idDossier)) {
 				MlMessage messPourBase = new MlMessage();
@@ -353,16 +353,15 @@ public class ReleveFactory {
 						.RecupRepTravail()
 						+ "/tempo/" + System.currentTimeMillis() + ".eml");
 
-				m
-						.writeTo(new FileOutputStream(messPourBase
-								.getCheminPhysique()));
+				messageJavaMail.writeTo(new FileOutputStream(messPourBase
+						.getCheminPhysique()));
 				MessageFactory fact = new MessageFactory();
 				messPourBase = fact.createMessagePourBase(messPourBase,
 						textArea, progressPJ);
 
 				messPourBase.setIdCompte(compteMail.getIdCompte());
 				RegleCourrierFactory couFact = new RegleCourrierFactory(
-						compteMail, m, p_idDossier);
+						compteMail, messageJavaMail, p_idDossier);
 				messPourBase.setIdDossier(couFact.getIdDestinationCourrier());
 
 				if (uidMessage == null) {

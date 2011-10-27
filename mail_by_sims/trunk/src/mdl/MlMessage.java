@@ -45,21 +45,43 @@ public class MlMessage {
 
 			setIdMessage(Integer.parseInt(unEnregistrement.get(0)));
 			setUIDMessage(unEnregistrement.get(1));
-			setExpediteur(bd.decodeHTMLFromBase(unEnregistrement.get(2)));
-			String[] tabDestinaire = unEnregistrement.get(3).split(";");
-			List<String> lstDest = new ArrayList<String>();
-			for (String des : tabDestinaire) {
-				lstDest.add(des);
+			if (unEnregistrement.get(2) != null) {
+				setExpediteur(bd.decodeHTMLFromBase(unEnregistrement.get(2)));
 			}
-			setDestinataire(lstDest);
-			setSujet(bd.decodeHTMLFromBase(unEnregistrement.get(4)));
-			setContenu(unEnregistrement.get(5));
+			if (unEnregistrement.get(3) != null) {
+				String[] tabDestinaire = unEnregistrement.get(3).split(";");
+				List<String> lstDest = new ArrayList<String>();
+				for (String des : tabDestinaire) {
+					lstDest.add(des);
+				}
+				setDestinataire(lstDest);
+			}
+			if (unEnregistrement.get(4) != null) {
+				String[] tabDestinaireCopy = unEnregistrement.get(4).split(";");
+				List<String> lstDest = new ArrayList<String>();
+				for (String des : tabDestinaireCopy) {
+					lstDest.add(des);
+				}
+				setDestinataireCopy(lstDest);
+			}
+			if (unEnregistrement.get(5) != null) {
+				String[] tabDestinaireCache = unEnregistrement.get(5)
+						.split(";");
+				List<String> lstDest = new ArrayList<String>();
+				for (String des : tabDestinaireCache) {
+					lstDest.add(des);
+				}
+				setDestinataireCache(lstDest);
+			}
+
+			setSujet(bd.decodeHTMLFromBase(unEnregistrement.get(6)));
+			setContenu(unEnregistrement.get(7));
 			setDateReception(RecupDate.getdateFromTimeStamp((unEnregistrement
-					.get(6))));
-			setIdDossier(Integer.parseInt(unEnregistrement.get(7)));
+					.get(8))));
+			setIdDossier(Integer.parseInt(unEnregistrement.get(9)));
 			setNomDossier(bd.getNomDossier(Integer.parseInt(unEnregistrement
-					.get(7))));
-			setIdCompte(Integer.parseInt(unEnregistrement.get(8)));
+					.get(9))));
+			setIdCompte(Integer.parseInt(unEnregistrement.get(10)));
 
 		}
 	}

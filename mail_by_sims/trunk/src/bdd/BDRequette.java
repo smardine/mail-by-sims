@@ -3,13 +3,10 @@ package bdd;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.CharacterIterator;
@@ -23,10 +20,10 @@ import mdl.MlListeMessage;
 import mdl.MlMessage;
 import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
-import tools.Historique;
 import tools.RecupDate;
 import tools.WriteFile;
 import exception.DonneeAbsenteException;
+import factory.RequetteFactory;
 
 /**
  * cette classe s'occupe uniquement des requetes
@@ -36,9 +33,14 @@ public class BDRequette {
 	/**
 	 * 
 	 */
-	private static final String IMPOSSIBLE_DE_FERMER_LA_TRANSACTION = "Impossible de fermer la transaction";
+	private static final String SELECT = "Select ";
+	/**
+	 * 
+	 */
+
 	private final String TAG = this.getClass().getSimpleName();
 	private final Connection laConnexion;
+	private final RequetteFactory requeteFact;
 
 	/**
 	 * Constructeur privé car c'est une classe utilitaire (que des methode )
@@ -46,208 +48,8 @@ public class BDRequette {
 	public BDRequette() {
 		BDAcces acess = new BDAcces();
 		laConnexion = acess.getConnexion();
-	}
+		requeteFact = new RequetteFactory(laConnexion);
 
-	/**
-	 * On execute simplement une requete sur la base
-	 * @param requete -String la recherche effectuée (delete, truncate...)
-	 * @return vrai si ca a marché, sinon faux
-	 */
-	public boolean executeRequete(final String requete) {
-
-		Statement state = null;
-		boolean resultatRequete = false;
-		try {
-			state = laConnexion.createStatement();
-			resultatRequete = state.execute(requete);
-
-		} catch (final SQLException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"erreur a l'execution d'une requete");
-			Historique.ecrire("Message d'erreur: " + e
-					+ "\n\r sur la requete : " + requete);
-
-			return false;
-		} finally {
-			try {
-				if (resultatRequete) {
-					laConnexion.commit();
-				} else {
-					if (state.getUpdateCount() > 0) {
-						laConnexion.commit();
-					} else {
-						laConnexion.rollback();
-					}
-
-				}
-
-				state.close();
-
-			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG, e,
-						"erreur a l'execution d'une requete");
-				Historique.ecrire("Message d'erreur: " + e
-						+ "\n\r sur la requete : " + requete);
-
-				return false;
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * On execute simplement une requete sur la base
-	 * @param requete -String la recherche effectuée (delete, truncate...)
-	 * @param p_fDest
-	 * @param p_fDestCache
-	 * @param p_fDestCopy
-	 * @return vrai si ca a marché, sinon faux
-	 */
-	private boolean executeRequeteWithBlob(String requete, File p_fContenu,
-			File p_fDest, File p_fDestCopy, File p_fDestCache) {
-
-		PreparedStatement ps = null;
-		FileInputStream inputContenu = null;
-		FileInputStream inputDestinataire = null;
-		FileInputStream inputDestCopy = null;
-		FileInputStream inputDestcache = null;
-		boolean resultatRequete = false;
-		try {
-			ps = laConnexion.prepareStatement(requete);
-			inputDestinataire = checkFileForBlob(p_fDest);
-			inputDestCopy = checkFileForBlob(p_fDestCopy);
-			inputDestcache = checkFileForBlob(p_fDestCache);
-			inputContenu = checkFileForBlob(p_fContenu);
-
-			ps = checkBinaryStreamForBlob(ps, 1, inputDestinataire, p_fDest);
-			ps = checkBinaryStreamForBlob(ps, 2, inputDestCopy, p_fDestCopy);
-			ps = checkBinaryStreamForBlob(ps, 3, inputDestcache, p_fDestCache);
-			ps = checkBinaryStreamForBlob(ps, 4, inputContenu, p_fContenu);
-
-			ps.executeUpdate();
-			resultatRequete = true;
-
-		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur à l'insertion d'un blob");
-			return false;
-		} finally {
-			try {
-				if (resultatRequete) {
-					laConnexion.commit();
-				} else {
-					laConnexion.rollback();
-				}
-				if (ps != null) {
-					ps.close();
-				}
-				checkBinarayStreamOnClose(inputContenu);
-				checkBinarayStreamOnClose(inputDestinataire);
-				checkBinarayStreamOnClose(inputDestCopy);
-				checkBinarayStreamOnClose(inputDestcache);
-
-			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG, e,
-						"Erreur à l'insertion d'un blob");
-			} catch (IOException e) {
-				messageUtilisateur.affMessageException(TAG, e,
-						"fichier non trouvé");
-			}
-		}
-		return true;
-	}
-
-	/**
-	 * @param p_inputStream
-	 * @throws IOException
-	 */
-	private void checkBinarayStreamOnClose(FileInputStream p_inputStream)
-			throws IOException {
-		if (p_inputStream != null) {
-			p_inputStream.close();
-		}
-	}
-
-	/**
-	 * @param p_ps
-	 * @param p_i
-	 * @param p_inputDestinataire
-	 * @param p_fDestinataires
-	 * @return
-	 * @throws SQLException
-	 */
-	private PreparedStatement checkBinaryStreamForBlob(PreparedStatement p_ps,
-			int p_idxParam, FileInputStream p_inputStream, File p_fileToBlob)
-			throws SQLException {
-		if (null != p_inputStream && null != p_fileToBlob) {
-			p_ps.setBinaryStream(p_idxParam, p_inputStream, (int) p_fileToBlob
-					.length());
-		} else {
-			p_ps.setBinaryStream(p_idxParam, p_inputStream, 0);
-		}
-
-		return p_ps;
-	}
-
-	/**
-	 * @param p_fDestinataires
-	 * @return
-	 */
-	private FileInputStream checkFileForBlob(File p_fileForBlob) {
-		if (p_fileForBlob != null && p_fileForBlob.exists()) {
-			try {
-				return new FileInputStream(p_fileForBlob);
-			} catch (FileNotFoundException e) {
-				return null;
-			}
-		}
-		return null;
-	}
-
-	/**
-	 * On execute simplement une requete sur la base
-	 * @param requete -String la recherche effectuée (delete, truncate...)
-	 * @return vrai si ca a marché, sinon faux
-	 */
-	public boolean executeMiseAJour(final String requete) {
-		String[] tab = requete.split(";");
-		int EXECUTE_FAILED = -3;
-		Statement state = null;
-		boolean resultatRequete = true;
-		try {
-			state = laConnexion.createStatement();
-			for (String s : tab) {
-				state.addBatch(s);
-			}
-			int[] results = state.executeBatch();
-
-			for (int unresultat : results) {
-				if (unresultat == EXECUTE_FAILED) {
-					resultatRequete = false;
-					break;
-				}
-			}
-
-		} catch (final SQLException e) {
-			messageUtilisateur.affMessageException(TAG, e, "sur la requete : "
-					+ requete);
-			return false;
-		} finally {
-			try {
-				if (resultatRequete) {
-					laConnexion.commit();
-				} else {
-					laConnexion.rollback();
-				}
-
-				state.close();
-
-			} catch (SQLException e) {
-				Historique.ecrire("Message d'erreur: " + e
-						+ "\n\r sur la requete : " + requete);
-			}
-		}
-		return true;
 	}
 
 	/**
@@ -260,7 +62,7 @@ public class BDRequette {
 			EnStructureTable p_champ) {
 
 		int nbRecords = 0;
-		String requete = "Select " + p_champ.getNomChamp() + " from "
+		String requete = BDRequette.SELECT + p_champ.getNomChamp() + " from "
 				+ p_table.getNomTable();
 
 		Statement state = null;
@@ -298,9 +100,10 @@ public class BDRequette {
 	 * @return
 	 */
 	public MlListeCompteMail getListeDeComptes() {
-		String requete = "Select " + EnStructureTable.COMPTES_ID.getNomChamp()
-				+ " from " + EnTable.COMPTES.getNomTable();
-		List<String> lst = getListeDeChamp(requete);
+		String requete = BDRequette.SELECT
+				+ EnStructureTable.COMPTES_ID.getNomChamp() + " from "
+				+ EnTable.COMPTES.getNomTable();
+		List<String> lst = requeteFact.getListeDeChamp(requete);
 		MlListeCompteMail listeCompte = new MlListeCompteMail();
 		for (String s : lst) {
 			MlCompteMail cpt = new MlCompteMail(Integer.parseInt(s));
@@ -318,14 +121,15 @@ public class BDRequette {
 	 */
 	public int getIdComptes(String p_nomCompte) {
 
-		String requete = "Select " + EnStructureTable.COMPTES_ID.getNomChamp()
-				+ " from " + EnTable.COMPTES.getNomTable() + " where "
+		String requete = BDRequette.SELECT
+				+ EnStructureTable.COMPTES_ID.getNomChamp() + " from "
+				+ EnTable.COMPTES.getNomTable() + " where "
 				+ EnStructureTable.COMPTES_NOM.getNomChamp() + " ='"
 				+ p_nomCompte + "'";
-		if ("".equals(get1Champ(requete))) {
+		if ("".equals(requeteFact.get1Champ(requete))) {
 			return -1;
 		} else {
-			return Integer.parseInt(get1Champ(requete));
+			return Integer.parseInt(requeteFact.get1Champ(requete));
 		}
 
 	}
@@ -338,17 +142,18 @@ public class BDRequette {
 	 */
 	public int getIdDossier(String p_nomDossier, int p_idCompte) {
 
-		String requete = "Select " + EnStructureTable.DOSSIER_ID.getNomChamp()
-				+ " from " + EnTable.DOSSIER.getNomTable() + " where ("
+		String requete = BDRequette.SELECT
+				+ EnStructureTable.DOSSIER_ID.getNomChamp() + " from "
+				+ EnTable.DOSSIER.getNomTable() + " where ("
 				+ EnStructureTable.DOSSIER_NOM.getNomChamp() + " ='"
 				+ p_nomDossier + "' AND "
 				+ EnStructureTable.COMPTES_ID.getNomChamp() + "=" + p_idCompte
 				+ ")";
 
-		if ("".equals(get1Champ(requete))) {
+		if ("".equals(requeteFact.get1Champ(requete))) {
 			return -1;
 		} else {
-			return Integer.parseInt(get1Champ(requete));
+			return Integer.parseInt(requeteFact.get1Champ(requete));
 		}
 
 	}
@@ -362,8 +167,9 @@ public class BDRequette {
 	public int getIdDossierWithFullName(String p_nomDossier, String p_fullName,
 			int p_idCompte) {
 
-		String requete = "Select " + EnStructureTable.DOSSIER_ID.getNomChamp()
-				+ " from " + EnTable.DOSSIER.getNomTable() + " where ("
+		String requete = BDRequette.SELECT
+				+ EnStructureTable.DOSSIER_ID.getNomChamp() + " from "
+				+ EnTable.DOSSIER.getNomTable() + " where ("
 				+ EnStructureTable.DOSSIER_NOM.getNomChamp() + " ='"
 				+ p_nomDossier + "' AND "
 				+ EnStructureTable.DOSSIER_NOM_INTERNET.getNomChamp() + "='"
@@ -371,10 +177,10 @@ public class BDRequette {
 				+ EnStructureTable.COMPTES_ID.getNomChamp() + "=" + p_idCompte
 				+ ")";
 
-		if ("".equals(get1Champ(requete))) {
+		if ("".equals(requeteFact.get1Champ(requete))) {
 			return -1;
 		} else {
-			return Integer.parseInt(get1Champ(requete));
+			return Integer.parseInt(requeteFact.get1Champ(requete));
 		}
 
 	}
@@ -389,7 +195,7 @@ public class BDRequette {
 		String requete = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_COMPTE='"
 				+ p_idCompte
 				+ "' and a.ID_DOSSIER_PARENT=0 ORDER BY a.NOM_DOSSIER";
-		return getListeDeChamp(requete);
+		return requeteFact.getListeDeChamp(requete);
 
 	}
 
@@ -411,22 +217,9 @@ public class BDRequette {
 	public List<String> getListeSousDossier(int p_idDossier) {
 		String requete = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_DOSSIER_PARENT='"
 				+ p_idDossier + "' ORDER BY a.NOM_DOSSIER";
-		return getListeDeChamp(requete);
+		return requeteFact.getListeDeChamp(requete);
 
 	}
-
-	// /**
-	// * obtenir la liste des message a partir du nom d'un dossier racine
-	// * @param p_idDossierracine
-	// * @return
-	// */
-	// public ArrayList<String> getListeMessage(int p_idDossierracine) {
-	// String requete =
-	// "SELECT a.ID_MESSAGE_RECU FROM MAIL_RECU a where a.ID_DOSSIER_STOCKAGE='"
-	// + p_idDossierracine + "'";
-	// return getListeDeChamp(requete);
-	//
-	// }
 
 	/**
 	 * Obtenir le nombre de sous dossier a partir du nom d'un dossier racine
@@ -436,60 +229,6 @@ public class BDRequette {
 	public int getnbSousDossier(int p_idDossierracine) {
 		return getListeSousDossier(p_idDossierracine).size();
 	}
-
-	// /**
-	// * Obtenir le nombre de message a partir du nom d'un dossier racine
-	// * @param p_idDossierracine
-	// * @return
-	// */
-	// public int getnbMessage(int p_idDossierracine) {
-	// return getListeMessage(p_idDossierracine).size();
-	// }
-
-	// /**
-	// * Obtenir le champ "USER" a partir d'un id de compte
-	// * @param p_idCpt
-	// * @return
-	// */
-	// public String getUserFromIdCompte(int p_idCpt) {
-	// StringBuilder sb = new StringBuilder();
-	// sb.append("Select " + EnStructureTable.COMPTES_USERNAME.getNomChamp()
-	// + " from ");
-	// sb.append(EnTable.COMPTES.getNomTable() + " where ");
-	// sb.append(EnStructureTable.COMPTES_ID.getNomChamp() + " ='" + p_idCpt
-	// + "'");
-	//
-	// return get1Champ(sb.toString());
-	// }
-
-	/**
-	 * Obtenir le champ "Password" a partir d'un id de compte
-	 * @param p_idCpt
-	 * @return
-	 */
-	// public String getPasswordFromIdCompte(int p_idCpt) {
-	// String requete = "Select " + EnStructureTable.COMPTES_PWD.getNomChamp()
-	// + " from " + EnTable.COMPTES.getNomTable() + " where "
-	// + EnStructureTable.COMPTES_ID.getNomChamp() + " ='" + p_idCpt
-	// + "'";
-	//
-	// return get1Champ(requete);
-	// }
-
-	/**
-	 * Obtenir le servuer pop a partir d'un id de compte
-	 * @param p_idCpt
-	 * @return
-	 */
-	// public String getHostFromIdCompte(int p_idCpt) {
-	// String requete = "Select "
-	// + EnStructureTable.COMPTES_SERVEURPOP.getNomChamp() + " from "
-	// + EnTable.COMPTES.getNomTable() + " where "
-	// + EnStructureTable.COMPTES_ID.getNomChamp() + " ='" + p_idCpt
-	// + "'";
-	//
-	// return get1Champ(requete);
-	// }
 
 	/**
 	 * Créer un nouveau dossier en base
@@ -509,128 +248,8 @@ public class BDRequette {
 				"','" + p_nomNewDossier + // 
 				"','" + p_nomDossierInternet + "')";
 
-		return executeRequete(requette);
+		return requeteFact.executeRequete(requette);
 
-	}
-
-	/**
-	 * Obtenir un champ a partir d'une requette
-	 * @param requete
-	 * @return
-	 */
-	private String get1Champ(String requete) {
-
-		String chaine_champ = "";
-		ResultSet jeuEnregistrements = null;
-		Statement state = null;
-		try {
-			state = laConnexion.createStatement();
-			jeuEnregistrements = state.executeQuery(requete);
-			final ResultSetMetaData infojeuEnregistrements = jeuEnregistrements
-					.getMetaData();
-
-			while (jeuEnregistrements.next()) {
-				for (int i = 1; i <= infojeuEnregistrements.getColumnCount(); i++) {
-					chaine_champ = jeuEnregistrements.getString(i);
-				}
-			}
-
-		} catch (SQLException e) {
-			Historique.ecrire("Erreur SQL :" + e);
-			messageUtilisateur.affMessageException(TAG, e, "Erreur SQL");
-		} finally {
-			try {
-				jeuEnregistrements.close();
-				state.close();
-				laConnexion.rollback();
-
-			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG, e,
-						BDRequette.IMPOSSIBLE_DE_FERMER_LA_TRANSACTION);
-			}
-
-		}
-		return chaine_champ;
-	}
-
-	/**
-	 * Obtenir une liste de champ a partir d'une requette
-	 * @param p_requete
-	 * @return
-	 */
-	private List<String> getListeDeChamp(String p_requete) {
-		Statement state = null;
-		ResultSet jeuEnregistrements = null;
-		ArrayList<String> lst = new ArrayList<String>();
-		try {
-			state = laConnexion.createStatement();
-			jeuEnregistrements = state.executeQuery(p_requete);
-			final ResultSetMetaData infojeuEnregistrements = jeuEnregistrements
-					.getMetaData();
-
-			while (jeuEnregistrements.next()) {
-
-				for (int i = 1; i <= infojeuEnregistrements.getColumnCount(); i++) {
-					String chaine_champ = jeuEnregistrements.getString(i);
-					lst.add(chaine_champ);
-				}
-			}
-
-		} catch (SQLException e) {
-			Historique.ecrire("Erreur SQL :" + e);
-		} finally {
-			try {
-				laConnexion.rollback();
-				jeuEnregistrements.close();
-				state.close();
-			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG, e,
-						BDRequette.IMPOSSIBLE_DE_FERMER_LA_TRANSACTION);
-			}// c'est une lecture, pas de commit;
-
-		}
-		return lst;
-	}
-
-	/**
-	 * Obtenir une liste de champ a partir d'une requette
-	 * @param p_requete
-	 * @return
-	 */
-	private List<ArrayList<String>> getListeDenregistrement(String p_requete) {
-		Statement state = null;
-		ResultSet jeuEnregistrements = null;
-		ArrayList<ArrayList<String>> lstRetour = new ArrayList<ArrayList<String>>();
-		try {
-			state = laConnexion.createStatement();
-			jeuEnregistrements = state.executeQuery(p_requete);
-			final ResultSetMetaData infojeuEnregistrements = jeuEnregistrements
-					.getMetaData();
-
-			while (jeuEnregistrements.next()) {
-				ArrayList<String> lstintermediaire = new ArrayList<String>();
-				for (int i = 1; i <= infojeuEnregistrements.getColumnCount(); i++) {
-					String chaine_champ = jeuEnregistrements.getString(i);
-					lstintermediaire.add(chaine_champ);
-				}
-				lstRetour.add(lstintermediaire);
-			}
-
-		} catch (SQLException e) {
-			Historique.ecrire("Erreur SQL :" + e);
-		} finally {
-			try {
-				laConnexion.rollback();
-
-				jeuEnregistrements.close();
-				state.close();
-			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG, e,
-						BDRequette.IMPOSSIBLE_DE_FERMER_LA_TRANSACTION);
-			}
-
-		}
-		return lstRetour;
 	}
 
 	/**
@@ -657,7 +276,7 @@ public class BDRequette {
 			}
 		}
 
-		return executeRequete(requette);
+		return requeteFact.executeRequete(requette);
 
 	}
 
@@ -667,32 +286,32 @@ public class BDRequette {
 		for (String pieceJointe : lstPieceJointe) {
 			String requete = "DELETE FROM PIECE_JOINTE WHERE ID_PIECE_JOINTE='"
 					+ pieceJointe + "'";
-			executeRequete(requete);
+			requeteFact.executeRequete(requete);
 		}
 
 		// on peut ensuite supprimer les messages
 		String requetteMessage = "DELETE FROM MAIL_RECU WHERE ID_MESSAGE_RECU='"
 				+ p_idMessage + "'";
-		return executeRequete(requetteMessage);
+		return requeteFact.executeRequete(requetteMessage);
 
 	}
 
 	public List<String> getListeIdPieceJointe(int p_idMessage) {
 		String requette = "SELECT a.ID_PIECE_JOINTE FROM PIECE_JOINTE a where a.ID_MESSAGE='"
 				+ p_idMessage + "' ORDER BY a.ID_PIECE_JOINTE";
-		return getListeDeChamp(requette);
+		return requeteFact.getListeDeChamp(requette);
 	}
 
 	public List<String> getListeNomPieceJointe(int p_idMessage) {
 		String requette = "SELECT a.NOM_PIECE_JOINTE FROM PIECE_JOINTE a where a.ID_MESSAGE='"
 				+ p_idMessage + "' ORDER BY a.ID_PIECE_JOINTE";
-		return getListeDeChamp(requette);
+		return requeteFact.getListeDeChamp(requette);
 	}
 
 	public List<String> getListeDossier(int p_idComptes) {
 		String requette = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_COMPTE='"
 				+ p_idComptes + "' ORDER BY a.NOM_DOSSIER";
-		return getListeDeChamp(requette);
+		return requeteFact.getListeDeChamp(requette);
 
 	}
 
@@ -742,14 +361,15 @@ public class BDRequette {
 
 		// on l'execute
 
-		boolean succes = executeRequeteWithBlob(requette.toString(),
-				fileToBlobContenu, fileToBlobDestinataires, fileToBlobDestCopy,
-				fileToBlobDestHide);
+		boolean succes = requeteFact
+				.executeRequeteWithBlob(requette.toString(), fileToBlobContenu,
+						fileToBlobDestinataires, fileToBlobDestCopy,
+						fileToBlobDestHide);
 		if (succes) {
 
 			// on recupere le nouvel id du message que l'on vient d'enregistrer
 			String getMaxId = "SELECT max (ID_MESSAGE_RECU) FROM MAIL_RECU a";
-			String maxId = get1Champ(getMaxId);
+			String maxId = requeteFact.get1Champ(getMaxId);
 			// ("l'id de message que l'on vient d'enregistrer est: "
 			// + maxId);
 			verifEtSuppressionBlob(new File(m.getCheminPhysique()));
@@ -775,11 +395,8 @@ public class BDRequette {
 	 * @param p_file
 	 */
 	private void verifEtSuppressionBlob(File p_file) {
-		if (null != p_file && p_file.exists()) {
-
-			if (!p_file.delete()) {
-				p_file.deleteOnExit();
-			}
+		if (null != p_file && p_file.exists() && !p_file.delete()) {
+			p_file.deleteOnExit();
 		}
 	}
 
@@ -923,7 +540,8 @@ public class BDRequette {
 				+ "' and a.ID_DOSSIER_STOCKAGE='"
 				+ p_idDossierChoisi
 				+ "' ORDER BY a.DATE_RECEPTION DESC";
-		List<ArrayList<String>> lstResultat = getListeDenregistrement(requette);
+		List<ArrayList<String>> lstResultat = requeteFact
+				.getListeDenregistrement(requette);
 		for (int i = 0; i < lstResultat.size(); i++) {
 			ArrayList<String> unEnregistrement = lstResultat.get(i);
 			MlMessage m = new MlMessage();
@@ -972,7 +590,7 @@ public class BDRequette {
 	public boolean messageHavePieceJointe(int p_idMessage) {
 		String requette = "SELECT COUNT (*) FROM PIECE_JOINTE WHERE ID_MESSAGE='"
 				+ p_idMessage + "'";
-		int messageCount = Integer.parseInt(get1Champ(requette));
+		int messageCount = Integer.parseInt(requeteFact.get1Champ(requette));
 
 		return messageCount > 0;
 	}
@@ -994,7 +612,7 @@ public class BDRequette {
 
 		contenuHTML.deleteOnExit();
 
-		return writeBlobToFile(requette, contenuHTML);
+		return requeteFact.writeBlobToFile(requette, contenuHTML);
 	}
 
 	public File getPieceJointeFromIDMessage(int p_idMessage, String p_nameFile) {
@@ -1008,46 +626,7 @@ public class BDRequette {
 		if (contenuPieceJointe.exists()) {
 			contenuPieceJointe.delete();
 		}
-		return writeBlobToFile(requette, contenuPieceJointe);
-
-	}
-
-	private File writeBlobToFile(String requette, File p_file) {
-		ResultSet resultSet = null;
-		try {
-			PreparedStatement stmt = laConnexion.prepareStatement(requette);
-			resultSet = stmt.executeQuery();
-			while (resultSet.next()) {
-				FileOutputStream fos = new FileOutputStream(p_file);
-				byte[] buffer = new byte[256];
-				// Get the binary stream of our BLOB data
-				InputStream is = resultSet.getBinaryStream(1);
-				while (is.read(buffer) > 0) {
-					fos.write(buffer);
-				}
-				fos.close();
-			}
-		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur Affichage du message");
-		} catch (FileNotFoundException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"Impossible d'afficher le message");
-		} catch (IOException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"Impossible d'afficher le message");
-		} finally {
-			try {
-				resultSet.close();
-				laConnexion.rollback();
-
-			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG, e,
-						BDRequette.IMPOSSIBLE_DE_FERMER_LA_TRANSACTION);
-			}
-
-		}
-		return p_file;
+		return requeteFact.writeBlobToFile(requette, contenuPieceJointe);
 
 	}
 
@@ -1064,7 +643,7 @@ public class BDRequette {
 		}
 		String requete = "SELECT count (*) from MAIL_RECU a where a.UID_MESSAGE='"
 				+ uid.trim() + "' and a.ID_DOSSIER_STOCKAGE=" + p_idDossier;
-		return ("0".equals(get1Champ(requete)));
+		return ("0".equals(requeteFact.get1Champ(requete)));
 
 	}
 
@@ -1076,7 +655,7 @@ public class BDRequette {
 	public boolean isMessageLu(int p_idMessageRecu) {
 		String script = "SELECT a.STATUT FROM MAIL_RECU a where a.ID_MESSAGE_RECU='"
 				+ p_idMessageRecu + "'";
-		if ("1".equals(get1Champ(script))) {
+		if ("1".equals(requeteFact.get1Champ(script))) {
 			return true;
 		}
 		return false;
@@ -1086,17 +665,28 @@ public class BDRequette {
 	public boolean setStatusLecture(int p_idMessage) {
 		String script = "UPDATE MAIL_RECU a SET STATUT=1 WHERE a.ID_MESSAGE_RECU="
 				+ p_idMessage;
-		return executeRequete(script);
+		return requeteFact.executeRequete(script);
 
 	}
 
 	public List<ArrayList<String>> getMessageById(int p_idMessage) {
-		String script = "SELECT a.ID_MESSAGE_RECU, a.UID_MESSAGE, a.EXPEDITEUR, a.DESTINATAIRE, "
-				+ "a.SUJET, a.CONTENU, a.DATE_RECEPTION, a.ID_DOSSIER_STOCKAGE,a.ID_COMPTE"
-				+ " FROM MAIL_RECU a WHERE a.ID_MESSAGE_RECU=" + p_idMessage;
+		String script = "SELECT a.ID_MESSAGE_RECU," + //
+				" a.UID_MESSAGE, " + //
+				"a.EXPEDITEUR, " + //
+				"a.DESTINATAIRE, " + //
+				"a.DESTINATAIRE_COPY, " + //
+				"a.DESTINATAIRE_CACHE " + //
+				"a.SUJET, " + //
+				"a.CONTENU, " + //
+				"a.DATE_RECEPTION, " + //
+				"a.ID_DOSSIER_STOCKAGE, " + //
+				"a.ID_COMPTE" + //
+				" FROM MAIL_RECU a " + // 
+				"WHERE a.ID_MESSAGE_RECU=" + p_idMessage;
 
 		// MlMessage m = new MlMessage();
-		List<ArrayList<String>> lstResultat = getListeDenregistrement(script);
+		List<ArrayList<String>> lstResultat = requeteFact
+				.getListeDenregistrement(script);
 		// for (int i = 0; i < lstResultat.size(); i++) {
 		// ArrayList<String> unEnregistrement = lstResultat.get(i);
 		//
@@ -1127,14 +717,14 @@ public class BDRequette {
 	public String getNomDossier(int p_idDossierStockage) {
 		String script = "SELECT a.NOM_DOSSIER FROM DOSSIER a WHERE a.ID_DOSSIER="
 				+ p_idDossierStockage;
-		return get1Champ(script);
+		return requeteFact.get1Champ(script);
 
 	}
 
 	public String getNomInternetDossier(int p_idDossierStockage) {
 		String script = "SELECT a.NOM_INTERNET FROM DOSSIER a WHERE a.ID_DOSSIER="
 				+ p_idDossierStockage;
-		return get1Champ(script);
+		return requeteFact.get1Champ(script);
 
 	}
 
@@ -1144,7 +734,8 @@ public class BDRequette {
 				+ " a.USERNAME," + " a.PWD," + " a.TYPE_COMPTE"
 				+ " FROM COMPTES" + " a where a.ID_COMPTE=" + p_idCompte;
 
-		List<ArrayList<String>> lstResultat = getListeDenregistrement(script);
+		List<ArrayList<String>> lstResultat = requeteFact
+				.getListeDenregistrement(script);
 
 		return lstResultat.get(0);
 
@@ -1167,14 +758,14 @@ public class BDRequette {
 			deleteDossier(p_idCompte, getIdDossier(unDossier, p_idCompte));
 		}
 		String requete = "DELETE FROM COMPTES WHERE ID_COMPTE=" + p_idCompte;
-		return executeRequete(requete);
+		return requeteFact.executeRequete(requete);
 
 	}
 
 	public String getSujetFromId(int p_idMessage) {
 		String requette = "SELECT SUJET FROM MAIL_RECU WHERE ID_MESSAGE_RECU="
 				+ p_idMessage;
-		return get1Champ(requette);
+		return requeteFact.get1Champ(requette);
 	}
 
 	public void closeConnexion() {
@@ -1203,7 +794,7 @@ public class BDRequette {
 		sb.append("'" + p_compte.getPassword() + "',");
 		sb.append("'" + p_compte.getTypeCompte().getLib() + "')");
 
-		return executeRequete(sb.toString());
+		return requeteFact.executeRequete(sb.toString());
 	}
 
 	public boolean createListeDossierDeBase(MlCompteMail p_compte,
@@ -1215,7 +806,7 @@ public class BDRequette {
 			sb.append("'" + p_compte.getIdCompte() + "',");
 			sb.append(0 + ",");
 			sb.append("'" + nomDossier + "')");
-			if (!executeRequete(sb.toString())) {
+			if (!requeteFact.executeRequete(sb.toString())) {
 				messageUtilisateur.affMessageErreur(TAG,
 						"Erreur a la creation du dossier " + nomDossier
 								+ " pour le compte " + p_compte.getNomCompte());
@@ -1226,27 +817,6 @@ public class BDRequette {
 		return true;
 	}
 
-	// public boolean verifieNecessiteDeplacementCorbeille(int p_idMessage) {
-	// String requete =
-	// "SELECT a.ID_DOSSIER_STOCKAGE FROM MAIL_RECU a WHERE a.ID_MESSAGE_RECU="
-	// + p_idMessage;
-	// int idDossierStock = Integer.parseInt(get1Champ(requete));
-	// MlCompteMail cpt = getMlCompteFromIdMessage(p_idMessage);
-	//
-	// if (idDossierStock != cpt.getIdCorbeille()) {
-	// return true;
-	// }
-	// return false;
-	// }
-
-	// public MlCompteMail getMlCompteFromIdMessage(int p_idMessage) {
-	// String Requete =
-	// "SELECT a.ID_COMPTE FROM MAIL_RECU a where a.ID_MESSAGE_RECU="
-	// + p_idMessage;
-	// int idCpt = Integer.parseInt(get1Champ(Requete));
-	// return new MlCompteMail(idCpt);
-	// }
-
 	public boolean deplaceMessageVersCorbeille(MlListeMessage p_list) {
 
 		for (MlMessage m : p_list) {
@@ -1255,7 +825,7 @@ public class BDRequette {
 			String requete = "UPDATE MAIL_RECU a SET ID_DOSSIER_STOCKAGE="
 					+ cpt.getIdCorbeille() + " WHERE a.ID_MESSAGE_RECU="
 					+ m.getIdMessage();
-			boolean succes = executeRequete(requete);
+			boolean succes = requeteFact.executeRequete(requete);
 			if (!succes) {
 				return false;
 			}
@@ -1268,7 +838,7 @@ public class BDRequette {
 		String requete = "UPDATE MAIL_RECU a set a.UID_MESSAGE='"
 				+ p_m.getUIDMessage() + "' where ID_MESSAGE_RECU="
 				+ p_m.getIdMessage();
-		return executeRequete(requete);
+		return requeteFact.executeRequete(requete);
 
 	}
 
@@ -1277,14 +847,14 @@ public class BDRequette {
 		String requete = "UPDATE DOSSIER a set a.NOM_INTERNET='"
 				+ p_nomDossierInternet.trim() + "', a.ID_DOSSIER_PARENT="
 				+ p_idDossierParent + " where a.ID_DOSSIER=" + p_idDossier;
-		return executeRequete(requete);
+		return requeteFact.executeRequete(requete);
 
 	}
 
 	public int getnbMessageParDossier(int p_idCompte, int p_idDossier) {
 		String requette = "select count (a.UID_MESSAGE) FROM MAIL_RECU a where a.ID_COMPTE="
 				+ p_idCompte + " and a.ID_DOSSIER_STOCKAGE=" + p_idDossier;
-		return Integer.parseInt(get1Champ(requette));
+		return Integer.parseInt(requeteFact.get1Champ(requette));
 
 	}
 

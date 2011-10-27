@@ -11,7 +11,40 @@
 	<property name="cob.ser.file" value="cobertura.ser" />
 	<property name="majornum" value="0"/>
 	
-	 <!-- Define the Sonar task if this hasn't been done in a common script -->
+	<condition property="svn" value="${svn.home}\svn.exe" else="svn.exe">
+		   <isset property="svn.home"/>
+	    </condition>
+	<!--
+	=======================================================================
+	   Tache de lecture du numéro de révision de la copie de travail.
+	   propriétés :
+	      basedir répertoire de la copie de travail
+	  retour
+	    svn.revision= version de la copie de travail.
+	=======================================================================
+	-->
+	<target name="svnrevision"  description="Extraire le numéro de la copie de travail" >
+		<!-- Exécuter "svn - -xml info" pour obtenir les details  -->
+		<exec executable="${svn}" dir="${basedir}" failonerror="true" output=".svnInfo.xml">
+   			<arg value="--non-interactive"/>
+   			<arg value="--no-auth-cache"/>				
+			<arg line="--username s.mardine@gmail.com"/>
+			<arg line="--password 2450"/>				
+			
+   			<arg value="--xml"/>				
+			<arg value="info"/>
+		</exec>
+
+		<!-- extraire le numéro de version  du fichier XML -->
+		<xmlproperty file=".svnInfo.xml"/>
+		<property name="svn.revision" value="${info.entry.commit(revision)}" />
+		<echo message="Version de la copie de travail:${svn.revision}"/>
+		<delete file=".svnInfo.xml" />
+	</target>
+	
+	
+	
+  <!-- Define the Sonar task if this hasn't been done in a common script -->
   <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml">
     <classpath path="C:\hudson\tools\my_ant\lib" />
  </taskdef>
@@ -27,7 +60,7 @@
 	</path>
 
 	<taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
-	<target name="clean" >
+	<target name="clean" depends="svnrevision" >
 		<delete dir="${instrumented.dir}" />
 		<delete dir="${reports.xml.dir}" />
 		<delete file="${cob.ser.file}" />
@@ -105,11 +138,11 @@
       <property key="sonar.dynamicAnalysis" value="reuseReports" />
       <property key="sonar.projectName" value="client mail" />
       <property key="sonar.java.source" value="1.5" />
-      <property key="sonar.projectVersion" value="${majornum}.${build.number}-SNAPSHOT" /> 
+      <property key="sonar.projectVersion" value="${majornum}.${svn.revision}-SNAPSHOT" />
       <property key="sonar.phase" value="generate-sources"/>
       <property key="sonar.cobertura.reportPath" value="${reports.xml.dir}/coverage.xml"/>
       <property key="sonar.surefire.reportsPath"  value="${reports.xml.dir}/TESTS-test.TestSuiteClientMail.xml" />
-     
+    
     	
  
       <!-- test source directories (optional) -->

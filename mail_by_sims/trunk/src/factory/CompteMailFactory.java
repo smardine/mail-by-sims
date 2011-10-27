@@ -67,9 +67,12 @@ public class CompteMailFactory {
 
 	/**
 	 * @param p_compteMail
+	 * @param p_label
+	 * @param p_progressBar
 	 * @return
 	 */
-	public boolean testBal(MlCompteMail p_compteMail) {
+	public boolean testBal(MlCompteMail p_compteMail,
+			JProgressBar p_progressBar, JLabel p_label) {
 
 		Store st = null;
 		try {
@@ -77,6 +80,8 @@ public class CompteMailFactory {
 				case POP:
 				case GMAIL:
 				case IMAP:
+					p_label.setText("Connexion en cours...");
+					p_progressBar.setValue(25);
 					StoreFactory storeFact = new StoreFactory(p_compteMail);
 					st = storeFact.getConnectedStore();
 					break;
@@ -90,6 +95,8 @@ public class CompteMailFactory {
 					}
 					return false;
 			}
+			p_label.setText("Ouverture de la boite de reception...");
+			p_progressBar.setValue(50);
 			Folder f = st.getFolder("INBOX");
 			f.open(Folder.READ_ONLY);
 			f.close(false);

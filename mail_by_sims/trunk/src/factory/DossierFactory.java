@@ -88,6 +88,9 @@ public class DossierFactory {
 		} else {
 			idDossier = bd.getIdDossierWithFullName(p_deltaFldr.getName(),
 					p_deltaFldr.getName(), cptMail.getIdCompte());
+			if (idDossier == -1) {
+				createNewDossierEnBase();
+			}
 
 		}
 	}
@@ -172,45 +175,43 @@ public class DossierFactory {
 		} else {
 			idDossier = bd.getIdDossierWithFullName(p_imapF.getName(), p_imapF
 					.getFullName(), cptMail.getIdCompte());
-			a corriger, il n'y a pas de creation de dossier en cas de dossier inconnu 
-			if (idDossier != -1) {
+
+			if (idDossier != -1
+					&& !p_imapF.getFullName().equals(
+							bd.getNomInternetDossier(idDossier))) {
 				// le dossier est connu, reste a verifier si le nom internet en
 				// base est le meme que
 				// le dossier testé
-				if (!p_imapF.getFullName().equals(
-						bd.getNomInternetDossier(idDossier))) {
-					// le dossier a été deplacé sur le serveur, maj du nom
-					// internet et de l'id dossier parent
-					// dans le cas où l'utilisateur a créer un dossier du meme
-					// nom mais dans un endroit différent, il faut pouvoir le
-					// recuperer
-					try {
-						Historique.ecrireReleveBal(cptMail, p_imapF
-								.getFullName(), "Le repertoire "
-								+ p_imapF.getFullName()
-								+ " à été déplacée sur le serveur");
-						Historique.ecrireReleveBal(cptMail, p_imapF
-								.getFullName(),
-								"mise a jour de la base de données");
-						int idDossierParent;
 
-						idDossierParent = bd.getIdDossierWithFullName(p_imapF
-								.getParent().getName(), p_imapF.getParent()
-								.getFullName(), cptMail.getIdCompte());
+				// le dossier a été deplacé sur le serveur, maj du nom
+				// internet et de l'id dossier parent
+				// dans le cas où l'utilisateur a créer un dossier du meme
+				// nom mais dans un endroit différent, il faut pouvoir le
+				// recuperer
+				try {
+					Historique.ecrireReleveBal(cptMail, p_imapF.getFullName(),
+							"Le repertoire " + p_imapF.getFullName()
+									+ " à été déplacée sur le serveur");
+					Historique.ecrireReleveBal(cptMail, p_imapF.getFullName(),
+							"mise a jour de la base de données");
+					int idDossierParent;
 
-						bd.updateNomDossierInternet(idDossier, p_imapF
-								.getFullName(), idDossierParent);
-					} catch (MessagingException e) {
-						Historique
-								.ecrireReleveBal(cptMail,
-										p_imapF.getFullName(),
-										"erreur a la recuperation de l'idDossierParent");
-						return;
-					}
+					idDossierParent = bd.getIdDossierWithFullName(p_imapF
+							.getParent().getName(), p_imapF.getParent()
+							.getFullName(), cptMail.getIdCompte());
 
+					bd.updateNomDossierInternet(idDossier, p_imapF
+							.getFullName(), idDossierParent);
+				} catch (MessagingException e) {
+					Historique.ecrireReleveBal(cptMail, p_imapF.getFullName(),
+							"erreur a la recuperation de l'idDossierParent");
+					return;
 				}
 
+			} else {
+				createNewDossierEnBase();
 			}
+
 		}
 	}
 
@@ -294,6 +295,18 @@ public class DossierFactory {
 				.getFullName().trim(), cptMail.getIdCompte());
 		utiljTree.reloadJtree(ComposantVisuelCommun.getJTree());
 
+	}
+
+	/**
+	 * Creer un dossier en base, pour les bal de type Hotmail, ils sont tous
+	 * créer sous "Inbox"
+	 */
+	public void createNewDossierDeltaEnBase() {
+		bd.createNewDossier(cptMail.getIdCompte(), cptMail.getIdInbox(),
+				deltaFldr.getName(), deltaFldr.getName());
+		idDossier = bd.getIdDossierWithFullName(deltaFldr.getName().trim(),
+				deltaFldr.getName().trim(), cptMail.getIdCompte());
+		utiljTree.reloadJtree(ComposantVisuelCommun.getJTree());
 	}
 
 }

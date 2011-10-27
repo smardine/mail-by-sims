@@ -8,10 +8,9 @@ import javax.swing.JTree;
 
 import mdl.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
-import factory.CompteMailFactory;
+import thread.threadVerifCompte;
 import fenetre.comptes.EnDefFournisseur;
 import fenetre.comptes.creation.CreationComptesPop;
-import fenetre.comptes.gestion.GestionCompte;
 
 public class MlActionCreationComptesPop implements ActionListener {
 	private final String TAG = this.getClass().getSimpleName();
@@ -78,27 +77,11 @@ public class MlActionCreationComptesPop implements ActionListener {
 			compteMail.setUserName(user.getText());
 			compteMail.setPassword(password.getText());
 			compteMail.setTypeCompte(defFournisseur.getTypeCompte());
-			CompteMailFactory crea = new CompteMailFactory();
-			boolean resultatTestBal = crea.testBal(compteMail);
-			if (!resultatTestBal) {
-				messageUtilisateur
-						.affMessageErreur(
-								TAG,
-								"Le test de connexion a votre boite aux lettres à échoué.\r\nVeuillez vérifier voter saisie");
-				return;
-			}
-			if (resultatTestBal) {
-				boolean result = crea.creationCompteMail(compteMail);
-				if (!result) {
-					messageUtilisateur.affMessageErreur(TAG,
-							"le compte n'a pas été correctement enregistré");
-				} else {
-					messageUtilisateur
-							.affMessageInfo("Le compte à été créer correctement");
-					fenetre.dispose();
-					new GestionCompte(tree);
-				}
-			}
+
+			threadVerifCompte t = new threadVerifCompte(compteMail, tree,
+					this.fenetre);
+			t.start();
+
 		}
 		if (EnActionCreationComptes.ANNULER.getLib().equals(
 				p_arg0.getActionCommand())) {

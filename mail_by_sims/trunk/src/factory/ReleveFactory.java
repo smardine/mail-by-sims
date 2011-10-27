@@ -319,6 +319,7 @@ public class ReleveFactory {
 			if (uidMessage == null
 					|| bd.isMessageUIDAbsent(uidMessage, p_idDossier)) {
 				MlMessage messPourBase = new MlMessage();
+				// messPourBase.setUIDMessage(uidMessage);
 				messPourBase.setCheminPhysique(GestionRepertoire
 						.RecupRepTravail()
 						+ "/tempo/" + System.currentTimeMillis() + ".eml");

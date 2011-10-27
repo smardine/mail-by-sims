@@ -41,11 +41,6 @@ public class MlActionPopupButton implements ActionListener {
 
 			t.start();
 
-		} else if ("[synchro ]Synchroniser tous les comptes"
-				.equals(actionCommand)) {
-			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, bd.getListeDeComptes());
-			t.start();
 		} else if (actionCommand.contains("[releve ]")) {
 			String nomCompte = actionCommand.substring(actionCommand
 					.lastIndexOf(']') + 1);
@@ -58,16 +53,6 @@ public class MlActionPopupButton implements ActionListener {
 					pbPieceJointe, text, scrollPane, lst);
 			t.start();
 
-		} else if (actionCommand.contains("[synchro ]")) {
-			String nomCompte = actionCommand.substring(actionCommand
-					.lastIndexOf(']') + 1);
-			MlListeCompteMail lst = new MlListeCompteMail();
-			MlCompteMail cpt = new MlCompteMail(nomCompte);
-			cpt.setNomCompte(nomCompte);
-			lst.add(cpt);
-			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, lst);
-			t.start();
 		}
 		bd.closeConnexion();
 

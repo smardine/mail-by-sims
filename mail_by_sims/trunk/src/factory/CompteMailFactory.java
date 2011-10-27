@@ -9,6 +9,8 @@ import java.util.List;
 import javax.mail.Folder;
 import javax.mail.MessagingException;
 import javax.mail.Store;
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
 
 import mdl.MlCompteMail;
 import bdd.BDRequette;
@@ -54,10 +56,11 @@ public class CompteMailFactory {
 
 	}
 
-	public boolean suppressionCompteMail(MlCompteMail p_cpt)
-			throws DonneeAbsenteException {
+	public boolean suppressionCompteMail(MlCompteMail p_cpt, JLabel p_label,
+			JProgressBar p_progressBar) throws DonneeAbsenteException {
 		BDRequette bd = new BDRequette();
-		boolean result = bd.deleteCompte(p_cpt.getIdCompte());
+		boolean result = bd.deleteCompte(p_cpt.getIdCompte(), p_label,
+				p_progressBar);
 		bd.closeConnexion();
 		return result;
 	}

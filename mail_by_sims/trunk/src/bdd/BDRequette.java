@@ -14,6 +14,9 @@ import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.JLabel;
+import javax.swing.JProgressBar;
+
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
@@ -308,9 +311,9 @@ public class BDRequette {
 		return requeteFact.getListeDeChamp(requette);
 	}
 
-	public List<String> getListeDossier(int p_idComptes) {
+	public List<String> getListeDossier(int p_idCompte) {
 		String requette = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_COMPTE='"
-				+ p_idComptes + "' ORDER BY a.NOM_DOSSIER";
+				+ p_idCompte + "' ORDER BY a.NOM_DOSSIER";
 		return requeteFact.getListeDeChamp(requette);
 
 	}
@@ -745,18 +748,32 @@ public class BDRequette {
 	 * Cette fonction parcours tout les dossier enregistré du compte mail 1 par
 	 * 1 pour supprimer en cascade les messages et PJ associées.
 	 * @param p_idCompte
+	 * @param p_progressBar
+	 * @param p_label
 	 * @return resultat
 	 * @throws DonneeAbsenteException
 	 */
-	public boolean deleteCompte(int p_idCompte) throws DonneeAbsenteException {
+	public boolean deleteCompte(int p_idCompte, JLabel p_label,
+			JProgressBar p_progressBar) throws DonneeAbsenteException {
 		if (p_idCompte == 0) {
 			throw new DonneeAbsenteException(TAG,
 					"le compte à supprimé n'existe pas en base");
 		}
-		List<String> lsiteDossier = getListeDossier(p_idCompte);
-		for (String unDossier : lsiteDossier) {
-			deleteDossier(p_idCompte, getIdDossier(unDossier, p_idCompte));
+		List<String> listeDossier = getListeDossier(p_idCompte);
+		for (int i = 0; i < listeDossier.size(); i++) {
+			if (null != p_label) {
+				p_label
+						.setText("Suppression du dossier "
+								+ listeDossier.get(i));
+			}
+			if (null != p_progressBar) {
+				int pourcent = ((i + 1) * 100) / listeDossier.size();
+				p_progressBar.setValue(pourcent);
+			}
+			deleteDossier(p_idCompte, getIdDossier(listeDossier.get(i),
+					p_idCompte));
 		}
+
 		String requete = "DELETE FROM COMPTES WHERE ID_COMPTE=" + p_idCompte;
 		return requeteFact.executeRequete(requete);
 

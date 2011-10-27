@@ -65,7 +65,7 @@ public class CompteMailFactoryTest extends TestCase {
 		try {
 			cptFact.creationCompteMail(cptMail);
 			result = cptFact.testBal(cptMail);
-			cptFact.suppressionCompteMail(cptMail);
+			cptFact.suppressionCompteMail(cptMail, null, null);
 		} catch (Exception e) {
 			exceptionLevee = true;
 		}
@@ -82,7 +82,7 @@ public class CompteMailFactoryTest extends TestCase {
 			cptMail.setPassword("123");
 			cptFact.creationCompteMail(cptMail);
 			result = cptFact.testBal(cptMail);
-			cptFact.suppressionCompteMail(cptMail);
+			cptFact.suppressionCompteMail(cptMail, null, null);
 		} catch (Exception e) {
 			exceptionLevee = true;
 		}
@@ -96,7 +96,7 @@ public class CompteMailFactoryTest extends TestCase {
 	 */
 	public final void testSuppressionCompteMailEchouee() {
 		try {
-			result = cptFact.suppressionCompteMail(cptMail);
+			result = cptFact.suppressionCompteMail(cptMail, null, null);
 		} catch (Exception e) {
 			exceptionLevee = true;
 		}
@@ -112,7 +112,7 @@ public class CompteMailFactoryTest extends TestCase {
 	public final void testSuppressionCompteMailReussie() {
 		try {
 			cptFact.creationCompteMail(cptMail);
-			result = cptFact.suppressionCompteMail(cptMail);
+			result = cptFact.suppressionCompteMail(cptMail, null, null);
 		} catch (Exception e) {
 			exceptionLevee = true;
 		}

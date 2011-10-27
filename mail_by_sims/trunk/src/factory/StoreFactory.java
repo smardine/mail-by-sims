@@ -53,7 +53,7 @@ public class StoreFactory {
 
 	public Store getConnectedStore() throws MessagingException {
 		getStore();
-		if (!store.isConnected()) {
+		if (store != null && !store.isConnected()) {
 			store.connect(compteMail.getServeurReception(), compteMail
 					.getUserName(), compteMail.getPassword());
 

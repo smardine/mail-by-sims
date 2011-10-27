@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 
 <project basedir="." default="sonar" name="Mail by sims">
-	 <property name="junit.output.dir" value="junit"/>
+	<!-- Proprietées globales du scripts ant  -->
+	<property name="junit.output.dir" value="junit"/>
 	<property name="instrumented.dir" value="cobertura/instrumented"/>
 	<property name="classes.dir" value="bin"/>
 	<property name="jars.dir" value="lib"/>
@@ -10,10 +11,11 @@
 	<property name="reports.xml.dir" value="cobertura/reports"/>
 	<property name="cob.ser.file" value="cobertura.ser" />
 	<property name="majornum" value="0"/>
+	<!-- Propriete exclusive a svn  -->
 	
 	<condition property="svn" value="${svn.home}\svn.exe" else="svn.exe">
-		   <isset property="svn.home"/>
-	    </condition>
+		<isset property="svn.home"/>
+	</condition>
 	<!--
 	=======================================================================
 	   Tache de lecture du numéro de révision de la copie de travail.
@@ -27,11 +29,12 @@
 		<!-- Exécuter "svn - -xml info" pour obtenir les details  -->
 		<exec executable="${svn}" dir="${basedir}" failonerror="true" output=".svnInfo.xml">
    			<arg value="--non-interactive"/>
-   			<arg value="--no-auth-cache"/>				
-			<arg line="--username s.mardine@gmail.com"/>
-			<arg line="--password 2450"/>				
-			
-   			<arg value="--xml"/>				
+   			<arg value="--no-auth-cache"/>	
+			<!-- <arg line="-->
+			<!--username blablabla"/>
+			<arg line="-->
+			<!--password 1234"/>-->			
+			<arg value="--xml"/>				
 			<arg value="info"/>
 		</exec>
 
@@ -66,11 +69,11 @@
 		<delete file="${cob.ser.file}" />
 	</target>
 	
-	<target name="prepare" depends="clean">
+	<target name="prepare" depends="clean" description="effacer les repertoires instrumented et reports ">
 		    <mkdir dir="${instrumented.dir}" />
 		    <mkdir dir="${reports.xml.dir}" />
 	</target>
-	<target name="instrument" depends="prepare">
+	<target name="instrument" depends="prepare" description="intrumenter les classes pour cobertura">
 		<cobertura-instrument todir="${instrumented.dir}">
 			    <ignore regex="org.apache.log4j.*" />
 			    <fileset dir="${classes.dir}">
@@ -83,7 +86,7 @@
 	
 	
 	
-	<target name="testsuite" depends="instrument">
+	<target name="testsuite" depends="instrument" description="lancer la classe testsuite qui déroule tout les tests">
 		<junit fork="yes" dir="${test.dir}" failureProperty="test.failed"  printsummary="withOutAndErr">
 				<!--
 					Specify the name of the coverage data file to use.
@@ -107,7 +110,7 @@
 
 				<formatter type="xml" />
 				<test name="test.TestSuiteClientMail" todir="${reports.xml.dir}" />
-				
+				<!-- a decommenter si on veut test les TestClasses une par une -->
 				<!--<batchtest todir="${reports.xml.dir}" unless="testcase">
 					<fileset dir="${test.dir}">
 						<include name="**/*Test*.java" />
@@ -116,13 +119,13 @@
 			</junit>
 	</target>
 	
-	<target name="cover-report" depends="testsuite">
+	<target name="cover-report" depends="testsuite" description="generer le rapport cobertura">
 		<cobertura-report format="xml" destdir="${reports.xml.dir}" srcdir="${test.dir}" />
 	</target>
 	
   
   <!-- Add the target -->
-  <target name="sonar" depends="cover-report">
+  <target name="sonar" depends="cover-report" description="lancer l'analyse sonar">
   	<buildnumber/>
   	  
     <!-- The workDir directory is used by Sonar to store temporary files -->
@@ -132,19 +135,16 @@
       <sources>
         <path location="./src" />
       </sources>
-     
-
-      <!-- list of properties (optional) -->
-      <property key="sonar.dynamicAnalysis" value="reuseReports" />
+  
+    	<!-- list of properties (optional) -->
+      <property key="sonar.dynamicAnalysis" value="reuseReports" /><!--reuseReports si on veut utiliser les rapport cobertura, false sinon  -->
       <property key="sonar.projectName" value="client mail" />
       <property key="sonar.java.source" value="1.5" />
       <property key="sonar.projectVersion" value="${majornum}.${svn.revision}-SNAPSHOT" />
       <property key="sonar.phase" value="generate-sources"/>
-      <property key="sonar.cobertura.reportPath" value="${reports.xml.dir}/coverage.xml"/>
-      <property key="sonar.surefire.reportsPath"  value="${reports.xml.dir}/TESTS-test.TestSuiteClientMail.xml" />
+      <property key="sonar.cobertura.reportPath" value="${reports.xml.dir}/coverage.xml"/> <!--chemin du rapport cobertura  -->
+      <property key="sonar.surefire.reportsPath"  value="${reports.xml.dir}/TESTS-test.TestSuiteClientMail.xml" /> <!--chemin du rapport junit -->
     
-    	
- 
       <!-- test source directories (optional) -->
       <tests>
         <path location="./test" />

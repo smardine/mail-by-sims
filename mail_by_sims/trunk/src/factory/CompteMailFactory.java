@@ -5,11 +5,9 @@ package factory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import javax.mail.Folder;
 import javax.mail.MessagingException;
-import javax.mail.Session;
 import javax.mail.Store;
 
 import mdl.MlCompteMail;
@@ -69,27 +67,15 @@ public class CompteMailFactory {
 	 * @return
 	 */
 	public boolean testBal(MlCompteMail p_compteMail) {
-		Properties prop = System.getProperties();
-		Session sess = Session.getDefaultInstance(prop, null);
-		sess.setDebug(true);
+
 		Store st = null;
 		try {
 			switch (p_compteMail.getTypeCompte()) {
 				case POP:
-					st = sess.getStore("pop3");
-					break;
 				case GMAIL:
 				case IMAP:
-					Properties props = System.getProperties();
-					props.setProperty("mail.store.protocol", "imaps");
-					props.setProperty("mail.imap.socketFactory.class",
-							"javax.net.ssl.SSLSocketFactory");
-					props.setProperty("mail.imap.socketFactory.fallback",
-							"false");
-					props.setProperty("mail.imaps.partialfetch", "false");
-
-					Session session = Session.getInstance(props);
-					st = session.getStore("imaps");
+					StoreFactory storeFact = new StoreFactory(p_compteMail);
+					st = storeFact.getConnectedStore();
 					break;
 				case HOTMAIL:
 					DeltaSyncClientHelper client = new DeltaSyncClientHelper(
@@ -101,8 +87,6 @@ public class CompteMailFactory {
 					}
 					return false;
 			}
-			st.connect(p_compteMail.getServeurReception(), p_compteMail
-					.getUserName(), p_compteMail.getPassword());
 			Folder f = st.getFolder("INBOX");
 			f.open(Folder.READ_ONLY);
 			f.close(false);

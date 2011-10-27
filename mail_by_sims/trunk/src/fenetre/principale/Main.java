@@ -55,7 +55,6 @@ public class Main extends JFrame {
 
 	private static final long serialVersionUID = 1L;
 	private Thread threadReleveAuto;
-	// private String nomCompte;
 	private JPanel panelPrincipal = null;
 	private JDesktopPane panelBouton = null;
 	private JDesktopPane panelTree = null;
@@ -546,6 +545,7 @@ public class Main extends JFrame {
 	 * This method initializes timer
 	 * @return java.util.Timer
 	 */
+	@SuppressWarnings("unused")
 	private Timer getTimer() {
 		if (timer == null) {
 			timer = new Timer();
@@ -559,7 +559,7 @@ public class Main extends JFrame {
 	 */
 	public static void main(String[] args) {
 		BDAcces bd = new BDAcces();
-		bd.verifVersionBDD(bd.isExist());
+		bd.verifVersionBDD();
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				Main thisClass = new Main();
@@ -586,7 +586,8 @@ public class Main extends JFrame {
 		ColoneModel = new XTableColumnModel();
 		jTable.setColumnModel(ColoneModel);
 		jTable.setDefaultRenderer(Date.class, new DateTimeCellRenderer());
-		tableModel = new MyTableModel(new MlListeMessage(), ColoneModel);
+		tableModel = new MyTableModel(ColoneModel);
+		tableModel.valorisetable(new MlListeMessage());
 		jTable.setModel(tableModel);
 		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jList,
 				jProgressBarReleve, jTextArea, jScrollPane3));

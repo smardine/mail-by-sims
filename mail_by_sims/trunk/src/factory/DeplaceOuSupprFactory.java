@@ -13,6 +13,7 @@ import javax.swing.JProgressBar;
 import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
+import tools.Historique;
 import bdd.BDRequette;
 
 import com.sun.mail.imap.AppendUID;
@@ -53,31 +54,34 @@ public class DeplaceOuSupprFactory {
 					IMAPFolder src = (IMAPFolder) store.getFolder(bd
 							.getNomInternetDossier(listeMessage.get(0)
 									.getIdDossier()));
-					if (!src.isOpen()) {
-						src.open(Folder.READ_WRITE);
-					}
-					if (!dest.isOpen()) {
-						dest.open(Folder.READ_WRITE);
-					}
-
+					gestionOuvertureDossier(src);
+					gestionOuvertureDossier(dest);
+					progressBar.setIndeterminate(true);
+					progressBar.setValue(0);
+					progressBar
+							.setString("Récuperation des infos sur le serveur");
 					for (int i = 0; i < listeMessage.size(); i++) {
 						MlMessage m = listeMessage.get(i);
-
-						Message messImap = src.getMessageByUID(Long.parseLong(m
-								.getUIDMessage()));
-
-						tabMessIMAP[i] = messImap;
+						recupNouvelUID(tabMessIMAP, src, i, m);
 					}
 
 					if (tabMessIMAP == null) {
+						Historique
+								.ecrireReleveBal(compteMail, TAG,
+										"impossible de recuperer les nouveau UID des messages a deplacer");
 						src.close(false);
 						dest.close(false);
 						return false;
 					}
 					AppendUID[] tabNewUId = dest.appendUIDMessages(tabMessIMAP);
 					progressBar.setIndeterminate(false);
-					for (int i = 0; i < tabNewUId.length; i++) {
+					for (int i = 0; i < tabNewUId.length
+							&& tabNewUId[i] != null; i++) {
 						int nbMessage = i + 1;
+						Historique.ecrireReleveBal(compteMail, src
+								.getFullName(), "Deplacement du message de "
+								+ src.getFullName() + " vers "
+								+ dest.getFullName());
 						progressBar.setValue((100 * nbMessage)
 								/ tabNewUId.length);
 						progressBar.setString("maj message " + (i + 1)
@@ -96,7 +100,12 @@ public class DeplaceOuSupprFactory {
 					// dossier d'origine
 					dest.close(false);
 					store.close();
+					Historique.ecrireReleveBal(compteMail, TAG,
+							"Fermeture des dossiers " + src.getFullName()
+									+ " et " + dest.getFullName());
 					bd.closeConnexion();
+					Historique.ecrireReleveBal(compteMail, TAG,
+							"Déplacement des messages réussi");
 					return true;
 
 				case HOTMAIL:
@@ -107,6 +116,36 @@ public class DeplaceOuSupprFactory {
 		}
 
 		return false;
+	}
+
+	/**
+	 * @param tabMessIMAP
+	 * @param src
+	 * @param i
+	 * @param m
+	 * @throws MessagingException
+	 * @throws NumberFormatException
+	 */
+	private void recupNouvelUID(Message[] tabMessIMAP, IMAPFolder src, int i,
+			MlMessage m) throws MessagingException, NumberFormatException {
+		Message messImap = src.getMessageByUID(Long
+				.parseLong(m.getUIDMessage()));
+		if (messImap != null) {
+			tabMessIMAP[i] = messImap;
+		}
+	}
+
+	/**
+	 * @param src
+	 * @throws MessagingException
+	 */
+	private void gestionOuvertureDossier(IMAPFolder src)
+			throws MessagingException {
+		if (!src.isOpen()) {
+			src.open(Folder.READ_WRITE);
+			Historique.ecrireReleveBal(compteMail, src.getFullName(),
+					"Ouverture en lecture-ecriture");
+		}
 	}
 
 	/**

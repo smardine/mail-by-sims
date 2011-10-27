@@ -40,8 +40,12 @@ public class StoreFactory {
 
 				return store;
 			case POP:
-				break;
-			case HOTMAIL:
+				props = System.getProperties();
+				Session sess = Session.getDefaultInstance(props, null);
+				sess.setDebug(false);
+				store = sess.getStore("pop3");
+				return store;
+			default:
 				break;
 		}
 		return null;

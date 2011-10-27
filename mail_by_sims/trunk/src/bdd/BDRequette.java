@@ -675,7 +675,7 @@ public class BDRequette {
 				"a.EXPEDITEUR, " + //
 				"a.DESTINATAIRE, " + //
 				"a.DESTINATAIRE_COPY, " + //
-				"a.DESTINATAIRE_CACHE " + //
+				"a.DESTINATAIRE_CACHE, " + //
 				"a.SUJET, " + //
 				"a.CONTENU, " + //
 				"a.DATE_RECEPTION, " + //

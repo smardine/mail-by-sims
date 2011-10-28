@@ -284,6 +284,8 @@ public class ReleveFactory {
 				"Nombre de message a relever: " + nbMessARelever);
 
 		if (nbMessARelever < 0) {
+			Historique.ecrireReleveBal(compteMail, p_folder.getName(),
+					"Mise a jour du dossier necessaire");
 			// il y a moin de message sur le serveur qu'en
 			// base, il faut faire une synchro
 			SynchroFactory synchro = new SynchroFactory(compteMail,
@@ -296,6 +298,8 @@ public class ReleveFactory {
 
 			return checkMessDeltaARelever(p_folder, p_idDossier);
 		}
+		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
+				"Nombre de message a relever: " + nbMessARelever);
 
 		return client.getMessages(p_folder);
 
@@ -398,6 +402,11 @@ public class ReleveFactory {
 		progressCompte.setString(compteMail.getNomCompte()
 				+ ReleveFactory.RELEVE_DE + p_folder.getFullName());
 		Message[] lstMessages = p_listeMessages;
+
+		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
+				"Ouverture du dossier");
+		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
+				"Nombre de messages dans le dossier: " + lstMessages.length);
 		int nbActu = 1;
 		for (int i = lstMessages.length; i > 0; i--) {
 			if (!p_folder.isOpen()) {

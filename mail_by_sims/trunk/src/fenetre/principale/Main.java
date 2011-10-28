@@ -67,7 +67,7 @@ public class Main extends JFrame {
 	private JEditorPane htmlPane = null;
 	private JScrollPane jScrollPane = null;
 	private JTable jTable = null;
-	private JList jList = null;
+	private JList jListPJ = null;
 	private JMenuBar jJMenuBar;
 	private JMenu jMenuFichier;
 	private JMenu jMenuAide; // @jve:decl-index=0:
@@ -292,12 +292,12 @@ public class Main extends JFrame {
 	 * @return javax.swing.JList
 	 */
 	private JList getJList() {
-		if (jList == null) {
-			jList = new JList();
-			jList.setBackground(Color.LIGHT_GRAY);
-			jList.setPreferredSize(new Dimension(50, 50));
+		if (jListPJ == null) {
+			jListPJ = new JList();
+			jListPJ.setBackground(Color.LIGHT_GRAY);
+			jListPJ.setPreferredSize(new Dimension(50, 50));
 		}
-		return jList;
+		return jListPJ;
 	}
 
 	/**
@@ -547,15 +547,15 @@ public class Main extends JFrame {
 		verif.start();
 
 		modelList = new DefaultListModel();
-		jList.setModel(modelList);
-		jList.addMouseListener(new MlActionjList(jTable, jList));
+		jListPJ.setModel(modelList);
+		jListPJ.addMouseListener(new MlActionjList(jTable, jListPJ));
 		ColoneModel = new XTableColumnModel();
 		jTable.setColumnModel(ColoneModel);
 		jTable.setDefaultRenderer(Date.class, new DateTimeCellRenderer());
 		tableModel = new MyTableModel(ColoneModel);
 		tableModel.valorisetable(new MlListeMessage());
 		jTable.setModel(tableModel);
-		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jList,
+		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jListPJ,
 				jProgressBarReleve, jTextArea, jScrollPane3));
 
 		jMenuContact.addActionListener(new MlActionMain());
@@ -574,16 +574,17 @@ public class Main extends JFrame {
 				jScrollPane3));
 		btEnvoyer.addActionListener(new MlActionMain(jTree, jProgressBarReleve,
 				jProgressBarPieceJointe, jTextArea, jScrollPane3));
-		btSupprMessage.addActionListener(new MlActionPopupJTable(jTable, jList,
-				jProgressBarReleve, jTextArea, jScrollPane3));
+		btSupprMessage.addActionListener(new MlActionPopupJTable(jTable,
+				jListPJ, jProgressBarReleve, jTextArea, jScrollPane3));
 		jMenuCompte.addActionListener(new MlActionMain(jTree));
 		btChoixReleve.addMouseListener(new MlActionMainCombo(
 				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
 				jScrollPane3));
 
-		ComposantVisuelCommun.setJListPJ(jList);
+		ComposantVisuelCommun.setJListPJ(jListPJ);
 		ComposantVisuelCommun.setbtChoixReleve(btChoixReleve);
 		ComposantVisuelCommun.setTree(jTree);
+		ComposantVisuelCommun.setHTMLPane(htmlPane);
 
 		// timer = getTimer();
 		// TimerTask task = new TimerTask() {

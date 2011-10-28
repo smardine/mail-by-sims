@@ -4,6 +4,7 @@
 package mdl;
 
 import javax.swing.JButton;
+import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JTree;
 import javax.swing.tree.TreePath;
@@ -18,6 +19,7 @@ public final class ComposantVisuelCommun {
 	private static JList listCompteMail;
 	private static JButton btChoixReleve;
 	private static JTree tree;
+	private static JEditorPane htmlPane;
 
 	/**
 	 * Constructeur privé pour classe utilitaire
@@ -81,6 +83,20 @@ public final class ComposantVisuelCommun {
 
 	public static JTree getJTree() {
 		return tree;
+	}
+
+	/**
+	 * @param p_htmlPane
+	 */
+	public static void setHTMLPane(JEditorPane p_htmlPane) {
+		htmlPane = p_htmlPane;
+	}
+
+	/**
+	 * @return the htmlPane
+	 */
+	public static JEditorPane getHtmlPane() {
+		return htmlPane;
 	}
 
 }

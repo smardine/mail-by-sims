@@ -6,6 +6,7 @@ package fenetre;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Point;
+import java.awt.Toolkit;
 
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -37,6 +38,8 @@ public class Patience extends JFrame {
 	 */
 	private void initialize() {
 		this.setSize(300, 200);
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(
+				getClass().getResource("/attendre.png")));
 		this.setContentPane(getJContentPane());
 		this.setLocationRelativeTo(null);// on centre la fenetre
 		this.setVisible(true);

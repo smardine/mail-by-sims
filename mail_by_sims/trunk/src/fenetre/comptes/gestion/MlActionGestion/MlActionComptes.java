@@ -14,7 +14,7 @@ import fenetre.comptes.creation.choixFAI;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class MlActionComptes implements ActionListener {
-	private final String TAG = this.getClass().getSimpleName();
+
 	private final GestionCompte fenetre;
 	private final JTree tree;
 

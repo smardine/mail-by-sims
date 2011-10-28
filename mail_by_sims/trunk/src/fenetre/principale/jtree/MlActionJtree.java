@@ -2,9 +2,11 @@ package fenetre.principale.jtree;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.DefaultListModel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
@@ -13,12 +15,14 @@ import javax.swing.event.TreeExpansionEvent;
 import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
+import javax.swing.text.Document;
 import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
+import tools.GestionRepertoire;
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.jTable.MyTableModel;
@@ -163,28 +167,37 @@ public class MlActionJtree implements TreeSelectionListener,
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		BDRequette bd = new BDRequette();
-		if (!bd.getListeDeComptes().contains(getPathFromEvent(e))
-				&& null != getPathFromEvent(e)) {
-			// affiche le contenu de la base correspondant a ce que l'on a
-			// cliqué
+		// if (e.getClickCount() == 1) {
+		// BDRequette bd = new BDRequette();
+		// if (!bd.getListeDeComptes().contains(getPathFromEvent(e))
+		// && null != getPathFromEvent(e)) {
+		// // affiche le contenu de la base correspondant a ce que l'on a
+		// // cliqué
+		//
+		// String dossierChoisi = (String) getPathFromEvent(e)
+		// .getLastPathComponent();
+		//
+		// if (!bd.getListeDeComptes().contains(dossierChoisi)) {
+		// int idCompte = bd.getIdComptes(ComposantVisuelCommun
+		// .getNomCompte());
+		// int idDossierChoisi = bd.getIdDossier(dossierChoisi,
+		// idCompte);
+		// MlListeMessage listeMessage = bd.getListeDeMessage(
+		// idCompte, idDossierChoisi);
+		//
+		// MyTableModel modelDetable = (MyTableModel) table.getModel();
+		// modelDetable.valorisetable(listeMessage);
+		// ((DefaultListModel) ComposantVisuelCommun.getJListPJ()
+		// .getModel()).removeAllElements();
+		// Document doc = ComposantVisuelCommun.getHtmlPane()
+		// .getDocument();
+		// doc.putProperty(Document.StreamDescriptionProperty, null);
+		//
+		// }
+		// }
+		// bd.closeConnexion();
+		// }
 
-			String dossierChoisi = (String) getPathFromEvent(e)
-					.getLastPathComponent();
-
-			if (!bd.getListeDeComptes().contains(dossierChoisi)) {
-				int idCompte = bd.getIdComptes(ComposantVisuelCommun
-						.getNomCompte());
-				int idDossierChoisi = bd.getIdDossier(dossierChoisi, idCompte);
-				MlListeMessage listeMessage = bd.getListeDeMessage(idCompte,
-						idDossierChoisi);
-
-				MyTableModel modelDetable = (MyTableModel) table.getModel();
-				modelDetable.valorisetable(listeMessage);
-				// table.setVisible(true);
-			}
-		}
-		bd.closeConnexion();
 	}
 
 	@Override
@@ -204,6 +217,46 @@ public class MlActionJtree implements TreeSelectionListener,
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		if (e.getClickCount() == 1) {
+			BDRequette bd = new BDRequette();
+
+			if (!bd.getListeDeComptes().contains(getPathFromEvent(e))
+					&& null != getPathFromEvent(e)) {
+				// affiche le contenu de la base correspondant a ce que l'on a
+				// cliqué
+
+				String dossierChoisi = (String) getPathFromEvent(e)
+						.getLastPathComponent();
+
+				if (!bd.getListeDeComptes().contains(dossierChoisi)) {
+					int idCompte = bd.getIdComptes(ComposantVisuelCommun
+							.getNomCompte());
+					int idDossierChoisi = bd.getIdDossier(dossierChoisi,
+							idCompte);
+					MlListeMessage listeMessage = bd.getListeDeMessage(
+							idCompte, idDossierChoisi);
+
+					MyTableModel modelDetable = (MyTableModel) table.getModel();
+					modelDetable.valorisetable(listeMessage);
+					((DefaultListModel) ComposantVisuelCommun.getJListPJ()
+							.getModel()).removeAllElements();
+					Document doc = ComposantVisuelCommun.getHtmlPane()
+							.getDocument();
+					doc.putProperty(Document.StreamDescriptionProperty, null);
+					try {
+						ComposantVisuelCommun.getHtmlPane().setPage(
+								"file:///"
+										+ GestionRepertoire.RecupRepTemplate()
+										+ "/vide.html");
+					} catch (IOException e1) {
+						return;
+					}
+
+				}
+			}
+			bd.closeConnexion();
+		}
+
 		int selRow = tree.getRowForLocation(e.getX(), e.getY());
 		TreePath selPath = getPathFromEvent(e);
 

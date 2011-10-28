@@ -39,6 +39,7 @@ public class CompteMailFactory {
 		if (result) {
 			int idCpt = bd.getIdComptes(p_compteMail.getNomCompte());
 			p_compteMail.setIdCompte(idCpt);
+
 			// creation des dossiers de base (boite de reception,
 			// message
 			// envoyé, corbeille, spam) avec un id Dossierparent=0
@@ -50,6 +51,11 @@ public class CompteMailFactory {
 				}
 			}
 			result = bd.createListeDossierDeBase(p_compteMail, lstDossierBase);
+			p_compteMail.setIdInbox(bd.getIdInbox(idCpt));
+			p_compteMail.setIdBrouillons(bd.getIdBrouillon(idCpt));
+			p_compteMail.setIdCorbeille(bd.getIdCorbeille(idCpt));
+			p_compteMail.setIdEnvoye(bd.getIdEnvoye(idCpt));
+			p_compteMail.setIdSpam(bd.getIdSpam(idCpt));
 		}
 		bd.closeConnexion();
 		return result;
@@ -80,8 +86,8 @@ public class CompteMailFactory {
 				case POP:
 				case GMAIL:
 				case IMAP:
-					p_label.setText("Connexion en cours...");
-					p_progressBar.setValue(25);
+					afficheInfo(p_progressBar, p_label,
+							"Connexion en cours...", 25);
 					StoreFactory storeFact = new StoreFactory(p_compteMail);
 					st = storeFact.getConnectedStore();
 					break;
@@ -95,8 +101,9 @@ public class CompteMailFactory {
 					}
 					return false;
 			}
-			p_label.setText("Ouverture de la boite de reception...");
-			p_progressBar.setValue(50);
+			afficheInfo(p_progressBar, p_label,
+					"Ouverture de la boite de reception...", 50);
+
 			Folder f = st.getFolder("INBOX");
 			f.open(Folder.READ_ONLY);
 			f.close(false);
@@ -114,5 +121,17 @@ public class CompteMailFactory {
 		}
 
 		return true;
+	}
+
+	/**
+	 * @param p_progressBar
+	 * @param p_label
+	 */
+	private void afficheInfo(JProgressBar p_progressBar, JLabel p_label,
+			String p_text, int p_value) {
+		if (null != p_label && null != p_progressBar) {
+			p_label.setText(p_text);
+			p_progressBar.setValue(p_value);
+		}
 	}
 }

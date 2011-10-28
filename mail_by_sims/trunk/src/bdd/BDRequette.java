@@ -27,6 +27,7 @@ import tools.RecupDate;
 import tools.WriteFile;
 import exception.DonneeAbsenteException;
 import factory.RequetteFactory;
+import fenetre.comptes.EnDossierBase;
 
 /**
  * cette classe s'occupe uniquement des requetes
@@ -260,20 +261,33 @@ public class BDRequette {
 	 * egalement effacé)
 	 * @param p_idCompte
 	 * @param p_idDossier
+	 * @param p_progressBar
 	 * @return
 	 */
-	public boolean deleteDossier(int p_idCompte, int p_idDossier) {
+	public boolean deleteDossier(int p_idCompte, int p_idDossier,
+			JProgressBar p_progressBar) {
 
 		List<String> lstSousDossier = getListeSousDossier(p_idDossier);
 		for (String dossier : lstSousDossier) {
 			deleteDossier(p_idCompte, getIdDossierWithFullName(dossier,
-					getNomInternetDossier(p_idDossier), p_idCompte));
+					getNomInternetDossier(p_idDossier), p_idCompte),
+					p_progressBar);
 		}
 		String requette = "DELETE FROM DOSSIER WHERE ID_COMPTE='" + p_idCompte
 				+ "' AND ID_DOSSIER='" + p_idDossier + "'";
-
+		int count = 0;
+		MlListeMessage listeMessage = getListeDeMessage(p_idCompte, p_idDossier);
+		int tailleListe = listeMessage.size();
 		// pour chaque dossier, on supprime la liste des messages associés
 		for (MlMessage unMessage : getListeDeMessage(p_idCompte, p_idDossier)) {
+			if (null != p_progressBar) {
+				p_progressBar.setString("Suppression du message " + (count + 1)
+						+ " sur " + tailleListe);
+				int pourcent = ((count + 1) * 100) / tailleListe;
+				p_progressBar.setValue(pourcent);
+				count++;
+			}
+
 			if (!deleteMessageRecu(unMessage.getIdMessage())) {
 				return false;
 			}
@@ -769,9 +783,10 @@ public class BDRequette {
 			if (null != p_progressBar) {
 				int pourcent = ((i + 1) * 100) / listeDossier.size();
 				p_progressBar.setValue(pourcent);
+				p_progressBar.setString(pourcent + " %");
 			}
 			deleteDossier(p_idCompte, getIdDossier(listeDossier.get(i),
-					p_idCompte));
+					p_idCompte), p_progressBar);
 		}
 
 		String requete = "DELETE FROM COMPTES WHERE ID_COMPTE=" + p_idCompte;
@@ -873,6 +888,65 @@ public class BDRequette {
 				+ p_idCompte + " and a.ID_DOSSIER_STOCKAGE=" + p_idDossier;
 		return Integer.parseInt(requeteFact.get1Champ(requette));
 
+	}
+
+	/**
+	 * @param p_idCpt
+	 * @return
+	 */
+	public int getIdInbox(int p_idCpt) {
+		String requette = "select a.ID_DOSSIER from DOSSIER a where a.NOM_DOSSIER='"
+				+ EnDossierBase.RECEPTION.getLib()
+				+ "' and a.ID_COMPTE="
+				+ p_idCpt;
+		return Integer.parseInt(requeteFact.get1Champ(requette));
+
+	}
+
+	/**
+	 * @param p_idCpt
+	 * @return
+	 */
+	public int getIdBrouillon(int p_idCpt) {
+		String requette = "select a.ID_DOSSIER from DOSSIER a where a.NOM_DOSSIER='"
+				+ EnDossierBase.BROUILLON.getLib()
+				+ "' and a.ID_COMPTE="
+				+ p_idCpt;
+		return Integer.parseInt(requeteFact.get1Champ(requette));
+	}
+
+	/**
+	 * @param p_idCpt
+	 * @return
+	 */
+	public int getIdCorbeille(int p_idCpt) {
+		String requette = "select a.ID_DOSSIER from DOSSIER a where a.NOM_DOSSIER='"
+				+ EnDossierBase.CORBEILLE.getLib()
+				+ "' and a.ID_COMPTE="
+				+ p_idCpt;
+		return Integer.parseInt(requeteFact.get1Champ(requette));
+	}
+
+	/**
+	 * @param p_idCpt
+	 * @return
+	 */
+	public int getIdEnvoye(int p_idCpt) {
+		String requette = "select a.ID_DOSSIER from DOSSIER a where a.NOM_DOSSIER='"
+				+ EnDossierBase.ENVOYES.getLib()
+				+ "' and a.ID_COMPTE="
+				+ p_idCpt;
+		return Integer.parseInt(requeteFact.get1Champ(requette));
+	}
+
+	/**
+	 * @param p_idCpt
+	 * @return
+	 */
+	public int getIdSpam(int p_idCpt) {
+		String requette = "select a.ID_DOSSIER from DOSSIER a where a.NOM_DOSSIER='"
+				+ EnDossierBase.SPAM.getLib() + "' and a.ID_COMPTE=" + p_idCpt;
+		return Integer.parseInt(requeteFact.get1Champ(requette));
 	}
 
 }

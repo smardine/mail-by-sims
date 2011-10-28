@@ -11,6 +11,7 @@ import mdl.MlListeCompteMail;
 import releve.imap.util.messageUtilisateur;
 import bdd.BDRequette;
 import factory.CompteMailFactory;
+import factory.ReleveFactory;
 import fenetre.Patience;
 import fenetre.comptes.creation.CreationComptesGmailHotmail;
 import fenetre.comptes.creation.CreationComptesPop;
@@ -58,14 +59,22 @@ public class threadVerifCompte extends Thread {
 		if (cptFact.testBal(compteMail, progressBar, label)) {
 			label.setText("Test de connexion réussie");
 			boolean result = cptFact.creationCompteMail(compteMail);
+
 			if (!result) {
 				messageUtilisateur.affMessageErreur(TAG,
 						"le compte n'a pas été correctement enregistré");
+
 			} else {
+				ReleveFactory relevFact = new ReleveFactory(compteMail,
+						progressBar, null, null);
+				label.setText("Récuperation des dossiers");
+				relevFact.recupereListeDossier();
+
 				messageUtilisateur
 						.affMessageInfo("Le compte à été créer correctement");
 				DefaultListModel model = (DefaultListModel) ComposantVisuelCommun
 						.getJListCompteMail().getModel();
+
 				BDRequette bd = new BDRequette();
 				MlListeCompteMail lst = bd.getListeDeComptes();
 				model.clear();
@@ -78,12 +87,13 @@ public class threadVerifCompte extends Thread {
 				} else if (fenetreGmail != null) {
 					fenetreGmail.dispose();
 				}
-
+				fenetrePatience.setVisible(false);
 				new GestionCompte(tree);
 
 			}
 
 		} else {
+			fenetrePatience.setVisible(false);
 			messageUtilisateur
 					.affMessageErreur(
 							TAG,

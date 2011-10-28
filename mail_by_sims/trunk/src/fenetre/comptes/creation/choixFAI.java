@@ -4,6 +4,7 @@ import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 import java.util.List;
 
 import javax.swing.ImageIcon;
@@ -66,6 +67,8 @@ public class choixFAI extends JFrame {
 		this.setTitle("Choix du fournisseur");
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(
+				getClass().getResource("/logo_appli.png")));
 	}
 
 	/**

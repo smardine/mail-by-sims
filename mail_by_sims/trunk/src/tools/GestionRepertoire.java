@@ -31,6 +31,20 @@ public final class GestionRepertoire {
 	}
 
 	/**
+	 * @return
+	 */
+	public static String RecupRepTemplate() {
+		final File dir = new File("./template");
+		String sAppliDir = "";
+		try {
+			sAppliDir = dir.getCanonicalPath();
+		} catch (final Exception e1) {
+			Historique.ecrire("Message d'erreur: " + e1);
+		}
+		return sAppliDir;
+	}
+
+	/**
 	 * Affiche une fenetre permettant d'ouvrir un fichier
 	 * @return le chemin complet -String
 	 */

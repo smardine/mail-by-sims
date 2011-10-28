@@ -1,6 +1,7 @@
 package fenetre.comptes.creation;
 
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -66,6 +67,8 @@ public class CreationComptesPop extends JFrame {
 		this.setTitle(EnTitreFenetre.CREATION_COMPTE.getLib());
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(
+				getClass().getResource("/logo_appli.png")));
 	}
 
 	/**

@@ -400,6 +400,9 @@ public class ReleveFactory {
 		Message[] lstMessages = p_listeMessages;
 		int nbActu = 1;
 		for (int i = lstMessages.length; i > 0; i--) {
+			if (!p_folder.isOpen()) {
+				p_folder.open(Folder.READ_ONLY);// ouverture de INBOX
+			}
 			int pourcent = (nbActu++ * 100) / lstMessages.length;
 			progressCompte.setValue(pourcent);
 			progressCompte.setString(compteMail.getNomCompte()

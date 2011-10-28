@@ -1,6 +1,7 @@
 package fenetre.comptes.creation;
 
 import java.awt.Rectangle;
+import java.awt.Toolkit;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -39,8 +40,8 @@ public class CreationComptesGmailHotmail extends JFrame {
 		this.tree = p_tree;
 		initialize();
 
-		btValider.addActionListener(new MlActionCreationCompteGmailHotmail(this,
-				defFournisseur, nomCompte, adresseMail, password, tree));
+		btValider.addActionListener(new MlActionCreationCompteGmailHotmail(
+				this, defFournisseur, nomCompte, adresseMail, password, tree));
 	}
 
 	/**
@@ -54,6 +55,8 @@ public class CreationComptesGmailHotmail extends JFrame {
 		this.setTitle(EnTitreFenetre.CREATION_COMPTE.getLib());
 		this.setVisible(true);
 		this.setLocationRelativeTo(null);
+		this.setIconImage(Toolkit.getDefaultToolkit().getImage(
+				getClass().getResource("/logo_appli.png")));
 	}
 
 	/**
@@ -140,7 +143,8 @@ public class CreationComptesGmailHotmail extends JFrame {
 			btAnnuler.setText(EnActionCreationComptes.ANNULER.getLib());
 			btAnnuler
 					.setActionCommand(EnActionCreationComptes.ANNULER.getLib());
-			btAnnuler.addActionListener(new MlActionCreationCompteGmailHotmail(this));
+			btAnnuler.addActionListener(new MlActionCreationCompteGmailHotmail(
+					this));
 		}
 		return btAnnuler;
 	}

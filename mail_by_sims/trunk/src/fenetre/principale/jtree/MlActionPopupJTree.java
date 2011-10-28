@@ -76,7 +76,7 @@ public class MlActionPopupJTree implements ActionListener {
 
 			switch (rep) {
 				case OUI:// on supprime le dossier
-					bd.deleteDossier(idCompte, idDossier);
+					bd.deleteDossier(idCompte, idDossier, null);
 					ComposantVisuelCommun.setTreePath(selectionPath
 							.getParentPath());
 					tree.getModel().valueForPathChanged(selectionPath,

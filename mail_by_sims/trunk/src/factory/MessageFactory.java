@@ -20,6 +20,7 @@ import javax.swing.JTextArea;
 
 import mdl.MlMessage;
 import releve.imap.util.messageUtilisateur;
+import tools.Historique;
 
 /**
  * @author smardine
@@ -58,8 +59,7 @@ public class MessageFactory {
 				valoriseListeDestCopyEtcache(mime, p_message);
 
 			} catch (AddressException e) {
-				messageUtilisateur.affMessageException(TAG, e,
-						"erreur a la recupération des adresses");
+				Historique.ecrire(TAG + e.toString());
 
 			}
 

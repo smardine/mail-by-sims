@@ -20,6 +20,7 @@ import tools.GestionRepertoire;
 import tools.Historique;
 import bdd.BDRequette;
 
+import com.googlecode.jdeltasync.AuthenticationException;
 import com.googlecode.jdeltasync.DeltaSyncClient;
 import com.googlecode.jdeltasync.DeltaSyncClientHelper;
 import com.googlecode.jdeltasync.DeltaSyncException;
@@ -92,6 +93,96 @@ public class ReleveFactory {
 				break;
 		}
 		bd.closeConnexion();
+	}
+
+	public boolean recupereListeDossier() {
+		StoreFactory storeFact = new StoreFactory(compteMail);
+		try {
+			st = storeFact.getConnectedStore();
+			switch (compteMail.getTypeCompte()) {
+				case IMAP:
+				case GMAIL:
+					Folder[] f = st.getPersonalNamespaces();
+					Folder[] lstDossier = getSousDossier(f[0]);
+					int count = 0;
+					for (Folder unSousDossier : lstDossier) {
+						int pourcent = (count++ * 100) / lstDossier.length;
+						progressCompte.setValue(pourcent);
+						progressCompte.setString(unSousDossier.getFullName()
+								+ " :" + pourcent + " %");
+						recupereDossier((IMAPFolder) unSousDossier);
+					}
+
+					st.close();
+					break;
+				case HOTMAIL:
+					client = new DeltaSyncClientHelper(new DeltaSyncClient(),
+							compteMail.getUserName(), compteMail.getPassword());
+					client.login();
+					com.googlecode.jdeltasync.Folder[] lstFolder = client
+							.getFolders();
+					recupereDossierDelta(lstFolder);
+
+					client.disconnect();
+					break;
+				case POP:
+					break;
+			}
+		} catch (MessagingException e) {
+			return false;
+		} catch (IOException e) {
+			return false;
+		} catch (AuthenticationException e) {
+			return false;
+		} catch (DeltaSyncException e) {
+			return false;
+		}
+		return true;
+
+	}
+
+	/**
+	 * @param p_unSousDossier
+	 * @throws IOException
+	 * @throws MessagingException
+	 */
+	private void recupereDossier(IMAPFolder p_folder)
+			throws MessagingException, IOException {
+
+		if ("[Gmail]".equals(p_folder.getFullName())) {
+			// ce n'est pas vraiment un repertoire,
+			// c'est plus un conteneur
+			// on recupere juste ses sous dossier et on continue
+			for (Folder f : getSousDossier(p_folder)) {
+				recupereDossier((IMAPFolder) f);
+			}
+			return;
+		}
+		DossierFactory fact = new DossierFactory(p_folder, compteMail);
+		fact.isDossierDejaPresentEnBase();
+		Folder[] lstSousDossier = getSousDossier(p_folder);
+		if (null != lstSousDossier) {
+			for (Folder f : lstSousDossier) {
+				recupereDossier((IMAPFolder) f);
+			}
+		}
+
+	}
+
+	private void recupereDossierDelta(
+			com.googlecode.jdeltasync.Folder[] p_lstFolder) {
+		int count = 0;
+		for (com.googlecode.jdeltasync.Folder unDossier : p_lstFolder) {
+			int pourcent = (count++ * 100) / p_lstFolder.length;
+			progressCompte.setValue(pourcent);
+			progressCompte.setString(unDossier.getName() + " :" + pourcent
+					+ " %");
+			DossierFactory fact = new DossierFactory(unDossier, compteMail);
+			fact.isDossierDejaPresentEnBase();
+
+		}
+		client.getStore().resetFolders(compteMail.getUserName());
+
 	}
 
 	/**

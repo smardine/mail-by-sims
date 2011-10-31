@@ -27,43 +27,42 @@ public class ArborescenceBoiteMail implements TreeModel {
 
 	private final String TAG = this.getClass().getSimpleName();
 
+	private final BDRequette bd;
+
 	public ArborescenceBoiteMail() {
-		BDRequette bd = new BDRequette();
+		bd = new BDRequette();
 		root = EnDossierBase.ROOT.getLib();
 		listeners = new Vector<TreeModelListener>();
 		lstCpt = bd.getListeDeComptes();
-		bd.closeConnexion();
+
 		UIManager.put("Tree.openIcon", new ImageIcon(
 				"Images/dossier-ouvert-16.png"));
 		UIManager.put("Tree.closedIcon", new ImageIcon(
 				"Images/dossier-ferme-16.png"));
-		// UIManager.put("Tree.leafIcon", new ImageIcon(
-		// "Images/dossier-ferme-16.png"));
+		UIManager.put("Tree.leafIcon", new ImageIcon(
+				"Images/dossier-ferme-16.png"));
 	}
 
 	public Object getRoot() {
 		return root;
-
 	}
 
 	public Object getChild(Object parent, int index) {
-		BDRequette bd = new BDRequette();
+
 		if (root.equals(parent)) {
-			bd.closeConnexion();
 			return lstCpt.get(index).getNomCompte();
 		}
 		for (MlCompteMail compte : lstCpt) {
 			if (compte.getNomCompte().equals(parent)) {
+				ComposantVisuelCommun.setNomCompte(compte.getNomCompte());
 				List<String> list = bd.getListeSousDossierBase(compte
 						.getIdCompte());
-				bd.closeConnexion();
 				return list.get(index);
 			}
 		}
 		int idCompte = bd.getIdComptes(getCompte());
 		List<String> list = bd.getListeSousDossier(bd.getIdDossier(
 				(String) parent, idCompte));
-		bd.closeConnexion();
 		return list.get(index);
 
 	}
@@ -75,52 +74,49 @@ public class ArborescenceBoiteMail implements TreeModel {
 
 		for (MlCompteMail compte : lstCpt) {
 			if (compte.getNomCompte().equals(parent)) {
-				BDRequette bd = new BDRequette();
-				int retour = bd.getnbSousDossierBase(compte.getIdCompte());
-				bd.closeConnexion();
-				return retour;
+				ComposantVisuelCommun.setNomCompte(compte.getNomCompte());
+				return bd.getnbSousDossierBase(compte.getIdCompte());
 			}
 		}
-		BDRequette bd = new BDRequette();
 		int idCompte = bd.getIdComptes(getCompte());
-		int retour = bd.getnbSousDossier(bd.getIdDossier((String) parent,
-				idCompte));
-		bd.closeConnexion();
-		return retour;
-
+		return bd.getnbSousDossier(bd.getIdDossier((String) parent, idCompte));
 	}
 
 	private String getCompte() {
-
 		return ComposantVisuelCommun.getNomCompte();
-
 	}
 
 	public int getIndexOfChild(Object parent, Object child) {
 
 		for (MlCompteMail compte : lstCpt) {
 			if (compte.getNomCompte().equals(parent)) {
-				BDRequette bd = new BDRequette();
+				ComposantVisuelCommun.setNomCompte(compte.getNomCompte());
 				int idDossier = bd.getIdDossier((String) child, compte
 						.getIdCompte());
-				bd.closeConnexion();
 				if ("".equals(idDossier)) {
 					return -1;
 				}
 				return idDossier;
 			}
 		}
-
 		return -1;
 	}
 
 	public boolean isLeaf(Object node) {
-		return false;
-		// BDRequette bd = new BDRequette();
-		// int idCompte = bd.getIdComptes(getCompte());
-		// int idDossier = bd.getIdDossier((String) node, idCompte);
-		//
-		// return bd.getListeSousDossier(idDossier).size() == 0;
+		// return false;
+		if (root.equals(node)) {
+			return false;
+		}
+		for (MlCompteMail compte : lstCpt) {
+			if (compte.getNomCompte().equals(node)) {
+				ComposantVisuelCommun.setNomCompte(compte.getNomCompte());
+				return false;
+			}
+		}
+
+		int idCompte = bd.getIdComptes(getCompte());
+		int idDossier = bd.getIdDossier((String) node, idCompte);
+		return bd.getListeSousDossier(idDossier).size() == 0;
 
 		// if (BDRequette.getnbMessage(idDossier) > 0) {
 		// return false;
@@ -163,7 +159,6 @@ public class ArborescenceBoiteMail implements TreeModel {
 		} catch (Exception e) {
 			messageUtilisateur.affMessageException(TAG, e, "Dans l'action "
 					+ (ActionTree) newValue);
-
 		}
 
 	}

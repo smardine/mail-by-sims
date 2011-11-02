@@ -22,6 +22,7 @@ import releve.imap.util.messageUtilisateur;
 import tools.Historique;
 
 /**
+ * Cette classe s'occupent des toutes les requettes effectuée en base
  * @author smardine
  */
 public class RequetteFactory {
@@ -29,14 +30,18 @@ public class RequetteFactory {
 	private final String TAG = this.getClass().getSimpleName();
 	private final Connection connexion;
 
+	/**
+	 * Constructeur
+	 * @param p_connexion - la connexion a la base
+	 */
 	public RequetteFactory(Connection p_connexion) {
 		this.connexion = p_connexion;
 	}
 
 	/**
-	 * Obtenir un champ a partir d'une requette
+	 * Obtenir la valeur d'un champ a partir d'une requette
 	 * @param requete
-	 * @return
+	 * @return la valeur recherchée, "" si aune valeur trouvée.
 	 */
 	public String get1Champ(String requete) {
 
@@ -74,9 +79,9 @@ public class RequetteFactory {
 	}
 
 	/**
-	 * Obtenir une liste de champ a partir d'une requette
+	 * Obtenir une liste de valeur de champ a partir d'une requette
 	 * @param p_requete
-	 * @return
+	 * @return la liste des valeurs de champs trouvée, liste vide si rien trouvé
 	 */
 	public List<String> getListeDeChamp(String p_requete) {
 		Statement state = null;
@@ -113,7 +118,7 @@ public class RequetteFactory {
 	}
 
 	/**
-	 * Obtenir une liste de champ a partir d'une requette
+	 * Obtenir une liste de liste de valeur de champ a partir d'une requette
 	 * @param p_requete
 	 * @return
 	 */
@@ -154,8 +159,8 @@ public class RequetteFactory {
 
 	/**
 	 * On execute simplement une requete sur la base
-	 * @param requete -String la recherche effectuée (delete, truncate...)
-	 * @return vrai si ca a marché, sinon faux
+	 * @param requete -String la requette à passer (delete, truncate...)
+	 * @return true si ca a marché, sinon false
 	 */
 	public boolean executeRequete(final String requete) {
 
@@ -170,7 +175,6 @@ public class RequetteFactory {
 					"erreur a l'execution d'une requete");
 			Historique.ecrire("Message d'erreur: " + e
 					+ "\n\r sur la requete : " + requete);
-
 			return false;
 		} finally {
 			try {
@@ -182,9 +186,7 @@ public class RequetteFactory {
 					} else {
 						connexion.rollback();
 					}
-
 				}
-
 				state.close();
 
 			} catch (SQLException e) {
@@ -200,11 +202,12 @@ public class RequetteFactory {
 	}
 
 	/**
-	 * On execute simplement une requete sur la base
-	 * @param requete -String la recherche effectuée (delete, truncate...)
-	 * @param p_fDest
-	 * @param p_fDestCache
-	 * @param p_fDestCopy
+	 * Execute une requette preparée avec des {@link File} en parametres
+	 * d'entrée a destination de blob dans la base
+	 * @param requete -String la recherche a passer
+	 * @param p_fDest - un fichier
+	 * @param p_fDestCache - un autre fichier
+	 * @param p_fDestCopy - un troisieme fichier
 	 * @return vrai si ca a marché, sinon faux
 	 */
 	public boolean executeRequeteWithBlob(String requete, File p_fContenu,
@@ -262,7 +265,8 @@ public class RequetteFactory {
 	}
 
 	/**
-	 * @param p_inputStream
+	 * Verifie si un flux est fermé, le ferme si besoin
+	 * @param p_inputStream - le flux a verifier
 	 * @throws IOException
 	 */
 	private void checkBinarayStreamOnClose(FileInputStream p_inputStream)
@@ -273,11 +277,13 @@ public class RequetteFactory {
 	}
 
 	/**
-	 * @param p_ps
-	 * @param p_i
-	 * @param p_inputDestinataire
-	 * @param p_fDestinataires
-	 * @return
+	 * Valorise la requette preparée avec le fichier a enregistrer sous forme de
+	 * blob
+	 * @param p_ps - le statment préparé
+	 * @param p_idxParam - l'index de parametres dans la requette preparée
+	 * @param p_inputStream - le flux d'entrée
+	 * @param p_fileToBlob - le fichier d'origine
+	 * @return le statment préparé valorisé
 	 * @throws SQLException
 	 */
 	private PreparedStatement checkBinaryStreamForBlob(PreparedStatement p_ps,
@@ -294,8 +300,10 @@ public class RequetteFactory {
 	}
 
 	/**
-	 * @param p_fDestinataires
-	 * @return
+	 * Verifie qu'un fichie rpeut etre inseré en base sous forme de blob et le
+	 * transforme en flux
+	 * @param p_fileForBlob - le fichier ciblé
+	 * @return - le flux correspondant
 	 */
 	private FileInputStream checkFileForBlob(File p_fileForBlob) {
 		if (p_fileForBlob != null && p_fileForBlob.exists()) {
@@ -309,8 +317,8 @@ public class RequetteFactory {
 	}
 
 	/**
-	 * On execute simplement une requete sur la base
-	 * @param requete -String la recherche effectuée (delete, truncate...)
+	 * Execution d'un script de mise a jour sur la base
+	 * @param requete -String la requette a passer
 	 * @return vrai si ca a marché, sinon faux
 	 */
 	public boolean executeMiseAJour(final String requete) {
@@ -354,6 +362,12 @@ public class RequetteFactory {
 		return true;
 	}
 
+	/**
+	 * A partir d'une requette SQL entregister un blob sous firme de fichier
+	 * @param requette - le requette
+	 * @param p_file - le fichier a créer
+	 * @return le fichier crée
+	 */
 	public File writeBlobToFile(String requette, File p_file) {
 		ResultSet resultSet = null;
 		try {

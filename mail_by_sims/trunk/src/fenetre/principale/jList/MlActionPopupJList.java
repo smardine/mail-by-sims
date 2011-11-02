@@ -17,8 +17,8 @@ import fenetre.principale.jTable.jTableHelper;
 
 public class MlActionPopupJList implements ActionListener {
 
-	private static JTable table;
-	private static JList list;
+	private final JTable table;
+	private final JList list;
 
 	public MlActionPopupJList(JTable p_table, JList p_list) {
 		table = p_table;
@@ -91,7 +91,7 @@ public class MlActionPopupJList implements ActionListener {
 
 	}
 
-	protected static void traiteOuvrirPJ() {
+	protected void traiteOuvrirPJ() {
 		int idMessage = jTableHelper.getReelIdMessage(table, table
 				.getSelectedRow());
 		String nomPieceJointe = (String) list.getSelectedValue();

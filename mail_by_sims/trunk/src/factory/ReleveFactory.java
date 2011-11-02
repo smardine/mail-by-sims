@@ -30,6 +30,8 @@ import com.sun.mail.pop3.POP3Folder;
 import fenetre.comptes.EnTypeCompte;
 
 /**
+ * Cette classe s'occupe de tout ce qui a trait a la releve d'un compte de
+ * messagerie
  * @author smardine
  */
 public class ReleveFactory {
@@ -49,6 +51,14 @@ public class ReleveFactory {
 
 	private DeltaSyncClientHelper client;
 
+	/**
+	 * Constructeur
+	 * @param p_cpt - le compte mail a relever
+	 * @param p_progressCompte - une barre de progression generale
+	 * @param p_progressPJ - une barre de progression secondaire (dediée au
+	 *            piece jointe)
+	 * @param p_textArea - pour afficher des infos à l'utlisateur.
+	 */
 	public ReleveFactory(MlCompteMail p_cpt, JProgressBar p_progressCompte,
 			JProgressBar p_progressPJ, JTextArea p_textArea) {
 		this.compteMail = p_cpt;
@@ -58,6 +68,12 @@ public class ReleveFactory {
 		this.bd = new BDRequette();
 	}
 
+	/**
+	 * lance la releve du courier en fonction du type de compte
+	 * @throws MessagingException
+	 * @throws IOException
+	 * @throws DeltaSyncException
+	 */
 	public void releveCourier() throws MessagingException, IOException,
 			DeltaSyncException {
 		StoreFactory storeFact = new StoreFactory(compteMail);
@@ -95,6 +111,12 @@ public class ReleveFactory {
 		bd.closeConnexion();
 	}
 
+	/**
+	 * Obtenir la liste des dossiers d'un compt email, ATTENTION, ne concerne
+	 * que les compte de type {@link EnTypeCompte.GMAIL},
+	 * {@link EnTypeCompte.IMAP},{@link EnTypeCompte.HOTMAIL}
+	 * @return true si tt s'est bien passé.
+	 */
 	public boolean recupereListeDossier() {
 		StoreFactory storeFact = new StoreFactory(compteMail);
 		try {
@@ -142,12 +164,11 @@ public class ReleveFactory {
 	}
 
 	/**
-	 * @param p_unSousDossier
-	 * @throws IOException
-	 * @throws MessagingException
+	 * Recupere un dossier en particulier
+	 * @param p_folder - le dossier ciblé.
+	 * @throws MessagingException - si une erreur intervient
 	 */
-	private void recupereDossier(IMAPFolder p_folder)
-			throws MessagingException, IOException {
+	private void recupereDossier(IMAPFolder p_folder) throws MessagingException {
 
 		if ("[Gmail]".equals(p_folder.getFullName())) {
 			// ce n'est pas vraiment un repertoire,
@@ -169,6 +190,11 @@ public class ReleveFactory {
 
 	}
 
+	/**
+	 * Recuperation d'une liste de dossier dedié au dossier de type
+	 * {@link com.googlecode.jdeltasync.Folder}
+	 * @param p_lstFolder la liste des dossiers ciblés
+	 */
 	private void recupereDossierDelta(
 			com.googlecode.jdeltasync.Folder[] p_lstFolder) {
 		int count = 0;
@@ -186,9 +212,11 @@ public class ReleveFactory {
 	}
 
 	/**
-	 * @param p_folder
-	 * @throws IOException
+	 * recuperation d'un dossier de type
+	 * {@link com.googlecode.jdeltasync.Folder}
+	 * @param p_folder - le dossier ciblé
 	 * @throws DeltaSyncException
+	 * @throws IOException
 	 */
 	private void releveDossierDeltaSync(
 			com.googlecode.jdeltasync.Folder p_folder)
@@ -203,9 +231,11 @@ public class ReleveFactory {
 	}
 
 	/**
-	 * @param p_lstMess
-	 * @param p_folder
-	 * @param p_idDossier
+	 * Releve les messages d'un dossier de type
+	 * {@link com.googlecode.jdeltasync.Folder}
+	 * @param p_lstMess - la liste des messages deltasync a relever
+	 * @param p_folder - le dossier deltasync concerné
+	 * @param p_idDossier - l'id de dossier correspondant en base
 	 * @throws IOException
 	 * @throws DeltaSyncException
 	 */
@@ -261,9 +291,10 @@ public class ReleveFactory {
 	}
 
 	/**
-	 * @param p_folder
-	 * @param p_idDossier
-	 * @return
+	 * Verification des messages a recuperer lors d'une releve de dossier
+	 * @param p_folder - le dossier ciblé
+	 * @param p_idDossier - l'id correspondant au dossier en base
+	 * @return la liste des messages a relever
 	 * @throws IOException
 	 * @throws DeltaSyncException
 	 */
@@ -306,7 +337,8 @@ public class ReleveFactory {
 	}
 
 	/**
-	 * @param p_folder
+	 * releve un dossier de type {@link Folder} (IMAP ou POP)
+	 * @param p_folder - le dossier ciblé
 	 * @throws MessagingException
 	 * @throws IOException
 	 */
@@ -351,7 +383,9 @@ public class ReleveFactory {
 	}
 
 	/**
-	 * @param p_folder
+	 * Verifie les messages a relever pour un dossier de type {@link Folder }
+	 * (IMAP uiquement, pour les compte pop, on releve tout)
+	 * @param p_folder - le dossier ciblé
 	 * @throws MessagingException
 	 */
 	private Message[] checkMessARelever(Folder p_folder, int p_idDossier)
@@ -389,7 +423,8 @@ public class ReleveFactory {
 	}
 
 	/**
-	 * @param p_idDossier
+	 * releve les messages d'un dossier de type {@link Folder} (IMAP ou POP)
+	 * @param p_idDossier - l'id correspondant au dossier en base
 	 * @throws MessagingException
 	 * @throws IOException
 	 */
@@ -452,26 +487,28 @@ public class ReleveFactory {
 	}
 
 	/**
-	 * @param p_folder
-	 * @param m
-	 * @return
+	 * Obtenir l'UID d'un message
+	 * @param p_folder - le dossier ciblé
+	 * @param p_message - le message a analyser
+	 * @return l'uid du message sous forme de string
 	 * @throws MessagingException
 	 */
-	private String getUIdMessage(Folder p_folder, Message m)
+	private String getUIdMessage(Folder p_folder, Message p_message)
 			throws MessagingException {
 		String uidMessage = null;
 		if (p_folder instanceof POP3Folder) {
-			uidMessage = ((POP3Folder) p_folder).getUID(m);
+			uidMessage = ((POP3Folder) p_folder).getUID(p_message);
 		} else if (p_folder instanceof IMAPFolder) {
-			uidMessage = "" + ((IMAPFolder) p_folder).getUID(m);
+			uidMessage = "" + ((IMAPFolder) p_folder).getUID(p_message);
 		}
 
 		return uidMessage;
 	}
 
 	/**
-	 * @param p_folder
-	 * @return
+	 * Obtenir la liste des sous dossiers d'un dossier parent
+	 * @param p_folder - le dossier parent
+	 * @return la liste des sous dossier
 	 * @throws MessagingException
 	 */
 	private Folder[] getSousDossier(Folder p_folder) throws MessagingException {

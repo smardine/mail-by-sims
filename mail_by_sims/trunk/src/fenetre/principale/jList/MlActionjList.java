@@ -24,11 +24,14 @@ public class MlActionjList implements MouseListener {
 	private JMenuItem Ouvrir;
 	private JMenuItem Enregistrer;
 	private JMenuItem ToutEnregistrer;
+	private final MlActionPopupJList actionPopup;
 
 	public MlActionjList(JTable p_table, JList p_list) {
 		this.table = p_table;
 		this.list = p_list;
+		actionPopup = new MlActionPopupJList(table, list);
 		popUpMenu = getJPopupMenu();
+
 	}
 
 	/**
@@ -55,7 +58,7 @@ public class MlActionjList implements MouseListener {
 			Ouvrir = new JMenuItem();
 			Ouvrir.setText(EnActionMain.OUVRIR_PJ.getLib());
 			Ouvrir.setActionCommand(EnActionMain.OUVRIR_PJ.getLib());
-			Ouvrir.addActionListener(new MlActionPopupJList(table, list));
+			Ouvrir.addActionListener(actionPopup);
 		}
 		return Ouvrir;
 	}
@@ -65,7 +68,7 @@ public class MlActionjList implements MouseListener {
 			Enregistrer = new JMenuItem();
 			Enregistrer.setText(EnActionMain.ENREGISTRER_PJ.getLib());
 			Enregistrer.setActionCommand(EnActionMain.ENREGISTRER_PJ.getLib());
-			Enregistrer.addActionListener(new MlActionPopupJList(table, list));
+			Enregistrer.addActionListener(actionPopup);
 
 		}
 		return Enregistrer;
@@ -77,8 +80,7 @@ public class MlActionjList implements MouseListener {
 			ToutEnregistrer.setText(EnActionMain.TOUT_ENREGISTRER_PJ.getLib());
 			ToutEnregistrer.setActionCommand(EnActionMain.TOUT_ENREGISTRER_PJ
 					.getLib());
-			ToutEnregistrer.addActionListener(new MlActionPopupJList(table,
-					list));
+			ToutEnregistrer.addActionListener(actionPopup);
 		}
 		return ToutEnregistrer;
 	}
@@ -91,7 +93,7 @@ public class MlActionjList implements MouseListener {
 	public void mouseClicked(MouseEvent p_e) {
 		if (p_e.getClickCount() == 2) {// double click sur la ligne
 
-			MlActionPopupJList.traiteOuvrirPJ();
+			actionPopup.traiteOuvrirPJ();
 			// int idMessage = MlActionPopupJTable.getReelIdMessage(table
 			// .getSelectedRow());
 			// String nomPieceJointe = (String) list.getSelectedValue();

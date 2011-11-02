@@ -15,7 +15,12 @@ import bdd.BDRequette;
 
 import com.sun.mail.imap.IMAPFolder;
 
+import fenetre.comptes.EnTypeCompte;
+
 /**
+ * Cette classe s'occupe de tout ce qui a trait a la synchronisation d'un compte
+ * mail de type {@link EnTypeCompte.GMAIL}, {@link EnTypeCompte.IMAP},
+ * {@link EnTypeCompte.HOTMAIL}
  * @author smardine
  */
 public class SynchroFactory {
@@ -24,11 +29,21 @@ public class SynchroFactory {
 
 	private final JProgressBar progress;
 
+	/**
+	 * Constructeur
+	 * @param p_cptMail - le compte mail visé
+	 * @param p_progressBar - une barre de progression
+	 */
 	public SynchroFactory(MlCompteMail p_cptMail, JProgressBar p_progressBar) {
 		this.compteMail = p_cptMail;
 		this.progress = p_progressBar;
 	}
 
+	/**
+	 * Synchronise UN dossier de type {@link com.googlecode.jdeltasync.Folder}
+	 * @param p_folder - le dossier ciblé
+	 * @param p_lstMessageHotmail - la listes des messages a verifier
+	 */
 	public void synchroniseUnDossierDeltaSync(
 			com.googlecode.jdeltasync.Folder p_folder,
 			com.googlecode.jdeltasync.Message[] p_lstMessageHotmail) {
@@ -64,6 +79,13 @@ public class SynchroFactory {
 
 	}
 
+	/**
+	 * Comparaison de l'uid d'un message de la bdd avec un message de type
+	 * {@link com.googlecode.jdeltasync.Message}
+	 * @param p_uidMessage - l'uid a comparer
+	 * @param p_lstMessagesHotmail - la liste de messages a verifier
+	 * @return true si l'uid de message est connu de la liste verifiée
+	 */
 	public boolean verifUIDDeltaMessage(String p_uidMessage,
 			com.googlecode.jdeltasync.Message[] p_lstMessagesHotmail) {
 		for (com.googlecode.jdeltasync.Message m : p_lstMessagesHotmail) {
@@ -74,6 +96,11 @@ public class SynchroFactory {
 		return false;
 	}
 
+	/**
+	 * Synchroniser UN dossier de type {@link Folder}
+	 * @param p_folder - le dossier ciblé
+	 * @throws MessagingException
+	 */
 	public void synchroniseUnDossier(Folder p_folder) throws MessagingException {
 		BDRequette bd = new BDRequette();
 		if (!p_folder.isOpen()) {

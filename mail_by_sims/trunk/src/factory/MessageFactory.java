@@ -23,13 +23,24 @@ import releve.imap.util.messageUtilisateur;
 import tools.Historique;
 
 /**
+ * Cette classe s'occupent de tout ce qui a trait aux messages.
  * @author smardine
  */
 public class MessageFactory {
+	/**
+	 * Constructeur
+	 */
 	public MessageFactory() {
 
 	}
 
+	/**
+	 * Créer un nouvel enregistrement en base
+	 * @param p_message - le message a enregistrer
+	 * @param p_textArea - affiche des infos a l'utilisateur
+	 * @param p_progressPJ - une barre de progression
+	 * @return MlMessage créée.
+	 */
 	public MlMessage createMessagePourBase(MlMessage p_message,
 			JTextArea p_textArea, JProgressBar p_progressPJ) {
 		final String TAG = "createMessagePourBase";
@@ -37,14 +48,10 @@ public class MessageFactory {
 		Properties props = System.getProperties();
 		props.put("mail.host", "smtp.dummydomain.com");
 		props.put("mail.transport.protocol", "smtp");
-
 		Session mailSession = Session.getDefaultInstance(props, null);
 		/***/
-		// int messNumber = 1;
-
 		String cheminPhysique = p_message.getCheminPhysique();
 		InputStream source;
-
 		try {
 			source = new FileInputStream(cheminPhysique);
 			MimeMessage mime;
@@ -60,9 +67,7 @@ public class MessageFactory {
 
 			} catch (AddressException e) {
 				Historique.ecrire(TAG + e.toString());
-
 			}
-
 			if (p_message.getUIDMessage() == null) {
 				if (mime.getContentID() != null) {
 					p_message.setUIDMessage(mime.getContentID());
@@ -89,10 +94,12 @@ public class MessageFactory {
 	}
 
 	/**
-	 * @param p_mime
-	 * @param p_message
-	 * @return
-	 * @throws MessagingException
+	 * Valorise {@link MlMessage} avec les listes de contact, contact en copie,
+	 * contact caché
+	 * @param p_mime - le message d'origine
+	 * @param p_message - le message a destination de la base
+	 * @return le {@link MlMessage} valorisé avec les listes de contacts
+	 * @throws MessagingException - si une erreur survient
 	 */
 	private void valoriseListeDestCopyEtcache(MimeMessage p_mime,
 			MlMessage p_message) throws MessagingException {

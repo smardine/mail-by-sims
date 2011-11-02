@@ -12,10 +12,13 @@ import tools.Historique;
 import bdd.BDRequette;
 
 import com.sun.mail.imap.IMAPFolder;
+import com.sun.mail.pop3.POP3Folder;
 
 import fenetre.principale.jtree.utiljTree;
 
 /**
+ * Cette classe gere tout ce qui a trait aux dossier ({@link IMAPFolder},
+ * {@link POP3Folder},{@link com.googlecode.jdeltasync.Folder})
  * @author smardine
  */
 public class DossierFactory {
@@ -26,6 +29,12 @@ public class DossierFactory {
 	private final BDRequette bd;
 	private int idDossier = -1;
 
+	/**
+	 * Constructeur pour les dossier de type {@link POP3Folder} ou
+	 * {@link IMAPFolder}
+	 * @param p_fldr - le dossier ciblé
+	 * @param p_compteMail - le compte mail concerné
+	 */
 	public DossierFactory(Folder p_fldr, MlCompteMail p_compteMail) {
 		this.deltaFldr = null;
 		this.fldr = p_fldr;
@@ -34,8 +43,10 @@ public class DossierFactory {
 	}
 
 	/**
-	 * @param p_folder
-	 * @param p_compteMail
+	 * Constructeur pour les dossier de type
+	 * {@link com.googlecode.jdeltasync.Folder} UNIQUEMENT
+	 * @param p_folder - le dossier ciblé
+	 * @param p_compteMail - le compte mail concerné
 	 */
 	public DossierFactory(com.googlecode.jdeltasync.Folder p_folder,
 			MlCompteMail p_compteMail) {
@@ -45,13 +56,17 @@ public class DossierFactory {
 		this.bd = new BDRequette();
 	}
 
+	/**
+	 * verif si dossier present:
+	 * <ul>
+	 * <li>1- fldr.nom est connu de la base</li>
+	 * <li>2- si fldr.getFullName!= dossierBase.nomInternet</li>
+	 * <li>3- maj numero dossierParent * en prenant fldr.getParent.getName et en
+	 * le recherchant en base => donne l'id du dossier parent</li>
+	 * </ul>
+	 */
 	public void isDossierDejaPresentEnBase() {
-		/**
-		 * verif si dossier present: 1- fldr.nom est connu de la base 2- si
-		 * fldr.getFullName!= dossierBase.nomInternet - maj numero dossierParent
-		 * en prenant fldr.getParent.getName et en le recherchant en base =>
-		 * donne l'id du dossier parent
-		 */
+
 		switch (cptMail.getTypeCompte()) {
 			case GMAIL:
 			case IMAP:
@@ -67,7 +82,9 @@ public class DossierFactory {
 	}
 
 	/**
-	 * @param p_deltaFldr
+	 * Verification de la presence d'un dossier
+	 * {@link com.googlecode.jdeltasync.Folder} en base
+	 * @param p_deltaFldr - le dossier ciblé
 	 */
 	private void verifHotmail(com.googlecode.jdeltasync.Folder p_deltaFldr) {
 		if (isInboxDelta(p_deltaFldr)) {
@@ -90,15 +107,15 @@ public class DossierFactory {
 					p_deltaFldr.getName(), cptMail.getIdCompte());
 			if (idDossier == -1) {
 				createNewDossierDeltaEnBase();
-
 			}
 
 		}
 	}
 
 	/**
-	 * @param p_deltaFldr
-	 * @return
+	 * Est-ce le dossier spam?
+	 * @param p_deltaFldr - le dossier ciblé
+	 * @return true si vrai
 	 */
 	private boolean isSpamDelta(com.googlecode.jdeltasync.Folder p_deltaFldr) {
 		if ("Junk".equals(p_deltaFldr.getName())) {
@@ -108,8 +125,9 @@ public class DossierFactory {
 	}
 
 	/**
-	 * @param p_deltaFldr
-	 * @return
+	 * Est-ce le dossier envoyé?
+	 * @param p_deltaFldr - le dossier ciblé
+	 * @return true si vrai
 	 */
 	private boolean isEnvoyeDelta(com.googlecode.jdeltasync.Folder p_deltaFldr) {
 		if ("Sent".equals(p_deltaFldr.getName())) {
@@ -119,8 +137,9 @@ public class DossierFactory {
 	}
 
 	/**
-	 * @param p_deltaFldr
-	 * @return
+	 * Est-ce le dossier corbeille?
+	 * @param p_deltaFldr - le dossier ciblé
+	 * @return true si vrai
 	 */
 	private boolean isCorbeilleDelta(
 			com.googlecode.jdeltasync.Folder p_deltaFldr) {
@@ -131,8 +150,9 @@ public class DossierFactory {
 	}
 
 	/**
-	 * @param p_deltaFldr
-	 * @return
+	 * Est-ce le dossier brouillon?
+	 * @param p_deltaFldr - le dossier ciblé
+	 * @return true si vrai
 	 */
 	private boolean isBrouillonDelta(
 			com.googlecode.jdeltasync.Folder p_deltaFldr) {
@@ -143,8 +163,9 @@ public class DossierFactory {
 	}
 
 	/**
-	 * @param p_deltaFldr
-	 * @return
+	 * Est-ce le dossier inbox?
+	 * @param p_deltaFldr - le dossier ciblé
+	 * @return true si vrai
 	 */
 	private boolean isInboxDelta(com.googlecode.jdeltasync.Folder p_deltaFldr) {
 		if ("Inbox".equals(p_deltaFldr.getName())) {
@@ -154,7 +175,8 @@ public class DossierFactory {
 	}
 
 	/**
-	 * @param p_imapF
+	 * Verification de la presence d'un dossier {@link IMAPFolder} en base
+	 * @param p_deltaFldr - le dossier ciblé
 	 */
 	private void verifGmail(IMAPFolder p_imapF) {
 
@@ -222,41 +244,56 @@ public class DossierFactory {
 	}
 
 	/**
-	 * @param folder
-	 * @return
+	 * Est-ce le dossier corbeille?
+	 * @param p_folder - le dossier ciblé
+	 * @return true si vrai
 	 */
-	private boolean isCorbeille(IMAPFolder folder) {
-		return folder.getFullName().equals("[Gmail]/Trash") || //
-				folder.getFullName().equals("[Gmail]/Corbeille");
+	private boolean isCorbeille(IMAPFolder p_folder) {
+		return p_folder.getFullName().equals("[Gmail]/Trash") || //
+				p_folder.getFullName().equals("[Gmail]/Corbeille");
 	}
 
 	/**
-	 * @param folder
-	 * @return
+	 * Est-ce le dossier Envoyé?
+	 * @param p_folder - le dossier ciblé
+	 * @return true si vrai
 	 */
-	private boolean isEnvoye(IMAPFolder folder) {
-		return folder.getFullName().equals("[Gmail]/Sent Mail") || //
-				folder.getFullName().equals("[Gmail]/Messages envoyés");
+	private boolean isEnvoye(IMAPFolder p_folder) {
+		return p_folder.getFullName().equals("[Gmail]/Sent Mail") || //
+				p_folder.getFullName().equals("[Gmail]/Messages envoyés");
 	}
 
 	/**
-	 * @param folder
-	 * @return
+	 * Est-ce le dossier brouillon?
+	 * @param p_folder - le dossier ciblé
+	 * @return true si vrai
 	 */
-	private boolean isBrouillon(IMAPFolder folder) {
-		return folder.getFullName().equals("[Gmail]/Drafts") || //
-				folder.getFullName().equals("[Gmail]/Brouillons");
-	}
-
-	private boolean isInbox(IMAPFolder folder) {
-		return folder.getFullName().equals("INBOX");
-	}
-
-	private boolean isSpam(IMAPFolder folder) {
-		return folder.getFullName().equals("[Gmail]/Spam");
+	private boolean isBrouillon(IMAPFolder p_folder) {
+		return p_folder.getFullName().equals("[Gmail]/Drafts") || //
+				p_folder.getFullName().equals("[Gmail]/Brouillons");
 	}
 
 	/**
+	 * Est-ce le dossier inbox?
+	 * @param p_folder - le dossier ciblé
+	 * @return true si vrai
+	 */
+	private boolean isInbox(IMAPFolder p_folder) {
+		return p_folder.getFullName().equals("INBOX");
+	}
+
+	/**
+	 * Est-ce le dossier spam?
+	 * @param p_folder - le dossier ciblé
+	 * @return true si vrai
+	 */
+	private boolean isSpam(IMAPFolder p_folder) {
+		return p_folder.getFullName().equals("[Gmail]/Spam");
+	}
+
+	/**
+	 * Obtenir l'id du dossier, celuiç ci est valorisé lors de la verification
+	 * de la presence d'un dossier en base
 	 * @return the idDossier
 	 */
 	public int getIdDossier() {
@@ -264,7 +301,7 @@ public class DossierFactory {
 	}
 
 	/**
-	 * 
+	 * Création d'un nouveau dossier dans la bdd
 	 */
 	public void createNewDossierEnBase() {
 		Historique.ecrireReleveBal(cptMail, fldr.getFullName(),

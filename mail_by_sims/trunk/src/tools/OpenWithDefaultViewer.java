@@ -35,6 +35,8 @@ public final class OpenWithDefaultViewer {
 		try {
 			desktop.open(new File(toOpen));
 		} catch (final Exception e) {
+			messageUtilisateur.affMessageException(TAG, e,
+					"Impossible d'ouvrir le fichier");
 			Historique.ecrire("Message d'erreur: " + e);
 		}
 	}

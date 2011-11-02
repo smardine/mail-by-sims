@@ -93,10 +93,11 @@ public class thread_SynchroImap extends Thread {
 	public void SupprMessage(MlListeMessage p_listeMessageASupprimer) {
 		MlCompteMail cpt = new MlCompteMail(p_listeMessageASupprimer.get(0)
 				.getIdCompte());
+		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt,
+				p_listeMessageASupprimer, progress);
 		switch (cpt.getTypeCompte()) {
 			case GMAIL:
-				DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt,
-						p_listeMessageASupprimer, progress);
+
 				try {
 					fact.supprMessage();
 				} catch (MessagingException e) {
@@ -112,6 +113,13 @@ public class thread_SynchroImap extends Thread {
 			case IMAP:
 				break;
 			case POP:
+				try {
+					fact.supprMessage();
+				} catch (MessagingException e) {
+					messageUtilisateur
+							.affMessageException(TAG, e,
+									"erreur à la suppression des messages dans la corbeille");
+				}
 				break;
 		}
 
@@ -119,10 +127,10 @@ public class thread_SynchroImap extends Thread {
 
 	public void DeplaceMessageVersCorbeille(MlListeMessage p_listMess) {
 		MlCompteMail cpt = new MlCompteMail(p_listMess.get(0).getIdCompte());
+		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt, p_listMess,
+				progress);
 		switch (cpt.getTypeCompte()) {
 			case GMAIL:
-				DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt,
-						p_listMess, progress);
 				try {
 					fact.deplaceMessageVersCorbeille();
 				} catch (MessagingException e) {
@@ -136,6 +144,13 @@ public class thread_SynchroImap extends Thread {
 			case HOTMAIL:
 				break;
 			case POP:
+				try {
+					fact.deplaceMessageVersCorbeille();
+				} catch (MessagingException e) {
+					messageUtilisateur
+							.affMessageException(TAG, e,
+									"erreur au deplacement des messages vers la corbeille");
+				}
 				break;
 			case IMAP:
 

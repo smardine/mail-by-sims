@@ -22,15 +22,19 @@ import exception.DonneeAbsenteException;
 import fenetre.comptes.EnDossierBase;
 
 /**
+ * Cette classe s'occupent de tout ce qui a trait aux compte mail.
  * @author smardine
  */
 public class CompteMailFactory {
-
+	/**
+	 * Constructeur
+	 */
 	public CompteMailFactory() {
 
 	}
 
 	/**
+	 * Créer un compte mail en base
 	 * @param p_compteMail
 	 */
 	public boolean creationCompteMail(MlCompteMail p_compteMail) {
@@ -62,6 +66,14 @@ public class CompteMailFactory {
 
 	}
 
+	/**
+	 * Supprime un compte mail
+	 * @param p_cpt - le compte mail a supprimer
+	 * @param p_label - un label pour afficher des infos a l'utilisateur
+	 * @param p_progressBar - une barre de progression
+	 * @return true si ca a reussi
+	 * @throws DonneeAbsenteException - si des données sont à null
+	 */
 	public boolean suppressionCompteMail(MlCompteMail p_cpt, JLabel p_label,
 			JProgressBar p_progressBar) throws DonneeAbsenteException {
 		BDRequette bd = new BDRequette();
@@ -72,10 +84,11 @@ public class CompteMailFactory {
 	}
 
 	/**
-	 * @param p_compteMail
-	 * @param p_label
-	 * @param p_progressBar
-	 * @return
+	 * Test d'une boite au lettre (connexion, ouverture inbox,fermeture)
+	 * @param p_compteMail - le compte mail a tester
+	 * @param p_label - un label pour afficher des infos
+	 * @param p_progressBar - une barre de progression
+	 * @return true si ca a reussi, false si une exception est levée
 	 */
 	public boolean testBal(MlCompteMail p_compteMail,
 			JProgressBar p_progressBar, JLabel p_label) {
@@ -124,6 +137,7 @@ public class CompteMailFactory {
 	}
 
 	/**
+	 * Permet d'afficher des infos a l'utilisateur
 	 * @param p_progressBar
 	 * @param p_label
 	 */

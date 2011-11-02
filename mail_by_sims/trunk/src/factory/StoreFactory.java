@@ -12,6 +12,7 @@ import javax.mail.Store;
 import mdl.MlCompteMail;
 
 /**
+ * Cette classe s'occupe de l'etablissment de connexion a un serveur
  * @author smardine
  */
 public class StoreFactory {
@@ -19,10 +20,18 @@ public class StoreFactory {
 	private Properties props;
 	private Store store;
 
+	/**
+	 * Constructeur
+	 * @param p_compteMail - le compte mail concerné
+	 */
 	public StoreFactory(MlCompteMail p_compteMail) {
 		this.compteMail = p_compteMail;
 	}
 
+	/**
+	 * @return l'objet {@link Store} NON CONNECTE
+	 * @throws MessagingException
+	 */
 	private Store getStore() throws MessagingException {
 		switch (compteMail.getTypeCompte()) {
 			case IMAP:
@@ -51,6 +60,10 @@ public class StoreFactory {
 		return null;
 	}
 
+	/**
+	 * @return l'objet {@link Store} CONNECTE
+	 * @throws MessagingException
+	 */
 	public Store getConnectedStore() throws MessagingException {
 		getStore();
 		if (store != null && !store.isConnected()) {

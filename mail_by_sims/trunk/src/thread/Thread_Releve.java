@@ -28,10 +28,11 @@ public class Thread_Releve extends Thread {
 
 	@Override
 	public void run() {
-
+		fenetre.setVisible(true);
 		for (MlCompteMail cpt : listeDeCompte) {
 			definiCompteARelever(cpt);
 		}
+		fenetre.setVisible(false);
 
 	}
 

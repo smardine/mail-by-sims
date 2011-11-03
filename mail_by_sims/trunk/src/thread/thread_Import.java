@@ -38,6 +38,7 @@ public class thread_Import extends Thread {
 
 	@Override
 	public void run() {
+		fenetre.setVisible(true);
 		BDRequette bd = new BDRequette();
 		String chemin = GestionRepertoire
 				.OpenFolder("Veuillez indiquer l'emplacement de vos mails Windows Mail");
@@ -80,6 +81,7 @@ public class thread_Import extends Thread {
 		Historique.ecrire("fin de l'enregistrement des messages en base");
 
 		bd.closeConnexion();
+		fenetre.setVisible(false);
 
 	}
 

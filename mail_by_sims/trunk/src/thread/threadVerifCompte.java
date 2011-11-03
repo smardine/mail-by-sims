@@ -31,7 +31,6 @@ public class threadVerifCompte extends Thread {
 		this.compteMail = p_compteMail;
 		fenetrePatience = new Patience("Test du compte "
 				+ compteMail.getNomCompte());
-		fenetrePatience.setVisible(true);
 
 	}
 
@@ -43,12 +42,12 @@ public class threadVerifCompte extends Thread {
 		this.fenetre = null;
 		fenetrePatience = new Patience("Test du compte "
 				+ compteMail.getNomCompte());
-		fenetrePatience.setVisible(true);
 
 	}
 
 	@Override
 	public void run() {
+		fenetrePatience.setVisible(true);
 		CompteMailFactory cptFact = new CompteMailFactory();
 		if (cptFact.testBal(compteMail, fenetrePatience)) {
 			fenetrePatience.afficheInfo("Test de connexion réussie", "", 0);
@@ -82,7 +81,7 @@ public class threadVerifCompte extends Thread {
 				}
 				fenetrePatience.setVisible(false);
 				new GestionCompte(tree);
-
+				return;
 			}
 
 		} else {

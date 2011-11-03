@@ -31,13 +31,14 @@ public class threadSuppressCompte extends Thread {
 		this.compteMail = p_compteMail;
 		fenetrePatience = new Patience("Suppresion du compte "
 				+ compteMail.getNomCompte());
-		fenetrePatience.setVisible(true);
+
 		progressBar = fenetrePatience.getjProgressBar();
 		label = fenetrePatience.getjLabel();
 	}
 
 	@Override
 	public void run() {
+		fenetrePatience.setVisible(true);
 		CompteMailFactory fact = new CompteMailFactory();
 		boolean result;
 		try {
@@ -66,7 +67,7 @@ public class threadSuppressCompte extends Thread {
 					"Erreur lors de la suppression du compte");
 
 		}
-
+		fenetrePatience.setVisible(false);
 	}
 
 }

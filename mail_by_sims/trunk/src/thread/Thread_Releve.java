@@ -21,7 +21,6 @@ public class Thread_Releve extends Thread {
 
 	public Thread_Releve(MlListeCompteMail p_mlListeCompteMail) {// ,
 		this.fenetre = new Patience("Releve de messagerie(s)");
-
 		this.listeDeCompte = p_mlListeCompteMail;
 
 	}
@@ -60,6 +59,7 @@ public class Thread_Releve extends Thread {
 	public void SupprMessage(MlListeMessage p_listeMessageASupprimer) {
 		MlCompteMail cpt = new MlCompteMail(p_listeMessageASupprimer.get(0)
 				.getIdCompte());
+		fenetre.setVisible(true);
 		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt,
 				p_listeMessageASupprimer, fenetre);
 		try {
@@ -69,11 +69,13 @@ public class Thread_Releve extends Thread {
 			messageUtilisateur.affMessageException(TAG, e,
 					"erreur à la suppression des messages dans la corbeille");
 		}
+		fenetre.setVisible(false);
 
 	}
 
 	public void DeplaceMessageVersCorbeille(MlListeMessage p_listMess) {
 		MlCompteMail cpt = new MlCompteMail(p_listMess.get(0).getIdCompte());
+		fenetre.setVisible(true);
 		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt, p_listMess,
 				fenetre);
 
@@ -83,6 +85,6 @@ public class Thread_Releve extends Thread {
 			messageUtilisateur.affMessageException(TAG, e,
 					"erreur au deplacement des messages vers la corbeille");
 		}
-
+		fenetre.setVisible(false);
 	}
 }

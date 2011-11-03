@@ -33,10 +33,10 @@ public class thread_deplaceOuSuppr extends Thread {
 
 	@Override
 	public void run() {
-
+		fenetre.setVisible(true);
 		lanceSuppressionOuDeplacementCorbeille(tabIdLigneSelectionnee);
-
 		refreshJtreeAndJTable();
+		fenetre.setVisible(false);
 
 	}
 
@@ -96,7 +96,8 @@ public class thread_deplaceOuSuppr extends Thread {
 	 */
 	private void refreshJtreeAndJTable() {
 		TreePath treePath = tree.getSelectionPath();
-		String dossierChoisi = (String) treePath.getLastPathComponent();
+		String dossierChoisi = (String) treePath.getLastPathComponent()
+				.toString();
 		BDRequette bd = new BDRequette();
 		if (!bd.getListeDeComptes().contains(dossierChoisi)) {
 			Object[] pathComplet = treePath.getPath();

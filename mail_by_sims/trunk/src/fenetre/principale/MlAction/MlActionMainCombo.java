@@ -5,9 +5,6 @@ import java.awt.event.MouseListener;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
@@ -16,18 +13,8 @@ import bdd.BDRequette;
 public class MlActionMainCombo implements MouseListener {
 
 	private JPopupMenu popUpMenu;
-	private final JProgressBar progressReleve;
-	private final JProgressBar progressPieceJointe;
-	private final JTextArea textArea;
-	private final JScrollPane scrollPane;
 
-	public MlActionMainCombo(JProgressBar p_progressReleve,
-			JProgressBar p_progressPieceJointe, JTextArea p_text,
-			JScrollPane p_scroll) {
-		this.progressReleve = p_progressReleve;
-		this.progressPieceJointe = p_progressPieceJointe;
-		this.textArea = p_text;
-		this.scrollPane = p_scroll;
+	public MlActionMainCombo() {
 		this.popUpMenu = getJPopupMenu();
 	}
 
@@ -62,8 +49,7 @@ public class MlActionMainCombo implements MouseListener {
 		popUpItem.setText(p_text);
 		popUpItem.setActionCommand("[releve ]" + p_text);
 
-		popUpItem.addActionListener(new MlActionPopupButton(progressReleve,
-				progressPieceJointe, textArea, scrollPane));
+		popUpItem.addActionListener(new MlActionPopupButton());
 
 		return popUpItem;
 	}

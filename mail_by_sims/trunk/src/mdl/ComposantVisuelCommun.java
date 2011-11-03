@@ -7,15 +7,12 @@ import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JList;
 import javax.swing.JTree;
-import javax.swing.tree.TreePath;
 
 /**
  * @author smardine
  */
 public final class ComposantVisuelCommun {
 	private static JList jlistPJ;
-	private static String nomCompte;
-	private static TreePath treepath;
 	private static JList listCompteMail;
 	private static JButton btChoixReleve;
 	private static JTree tree;
@@ -34,22 +31,6 @@ public final class ComposantVisuelCommun {
 
 	public static JList getJListPJ() {
 		return jlistPJ;
-	}
-
-	public static void setNomCompte(String p_nom) {
-		nomCompte = p_nom;
-	}
-
-	public static String getNomCompte() {
-		return nomCompte;
-	}
-
-	public static void setTreePath(TreePath p_treePath) {
-		treepath = p_treePath;
-	}
-
-	public static TreePath getTreePath() {
-		return treepath;
 	}
 
 	/**

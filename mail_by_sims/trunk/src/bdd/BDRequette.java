@@ -1048,4 +1048,22 @@ public class BDRequette {
 		return Integer.parseInt(requeteFact.get1Champ(requette));
 	}
 
+	public int getUnreadMessageFromCompte(int p_idCompte) {
+		String requette = "SELECT count (*) FROM "
+				+ EnTable.MAIL_RECU.getNomTable() + " where "
+				+ EnStructMailRecu.ID_COMPTE.getNomChamp() + "=" + p_idCompte
+				+ " and " + EnStructMailRecu.STATUT.getNomChamp() + "='0'";
+		return Integer.parseInt(requeteFact.get1Champ(requette));
+	}
+
+	public int getUnreadMessageFromFolder(int p_idCompte, int p_idDossier) {
+		String requette = "SELECT count (*) FROM "
+				+ EnTable.MAIL_RECU.getNomTable() + " where "
+				+ EnStructMailRecu.ID_COMPTE.getNomChamp() + "=" + p_idCompte
+				+ " and " + EnStructMailRecu.ID_DOSSIER.getNomChamp() + "="
+				+ p_idDossier + " and " + EnStructMailRecu.STATUT.getNomChamp()
+				+ "='0'";
+		return Integer.parseInt(requeteFact.get1Champ(requette));
+	}
+
 }

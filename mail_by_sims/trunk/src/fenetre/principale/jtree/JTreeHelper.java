@@ -7,6 +7,7 @@ import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
 import bdd.BDRequette;
+import factory.JTreeFactory;
 import fenetre.principale.MlAction.MlActionMainCombo;
 
 public final class JTreeHelper {
@@ -18,7 +19,9 @@ public final class JTreeHelper {
 	public static void reloadJtree(JTree p_tree) {
 		TreePath originalTreePath = p_tree.getSelectionPath();
 		int[] originalSelectionRow = p_tree.getSelectionRows();
-		p_tree.setModel(new ArborescenceBoiteMail());
+		JTreeFactory treeFact = new JTreeFactory();
+
+		p_tree.setModel(new ArborescenceBoiteMail(treeFact.getTreeNode()));
 		p_tree.setSelectionPath(originalTreePath);
 		p_tree.setSelectionRows(originalSelectionRow);
 		for (MouseListener unListener : ComposantVisuelCommun
@@ -48,7 +51,7 @@ public final class JTreeHelper {
 		bd.createNewDossier(p_idCompte, idDossierParent, nomDossier, "");
 		p_tree.getModel().valueForPathChanged(newTp, ActionTree.AJOUTER);
 		// tree.setSelectionPath(newTp);
-		ComposantVisuelCommun.setTreePath(newTp);
+		// ComposantVisuelCommun.setTreePath(newTp);
 		ComposantVisuelCommun.setTree(p_tree);
 		bd.closeConnexion();
 		return newTp;

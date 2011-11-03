@@ -21,6 +21,7 @@ import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.pop3.POP3Folder;
 
 import exception.DonneeAbsenteException;
+import fenetre.Patience;
 
 /**
  * Permet de deplacer des messages d'un dossier vers un autre ou de supprimer
@@ -39,13 +40,13 @@ public class DeplaceOuSupprFactory {
 	 * Constructeur
 	 * @param p_cptMail - le compte mail concerné
 	 * @param p_lstMessage - la liste des messages a traiter
-	 * @param p_progress - une barrre de progression
+	 * @param p_fenetre - une barrre de progression
 	 */
 	public DeplaceOuSupprFactory(MlCompteMail p_cptMail,
-			MlListeMessage p_lstMessage, JProgressBar p_progress) {
+			MlListeMessage p_lstMessage, Patience p_fenetre) {
 		this.compteMail = p_cptMail;
 		this.listeMessage = p_lstMessage;
-		this.progressBar = p_progress;
+		this.progressBar = p_fenetre.getjProgressBar();
 		this.bd = new BDRequette();
 
 	}

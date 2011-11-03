@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import javax.swing.JList;
 import javax.swing.JTable;
+import javax.swing.JTree;
 
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
@@ -15,11 +16,13 @@ import fenetre.principale.MlAction.EnActionMain;
 
 public class MlActionPopupJTable implements ActionListener {
 
-	private static JTable table;
+	private final JTable table;
 	private final JList list;
+	private final JTree tree;
 
-	public MlActionPopupJTable(JTable p_table, JList jList) {
-		MlActionPopupJTable.table = p_table;
+	public MlActionPopupJTable(JTree p_tree, JTable p_table, JList jList) {
+		this.tree = p_tree;
+		this.table = p_table;
 		this.list = jList;
 
 	}
@@ -108,8 +111,8 @@ public class MlActionPopupJTable implements ActionListener {
 
 		if (reponse == REPONSE.OUI) {
 
-			thread_deplaceOuSuppr t = new thread_deplaceOuSuppr(table, list,
-					new Patience("Deplacement de message"),
+			thread_deplaceOuSuppr t = new thread_deplaceOuSuppr(tree, table,
+					list, new Patience("Deplacement de message"),
 					tabIdLigneSelectionnee);
 			t.start();
 

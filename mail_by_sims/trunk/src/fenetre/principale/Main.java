@@ -23,11 +23,9 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JProgressBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
@@ -38,6 +36,7 @@ import mdl.ComposantVisuelCommun;
 import mdl.MlListeMessage;
 import verification.Thread_Verif;
 import bdd.BDAcces;
+import factory.JTreeFactory;
 import fenetre.EnTitreFenetre;
 import fenetre.principale.MlAction.EnActionMain;
 import fenetre.principale.MlAction.MlActionMain;
@@ -49,6 +48,7 @@ import fenetre.principale.jTable.MlActionPopupJTable;
 import fenetre.principale.jTable.MyTableModel;
 import fenetre.principale.jTable.XTableColumnModel;
 import fenetre.principale.jtree.ArborescenceBoiteMail;
+import fenetre.principale.jtree.CustomTreeCellRenderer;
 import fenetre.principale.jtree.MlActionJtree;
 
 public class Main extends JFrame {
@@ -90,12 +90,9 @@ public class Main extends JFrame {
 	private JScrollPane jScrollPane2 = null;
 	private JTabbedPane jTabbedPane = null;
 	private JPanel jPanel = null;
-	private JProgressBar jProgressBarReleve = null;
-	private JProgressBar jProgressBarPieceJointe = null;
-	private JTextArea jTextArea = null;
-	private JScrollPane jScrollPane3 = null;
 	private JButton btChoixReleve = null;
 	private Timer timer = null; // @jve:decl-index=0:visual-constraint="31,619"
+	private JTreeFactory treeFact; // @jve:decl-index=0:
 
 	/**
 	 * This method initializes panelBouton
@@ -115,9 +112,6 @@ public class Main extends JFrame {
 					EnNomComposant.PANEL_BOUTON.getHauteurInitiale()));
 			panelBouton.setName(EnNomComposant.PANEL_BOUTON.getLib());
 			panelBouton.add(getJTabbedPane(), BorderLayout.CENTER);
-			panelBouton.add(getJProgressBar(), null);
-			panelBouton.add(getJProgressBarPieceJointe(), null);
-			panelBouton.add(getJScrollPane3(), null);
 		}
 		return panelBouton;
 	}
@@ -228,13 +222,17 @@ public class Main extends JFrame {
 	private JTree getJTree() {
 		if (jTree == null) {
 			// new BDAcces();
-			ArborescenceBoiteMail arbo = new ArborescenceBoiteMail();
+			treeFact = new JTreeFactory();
+
+			ArborescenceBoiteMail arbo = new ArborescenceBoiteMail(treeFact
+					.getTreeNode());
 			jTree = new JTree(arbo);
 			jTree.setShowsRootHandles(true);
 			jTree.setRootVisible(false);
 			jTree.setToggleClickCount(2);
-			jTree.setFont(new Font("Perpetua", Font.BOLD, 12));
+			jTree.setFont(new Font("Perpetua", Font.PLAIN, 12));
 			jTree.setExpandsSelectedPaths(true);
+
 		}
 		return jTree;
 	}
@@ -432,68 +430,6 @@ public class Main extends JFrame {
 	}
 
 	/**
-	 * This method initializes jProgressBarReleve
-	 * @return javax.swing.JProgressBar
-	 */
-	private JProgressBar getJProgressBar() {
-		if (jProgressBarReleve == null) {
-			jProgressBarReleve = new JProgressBar();
-			jProgressBarReleve.setBounds(new Rectangle(223, 0, 310, 25));
-			jProgressBarReleve.setStringPainted(true);
-			jProgressBarReleve.setBackground(new Color(238, 238, 238));
-			jProgressBarReleve.setForeground(Color.blue);
-			jProgressBarReleve.setVisible(false);
-		}
-		return jProgressBarReleve;
-	}
-
-	/**
-	 * This method initializes jProgressBarPieceJointe
-	 * @return javax.swing.JProgressBar
-	 */
-	private JProgressBar getJProgressBarPieceJointe() {
-		if (jProgressBarPieceJointe == null) {
-			jProgressBarPieceJointe = new JProgressBar();
-			jProgressBarPieceJointe.setBounds(new Rectangle(223, 25, 310, 25));
-			jProgressBarPieceJointe.setStringPainted(true);
-
-			jProgressBarPieceJointe.setVisible(false);
-			jProgressBarPieceJointe.setBackground(new Color(238, 238, 238));
-			jProgressBarPieceJointe.setForeground(Color.blue);
-		}
-		return jProgressBarPieceJointe;
-	}
-
-	/**
-	 * This method initializes jTextArea
-	 * @return javax.swing.JTextArea
-	 */
-	private JTextArea getJTextArea() {
-		if (jTextArea == null) {
-			jTextArea = new JTextArea();
-			jTextArea.setWrapStyleWord(true);
-			jTextArea.setLineWrap(true);
-			jTextArea.setVisible(false);
-
-		}
-		return jTextArea;
-	}
-
-	/**
-	 * This method initializes jScrollPane3
-	 * @return javax.swing.JScrollPane
-	 */
-	private JScrollPane getJScrollPane3() {
-		if (jScrollPane3 == null) {
-			jScrollPane3 = new JScrollPane();
-			jScrollPane3.setBounds(new Rectangle(534, 2, 245, 70));
-			jScrollPane3.setVisible(false);
-			jScrollPane3.setViewportView(getJTextArea());
-		}
-		return jScrollPane3;
-	}
-
-	/**
 	 * This method initializes btChoixReleve
 	 * @return javax.swing.JButton
 	 */
@@ -555,36 +491,30 @@ public class Main extends JFrame {
 		tableModel = new MyTableModel(ColoneModel);
 		tableModel.valorisetable(new MlListeMessage());
 		jTable.setModel(tableModel);
-		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jListPJ,
-				jProgressBarReleve, jTextArea, jScrollPane3));
+		jTable.addMouseListener(new MlActionJtable(jTree, jTable, htmlPane,
+				jListPJ));
 
 		jMenuContact.addActionListener(new MlActionMain());
 		jTree.addMouseListener(new MlActionJtree(jTree, jTable));
 		jTree.addTreeSelectionListener(new MlActionJtree(jTree, jTable));
 		jTree.addTreeExpansionListener(new MlActionJtree(jTree, jTable));
-		jMenuItemImporter.addActionListener(new MlActionMain(jTree,
-				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
-				jScrollPane3));
-		jMenuItemReleve.addActionListener(new MlActionMain(jTree,
-				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
-				jScrollPane3));
+		jMenuItemImporter.addActionListener(new MlActionMain(jTree));
+		jMenuItemReleve.addActionListener(new MlActionMain(jTree));
 
-		btRecevoir.addActionListener(new MlActionMain(jTree,
-				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
-				jScrollPane3));
-		btEnvoyer.addActionListener(new MlActionMain(jTree, jProgressBarReleve,
-				jProgressBarPieceJointe, jTextArea, jScrollPane3));
-		btSupprMessage.addActionListener(new MlActionPopupJTable(jTable,
+		btRecevoir.addActionListener(new MlActionMain(jTree));
+		btEnvoyer.addActionListener(new MlActionMain(jTree));
+		btSupprMessage.addActionListener(new MlActionPopupJTable(jTree, jTable,
 				jListPJ));
 		jMenuCompte.addActionListener(new MlActionMain(jTree));
-		btChoixReleve.addMouseListener(new MlActionMainCombo(
-				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,
-				jScrollPane3));
+		btChoixReleve.addMouseListener(new MlActionMainCombo());
 
 		ComposantVisuelCommun.setJListPJ(jListPJ);
 		ComposantVisuelCommun.setbtChoixReleve(btChoixReleve);
 		ComposantVisuelCommun.setTree(jTree);
 		ComposantVisuelCommun.setHTMLPane(htmlPane);
+		jTree.setCellRenderer(new CustomTreeCellRenderer());
+		// treeFact.expandAll(jTree, true);
+		// treeFact.expandAll(jTree, false);
 
 		// timer = getTimer();
 		// TimerTask task = new TimerTask() {

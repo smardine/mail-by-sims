@@ -20,15 +20,14 @@ import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
-import mdl.MlListeCompteMail;
 import mdl.MlListeMessage;
 import tools.GestionRepertoire;
 import bdd.BDRequette;
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.jTable.MyTableModel;
 
-public class MlActionJtree implements TreeSelectionListener,
-		TreeExpansionListener, MouseListener {
+public class MlActionJtree implements MouseListener, TreeSelectionListener,
+		TreeExpansionListener {
 
 	private final JTree tree;
 	private final JTable table;
@@ -87,178 +86,114 @@ public class MlActionJtree implements TreeSelectionListener,
 
 	@Override
 	public void valueChanged(TreeSelectionEvent p_event) {
-		TreePath newPath = null;
-		if (null != p_event) {
-			newPath = p_event.getNewLeadSelectionPath();
-		}
-		if (null == p_event) {
-			newPath = ComposantVisuelCommun.getTreePath();
-		}
-		if (null != newPath) {
-			valoriseTreeEtNomCompte(newPath);
-		} else {
-			valoriseTreeEtNomCompte(p_event.getOldLeadSelectionPath());
-		}
+		TreePath newPath = p_event.getNewLeadSelectionPath();
+
+		tree.setSelectionPath(newPath);
+		ComposantVisuelCommun.setTree(tree);
+		//		
+		// if (null != newPath) {
+		// valoriseTreeEtNomCompte(newPath);
+		// } else {
+		// valoriseTreeEtNomCompte(p_event.getOldLeadSelectionPath());
+		// }
 
 	}
 
-	/**
-	 * @param p_event
-	 */
-	private void valoriseTreeEtNomCompte(TreePath p_path) {
-		BDRequette bd = new BDRequette();
-		MlListeCompteMail lstCpt = bd.getListeDeComptes();
-		bd.closeConnexion();
-		if (null != p_path) {
-
-			for (MlCompteMail cpt : lstCpt) {
-				if ((cpt.getNomCompte()).contains((CharSequence) p_path
-						.getLastPathComponent())) {
-					// on est dans le cas [superroot,gmail]
-					ComposantVisuelCommun.setNomCompte((String) p_path
-							.getLastPathComponent());
-				} else {
-					String[] tabChaine = p_path.toString().split(",");
-					if (tabChaine.length > 1) {
-						ComposantVisuelCommun.setNomCompte(tabChaine[1].trim());
-					}
-				}
-				ComposantVisuelCommun.setTreePath(p_path);
-				tree.setSelectionPath(p_path);
-				ComposantVisuelCommun.setTree(tree);
-
-			}
-
-		}
-
-	}
+	// /**
+	// * @param p_event
+	// */
+	// private void valoriseTreeEtNomCompte(TreePath p_path) {
+	//
+	// if (null != p_path) {
+	// tree.setSelectionPath(p_path);
+	// ComposantVisuelCommun.setTree(tree);
+	// }
+	//
+	// }
 
 	@Override
 	public void treeCollapsed(TreeExpansionEvent p_event) {
-
-		valoriseTreeEtNomCompte(ComposantVisuelCommun.getTreePath());
+		tree.setSelectionPath(p_event.getPath());
+		ComposantVisuelCommun.setTree(tree);
+		// valoriseTreeEtNomCompte(p_event.getPath());
 
 	}
 
 	@Override
 	public void treeExpanded(TreeExpansionEvent p_event) {
 
-		TreePath newPath = ComposantVisuelCommun.getTreePath();
+		TreePath newPath = p_event.getPath();// ComposantVisuelCommun.getTreePath();
+		// Object[] pathComplet = newPath.getPath();
+		// String nomCompte = pathComplet[1].toString();
 		if (null != newPath) {
-			String nomDossierRacine = newPath.getLastPathComponent().toString();
-			BDRequette bd = new BDRequette();
-			List<String> lstSousDossier = bd
-					.getListeSousDossier(bd
-							.getIdDossier(nomDossierRacine, bd
-									.getIdComptes(ComposantVisuelCommun
-											.getNomCompte())));
-			bd.closeConnexion();
-			if (lstSousDossier.size() > 0) {
-				TreePath un = new TreePath(newPath.toString().replace("[", "")
-						.replace("]", "")
-						+ ", " + lstSousDossier.get(0));
-				valoriseTreeEtNomCompte(un);
-			} else {
-				valoriseTreeEtNomCompte(newPath);
-			}
+			tree.setSelectionPath(newPath);
+			ComposantVisuelCommun.setTree(tree);
 		}
 
 	}
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		// if (e.getClickCount() == 1) {
-		// BDRequette bd = new BDRequette();
-		// if (!bd.getListeDeComptes().contains(getPathFromEvent(e))
-		// && null != getPathFromEvent(e)) {
-		// // affiche le contenu de la base correspondant a ce que l'on a
-		// // cliqué
-		//
-		// String dossierChoisi = (String) getPathFromEvent(e)
-		// .getLastPathComponent();
-		//
-		// if (!bd.getListeDeComptes().contains(dossierChoisi)) {
-		// int idCompte = bd.getIdComptes(ComposantVisuelCommun
-		// .getNomCompte());
-		// int idDossierChoisi = bd.getIdDossier(dossierChoisi,
-		// idCompte);
-		// MlListeMessage listeMessage = bd.getListeDeMessage(
-		// idCompte, idDossierChoisi);
-		//
-		// MyTableModel modelDetable = (MyTableModel) table.getModel();
-		// modelDetable.valorisetable(listeMessage);
-		// ((DefaultListModel) ComposantVisuelCommun.getJListPJ()
-		// .getModel()).removeAllElements();
-		// Document doc = ComposantVisuelCommun.getHtmlPane()
-		// .getDocument();
-		// doc.putProperty(Document.StreamDescriptionProperty, null);
-		//
-		// }
-		// }
-		// bd.closeConnexion();
-		// }
-
 	}
 
 	@Override
 	public void mouseClicked(MouseEvent e) {
-
 	}
 
 	@Override
 	public void mouseEntered(MouseEvent e) {
-
 	}
 
 	@Override
 	public void mouseExited(MouseEvent e) {
-
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
+		TreePath pathFromEvent = getPathFromEvent(e);
 		if (e.getClickCount() == 1) {
 			BDRequette bd = new BDRequette();
 
-			if (!bd.getListeDeComptes().contains(getPathFromEvent(e))
-					&& null != getPathFromEvent(e)) {
-				// affiche le contenu de la base correspondant a ce que l'on a
-				// cliqué
-
-				String dossierChoisi = (String) getPathFromEvent(e)
-						.getLastPathComponent();
-
-				if (!bd.getListeDeComptes().contains(dossierChoisi)) {
-					int idCompte = bd.getIdComptes(ComposantVisuelCommun
-							.getNomCompte());
-					int idDossierChoisi = bd.getIdDossier(dossierChoisi,
-							idCompte);
-					MlListeMessage listeMessage = bd.getListeDeMessage(
-							idCompte, idDossierChoisi);
-
-					MyTableModel modelDetable = (MyTableModel) table.getModel();
-					modelDetable.valorisetable(listeMessage);
-					((DefaultListModel) ComposantVisuelCommun.getJListPJ()
-							.getModel()).removeAllElements();
-					Document doc = ComposantVisuelCommun.getHtmlPane()
-							.getDocument();
-					doc.putProperty(Document.StreamDescriptionProperty, null);
-					try {
-						ComposantVisuelCommun.getHtmlPane().setPage(
-								"file:///"
-										+ GestionRepertoire.RecupRepTemplate()
-										+ "/vide.html");
-					} catch (IOException e1) {
+			if (null != pathFromEvent)// on verifie si on a cliqué sur le nom
+			// d'un compte
+			{
+				for (MlCompteMail cpt : bd.getListeDeComptes()) {
+					if (pathFromEvent.getLastPathComponent().toString().equals(
+							cpt.getNomCompte())) {
 						return;
 					}
 
 				}
+				String dossierChoisi = pathFromEvent.getLastPathComponent()
+						.toString();
+				Object[] pathComplet = pathFromEvent.getPath();
+				int idCompte = bd.getIdComptes(pathComplet[1].toString());
+				int idDossierChoisi = bd.getIdDossier(dossierChoisi, idCompte);
+				MlListeMessage listeMessage = bd.getListeDeMessage(idCompte,
+						idDossierChoisi);
+
+				MyTableModel modelDetable = (MyTableModel) table.getModel();
+				modelDetable.valorisetable(listeMessage);
+				((DefaultListModel) ComposantVisuelCommun.getJListPJ()
+						.getModel()).removeAllElements();
+				Document doc = ComposantVisuelCommun.getHtmlPane()
+						.getDocument();
+				doc.putProperty(Document.StreamDescriptionProperty, null);
+				try {
+					ComposantVisuelCommun.getHtmlPane().setPage(
+							"file:///" + GestionRepertoire.RecupRepTemplate()
+									+ "/vide.html");
+				} catch (IOException e1) {
+					return;
+				}
+
 			}
+
 			bd.closeConnexion();
 		}
 
 		int selRow = tree.getRowForLocation(e.getX(), e.getY());
-		TreePath selPath = getPathFromEvent(e);
+		TreePath selPath = pathFromEvent;
 
 		tree.setSelectionPath(selPath);
 		tree.setSelectionRow(selRow);

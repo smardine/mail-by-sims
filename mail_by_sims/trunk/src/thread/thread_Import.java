@@ -63,8 +63,8 @@ public class thread_Import extends Thread {
 		path[2] = EnDossierBase.RECEPTION.getLib();
 
 		TreePath treePathInitial = new TreePath(path);
-		ComposantVisuelCommun.setNomCompte(choixCompte);
-		ComposantVisuelCommun.setTreePath(treePathInitial);
+		// ComposantVisuelCommun.setNomCompte(choixCompte);
+		// ComposantVisuelCommun.setTreePath(treePathInitial);
 		ComposantVisuelCommun.setTree(tree);
 		// tree.setSelectionPath(treePathInitial);
 

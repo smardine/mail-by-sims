@@ -49,7 +49,7 @@ public class MlActionPopupJTree implements ActionListener {
 				TreePath newTreePath = new TreePath(selectionPath.toString()
 						.replace("[", "").replace("]", "")
 						+ ", " + nomNewDossier);
-				ComposantVisuelCommun.setTreePath(newTreePath);
+				// ComposantVisuelCommun.setTreePath(newTreePath);
 				tree.getModel().valueForPathChanged(newTreePath,
 						ActionTree.AJOUTER);
 				tree.setSelectionPath(newTreePath);
@@ -77,8 +77,8 @@ public class MlActionPopupJTree implements ActionListener {
 			switch (rep) {
 				case OUI:// on supprime le dossier
 					bd.deleteDossier(idCompte, idDossier, null);
-					ComposantVisuelCommun.setTreePath(selectionPath
-							.getParentPath());
+					// ComposantVisuelCommun.setTreePath(selectionPath
+					// .getParentPath());
 					tree.getModel().valueForPathChanged(selectionPath,
 							ActionTree.SUPPRIMER);
 					tree.setSelectionPath(selectionPath.getParentPath());

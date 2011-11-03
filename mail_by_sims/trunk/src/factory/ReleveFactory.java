@@ -37,7 +37,7 @@ public class ReleveFactory {
 	/**
 	 * 
 	 */
-	private static final String RELEVE_DE = ": Releve de ";
+	private static final String RELEVE_DE = "Releve de ";
 
 	private final MlCompteMail compteMail;
 

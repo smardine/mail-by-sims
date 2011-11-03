@@ -3,7 +3,7 @@ package fenetre.comptes;
 public enum EnDossierBase {
 	RECEPTION("Boîte de réception"), //
 	ENVOYES("Éléments envoyés"), //
-	SPAM("Courrier indésirable"), //
+	SPAM("Spam"), //
 	CORBEILLE("Messages supprimés"), //
 	BROUILLON("Brouillons"), //
 	ROOT("superRoot");

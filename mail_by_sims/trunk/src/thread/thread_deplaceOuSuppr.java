@@ -2,9 +2,9 @@ package thread;
 
 import javax.swing.JList;
 import javax.swing.JTable;
+import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
-import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
@@ -19,9 +19,11 @@ public class thread_deplaceOuSuppr extends Thread {
 	private final int[] tabIdLigneSelectionnee;
 	private final JList list;
 	private final Patience fenetre;
+	private final JTree tree;
 
-	public thread_deplaceOuSuppr(JTable p_table, JList p_list,
+	public thread_deplaceOuSuppr(JTree p_tree, JTable p_table, JList p_list,
 			Patience p_fenetre, int[] p_tabIdLigneSelectionnee) {
+		this.tree = p_tree;
 		this.table = p_table;
 		this.list = p_list;
 		this.fenetre = p_fenetre;
@@ -93,12 +95,12 @@ public class thread_deplaceOuSuppr extends Thread {
 	 * 
 	 */
 	private void refreshJtreeAndJTable() {
-		TreePath treePath = ComposantVisuelCommun.getTreePath();
+		TreePath treePath = tree.getSelectionPath();
 		String dossierChoisi = (String) treePath.getLastPathComponent();
 		BDRequette bd = new BDRequette();
 		if (!bd.getListeDeComptes().contains(dossierChoisi)) {
-			int idCompte = bd
-					.getIdComptes(ComposantVisuelCommun.getNomCompte());
+			Object[] pathComplet = treePath.getPath();
+			int idCompte = bd.getIdComptes(pathComplet[1].toString());
 			int idDossierChoisi = bd.getIdDossier(dossierChoisi, idCompte);
 			MlListeMessage listeMessage = bd.getListeDeMessage(idCompte,
 					idDossierChoisi);

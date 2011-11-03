@@ -3,9 +3,6 @@ package fenetre.principale.MlAction;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
-import javax.swing.JTextArea;
 import javax.swing.JTree;
 
 import releve.imap.util.messageUtilisateur;
@@ -21,28 +18,13 @@ import fenetre.comptes.gestion.GestionCompte;
 public class MlActionMain implements ActionListener {
 
 	private JTree tree;
-	private JProgressBar pbReleve;
-	private JProgressBar pbPieceJointe;
-	private JTextArea text;
-	private JScrollPane scrollPane;
-
-	public MlActionMain(JTree p_treeCompte) {
-
-		this.tree = p_treeCompte;
-	}
 
 	public MlActionMain() {
 
 	}
 
-	public MlActionMain(JTree p_tree, JProgressBar p_jProgressBarReleve,
-			JProgressBar p_jProgressBarPieceJointe, JTextArea p_jTextArea,
-			JScrollPane p_scroll) {
+	public MlActionMain(JTree p_tree) {
 		this.tree = p_tree;
-		this.pbReleve = p_jProgressBarReleve;
-		this.pbPieceJointe = p_jProgressBarPieceJointe;
-		this.text = p_jTextArea;
-		this.scrollPane = p_scroll;
 
 	}
 

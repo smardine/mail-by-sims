@@ -1,4 +1,4 @@
-package fenetre.principale.jtree;
+package thread;
 
 public class thread_afficheDossierCompte extends Thread {
 

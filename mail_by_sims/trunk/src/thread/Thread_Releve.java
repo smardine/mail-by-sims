@@ -1,8 +1,6 @@
 package thread;
 
 import javax.mail.MessagingException;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
 
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
@@ -16,15 +14,14 @@ import fenetre.Patience;
 
 public class Thread_Releve extends Thread {
 	private final String TAG = this.getClass().getSimpleName();
-	private final JProgressBar progress;
+
 	private final MlListeCompteMail listeDeCompte;
-	private final JLabel label;
+
 	private final Patience fenetre;
 
 	public Thread_Releve(MlListeCompteMail p_mlListeCompteMail) {// ,
 		this.fenetre = new Patience("Releve de messagerie(s)");
-		this.label = fenetre.getjLabel();
-		this.progress = fenetre.getjProgressBar();
+
 		this.listeDeCompte = p_mlListeCompteMail;
 
 	}
@@ -63,7 +60,7 @@ public class Thread_Releve extends Thread {
 		MlCompteMail cpt = new MlCompteMail(p_listeMessageASupprimer.get(0)
 				.getIdCompte());
 		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt,
-				p_listeMessageASupprimer, progress);
+				p_listeMessageASupprimer, fenetre);
 		try {
 			fact.supprMessage();
 
@@ -77,7 +74,7 @@ public class Thread_Releve extends Thread {
 	public void DeplaceMessageVersCorbeille(MlListeMessage p_listMess) {
 		MlCompteMail cpt = new MlCompteMail(p_listMess.get(0).getIdCompte());
 		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt, p_listMess,
-				progress);
+				fenetre);
 
 		try {
 			fact.deplaceMessageVersCorbeille();

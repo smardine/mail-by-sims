@@ -8,121 +8,57 @@ import javax.swing.ImageIcon;
 import javax.swing.UIManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
-import mdl.ComposantVisuelCommun;
-import mdl.MlCompteMail;
-import mdl.MlListeCompteMail;
 import releve.imap.util.messageUtilisateur;
-import bdd.BDRequette;
-import fenetre.comptes.EnDossierBase;
 
 public class ArborescenceBoiteMail implements TreeModel {
-	private final String root; // The root identifier
 
 	private final List<TreeModelListener> listeners; // Declare the listeners
 	// vector
-	private final MlListeCompteMail lstCpt;
 
 	private final String TAG = this.getClass().getSimpleName();
 
-	private final BDRequette bd;
+	private final DefaultMutableTreeNode rootNode;
 
-	public ArborescenceBoiteMail() {
-		bd = new BDRequette();
-		root = EnDossierBase.ROOT.getLib();
+	public ArborescenceBoiteMail(DefaultMutableTreeNode p_rootNode) {
+		this.rootNode = p_rootNode;
 		listeners = new Vector<TreeModelListener>();
-		lstCpt = bd.getListeDeComptes();
 
 		UIManager.put("Tree.openIcon", new ImageIcon(
 				"Images/dossier-ouvert-16.png"));
 		UIManager.put("Tree.closedIcon", new ImageIcon(
-				"Images/dossier-ferme-16.png"));
+				"Images/dossier-ouvert-16.png"));
 		UIManager.put("Tree.leafIcon", new ImageIcon(
 				"Images/dossier-ferme-16.png"));
 	}
 
-	public Object getRoot() {
-		return root;
+	public DefaultMutableTreeNode getRoot() {
+		return rootNode;
 	}
 
-	public Object getChild(Object parent, int index) {
-
-		if (root.equals(parent)) {
-			return lstCpt.get(index).getNomCompte();
-		}
-		for (MlCompteMail compte : lstCpt) {
-			if (compte.getNomCompte().equals(parent)) {
-				ComposantVisuelCommun.setNomCompte(compte.getNomCompte());
-				List<String> list = bd.getListeSousDossierBase(compte
-						.getIdCompte());
-				return list.get(index);
-			}
-		}
-		int idCompte = bd.getIdComptes(getCompte());
-		List<String> list = bd.getListeSousDossier(bd.getIdDossier(
-				(String) parent, idCompte));
-		return list.get(index);
+	public TreeNode getChild(Object p_parent, int p_index) {
+		return ((DefaultMutableTreeNode) p_parent).getChildAt(p_index);
 
 	}
 
-	public int getChildCount(Object parent) {
-		if (parent.equals(root)) {
-			return lstCpt.size();
-		}
+	public int getChildCount(Object p_parent) {
+		return ((DefaultMutableTreeNode) p_parent).getChildCount();
 
-		for (MlCompteMail compte : lstCpt) {
-			if (compte.getNomCompte().equals(parent)) {
-				ComposantVisuelCommun.setNomCompte(compte.getNomCompte());
-				return bd.getnbSousDossierBase(compte.getIdCompte());
-			}
-		}
-		int idCompte = bd.getIdComptes(getCompte());
-		return bd.getnbSousDossier(bd.getIdDossier((String) parent, idCompte));
 	}
 
-	private String getCompte() {
-		return ComposantVisuelCommun.getNomCompte();
+	public int getIndexOfChild(Object p_parent, Object p_child) {
+		DefaultMutableTreeNode unParent = (DefaultMutableTreeNode) p_parent;
+		DefaultMutableTreeNode unChild = (DefaultMutableTreeNode) p_child;
+		return unParent.getIndex(unChild);
+
 	}
 
-	public int getIndexOfChild(Object parent, Object child) {
-
-		for (MlCompteMail compte : lstCpt) {
-			if (compte.getNomCompte().equals(parent)) {
-				ComposantVisuelCommun.setNomCompte(compte.getNomCompte());
-				int idDossier = bd.getIdDossier((String) child, compte
-						.getIdCompte());
-				if ("".equals(idDossier)) {
-					return -1;
-				}
-				return idDossier;
-			}
-		}
-		return -1;
-	}
-
-	public boolean isLeaf(Object node) {
-		// return false;
-		if (root.equals(node)) {
-			return false;
-		}
-		for (MlCompteMail compte : lstCpt) {
-			if (compte.getNomCompte().equals(node)) {
-				ComposantVisuelCommun.setNomCompte(compte.getNomCompte());
-				return false;
-			}
-		}
-
-		int idCompte = bd.getIdComptes(getCompte());
-		int idDossier = bd.getIdDossier((String) node, idCompte);
-		return bd.getListeSousDossier(idDossier).size() == 0;
-
-		// if (BDRequette.getnbMessage(idDossier) > 0) {
-		// return false;
-		// }
-		// return true;
-		// return false;
+	public boolean isLeaf(Object p_node) {
+		return ((DefaultMutableTreeNode) p_node).isLeaf();
 
 	}
 
@@ -200,6 +136,13 @@ public class ArborescenceBoiteMail implements TreeModel {
 			listener.treeStructureChanged(e);
 		}
 
+	}
+
+	/**
+	 * @return the rootNode
+	 */
+	public TreeNode getRootNode() {
+		return rootNode;
 	}
 
 }

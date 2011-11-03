@@ -45,6 +45,7 @@ public class BDScripts {
 	private List<String> version5;
 	private List<String> version6;
 	private List<String> version7;
+	private List<String> version8;
 
 	public BDScripts() {
 
@@ -59,6 +60,7 @@ public class BDScripts {
 		allversion.addAll(getVersion5());
 		allversion.addAll(getVersion6());
 		allversion.addAll(getVersion7());
+		allversion.addAll(getVersion8());
 		return allversion;
 	}
 
@@ -324,6 +326,17 @@ public class BDScripts {
 		version7.add("UPDATE PARAM SET VERSION_BASE=7;");
 
 		return version7;
+	}
+
+	/**
+	 * @return
+	 */
+	public List<String> getVersion8() {
+		version8 = new ArrayList<String>();
+		version8.add("DROP TABLE MAIL_ENVOYE;");
+		version8.add("ALTER TABLE MAIL_RECU ADD FLAG Char(1);");
+		version8.add("UPDATE PARAM SET VERSION_BASE=8;");
+		return version8;
 	}
 
 }

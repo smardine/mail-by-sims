@@ -13,6 +13,8 @@ import org.firebirdsql.management.FBManager;
 
 import releve.imap.util.messageUtilisateur;
 import tools.Historique;
+import bdd.structure.EnStructParam;
+import bdd.structure.EnTable;
 import factory.RequetteFactory;
 
 /**
@@ -25,7 +27,7 @@ public class BDAcces {
 	private boolean etatConnexion;
 	private Connection connexion;
 	private FBManager firebirdManager;
-	final String VERSION_BASE = "7";
+	final int VERSION_BASE = 8;
 
 	private boolean ttACreer = false;
 	private FBMaintenanceManager maintenance;
@@ -128,35 +130,29 @@ public class BDAcces {
 
 		} else {
 
-			String versionActuelle = getVersionActuelle();
-			if (!VERSION_BASE.equals(versionActuelle)) {
+			int versionActuelle = Integer.parseInt(getVersionActuelle());
+			if (VERSION_BASE != versionActuelle) {
 				ScriptExecutor se = new ScriptExecutor();
 				BDScripts scripts = new BDScripts();
-				if ("1".equals(versionActuelle)) {
-					LanceMiseAJour(se, scripts.getVersion2());
-					verifVersionBDD();
+				switch (versionActuelle) {
+					case 1:
+						LanceMiseAJour(se, scripts.getVersion2());
+					case 2:
+						LanceMiseAJour(se, scripts.getVersion3());
+					case 3:
+						LanceMiseAJour(se, scripts.getVersion4());
+					case 4:
+						LanceMiseAJour(se, scripts.getVersion5());
+					case 5:
+						LanceMiseAJour(se, scripts.getVersion6());
+					case 6:
+						LanceMiseAJour(se, scripts.getVersion7());
+					case 7:
+						LanceMiseAJour(se, scripts.getVersion8());
 				}
-				if ("2".equals(versionActuelle)) {
-					LanceMiseAJour(se, scripts.getVersion3());
-					verifVersionBDD();
-				}
-				if ("3".equals(versionActuelle)) {
-					LanceMiseAJour(se, scripts.getVersion4());
-					verifVersionBDD();
-				}
-				if ("4".equals(versionActuelle)) {
-					LanceMiseAJour(se, scripts.getVersion5());
-					verifVersionBDD();
-				}
-				if ("5".equals(versionActuelle)) {
-					LanceMiseAJour(se, scripts.getVersion6());
-					verifVersionBDD();
-				}
-				if ("6".equals(versionActuelle)) {
-					LanceMiseAJour(se, scripts.getVersion7());
-					verifVersionBDD();
-				}
+				verifVersionBDD();
 			}
+
 		}
 		return true;
 
@@ -233,12 +229,13 @@ public class BDAcces {
 	/**
 	 * @return the vERSION_BASE
 	 */
-	public String getVERSION_BASE() {
+	public int getVERSION_BASE() {
 		return this.VERSION_BASE;
 	}
 
 	public String getVersionActuelle() {
-		String script = "SELECT a.VERSION_BASE FROM PARAM a";
+		String script = "SELECT " + EnStructParam.VERSION_BASE + " FROM "
+				+ EnTable.PARAM;
 		RequetteFactory requetteFact = new RequetteFactory(connexion);
 		return requetteFact.get1Champ(script);
 	}

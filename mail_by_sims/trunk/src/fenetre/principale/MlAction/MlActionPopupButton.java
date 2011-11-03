@@ -9,7 +9,7 @@ import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
-import releve.thread_SynchroImap;
+import thread.Thread_Releve;
 import bdd.BDRequette;
 
 public class MlActionPopupButton implements ActionListener {
@@ -36,8 +36,7 @@ public class MlActionPopupButton implements ActionListener {
 		BDRequette bd = new BDRequette();
 		if ("[releve ]Relever tous les comptes".equals(actionCommand)) {
 
-			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, bd.getListeDeComptes());
+			Thread_Releve t = new Thread_Releve(bd.getListeDeComptes());
 
 			t.start();
 
@@ -49,8 +48,7 @@ public class MlActionPopupButton implements ActionListener {
 			MlCompteMail cpt = new MlCompteMail(nomCompte);
 			cpt.setNomCompte(nomCompte);
 			lst.add(cpt);
-			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, lst);
+			Thread_Releve t = new Thread_Releve(lst);
 			t.start();
 
 		}

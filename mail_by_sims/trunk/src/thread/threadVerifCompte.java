@@ -1,8 +1,6 @@
 package thread;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JLabel;
-import javax.swing.JProgressBar;
 import javax.swing.JTree;
 
 import mdl.ComposantVisuelCommun;
@@ -21,8 +19,6 @@ public class threadVerifCompte extends Thread {
 
 	private final MlCompteMail compteMail;
 	private final Patience fenetrePatience;
-	private final JProgressBar progressBar;
-	private final JLabel label;
 	private final String TAG = this.getClass().getSimpleName();
 	private final JTree tree;
 	private final CreationComptesPop fenetre;
@@ -36,8 +32,7 @@ public class threadVerifCompte extends Thread {
 		fenetrePatience = new Patience("Test du compte "
 				+ compteMail.getNomCompte());
 		fenetrePatience.setVisible(true);
-		progressBar = fenetrePatience.getjProgressBar();
-		label = fenetrePatience.getjLabel();
+
 	}
 
 	public threadVerifCompte(MlCompteMail p_compteMail, JTree p_tree,
@@ -49,15 +44,14 @@ public class threadVerifCompte extends Thread {
 		fenetrePatience = new Patience("Test du compte "
 				+ compteMail.getNomCompte());
 		fenetrePatience.setVisible(true);
-		progressBar = fenetrePatience.getjProgressBar();
-		label = fenetrePatience.getjLabel();
+
 	}
 
 	@Override
 	public void run() {
 		CompteMailFactory cptFact = new CompteMailFactory();
-		if (cptFact.testBal(compteMail, progressBar, label)) {
-			label.setText("Test de connexion réussie");
+		if (cptFact.testBal(compteMail, fenetrePatience)) {
+			fenetrePatience.afficheInfo("Test de connexion réussie", "", 0);
 			boolean result = cptFact.creationCompteMail(compteMail);
 
 			if (!result) {
@@ -66,8 +60,7 @@ public class threadVerifCompte extends Thread {
 
 			} else {
 				ReleveFactory relevFact = new ReleveFactory(compteMail,
-						progressBar, null, null);
-				label.setText("Récuperation des dossiers");
+						fenetrePatience);
 				relevFact.recupereListeDossier();
 
 				messageUtilisateur

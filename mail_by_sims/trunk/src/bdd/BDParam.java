@@ -1,6 +1,6 @@
 package bdd;
 
-import tools.*;
+import tools.GestionRepertoire;
 
 /**
  * contients les parametres de connexion a la base de données.
@@ -12,9 +12,9 @@ public class BDParam {
 	private final String PASSWORD = "masterkey";
 	private final String driverSGBD = "jdbc:firebirdsql";
 	private final String HOSTNAME = "localhost";
+	private final String DatabaseName = "\\MAIL.FDB";
 	private final String EmplacementBase = GestionRepertoire.RecupRepTravail()
-			+ "\\Database\\MAIL.FDB";
-	private final String Name = "\\MAIL.FDB";
+			+ "\\Database" + DatabaseName;
 
 	/**
 	 * 
@@ -44,7 +44,7 @@ public class BDParam {
 	}
 
 	public String getName() {
-		return Name;
+		return DatabaseName;
 	}
 
 }

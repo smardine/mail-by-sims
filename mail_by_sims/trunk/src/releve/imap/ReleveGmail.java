@@ -6,8 +6,6 @@ package releve.imap;
 import java.io.IOException;
 
 import javax.mail.MessagingException;
-import javax.swing.JProgressBar;
-import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
@@ -16,6 +14,7 @@ import com.googlecode.jdeltasync.AuthenticationException;
 import com.googlecode.jdeltasync.DeltaSyncException;
 
 import factory.ReleveFactory;
+import fenetre.Patience;
 
 /**
  * @author smardine
@@ -26,18 +25,14 @@ public class ReleveGmail {
 	 */
 	private static final String ERREUR_A_LA_RELEVE_DU_COMPTE = "Erreur a la releve du compte ";
 	private final String TAG = this.getClass().getSimpleName();
-	private final JProgressBar progressBar;
-	private final JProgressBar progressPJ;
 	private final MlCompteMail cptMail;
+	private final Patience fenetre;
 
-	public ReleveGmail(MlCompteMail p_commpteMail, JProgressBar progress,
-			JProgressBar p_progressPieceJointe, JTextArea textArea) {
+	public ReleveGmail(MlCompteMail p_commpteMail, Patience p_fenetre) {
 		this.cptMail = p_commpteMail;
-		this.progressBar = progress;
-		this.progressPJ = p_progressPieceJointe;
+		this.fenetre = p_fenetre;
 
-		ReleveFactory releve = new ReleveFactory(cptMail, progressBar,
-				progressPJ, textArea);
+		ReleveFactory releve = new ReleveFactory(cptMail, fenetre);
 		try {
 			releve.releveCourier();
 		} catch (MessagingException e) {

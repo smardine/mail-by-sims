@@ -6,7 +6,6 @@ package factory;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
-import javax.swing.JProgressBar;
 
 import mdl.MlCompteMail;
 import mdl.MlListeMessage;
@@ -15,6 +14,7 @@ import bdd.BDRequette;
 
 import com.sun.mail.imap.IMAPFolder;
 
+import fenetre.Patience;
 import fenetre.comptes.EnTypeCompte;
 
 /**
@@ -27,16 +27,16 @@ public class SynchroFactory {
 
 	private final MlCompteMail compteMail;
 
-	private final JProgressBar progress;
+	private final Patience fenetre;
 
 	/**
 	 * Constructeur
 	 * @param p_cptMail - le compte mail visé
-	 * @param p_progressBar - une barre de progression
+	 * @param p_fenetre - une barre de progression
 	 */
-	public SynchroFactory(MlCompteMail p_cptMail, JProgressBar p_progressBar) {
+	public SynchroFactory(MlCompteMail p_cptMail, Patience p_fenetre) {
 		this.compteMail = p_cptMail;
-		this.progress = p_progressBar;
+		this.fenetre = p_fenetre;
 	}
 
 	/**
@@ -67,9 +67,8 @@ public class SynchroFactory {
 		for (MlMessage m : listeMessage) {
 			nbActu++;
 			int pourcent = (nbActu * 100) / listeMessage.size();
-			progress.setValue(pourcent);
-			progress.setString("Maj dossier " + p_folder.getName() + " : "
-					+ pourcent + " %");
+			fenetre.afficheInfo("Maj dossier", p_folder.getName() + " : "
+					+ pourcent + " %", pourcent);
 
 			if (!verifUIDDeltaMessage(m.getUIDMessage(), p_lstMessageHotmail)) {
 				bd.deleteMessageRecu(m.getIdMessage());
@@ -129,9 +128,8 @@ public class SynchroFactory {
 		for (MlMessage m : listeMessage) {
 			nbActu++;
 			int pourcent = (nbActu * 100) / listeMessage.size();
-			progress.setValue(pourcent);
-			progress.setString("Maj dossier " + p_folder.getFullName() + " : "
-					+ pourcent + " %");
+			fenetre.afficheInfo("Maj dossier", p_folder.getFullName() + " : "
+					+ pourcent + " %", pourcent);
 
 			Message messToCheck = ((IMAPFolder) p_folder).getMessageByUID(Long
 					.parseLong(m.getUIDMessage()));

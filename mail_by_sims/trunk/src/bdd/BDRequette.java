@@ -25,6 +25,12 @@ import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.RecupDate;
 import tools.WriteFile;
+import bdd.structure.EnStructCompte;
+import bdd.structure.EnStructDossier;
+import bdd.structure.EnStructMailRecu;
+import bdd.structure.EnStructPieceJointe;
+import bdd.structure.EnTable;
+import bdd.structure.StructureTable;
 import exception.DonneeAbsenteException;
 import factory.RequetteFactory;
 import fenetre.comptes.EnDossierBase;
@@ -63,7 +69,7 @@ public class BDRequette {
 	 * @return le nombre de ligne dans cette table
 	 */
 	public int getNbEnregistrementFromTable(EnTable p_table,
-			EnStructureTable p_champ) {
+			StructureTable p_champ) {
 
 		int nbRecords = 0;
 		String requete = BDRequette.SELECT + p_champ.getNomChamp() + " from "
@@ -104,9 +110,8 @@ public class BDRequette {
 	 * @return
 	 */
 	public MlListeCompteMail getListeDeComptes() {
-		String requete = BDRequette.SELECT
-				+ EnStructureTable.COMPTES_ID.getNomChamp() + " from "
-				+ EnTable.COMPTES.getNomTable();
+		String requete = BDRequette.SELECT + EnStructCompte.ID.getNomChamp()
+				+ " from " + EnTable.COMPTES.getNomTable();
 		List<String> lst = requeteFact.getListeDeChamp(requete);
 		MlListeCompteMail listeCompte = new MlListeCompteMail();
 		for (String s : lst) {
@@ -125,11 +130,9 @@ public class BDRequette {
 	 */
 	public int getIdComptes(String p_nomCompte) {
 
-		String requete = BDRequette.SELECT
-				+ EnStructureTable.COMPTES_ID.getNomChamp() + " from "
-				+ EnTable.COMPTES.getNomTable() + " where "
-				+ EnStructureTable.COMPTES_NOM.getNomChamp() + " ='"
-				+ p_nomCompte + "'";
+		String requete = BDRequette.SELECT + EnStructCompte.ID.getNomChamp()
+				+ " from " + EnTable.COMPTES.getNomTable() + " where "
+				+ EnStructCompte.NOM.getNomChamp() + " ='" + p_nomCompte + "'";
 		if ("".equals(requeteFact.get1Champ(requete))) {
 			return -1;
 		} else {
@@ -147,11 +150,10 @@ public class BDRequette {
 	public int getIdDossier(String p_nomDossier, int p_idCompte) {
 
 		String requete = BDRequette.SELECT
-				+ EnStructureTable.DOSSIER_ID.getNomChamp() + " from "
+				+ EnStructDossier.ID_DOSSIER.getNomChamp() + " from "
 				+ EnTable.DOSSIER.getNomTable() + " where ("
-				+ EnStructureTable.DOSSIER_NOM.getNomChamp() + " ='"
-				+ p_nomDossier + "' AND "
-				+ EnStructureTable.COMPTES_ID.getNomChamp() + "=" + p_idCompte
+				+ EnStructDossier.NOM.getNomChamp() + " ='" + p_nomDossier
+				+ "' AND " + EnStructCompte.ID.getNomChamp() + "=" + p_idCompte
 				+ ")";
 
 		if ("".equals(requeteFact.get1Champ(requete))) {
@@ -172,14 +174,12 @@ public class BDRequette {
 			int p_idCompte) {
 
 		String requete = BDRequette.SELECT
-				+ EnStructureTable.DOSSIER_ID.getNomChamp() + " from "
+				+ EnStructDossier.ID_DOSSIER.getNomChamp() + " from "
 				+ EnTable.DOSSIER.getNomTable() + " where ("
-				+ EnStructureTable.DOSSIER_NOM.getNomChamp() + " ='"
-				+ p_nomDossier + "' AND "
-				+ EnStructureTable.DOSSIER_NOM_INTERNET.getNomChamp() + "='"
-				+ p_fullName + "' AND "
-				+ EnStructureTable.COMPTES_ID.getNomChamp() + "=" + p_idCompte
-				+ ")";
+				+ EnStructDossier.NOM.getNomChamp() + " ='" + p_nomDossier
+				+ "' AND " + EnStructDossier.NOM_INTERNET.getNomChamp() + "='"
+				+ p_fullName + "' AND " + EnStructCompte.ID.getNomChamp() + "="
+				+ p_idCompte + ")";
 
 		if ("".equals(requeteFact.get1Champ(requete))) {
 			return -1;
@@ -196,9 +196,13 @@ public class BDRequette {
 	 * @return
 	 */
 	public List<String> getListeSousDossierBase(int p_idCompte) {
-		String requete = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_COMPTE='"
-				+ p_idCompte
-				+ "' and a.ID_DOSSIER_PARENT=0 ORDER BY a.NOM_DOSSIER";
+		String requete = "SELECT " + EnStructDossier.NOM.getNomChamp()
+				+ " FROM " + EnTable.DOSSIER.getNomTable()// 
+				+ " where " //
+				+ EnStructCompte.ID.getNomChamp() + "=" + p_idCompte //
+				+ " and "//
+				+ EnStructDossier.ID_DOSSIER_PARENT.getNomChamp() + "=0 "// 
+				+ "ORDER BY " + EnStructDossier.NOM.getNomChamp();
 		return requeteFact.getListeDeChamp(requete);
 
 	}
@@ -219,8 +223,11 @@ public class BDRequette {
 	 * @return
 	 */
 	public List<String> getListeSousDossier(int p_idDossier) {
-		String requete = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_DOSSIER_PARENT='"
-				+ p_idDossier + "' ORDER BY a.NOM_DOSSIER";
+		String requete = "SELECT " + EnStructDossier.NOM.getNomChamp()
+				+ " FROM " + EnTable.DOSSIER.getNomTable() + " where "
+				+ EnStructDossier.ID_DOSSIER_PARENT.getNomChamp() + "="
+				+ p_idDossier + " ORDER BY "
+				+ EnStructDossier.NOM.getNomChamp();
 		return requeteFact.getListeDeChamp(requete);
 
 	}
@@ -244,12 +251,15 @@ public class BDRequette {
 	 */
 	public boolean createNewDossier(int p_idCompte, int p_idDossierParent,
 			String p_nomNewDossier, String p_nomDossierInternet) {
-		String requette = "INSERT "
-				+ "INTO DOSSIER (ID_COMPTE,  ID_DOSSIER_PARENT, NOM_DOSSIER, NOM_INTERNET) "
+		String requette = "INSERT " + "INTO " + EnTable.DOSSIER.getNomTable()
+				+ " (" + EnStructDossier.ID_COMPTE.getNomChamp() + ", "
+				+ EnStructDossier.ID_DOSSIER_PARENT.getNomChamp() + ", "
+				+ EnStructDossier.NOM.getNomChamp() + ", "// 
+				+ EnStructDossier.NOM_INTERNET.getNomChamp() + ") "// 
 				+ " VALUES (" //
-				+ "'" + p_idCompte + //
-				"','" + p_idDossierParent + // 
-				"','" + p_nomNewDossier + // 
+				+ p_idCompte + //
+				"," + p_idDossierParent + // 
+				",'" + p_nomNewDossier + // 
 				"','" + p_nomDossierInternet + "')";
 
 		return requeteFact.executeRequete(requette);
@@ -273,8 +283,10 @@ public class BDRequette {
 					getNomInternetDossier(p_idDossier), p_idCompte),
 					p_progressBar);
 		}
-		String requette = "DELETE FROM DOSSIER WHERE ID_COMPTE='" + p_idCompte
-				+ "' AND ID_DOSSIER='" + p_idDossier + "'";
+		String requette = "DELETE FROM " + EnTable.DOSSIER.getNomTable()
+				+ " WHERE " + EnStructDossier.ID_COMPTE.getNomChamp() + "="
+				+ p_idCompte + " AND "
+				+ EnStructDossier.ID_DOSSIER.getNomChamp() + "=" + p_idDossier;
 		int count = 0;
 		MlListeMessage listeMessage = getListeDeMessage(p_idCompte, p_idDossier);
 		int tailleListe = listeMessage.size();
@@ -301,33 +313,44 @@ public class BDRequette {
 		// on commence par effacer les piece jointe associées au message.
 		List<String> lstPieceJointe = getListeIdPieceJointe(p_idMessage);
 		for (String pieceJointe : lstPieceJointe) {
-			String requete = "DELETE FROM PIECE_JOINTE WHERE ID_PIECE_JOINTE='"
-					+ pieceJointe + "'";
+			String requete = "DELETE FROM "
+					+ EnTable.PIECE_JOINTE.getNomTable() + " WHERE "
+					+ EnStructPieceJointe.ID.getNomChamp() + "='" + pieceJointe
+					+ "'";
 			requeteFact.executeRequete(requete);
 		}
 
 		// on peut ensuite supprimer les messages
-		String requetteMessage = "DELETE FROM MAIL_RECU WHERE ID_MESSAGE_RECU='"
-				+ p_idMessage + "'";
+		String requetteMessage = "DELETE FROM "
+				+ EnTable.MAIL_RECU.getNomTable() + " WHERE "
+				+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "=" + p_idMessage;
 		return requeteFact.executeRequete(requetteMessage);
 
 	}
 
 	public List<String> getListeIdPieceJointe(int p_idMessage) {
-		String requette = "SELECT a.ID_PIECE_JOINTE FROM PIECE_JOINTE a where a.ID_MESSAGE='"
-				+ p_idMessage + "' ORDER BY a.ID_PIECE_JOINTE";
+		String requette = "SELECT " + EnStructPieceJointe.ID.getNomChamp()
+				+ " FROM " + EnTable.PIECE_JOINTE.getNomTable() + " WHERE "
+				+ EnStructPieceJointe.ID_MESSAGE.getNomChamp() + "="
+				+ p_idMessage + " ORDER BY "
+				+ EnStructPieceJointe.ID.getNomChamp();
 		return requeteFact.getListeDeChamp(requette);
 	}
 
 	public List<String> getListeNomPieceJointe(int p_idMessage) {
-		String requette = "SELECT a.NOM_PIECE_JOINTE FROM PIECE_JOINTE a where a.ID_MESSAGE='"
-				+ p_idMessage + "' ORDER BY a.ID_PIECE_JOINTE";
+		String requette = "SELECT " + EnStructPieceJointe.NOM.getNomChamp()
+				+ " FROM " + EnTable.PIECE_JOINTE.getNomTable() + " WHERE "
+				+ EnStructPieceJointe.ID_MESSAGE.getNomChamp() + "="
+				+ p_idMessage + " ORDER BY "
+				+ EnStructPieceJointe.ID.getNomChamp();
 		return requeteFact.getListeDeChamp(requette);
 	}
 
 	public List<String> getListeDossier(int p_idCompte) {
-		String requette = "SELECT a.NOM_DOSSIER FROM DOSSIER a where a.ID_COMPTE='"
-				+ p_idCompte + "' ORDER BY a.NOM_DOSSIER";
+		String requette = "SELECT " + EnStructDossier.NOM.getNomChamp()
+				+ " FROM " + EnTable.DOSSIER.getNomTable() + " where "
+				+ EnStructDossier.ID_COMPTE.getNomChamp() + "=" + p_idCompte
+				+ " ORDER BY " + EnStructDossier.NOM.getNomChamp();
 		return requeteFact.getListeDeChamp(requette);
 
 	}
@@ -358,21 +381,31 @@ public class BDRequette {
 		// on construit la requette
 		StringBuilder requette = new StringBuilder(tailleStringBuilder);
 		requette.ensureCapacity(tailleStringBuilder);
-		requette.append("INSERT INTO MAIL_RECU");
-		requette
-				.append("(ID_COMPTE, ID_DOSSIER_STOCKAGE, UID_MESSAGE, EXPEDITEUR, DESTINATAIRE,DESTINATAIRE_COPY,DESTINATAIRE_CACHE, SUJET,CONTENU,DATE_RECEPTION,STATUT)");
-		requette.append("VALUES (");
-		requette.append("'" + idCompte + "','");
-		requette.append(idDossierStockage + "','");
-		requette.append(uidMessage + "','");
-		requette.append(expediteur + "',");
+		requette.append("INSERT INTO " + EnTable.MAIL_RECU.getNomTable());//
+		requette.append("(");//
+		requette.append(EnStructMailRecu.ID_COMPTE.getNomChamp() + ",");//
+		requette.append(EnStructMailRecu.ID_DOSSIER.getNomChamp() + ",");//
+		requette.append(EnStructMailRecu.UID.getNomChamp() + ",");//
+		requette.append(EnStructMailRecu.EXPEDITEUR.getNomChamp() + ",");//
+		requette.append(EnStructMailRecu.DEST.getNomChamp() + ",");//
+		requette.append(EnStructMailRecu.DEST_COPY.getNomChamp() + ",");//
+		requette.append(EnStructMailRecu.DEST_CACHE.getNomChamp() + ",");//
+		requette.append(EnStructMailRecu.SUJET.getNomChamp() + ",");//
+		requette.append(EnStructMailRecu.CONTENU.getNomChamp() + ",");//
+		requette.append(EnStructMailRecu.DATE_RECEPTION.getNomChamp() + ",");//
+		requette.append(EnStructMailRecu.STATUT.getNomChamp() + ")");//
+		requette.append("VALUES (");//
+		requette.append(idCompte + ",");//
+		requette.append(idDossierStockage + ",'");//
+		requette.append(uidMessage + "','");//
+		requette.append(expediteur + "',");//
 		requette.append("?,");// lstDest
 		requette.append("?,");// lstDestCC
 		requette.append("?,'");// lstDestBCC
 		requette.append(sujet + "',");
 		requette.append("?,'");// c'est pour le contenu qui sera stocké dans un
 		// blob
-		requette.append(dateReception + "',");
+		requette.append(dateReception + "',");//
 		requette.append("0)");// le status de lecture du message (0= non
 		// lu,1=lu)
 
@@ -385,7 +418,9 @@ public class BDRequette {
 		if (succes) {
 
 			// on recupere le nouvel id du message que l'on vient d'enregistrer
-			String getMaxId = "SELECT max (ID_MESSAGE_RECU) FROM MAIL_RECU a";
+			String getMaxId = "SELECT max ("
+					+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + ") FROM "
+					+ EnTable.MAIL_RECU.getNomTable();
 			String maxId = requeteFact.get1Champ(getMaxId);
 			// ("l'id de message que l'on vient d'enregistrer est: "
 			// + maxId);
@@ -435,10 +470,11 @@ public class BDRequette {
 	}
 
 	private boolean enregistrePieceJointe(String maxId, File p_PieceJointe) {
-		String requette = "INSERT INTO PIECE_JOINTE (CONTENU_PIECE_JOINTE,NOM_PIECE_JOINTE, ID_MESSAGE) VALUES ("
-				+ "?,'"
-				+ p_PieceJointe.getName().replace("'", "_")
-				+ "','"
+		String requette = "INSERT INTO " + EnTable.PIECE_JOINTE.getNomTable()
+				+ " (" + EnStructPieceJointe.CONTENU.getNomChamp() + ","
+				+ EnStructPieceJointe.NOM.getNomChamp() + ","
+				+ EnStructPieceJointe.ID_MESSAGE.getNomChamp() + ") VALUES ("
+				+ "?,'" + p_PieceJointe.getName().replace("'", "_") + "','"
 				+ maxId + "')";
 		PreparedStatement ps = null;
 		FileInputStream inPieceJointe = null;
@@ -543,20 +579,35 @@ public class BDRequette {
 			int p_idDossierChoisi) {
 		MlListeMessage lstMessage = new MlListeMessage();
 		String requette = "SELECT " //
-				+ "a.ID_MESSAGE_RECU, " // idx0
-				+ "a.UID_MESSAGE, "// idx1
-				+ "a.EXPEDITEUR, " // idx2
-				+ "a.DESTINATAIRE, a.DESTINATAIRE_COPY,a.DESTINATAIRE_CACHE, " // idx
+				+ EnStructMailRecu.ID_MESSAGE.getNomChamp()
+				+ ", " // idx0
+				+ EnStructMailRecu.UID.getNomChamp()
+				+ ", "// idx1
+				+ EnStructMailRecu.EXPEDITEUR.getNomChamp()
+				+ ", " // idx2
+				+ EnStructMailRecu.DEST.getNomChamp()
+				+ ", "
+				+ EnStructMailRecu.DEST_COPY.getNomChamp()
+				+ ", "
+				+ EnStructMailRecu.DEST_CACHE.getNomChamp()
+				+ ", " // idx
 				// 3,4,5
-				+ "a.SUJET, "// idx6
-				+ "a.CONTENU, " // idx7
-				+ "a.DATE_RECEPTION " // idx8
-				+ "FROM MAIL_RECU a " //
-				+ "where a.ID_COMPTE='"
+				+ EnStructMailRecu.SUJET.getNomChamp()
+				+ ", "// idx6
+				+ EnStructMailRecu.CONTENU.getNomChamp()
+				+ ", " // idx7
+				+ EnStructMailRecu.DATE_RECEPTION.getNomChamp() // idx8
+				+ " FROM "
+				+ EnTable.MAIL_RECU.getNomTable() //
+				+ " where " + EnStructMailRecu.ID_COMPTE.getNomChamp()
+				+ "="
 				+ p_idCompte
-				+ "' and a.ID_DOSSIER_STOCKAGE='"
+				+ " and "
+				+ EnStructMailRecu.ID_DOSSIER.getNomChamp()
+				+ "="
 				+ p_idDossierChoisi
-				+ "' ORDER BY a.DATE_RECEPTION DESC";
+				+ " ORDER BY "
+				+ EnStructMailRecu.DATE_RECEPTION.getNomChamp() + " DESC";
 		List<ArrayList<String>> lstResultat = requeteFact
 				.getListeDenregistrement(requette);
 		for (int i = 0; i < lstResultat.size(); i++) {
@@ -605,16 +656,19 @@ public class BDRequette {
 	}
 
 	public boolean messageHavePieceJointe(int p_idMessage) {
-		String requette = "SELECT COUNT (*) FROM PIECE_JOINTE WHERE ID_MESSAGE='"
-				+ p_idMessage + "'";
+		String requette = "SELECT COUNT (*) FROM "
+				+ EnTable.PIECE_JOINTE.getNomTable() + " WHERE "
+				+ EnStructPieceJointe.ID_MESSAGE.getNomChamp() + "="
+				+ p_idMessage;
 		int messageCount = Integer.parseInt(requeteFact.get1Champ(requette));
 
 		return messageCount > 0;
 	}
 
 	public File getContenuFromId(int p_idMessage, boolean p_pleinecran) {
-		String requette = "SELECT CONTENU FROM MAIL_RECU WHERE ID_MESSAGE_RECU='"
-				+ p_idMessage + "'";
+		String requette = "SELECT " + EnStructMailRecu.CONTENU.getNomChamp()
+				+ " FROM " + EnTable.MAIL_RECU.getNomTable() + " WHERE "
+				+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "=" + p_idMessage;
 		File contenuHTML;
 		if (p_pleinecran) {
 			contenuHTML = new File(GestionRepertoire.RecupRepTravail()
@@ -633,11 +687,11 @@ public class BDRequette {
 	}
 
 	public File getPieceJointeFromIDMessage(int p_idMessage, String p_nameFile) {
-		String requette = "SELECT CONTENU_PIECE_JOINTE FROM PIECE_JOINTE WHERE ID_MESSAGE="
-				+ p_idMessage
-				+ " and NOM_PIECE_JOINTE='"
-				+ p_nameFile.trim()
-				+ "'";
+		String requette = "SELECT " + EnStructPieceJointe.CONTENU.getNomChamp()
+				+ " FROM " + EnTable.PIECE_JOINTE.getNomTable() + " WHERE "
+				+ EnStructPieceJointe.ID_MESSAGE.getNomChamp() + "="
+				+ p_idMessage + " and " + EnStructPieceJointe.NOM.getNomChamp()
+				+ "='" + p_nameFile.trim() + "'";
 		File contenuPieceJointe = new File(GestionRepertoire.RecupRepTravail()
 				+ "/tempo/" + p_nameFile);
 		if (contenuPieceJointe.exists()) {
@@ -658,8 +712,11 @@ public class BDRequette {
 		if (null == uid) {
 			return true;// le message N'EST PAS EN BASE
 		}
-		String requete = "SELECT count (*) from MAIL_RECU a where a.UID_MESSAGE='"
-				+ uid.trim() + "' and a.ID_DOSSIER_STOCKAGE=" + p_idDossier;
+		String requete = "SELECT count (*) from "
+				+ EnTable.MAIL_RECU.getNomTable() + " where "
+				+ EnStructMailRecu.UID.getNomChamp() + "='" + uid.trim()
+				+ "' and " + EnStructMailRecu.ID_DOSSIER.getNomChamp() + "="
+				+ p_idDossier;
 		return ("0".equals(requeteFact.get1Champ(requete)));
 
 	}
@@ -670,8 +727,10 @@ public class BDRequette {
 	}
 
 	public boolean isMessageLu(int p_idMessageRecu) {
-		String script = "SELECT a.STATUT FROM MAIL_RECU a where a.ID_MESSAGE_RECU='"
-				+ p_idMessageRecu + "'";
+		String script = "SELECT " + EnStructMailRecu.STATUT.getNomChamp()
+				+ " FROM " + EnTable.MAIL_RECU.getNomTable() + " where "
+				+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "="
+				+ p_idMessageRecu;
 		if ("1".equals(requeteFact.get1Champ(script))) {
 			return true;
 		}
@@ -680,26 +739,29 @@ public class BDRequette {
 	}
 
 	public boolean setStatusLecture(int p_idMessage) {
-		String script = "UPDATE MAIL_RECU a SET STATUT=1 WHERE a.ID_MESSAGE_RECU="
-				+ p_idMessage;
+		String script = "UPDATE " + EnTable.MAIL_RECU.getNomTable()
+				+ " SET STATUT=1 WHERE "
+				+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "=" + p_idMessage;
 		return requeteFact.executeRequete(script);
 
 	}
 
 	public List<ArrayList<String>> getMessageById(int p_idMessage) {
-		String script = "SELECT a.ID_MESSAGE_RECU," + //
-				" a.UID_MESSAGE, " + //
-				"a.EXPEDITEUR, " + //
-				"a.DESTINATAIRE, " + //
-				"a.DESTINATAIRE_COPY, " + //
-				"a.DESTINATAIRE_CACHE, " + //
-				"a.SUJET, " + //
-				"a.CONTENU, " + //
-				"a.DATE_RECEPTION, " + //
-				"a.ID_DOSSIER_STOCKAGE, " + //
-				"a.ID_COMPTE" + //
-				" FROM MAIL_RECU a " + // 
-				"WHERE a.ID_MESSAGE_RECU=" + p_idMessage;
+		String script = "SELECT "// 
+				+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "," + //
+				EnStructMailRecu.UID.getNomChamp() + ", " + //
+				EnStructMailRecu.EXPEDITEUR.getNomChamp() + ", " + //
+				EnStructMailRecu.DEST.getNomChamp() + ", " + //
+				EnStructMailRecu.DEST_COPY.getNomChamp() + ", " + //
+				EnStructMailRecu.DEST_CACHE.getNomChamp() + ", " + //
+				EnStructMailRecu.SUJET.getNomChamp() + ", " + //
+				EnStructMailRecu.CONTENU.getNomChamp() + ", " + //
+				EnStructMailRecu.DATE_RECEPTION.getNomChamp() + ", " + //
+				EnStructMailRecu.ID_DOSSIER.getNomChamp() + ", " + //
+				EnStructMailRecu.ID_COMPTE.getNomChamp() + //
+				" FROM " + EnTable.MAIL_RECU.getNomTable() + // 
+				" WHERE "// 
+				+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "=" + p_idMessage;
 
 		// MlMessage m = new MlMessage();
 		List<ArrayList<String>> lstResultat = requeteFact
@@ -732,24 +794,34 @@ public class BDRequette {
 	}
 
 	public String getNomDossier(int p_idDossierStockage) {
-		String script = "SELECT a.NOM_DOSSIER FROM DOSSIER a WHERE a.ID_DOSSIER="
+		String script = "SELECT " + EnStructDossier.NOM.getNomChamp()
+				+ " FROM " + EnTable.DOSSIER.getNomTable() + " WHERE "
+				+ EnStructDossier.ID_DOSSIER.getNomChamp() + "="
 				+ p_idDossierStockage;
 		return requeteFact.get1Champ(script);
 
 	}
 
 	public String getNomInternetDossier(int p_idDossierStockage) {
-		String script = "SELECT a.NOM_INTERNET FROM DOSSIER a WHERE a.ID_DOSSIER="
+		String script = "SELECT " + EnStructDossier.NOM_INTERNET.getNomChamp()
+				+ " FROM " + EnTable.DOSSIER.getNomTable() + " WHERE "
+				+ EnStructDossier.ID_DOSSIER.getNomChamp() + "="
 				+ p_idDossierStockage;
 		return requeteFact.get1Champ(script);
 
 	}
 
 	public List<String> getCompteByID(int p_idCompte) {
-		String script = "SELECT a.NOM_COMPTE," + " a.SERVEUR_POP,"
-				+ " a.PORT_POP," + " a.SERVEUR_SMTP," + " a.PORT_SMTP,"
-				+ " a.USERNAME," + " a.PWD," + " a.TYPE_COMPTE"
-				+ " FROM COMPTES" + " a where a.ID_COMPTE=" + p_idCompte;
+		String script = "SELECT " + EnStructCompte.NOM.getNomChamp() + ", "
+				+ EnStructCompte.POP_SERVEUR.getNomChamp() + ", "
+				+ EnStructCompte.POP_PORT.getNomChamp() + ", "
+				+ EnStructCompte.SMTP_SERVEUR.getNomChamp() + ", "
+				+ EnStructCompte.SMTP_PORT.getNomChamp() + ", "
+				+ EnStructCompte.USER.getNomChamp() + ", "
+				+ EnStructCompte.PWD.getNomChamp() + ", "
+				+ EnStructCompte.TYPE.getNomChamp() + " FROM "
+				+ EnTable.COMPTES.getNomTable() + " where "
+				+ EnStructCompte.ID.getNomChamp() + "=" + p_idCompte;
 
 		List<ArrayList<String>> lstResultat = requeteFact
 				.getListeDenregistrement(script);
@@ -789,14 +861,17 @@ public class BDRequette {
 					p_idCompte), p_progressBar);
 		}
 
-		String requete = "DELETE FROM COMPTES WHERE ID_COMPTE=" + p_idCompte;
+		String requete = "DELETE FROM " + EnTable.COMPTES.getNomTable()
+				+ " WHERE " + EnStructCompte.ID.getNomChamp() + "="
+				+ p_idCompte;
 		return requeteFact.executeRequete(requete);
 
 	}
 
 	public String getSujetFromId(int p_idMessage) {
-		String requette = "SELECT SUJET FROM MAIL_RECU WHERE ID_MESSAGE_RECU="
-				+ p_idMessage;
+		String requette = "SELECT " + EnStructMailRecu.SUJET.getNomChamp()
+				+ " FROM " + EnTable.MAIL_RECU.getNomTable() + " WHERE "
+				+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "=" + p_idMessage;
 		return requeteFact.get1Champ(requette);
 	}
 
@@ -812,10 +887,15 @@ public class BDRequette {
 
 	public boolean createNewCompte(MlCompteMail p_compte) {
 		StringBuilder sb = new StringBuilder();
-		sb
-				.append("Insert into "
-						+ EnTable.COMPTES.getNomTable()
-						+ " (NOM_COMPTE, SERVEUR_POP, PORT_POP, SERVEUR_SMTP, PORT_SMTP, USERNAME, PWD,TYPE_COMPTE)");
+		sb.append("Insert into " + EnTable.COMPTES.getNomTable() + " ("
+				+ EnStructCompte.NOM.getNomChamp() + ", "
+				+ EnStructCompte.POP_SERVEUR.getNomChamp() + ", "
+				+ EnStructCompte.POP_PORT.getNomChamp() + ", "
+				+ EnStructCompte.SMTP_SERVEUR.getNomChamp() + ", "
+				+ EnStructCompte.SMTP_PORT.getNomChamp() + ", "
+				+ EnStructCompte.USER.getNomChamp() + ", "
+				+ EnStructCompte.PWD.getNomChamp() + ", "
+				+ EnStructCompte.TYPE.getNomChamp() + ")");
 		sb.append(" Values ");
 		sb.append("( '" + p_compte.getNomCompte() + "',");
 		sb.append("'" + p_compte.getServeurReception() + "',");
@@ -833,9 +913,11 @@ public class BDRequette {
 			List<String> p_lstDossierBase) {
 		for (String nomDossier : p_lstDossierBase) {
 			StringBuilder sb = new StringBuilder();
-			sb
-					.append("INSERT INTO DOSSIER (ID_COMPTE, ID_DOSSIER_PARENT, NOM_DOSSIER) VALUES (");
-			sb.append("'" + p_compte.getIdCompte() + "',");
+			sb.append("INSERT INTO " + EnTable.DOSSIER.getNomTable() + " ("
+					+ EnStructDossier.ID_COMPTE.getNomChamp() + ", "
+					+ EnStructDossier.ID_DOSSIER_PARENT.getNomChamp() + ", "
+					+ EnStructDossier.NOM.getNomChamp() + ") VALUES (");
+			sb.append(p_compte.getIdCompte() + ",");
 			sb.append(0 + ",");
 			sb.append("'" + nomDossier + "')");
 			if (!requeteFact.executeRequete(sb.toString())) {
@@ -854,8 +936,10 @@ public class BDRequette {
 		for (MlMessage m : p_list) {
 			MlCompteMail cpt = new MlCompteMail(m.getIdCompte());
 
-			String requete = "UPDATE MAIL_RECU a SET ID_DOSSIER_STOCKAGE="
-					+ cpt.getIdCorbeille() + " WHERE a.ID_MESSAGE_RECU="
+			String requete = "UPDATE " + EnTable.MAIL_RECU.getNomTable()
+					+ " SET " + EnStructMailRecu.ID_DOSSIER.getNomChamp() + "="
+					+ cpt.getIdCorbeille() + " WHERE "
+					+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "="
 					+ m.getIdMessage();
 			boolean succes = requeteFact.executeRequete(requete);
 			if (!succes) {
@@ -867,8 +951,10 @@ public class BDRequette {
 	}
 
 	public boolean updateUIDMessage(MlMessage p_m) {
-		String requete = "UPDATE MAIL_RECU a set a.UID_MESSAGE='"
-				+ p_m.getUIDMessage() + "' where ID_MESSAGE_RECU="
+		String requete = "UPDATE " + EnTable.MAIL_RECU.getNomTable() + " SET "
+				+ EnStructMailRecu.UID.getNomChamp() + "='"
+				+ p_m.getUIDMessage() + "' WHERE "
+				+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "="
 				+ p_m.getIdMessage();
 		return requeteFact.executeRequete(requete);
 
@@ -876,16 +962,22 @@ public class BDRequette {
 
 	public boolean updateNomDossierInternet(int p_idDossier,
 			String p_nomDossierInternet, int p_idDossierParent) {
-		String requete = "UPDATE DOSSIER a set a.NOM_INTERNET='"
-				+ p_nomDossierInternet.trim() + "', a.ID_DOSSIER_PARENT="
-				+ p_idDossierParent + " where a.ID_DOSSIER=" + p_idDossier;
+		String requete = "UPDATE " + EnTable.DOSSIER.getNomTable() + " SET "
+				+ EnStructDossier.NOM_INTERNET.getNomChamp() + "='"
+				+ p_nomDossierInternet.trim() + "', "
+				+ EnStructDossier.ID_DOSSIER_PARENT.getNomChamp() + "="
+				+ p_idDossierParent + " where "
+				+ EnStructDossier.ID_DOSSIER.getNomChamp() + "=" + p_idDossier;
 		return requeteFact.executeRequete(requete);
 
 	}
 
 	public int getnbMessageParDossier(int p_idCompte, int p_idDossier) {
-		String requette = "select count (a.UID_MESSAGE) FROM MAIL_RECU a where a.ID_COMPTE="
-				+ p_idCompte + " and a.ID_DOSSIER_STOCKAGE=" + p_idDossier;
+		String requette = "select count (" + EnStructMailRecu.UID.getNomChamp()
+				+ ") FROM " + EnTable.MAIL_RECU.getNomTable() + " where "
+				+ EnStructMailRecu.ID_COMPTE.getNomChamp() + "=" + p_idCompte
+				+ " and " + EnStructMailRecu.ID_DOSSIER.getNomChamp() + "="
+				+ p_idDossier;
 		return Integer.parseInt(requeteFact.get1Champ(requette));
 
 	}
@@ -895,10 +987,11 @@ public class BDRequette {
 	 * @return
 	 */
 	public int getIdInbox(int p_idCpt) {
-		String requette = "select a.ID_DOSSIER from DOSSIER a where a.NOM_DOSSIER='"
-				+ EnDossierBase.RECEPTION.getLib()
-				+ "' and a.ID_COMPTE="
-				+ p_idCpt;
+		String requette = "select " + EnStructDossier.ID_DOSSIER.getNomChamp()
+				+ " from " + EnTable.DOSSIER.getNomTable() + " where "
+				+ EnStructDossier.NOM.getNomChamp() + "='"
+				+ EnDossierBase.RECEPTION.getLib() + "' and "
+				+ EnStructDossier.ID_COMPTE.getNomChamp() + "=" + p_idCpt;
 		return Integer.parseInt(requeteFact.get1Champ(requette));
 
 	}
@@ -908,10 +1001,11 @@ public class BDRequette {
 	 * @return
 	 */
 	public int getIdBrouillon(int p_idCpt) {
-		String requette = "select a.ID_DOSSIER from DOSSIER a where a.NOM_DOSSIER='"
-				+ EnDossierBase.BROUILLON.getLib()
-				+ "' and a.ID_COMPTE="
-				+ p_idCpt;
+		String requette = "select " + EnStructDossier.ID_DOSSIER.getNomChamp()
+				+ " from " + EnTable.DOSSIER.getNomTable() + " where "
+				+ EnStructDossier.NOM.getNomChamp() + "='"
+				+ EnDossierBase.BROUILLON.getLib() + "' and "
+				+ EnStructDossier.ID_COMPTE.getNomChamp() + "=" + p_idCpt;
 		return Integer.parseInt(requeteFact.get1Champ(requette));
 	}
 
@@ -920,10 +1014,11 @@ public class BDRequette {
 	 * @return
 	 */
 	public int getIdCorbeille(int p_idCpt) {
-		String requette = "select a.ID_DOSSIER from DOSSIER a where a.NOM_DOSSIER='"
-				+ EnDossierBase.CORBEILLE.getLib()
-				+ "' and a.ID_COMPTE="
-				+ p_idCpt;
+		String requette = "select " + EnStructDossier.ID_DOSSIER.getNomChamp()
+				+ " from " + EnTable.DOSSIER.getNomTable() + " where "
+				+ EnStructDossier.NOM.getNomChamp() + "='"
+				+ EnDossierBase.CORBEILLE.getLib() + "' and "
+				+ EnStructDossier.ID_COMPTE.getNomChamp() + "=" + p_idCpt;
 		return Integer.parseInt(requeteFact.get1Champ(requette));
 	}
 
@@ -932,10 +1027,11 @@ public class BDRequette {
 	 * @return
 	 */
 	public int getIdEnvoye(int p_idCpt) {
-		String requette = "select a.ID_DOSSIER from DOSSIER a where a.NOM_DOSSIER='"
-				+ EnDossierBase.ENVOYES.getLib()
-				+ "' and a.ID_COMPTE="
-				+ p_idCpt;
+		String requette = "select " + EnStructDossier.ID_DOSSIER.getNomChamp()
+				+ " from " + EnTable.DOSSIER.getNomTable() + " where "
+				+ EnStructDossier.NOM.getNomChamp() + "='"
+				+ EnDossierBase.ENVOYES.getLib() + "' and "
+				+ EnStructDossier.ID_COMPTE.getNomChamp() + "=" + p_idCpt;
 		return Integer.parseInt(requeteFact.get1Champ(requette));
 	}
 
@@ -944,8 +1040,11 @@ public class BDRequette {
 	 * @return
 	 */
 	public int getIdSpam(int p_idCpt) {
-		String requette = "select a.ID_DOSSIER from DOSSIER a where a.NOM_DOSSIER='"
-				+ EnDossierBase.SPAM.getLib() + "' and a.ID_COMPTE=" + p_idCpt;
+		String requette = "Select " + EnStructDossier.ID_DOSSIER.getNomChamp()
+				+ " from " + EnTable.DOSSIER.getNomTable() + " where "
+				+ EnStructDossier.NOM.getNomChamp() + "='"
+				+ EnDossierBase.SPAM.getLib() + "' and "
+				+ EnStructDossier.ID_COMPTE.getNomChamp() + "=" + p_idCpt;
 		return Integer.parseInt(requeteFact.get1Champ(requette));
 	}
 

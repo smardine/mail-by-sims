@@ -10,12 +10,9 @@ import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Store;
-import javax.swing.JProgressBar;
-import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import mdl.MlMessage;
-import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.Historique;
 import bdd.BDRequette;
@@ -27,6 +24,7 @@ import com.googlecode.jdeltasync.DeltaSyncException;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.pop3.POP3Folder;
 
+import fenetre.Patience;
 import fenetre.comptes.EnTypeCompte;
 
 /**
@@ -45,26 +43,21 @@ public class ReleveFactory {
 
 	private Store st;
 	private final BDRequette bd;
-	private final JProgressBar progressCompte;
-	private final JProgressBar progressPJ;
-	private final JTextArea textArea;
 
 	private DeltaSyncClientHelper client;
+	private final Patience fenetre;
 
 	/**
 	 * Constructeur
 	 * @param p_cpt - le compte mail a relever
-	 * @param p_progressCompte - une barre de progression generale
+	 * @param p_fenetre - une barre de progression generale
 	 * @param p_progressPJ - une barre de progression secondaire (dediée au
 	 *            piece jointe)
-	 * @param p_textArea - pour afficher des infos à l'utlisateur.
+	 * @param p_label - pour afficher des infos à l'utlisateur.
 	 */
-	public ReleveFactory(MlCompteMail p_cpt, JProgressBar p_progressCompte,
-			JProgressBar p_progressPJ, JTextArea p_textArea) {
+	public ReleveFactory(MlCompteMail p_cpt, Patience p_fenetre) {
 		this.compteMail = p_cpt;
-		this.progressCompte = p_progressCompte;
-		this.progressPJ = p_progressPJ;
-		this.textArea = p_textArea;
+		this.fenetre = p_fenetre;
 		this.bd = new BDRequette();
 	}
 
@@ -85,7 +78,7 @@ public class ReleveFactory {
 				break;
 			case GMAIL:
 			case IMAP:
-				messageUtilisateur.afficheText(textArea, "Releve des dossiers");
+				fenetre.afficheInfo("Releve des dossiers", "", 0);
 
 				for (Folder f : st.getPersonalNamespaces()) {
 					for (Folder unSousDossier : getSousDossier(f)) {
@@ -129,9 +122,10 @@ public class ReleveFactory {
 					int count = 0;
 					for (Folder unSousDossier : lstDossier) {
 						int pourcent = (count++ * 100) / lstDossier.length;
-						progressCompte.setValue(pourcent);
-						progressCompte.setString(unSousDossier.getFullName()
-								+ " :" + pourcent + " %");
+						fenetre.afficheInfo(
+								"Création de la liste des dossiers",
+								unSousDossier.getFullName() + " :" + pourcent
+										+ " %", pourcent);
 						recupereDossier((IMAPFolder) unSousDossier);
 					}
 
@@ -200,9 +194,8 @@ public class ReleveFactory {
 		int count = 0;
 		for (com.googlecode.jdeltasync.Folder unDossier : p_lstFolder) {
 			int pourcent = (count++ * 100) / p_lstFolder.length;
-			progressCompte.setValue(pourcent);
-			progressCompte.setString(unDossier.getName() + " :" + pourcent
-					+ " %");
+			fenetre.afficheInfo("Recuperation de la liste des dossiers",
+					unDossier.getName() + " :" + pourcent + " %", pourcent);
 			DossierFactory fact = new DossierFactory(unDossier, compteMail);
 			fact.isDossierDejaPresentEnBase();
 
@@ -246,17 +239,21 @@ public class ReleveFactory {
 		if (p_lstMess == null) {
 			return;
 		}
-		progressCompte.setValue(0);
-		progressCompte.setString(compteMail.getNomCompte()
-				+ ReleveFactory.RELEVE_DE + p_folder.getName());
+		fenetre.afficheInfo("Releve liste de messages", compteMail
+				.getNomCompte()
+				+ ReleveFactory.RELEVE_DE + p_folder.getName(), 0);
+
 		com.googlecode.jdeltasync.Message[] lstMessages = p_lstMess;
 		int nbActu = 1;
 		for (int i = lstMessages.length; i > 0; i--) {
 			int pourcent = (nbActu++ * 100) / lstMessages.length;
-			progressCompte.setValue(pourcent);
-			progressCompte.setString(compteMail.getNomCompte()
-					+ ReleveFactory.RELEVE_DE + p_folder.getName() + " :"
-					+ pourcent + " %");
+			fenetre.afficheInfo("Releve liste de messages", compteMail
+					.getNomCompte()
+					+ ReleveFactory.RELEVE_DE
+					+ p_folder.getName()
+					+ " :"
+					+ pourcent + " %", pourcent);
+
 			com.googlecode.jdeltasync.Message messageDelta = lstMessages[i - 1];
 			String uidMessage = messageDelta.getId();
 			if (uidMessage == null
@@ -269,8 +266,8 @@ public class ReleveFactory {
 						new FileOutputStream(messPourBase.getCheminPhysique()));
 
 				MessageFactory fact = new MessageFactory();
-				messPourBase = fact.createMessagePourBase(messPourBase,
-						textArea, progressPJ);
+				messPourBase = fact
+						.createMessagePourBase(messPourBase, fenetre);
 
 				messPourBase.setIdCompte(compteMail.getIdCompte());
 				RegleCourrierFactory couFact = new RegleCourrierFactory(
@@ -283,8 +280,6 @@ public class ReleveFactory {
 					messPourBase.setUIDMessage(uidMessage);
 				}
 
-				messageUtilisateur.afficheText(textArea,
-						"Enregistrement du message dans la base");
 				bd.createNewMessage(messPourBase);
 			}// fin de isMessageUIDAbsent
 		}// fin de parcour des message
@@ -319,14 +314,11 @@ public class ReleveFactory {
 					"Mise a jour du dossier necessaire");
 			// il y a moin de message sur le serveur qu'en
 			// base, il faut faire une synchro
-			SynchroFactory synchro = new SynchroFactory(compteMail,
-					progressCompte);
+			SynchroFactory synchro = new SynchroFactory(compteMail, fenetre);
 			synchro.synchroniseUnDossierDeltaSync(p_folder, lstMessagesHotmail);
-			progressCompte.setValue(100);
-			progressCompte.setString(compteMail.getNomCompte()
-					+ ReleveFactory.RELEVE_DE + p_folder.getName() + " :" + 100
-					+ " %");
-
+			fenetre.afficheInfo(compteMail.getNomCompte(),
+					ReleveFactory.RELEVE_DE + p_folder.getName() + " :" + 100
+							+ " %", 100);
 			return checkMessDeltaARelever(p_folder, p_idDossier);
 		}
 		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
@@ -405,14 +397,11 @@ public class ReleveFactory {
 			// base, il faut faire une synchro
 			Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
 					"Mise a jour du dossier necessaire");
-			SynchroFactory synchro = new SynchroFactory(compteMail,
-					progressCompte);
+			SynchroFactory synchro = new SynchroFactory(compteMail, fenetre);
 			synchro.synchroniseUnDossier(p_folder);
-			progressCompte.setValue(100);
-			progressCompte.setString(compteMail.getNomCompte()
-					+ ReleveFactory.RELEVE_DE + p_folder.getFullName() + " :"
-					+ 100 + " %");
-
+			fenetre.afficheInfo(compteMail.getNomCompte(),
+					ReleveFactory.RELEVE_DE + p_folder.getFullName() + " :"
+							+ 100 + " %", 100);
 			return checkMessARelever(p_folder, p_idDossier);
 		}
 		Message[] tabMessageARelever = p_folder.getMessages(
@@ -433,9 +422,9 @@ public class ReleveFactory {
 		if (p_listeMessages == null) {
 			return;
 		}
-		progressCompte.setValue(0);
-		progressCompte.setString(compteMail.getNomCompte()
-				+ ReleveFactory.RELEVE_DE + p_folder.getFullName());
+
+		fenetre.afficheInfo(compteMail.getNomCompte(), ReleveFactory.RELEVE_DE
+				+ p_folder.getFullName(), 0);
 		Message[] lstMessages = p_listeMessages;
 
 		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
@@ -448,10 +437,10 @@ public class ReleveFactory {
 				p_folder.open(Folder.READ_ONLY);// ouverture de INBOX
 			}
 			int pourcent = (nbActu++ * 100) / lstMessages.length;
-			progressCompte.setValue(pourcent);
-			progressCompte.setString(compteMail.getNomCompte()
-					+ ReleveFactory.RELEVE_DE + p_folder.getFullName() + " :"
-					+ pourcent + " %");
+			fenetre.afficheInfo(compteMail.getNomCompte(),
+					ReleveFactory.RELEVE_DE + p_folder.getFullName() + " :"
+							+ pourcent + " %", pourcent);
+
 			Message messageJavaMail = lstMessages[i - 1];
 			String uidMessage = getUIdMessage(p_folder, messageJavaMail);
 			if (uidMessage == null
@@ -465,8 +454,8 @@ public class ReleveFactory {
 				messageJavaMail.writeTo(new FileOutputStream(messPourBase
 						.getCheminPhysique()));
 				MessageFactory fact = new MessageFactory();
-				messPourBase = fact.createMessagePourBase(messPourBase,
-						textArea, progressPJ);
+				messPourBase = fact
+						.createMessagePourBase(messPourBase, fenetre);
 
 				messPourBase.setIdCompte(compteMail.getIdCompte());
 				RegleCourrierFactory couFact = new RegleCourrierFactory(
@@ -479,8 +468,6 @@ public class ReleveFactory {
 					messPourBase.setUIDMessage(uidMessage);
 				}
 
-				messageUtilisateur.afficheText(textArea,
-						"Enregistrement du message dans la base");
 				bd.createNewMessage(messPourBase);
 			}// fin de isMessageUIDAbsent
 		}// fin de parcour des message

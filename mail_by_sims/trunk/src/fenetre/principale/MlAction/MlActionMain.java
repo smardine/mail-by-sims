@@ -1,7 +1,5 @@
 package fenetre.principale.MlAction;
 
-import importMail.thread_Import;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -10,12 +8,14 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.JTree;
 
-import releve.thread_SynchroImap;
 import releve.imap.util.messageUtilisateur;
+import thread.Thread_Releve;
+import thread.thread_Import;
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.OpenWithDefaultViewer;
 import bdd.BDRequette;
+import fenetre.Patience;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class MlActionMain implements ActionListener {
@@ -67,15 +67,14 @@ public class MlActionMain implements ActionListener {
 
 		}
 		if (e.getActionCommand().equals(EnActionMain.IMPORTER.getLib())) {
-			thread_Import t = new importMail.thread_Import(tree, pbReleve,
-					pbPieceJointe, text, scrollPane);
+			thread_Import t = new thread.thread_Import(tree, new Patience(
+					"Import de mails"));
 			t.start();
 		}
 
 		if (e.getActionCommand().equals(EnActionMain.RECEVOIR.getLib())) {
 			BDRequette bd = new BDRequette();
-			thread_SynchroImap t = new thread_SynchroImap(pbReleve,
-					pbPieceJointe, text, scrollPane, bd.getListeDeComptes());
+			Thread_Releve t = new Thread_Releve(bd.getListeDeComptes());
 			t.start();
 			bd.closeConnexion();
 		}

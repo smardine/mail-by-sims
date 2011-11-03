@@ -5,31 +5,22 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 import javax.swing.JList;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextArea;
 
-import releve.imap.thread_deplaceOuSuppr;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
+import thread.thread_deplaceOuSuppr;
+import fenetre.Patience;
 import fenetre.principale.MlAction.EnActionMain;
 
 public class MlActionPopupJTable implements ActionListener {
 
 	private static JTable table;
 	private final JList list;
-	private final JProgressBar progressBar;
-	private final JTextArea textArea;
-	private final JScrollPane scroll;
 
-	public MlActionPopupJTable(JTable p_table, JList jList,
-			JProgressBar p_progress, JTextArea p_text, JScrollPane p_scroll) {
+	public MlActionPopupJTable(JTable p_table, JList jList) {
 		MlActionPopupJTable.table = p_table;
 		this.list = jList;
-		this.progressBar = p_progress;
-		this.textArea = p_text;
-		this.scroll = p_scroll;
 
 	}
 
@@ -118,7 +109,8 @@ public class MlActionPopupJTable implements ActionListener {
 		if (reponse == REPONSE.OUI) {
 
 			thread_deplaceOuSuppr t = new thread_deplaceOuSuppr(table, list,
-					progressBar, textArea, scroll, tabIdLigneSelectionnee);
+					new Patience("Deplacement de message"),
+					tabIdLigneSelectionnee);
 			t.start();
 
 		}

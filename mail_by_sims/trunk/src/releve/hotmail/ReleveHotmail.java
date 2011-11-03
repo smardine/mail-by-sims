@@ -3,8 +3,6 @@ package releve.hotmail;
 import java.io.IOException;
 
 import javax.mail.MessagingException;
-import javax.swing.JProgressBar;
-import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
@@ -13,6 +11,7 @@ import com.googlecode.jdeltasync.AuthenticationException;
 import com.googlecode.jdeltasync.DeltaSyncException;
 
 import factory.ReleveFactory;
+import fenetre.Patience;
 
 public class ReleveHotmail {
 	/**
@@ -22,18 +21,12 @@ public class ReleveHotmail {
 
 	private final String TAG = this.getClass().getSimpleName();
 
-	private final JProgressBar progressBar;
-	private final JTextArea textArea;
-	private final JProgressBar progressPJ;
+	private final Patience fenetre;
 
-	public ReleveHotmail(MlCompteMail p_compteMail, JProgressBar progress,
-			JProgressBar p_progressPieceJointe, JTextArea p_textArea) {
+	public ReleveHotmail(MlCompteMail p_compteMail, Patience p_fenetre) {
+		this.fenetre = p_fenetre;
 
-		this.progressBar = progress;
-		this.textArea = p_textArea;
-		this.progressPJ = p_progressPieceJointe;
-		ReleveFactory releve = new ReleveFactory(p_compteMail, progressBar,
-				progressPJ, textArea);
+		ReleveFactory releve = new ReleveFactory(p_compteMail, fenetre);
 		try {
 			releve.releveCourier();
 		} catch (AuthenticationException e) {

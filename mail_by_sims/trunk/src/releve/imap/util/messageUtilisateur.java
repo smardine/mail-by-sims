@@ -3,7 +3,6 @@ package releve.imap.util;
 import java.util.List;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
 
 import tools.Historique;
 
@@ -83,11 +82,11 @@ public final class messageUtilisateur {
 
 	}
 
-	public static void afficheText(JTextArea p_textArea, String p_text) {
-
-		p_textArea.append(p_text + "\n");
-		p_textArea.setCaretPosition(p_textArea.getDocument().getLength());
-
-	}
+	// public static void afficheText(JTextArea p_textArea, String p_text) {
+	//
+	// p_textArea.append(p_text + "\n");
+	// p_textArea.setCaretPosition(p_textArea.getDocument().getLength());
+	//
+	// }
 
 }

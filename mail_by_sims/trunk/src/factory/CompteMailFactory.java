@@ -19,6 +19,7 @@ import com.googlecode.jdeltasync.DeltaSyncClient;
 import com.googlecode.jdeltasync.DeltaSyncClientHelper;
 
 import exception.DonneeAbsenteException;
+import fenetre.Patience;
 import fenetre.comptes.EnDossierBase;
 
 /**
@@ -90,8 +91,7 @@ public class CompteMailFactory {
 	 * @param p_progressBar - une barre de progression
 	 * @return true si ca a reussi, false si une exception est levée
 	 */
-	public boolean testBal(MlCompteMail p_compteMail,
-			JProgressBar p_progressBar, JLabel p_label) {
+	public boolean testBal(MlCompteMail p_compteMail, Patience p_fenetre) {
 
 		Store st = null;
 		try {
@@ -99,8 +99,8 @@ public class CompteMailFactory {
 				case POP:
 				case GMAIL:
 				case IMAP:
-					afficheInfo(p_progressBar, p_label,
-							"Connexion en cours...", 25);
+					p_fenetre.afficheInfo("Connexion en cours...", "25 %", 25);
+
 					StoreFactory storeFact = new StoreFactory(p_compteMail);
 					st = storeFact.getConnectedStore();
 					break;
@@ -114,8 +114,8 @@ public class CompteMailFactory {
 					}
 					return false;
 			}
-			afficheInfo(p_progressBar, p_label,
-					"Ouverture de la boite de reception...", 50);
+			p_fenetre.afficheInfo("Ouverture de la boite de reception...",
+					"50 %", 50);
 
 			Folder f = st.getFolder("INBOX");
 			f.open(Folder.READ_ONLY);
@@ -136,16 +136,4 @@ public class CompteMailFactory {
 		return true;
 	}
 
-	/**
-	 * Permet d'afficher des infos a l'utilisateur
-	 * @param p_progressBar
-	 * @param p_label
-	 */
-	private void afficheInfo(JProgressBar p_progressBar, JLabel p_label,
-			String p_text, int p_value) {
-		if (null != p_label && null != p_progressBar) {
-			p_label.setText(p_text);
-			p_progressBar.setValue(p_value);
-		}
-	}
 }

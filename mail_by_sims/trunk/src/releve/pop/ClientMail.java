@@ -8,8 +8,6 @@ package releve.pop;
 import java.io.IOException;
 
 import javax.mail.MessagingException;
-import javax.swing.JProgressBar;
-import javax.swing.JTextArea;
 
 import mdl.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
@@ -18,6 +16,7 @@ import com.googlecode.jdeltasync.AuthenticationException;
 import com.googlecode.jdeltasync.DeltaSyncException;
 
 import factory.ReleveFactory;
+import fenetre.Patience;
 
 public class ClientMail {
 
@@ -26,35 +25,35 @@ public class ClientMail {
 	 */
 	private static final String ERREUR_A_LA_RELEVE_DU_COMPTE = "Erreur a la releve du compte ";
 	private final String TAG = this.getClass().getSimpleName();
-	private final JProgressBar progressReleve;
-	private final JProgressBar progressPieceJointe;
-	private final JTextArea text;
-	private final MlCompteMail comptePop;
 
-	public ClientMail(MlCompteMail p_compte, JProgressBar p_progress,
-			JProgressBar p_progressPieceJointe, JTextArea p_textArea) {
-		this.progressReleve = p_progress;
-		this.progressPieceJointe = p_progressPieceJointe;
-		this.text = p_textArea;
+	private final MlCompteMail comptePop;
+	private final Patience fenetre;
+
+	public ClientMail(MlCompteMail p_compte, Patience p_fenetre) {
+		this.fenetre = p_fenetre;
+
 		this.comptePop = p_compte;
 
 		// main();
-		ReleveFactory releve = new ReleveFactory(comptePop, progressReleve,
-				progressPieceJointe, text);
+		ReleveFactory releve = new ReleveFactory(comptePop, fenetre);
 		try {
 			releve.releveCourier();
 		} catch (MessagingException e) {
 			messageUtilisateur.affMessageException(TAG, e,
-					ClientMail.ERREUR_A_LA_RELEVE_DU_COMPTE + comptePop.getNomCompte());
+					ClientMail.ERREUR_A_LA_RELEVE_DU_COMPTE
+							+ comptePop.getNomCompte());
 		} catch (IOException e) {
 			messageUtilisateur.affMessageException(TAG, e,
-					ClientMail.ERREUR_A_LA_RELEVE_DU_COMPTE + comptePop.getNomCompte());
+					ClientMail.ERREUR_A_LA_RELEVE_DU_COMPTE
+							+ comptePop.getNomCompte());
 		} catch (AuthenticationException e) {
 			messageUtilisateur.affMessageException(TAG, e,
-					ClientMail.ERREUR_A_LA_RELEVE_DU_COMPTE + comptePop.getNomCompte());
+					ClientMail.ERREUR_A_LA_RELEVE_DU_COMPTE
+							+ comptePop.getNomCompte());
 		} catch (DeltaSyncException e) {
 			messageUtilisateur.affMessageException(TAG, e,
-					ClientMail.ERREUR_A_LA_RELEVE_DU_COMPTE + comptePop.getNomCompte());
+					ClientMail.ERREUR_A_LA_RELEVE_DU_COMPTE
+							+ comptePop.getNomCompte());
 		}
 	}
 

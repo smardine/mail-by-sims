@@ -43,7 +43,7 @@ public class Patience extends JFrame {
 		this.setContentPane(getJContentPane());
 		this.setLocationRelativeTo(null);// on centre la fenetre
 		this.setVisible(true);
-		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
+		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 	}
 
 	/**
@@ -91,6 +91,17 @@ public class Patience extends JFrame {
 	 */
 	public JProgressBar getjProgressBar() {
 		return this.jProgressBar;
+	}
+
+	public void afficheInfo(String p_txtLabel, String p_txtProgress,
+			int p_valueProgress) {
+		if (null != jLabel) {
+			jLabel.setText(p_txtLabel);
+		}
+		if (null != jProgressBar) {
+			jProgressBar.setValue(p_valueProgress);
+			jProgressBar.setString(p_txtProgress);
+		}
 	}
 
 }

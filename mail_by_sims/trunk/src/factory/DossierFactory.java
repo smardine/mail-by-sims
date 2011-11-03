@@ -14,7 +14,7 @@ import bdd.BDRequette;
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.pop3.POP3Folder;
 
-import fenetre.principale.jtree.utiljTree;
+import fenetre.principale.jtree.JTreeHelper;
 
 /**
  * Cette classe gere tout ce qui a trait aux dossier ({@link IMAPFolder},
@@ -54,6 +54,33 @@ public class DossierFactory {
 		this.deltaFldr = p_folder;
 		this.cptMail = p_compteMail;
 		this.bd = new BDRequette();
+	}
+
+	/**
+	 * @param p_cptMail
+	 */
+	public DossierFactory(MlCompteMail p_cptMail) {
+		this.fldr = null;
+		this.deltaFldr = null;
+		this.cptMail = p_cptMail;
+		this.bd = new BDRequette();
+	}
+
+	public boolean isDossierPresentImport(String p_nameToCheck) {
+		switch (cptMail.getTypeCompte()) {
+			case GMAIL:
+			case HOTMAIL:
+			case IMAP:
+			case POP:
+				idDossier = bd.getIdDossier(p_nameToCheck, cptMail
+						.getIdCompte());
+
+		}
+		if (idDossier != -1) {
+			return true;
+		}
+		return false;
+
 	}
 
 	/**
@@ -338,7 +365,7 @@ public class DossierFactory {
 
 		idDossier = bd.getIdDossierWithFullName(fldr.getName().trim(), fldr
 				.getFullName().trim(), cptMail.getIdCompte());
-		utiljTree.reloadJtree(ComposantVisuelCommun.getJTree());
+		JTreeHelper.reloadJtree(ComposantVisuelCommun.getJTree());
 
 	}
 
@@ -353,7 +380,7 @@ public class DossierFactory {
 				deltaFldr.getName(), deltaFldr.getName());
 		idDossier = bd.getIdDossierWithFullName(deltaFldr.getName().trim(),
 				deltaFldr.getName().trim(), cptMail.getIdCompte());
-		utiljTree.reloadJtree(ComposantVisuelCommun.getJTree());
+		JTreeHelper.reloadJtree(ComposantVisuelCommun.getJTree());
 	}
 
 }

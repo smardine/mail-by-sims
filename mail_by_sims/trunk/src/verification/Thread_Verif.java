@@ -4,8 +4,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JTree;
 
 import bdd.BDRequette;
-import bdd.EnStructureTable;
-import bdd.EnTable;
+import bdd.structure.EnStructCompte;
+import bdd.structure.EnTable;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class Thread_Verif extends Thread {
@@ -21,7 +21,7 @@ public class Thread_Verif extends Thread {
 	public void run() {
 		BDRequette bd = new BDRequette();
 		int nbRecord = bd.getNbEnregistrementFromTable(EnTable.COMPTES,
-				EnStructureTable.COMPTES_NOM);
+				EnStructCompte.NOM);
 
 		if (nbRecord == 0) {
 			final int creerCompte = JOptionPane.showConfirmDialog(null,

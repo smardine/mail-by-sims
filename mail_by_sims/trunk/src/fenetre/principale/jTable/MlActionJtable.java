@@ -79,8 +79,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			Supprimer = new JMenuItem();
 			Supprimer.setText(EnActionMain.SUPPRIMER.getLib());
 			Supprimer.setActionCommand(EnActionMain.SUPPRIMER.getLib());
-			Supprimer.addActionListener(new MlActionPopupJTable(table, jList,
-					progressBar, textArea, scroll));
+			Supprimer.addActionListener(new MlActionPopupJTable(table, jList));
 		}
 		return Supprimer;
 	}
@@ -90,8 +89,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			CreerRegle = new JMenuItem();
 			CreerRegle.setText(EnActionMain.CREER_REGLE.getLib());
 			CreerRegle.setActionCommand(EnActionMain.CREER_REGLE.getLib());
-			CreerRegle.addActionListener(new MlActionPopupJTable(table, jList,
-					progressBar, textArea, scroll));
+			CreerRegle.addActionListener(new MlActionPopupJTable(table, jList));
 		}
 		return CreerRegle;
 	}
@@ -101,8 +99,8 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			MarquerSpam = new JMenuItem();
 			MarquerSpam.setText(EnActionMain.MARQUER_SPAM.getLib());
 			MarquerSpam.setActionCommand(EnActionMain.MARQUER_SPAM.getLib());
-			MarquerSpam.addActionListener(new MlActionPopupJTable(table, jList,
-					progressBar, textArea, scroll));
+			MarquerSpam
+					.addActionListener(new MlActionPopupJTable(table, jList));
 		}
 		return MarquerSpam;
 	}

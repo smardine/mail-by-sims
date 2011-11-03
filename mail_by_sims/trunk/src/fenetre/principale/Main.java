@@ -575,7 +575,7 @@ public class Main extends JFrame {
 		btEnvoyer.addActionListener(new MlActionMain(jTree, jProgressBarReleve,
 				jProgressBarPieceJointe, jTextArea, jScrollPane3));
 		btSupprMessage.addActionListener(new MlActionPopupJTable(jTable,
-				jListPJ, jProgressBarReleve, jTextArea, jScrollPane3));
+				jListPJ));
 		jMenuCompte.addActionListener(new MlActionMain(jTree));
 		btChoixReleve.addMouseListener(new MlActionMainCombo(
 				jProgressBarReleve, jProgressBarPieceJointe, jTextArea,

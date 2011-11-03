@@ -20,7 +20,7 @@ import bdd.BDRequette;
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.gestion.MlActionGestion.EnActionComptes;
 import fenetre.comptes.gestion.MlActionGestion.MlActionComptes;
-import fenetre.principale.jtree.utiljTree;
+import fenetre.principale.jtree.JTreeHelper;
 
 public class GestionCompte extends JFrame {
 
@@ -72,7 +72,7 @@ public class GestionCompte extends JFrame {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent e) {
 				dispose();
-				utiljTree.reloadJtree(tree);
+				JTreeHelper.reloadJtree(tree);
 			}
 		});
 

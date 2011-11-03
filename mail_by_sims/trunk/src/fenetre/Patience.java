@@ -42,7 +42,7 @@ public class Patience extends JFrame {
 				getClass().getResource("/attendre.png")));
 		this.setContentPane(getJContentPane());
 		this.setLocationRelativeTo(null);// on centre la fenetre
-		this.setVisible(true);
+		this.setVisible(false);
 		this.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
 	}
 

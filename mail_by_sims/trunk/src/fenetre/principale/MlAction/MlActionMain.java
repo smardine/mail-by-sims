@@ -18,13 +18,15 @@ import fenetre.comptes.gestion.GestionCompte;
 public class MlActionMain implements ActionListener {
 
 	private JTree tree;
+	private final Patience fenetre;
 
 	public MlActionMain() {
-
+		fenetre = new Patience("Import de mails");
 	}
 
 	public MlActionMain(JTree p_tree) {
 		this.tree = p_tree;
+		fenetre = new Patience("Import de mails");
 
 	}
 
@@ -49,8 +51,7 @@ public class MlActionMain implements ActionListener {
 
 		}
 		if (e.getActionCommand().equals(EnActionMain.IMPORTER.getLib())) {
-			thread_Import t = new thread.thread_Import(tree, new Patience(
-					"Import de mails"));
+			thread_Import t = new thread.thread_Import(tree, fenetre);
 			t.start();
 		}
 

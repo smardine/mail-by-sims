@@ -53,8 +53,7 @@ public class Patience extends JFrame {
 	private JPanel getJContentPane() {
 		if (jContentPane == null) {
 			jLabel = new JLabel();
-			jLabel
-					.setText(".azertyu.azertyu.azertyu.azertyu.azertyu.azertyu.azertyu.azertyu");
+			jLabel.setText("");
 			jLabel.setSize(new Dimension(284, 35));
 			jContentPane = new JPanel();
 			jContentPane.setLayout(null);

@@ -99,8 +99,7 @@ public class CompteMailFactory {
 				case POP:
 				case GMAIL:
 				case IMAP:
-					p_fenetre.afficheInfo("Connexion en cours...", "25 %", 25);
-
+					afficheInfo(p_fenetre, "Connexion en cours...", "25 %", 25);
 					StoreFactory storeFact = new StoreFactory(p_compteMail);
 					st = storeFact.getConnectedStore();
 					break;
@@ -114,7 +113,7 @@ public class CompteMailFactory {
 					}
 					return false;
 			}
-			p_fenetre.afficheInfo("Ouverture de la boite de reception...",
+			afficheInfo(p_fenetre, "Ouverture de la boite de reception...",
 					"50 %", 50);
 
 			Folder f = st.getFolder("INBOX");
@@ -134,6 +133,13 @@ public class CompteMailFactory {
 		}
 
 		return true;
+	}
+
+	private void afficheInfo(Patience p_fenetre, String p_textLabel,
+			String p_textProgress, int p_progressValue) {
+		if (p_fenetre != null) {
+			p_fenetre.afficheInfo(p_textLabel, p_textProgress, p_progressValue);
+		}
 	}
 
 }

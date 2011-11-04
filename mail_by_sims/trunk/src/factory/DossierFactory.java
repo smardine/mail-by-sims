@@ -6,15 +6,12 @@ package factory;
 import javax.mail.Folder;
 import javax.mail.MessagingException;
 
-import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import tools.Historique;
 import bdd.BDRequette;
 
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.pop3.POP3Folder;
-
-import fenetre.principale.jtree.JTreeHelper;
 
 /**
  * Cette classe gere tout ce qui a trait aux dossier ({@link IMAPFolder},
@@ -365,7 +362,8 @@ public class DossierFactory {
 
 		idDossier = bd.getIdDossierWithFullName(fldr.getName().trim(), fldr
 				.getFullName().trim(), cptMail.getIdCompte());
-		JTreeHelper.reloadJtree(ComposantVisuelCommun.getJTree());
+		JTreeFactory treeFact = new JTreeFactory();
+		treeFact.reloadJtree();
 
 	}
 
@@ -380,7 +378,8 @@ public class DossierFactory {
 				deltaFldr.getName(), deltaFldr.getName());
 		idDossier = bd.getIdDossierWithFullName(deltaFldr.getName().trim(),
 				deltaFldr.getName().trim(), cptMail.getIdCompte());
-		JTreeHelper.reloadJtree(ComposantVisuelCommun.getJTree());
+		JTreeFactory treeFact = new JTreeFactory();
+		treeFact.reloadJtree();
 	}
 
 }

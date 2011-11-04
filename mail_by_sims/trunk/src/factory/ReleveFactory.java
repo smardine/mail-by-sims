@@ -437,9 +437,10 @@ public class ReleveFactory {
 				p_folder.open(Folder.READ_ONLY);// ouverture de INBOX
 			}
 			int pourcent = (nbActu++ * 100) / lstMessages.length;
-			fenetre.afficheInfo(compteMail.getNomCompte(),
-					ReleveFactory.RELEVE_DE + p_folder.getFullName() + " :"
-							+ pourcent + " %", pourcent);
+			fenetre.afficheInfo(compteMail.getNomCompte() + " "
+					+ ReleveFactory.RELEVE_DE + p_folder.getFullName(),
+					"message " + (nbActu - 1) + " / " + lstMessages.length
+							+ " " + pourcent + " %", pourcent);
 
 			Message messageJavaMail = lstMessages[i - 1];
 			String uidMessage = getUIdMessage(p_folder, messageJavaMail);
@@ -483,6 +484,9 @@ public class ReleveFactory {
 	private String getUIdMessage(Folder p_folder, Message p_message)
 			throws MessagingException {
 		String uidMessage = null;
+		if (!p_folder.getStore().isConnected()) {
+			p_folder.getStore().connect();
+		}
 		if (p_folder instanceof POP3Folder) {
 			uidMessage = ((POP3Folder) p_folder).getUID(p_message);
 		} else if (p_folder instanceof IMAPFolder) {

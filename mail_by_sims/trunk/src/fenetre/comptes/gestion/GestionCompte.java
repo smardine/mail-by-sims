@@ -17,10 +17,10 @@ import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import bdd.BDRequette;
+import factory.JTreeFactory;
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.gestion.MlActionGestion.EnActionComptes;
 import fenetre.comptes.gestion.MlActionGestion.MlActionComptes;
-import fenetre.principale.jtree.JTreeHelper;
 
 public class GestionCompte extends JFrame {
 
@@ -72,7 +72,8 @@ public class GestionCompte extends JFrame {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent e) {
 				dispose();
-				JTreeHelper.reloadJtree(tree);
+				JTreeFactory treeFact = new JTreeFactory();
+				treeFact.reloadJtree();
 			}
 		});
 

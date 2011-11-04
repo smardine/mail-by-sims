@@ -15,10 +15,11 @@ import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
-import javax.swing.JTree;
 import javax.swing.text.Document;
 
+import mdl.ComposantVisuelCommun;
 import releve.imap.util.messageUtilisateur;
+import tools.GestionRepertoire;
 import bdd.BDRequette;
 import fenetre.LectureMessagePleinEcran;
 import fenetre.principale.MlAction.EnActionMain;
@@ -32,14 +33,13 @@ public class MlActionJtable implements MouseListener, ActionListener {
 	private final JList jList;
 
 	private JMenuItem MarquerSpam;
-	private final JTree tree;
+	private JMenuItem MarquerLu;
 
 	private static JEditorPane editor;
 	private static final String TAG = MlActionJtable.class.getSimpleName();
 
-	public MlActionJtable(JTree p_tree, JTable p_table,
-			JEditorPane jEditorPane, JList jList) {
-		this.tree = p_tree;
+	public MlActionJtable(JTable p_table, JEditorPane jEditorPane, JList jList) {
+
 		this.table = p_table;
 		MlActionJtable.editor = jEditorPane;
 		this.jList = jList;
@@ -56,9 +56,23 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			popUpMenu.add(getSupprimer());
 			popUpMenu.add(getCreerRegle());
 			popUpMenu.add(getMarquerSpam());
+			popUpMenu.add(getMarquerLu());
 
 		}
 		return popUpMenu;
+	}
+
+	/**
+	 * @return
+	 */
+	private JMenuItem getMarquerLu() {
+		if (MarquerLu == null) {
+			MarquerLu = new JMenuItem();
+			MarquerLu.setText(EnActionMain.MARQUER_LU.getLib());
+			MarquerLu.setActionCommand(EnActionMain.MARQUER_LU.getLib());
+			MarquerLu.addActionListener(new MlActionPopupJTable(table));
+		}
+		return MarquerLu;
 	}
 
 	/**
@@ -70,8 +84,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			Supprimer = new JMenuItem();
 			Supprimer.setText(EnActionMain.SUPPRIMER.getLib());
 			Supprimer.setActionCommand(EnActionMain.SUPPRIMER.getLib());
-			Supprimer.addActionListener(new MlActionPopupJTable(tree, table,
-					jList));
+			Supprimer.addActionListener(new MlActionPopupJTable(table));
 		}
 		return Supprimer;
 	}
@@ -81,8 +94,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			CreerRegle = new JMenuItem();
 			CreerRegle.setText(EnActionMain.CREER_REGLE.getLib());
 			CreerRegle.setActionCommand(EnActionMain.CREER_REGLE.getLib());
-			CreerRegle.addActionListener(new MlActionPopupJTable(tree, table,
-					jList));
+			CreerRegle.addActionListener(new MlActionPopupJTable(table));
 		}
 		return CreerRegle;
 	}
@@ -92,8 +104,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			MarquerSpam = new JMenuItem();
 			MarquerSpam.setText(EnActionMain.MARQUER_SPAM.getLib());
 			MarquerSpam.setActionCommand(EnActionMain.MARQUER_SPAM.getLib());
-			MarquerSpam.addActionListener(new MlActionPopupJTable(tree, table,
-					jList));
+			MarquerSpam.addActionListener(new MlActionPopupJTable(table));
 		}
 		return MarquerSpam;
 	}
@@ -160,8 +171,8 @@ public class MlActionJtable implements MouseListener, ActionListener {
 				// si une seule ligne est selectionnée
 				afficheContenuMail(table, jList);
 				BDRequette bd = new BDRequette();
-				boolean succes = bd.setStatusLecture(jTableHelper
-						.getReelIdMessage(table, rowNumber));
+				boolean succes = bd.updateStatusLecture(jTableHelper
+						.getReelIdMessage(table, rowNumber), true);
 				bd.closeConnexion();
 				if (succes) {
 					table.getModel().setValueAt(true, rowNumber,
@@ -185,7 +196,7 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			// on RAZ le contenu du panelEditor
 			Document doc = editor.getDocument();
 			doc.putProperty(Document.StreamDescriptionProperty, null);
-			if (contenu != null) {
+			if (contenu != null && contenu.exists()) {
 				try {
 					editor.setPage("file:///" + contenu.getAbsolutePath());
 					// affichage des piece jointe dans la liste (si il y en a)
@@ -214,6 +225,13 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			jList.removeAll();
 			Document doc = editor.getDocument();
 			doc.putProperty(Document.StreamDescriptionProperty, null);
+			try {
+				ComposantVisuelCommun.getHtmlPane().setPage(
+						"file:///" + GestionRepertoire.RecupRepTemplate()
+								+ "/vide.html");
+			} catch (IOException e1) {
+				return;
+			}
 		}
 
 	}
@@ -226,8 +244,8 @@ public class MlActionJtable implements MouseListener, ActionListener {
 			// si une seule ligne est selectionnée
 			afficheContenuMail(table, jList);
 			BDRequette bd = new BDRequette();
-			boolean succes = bd.setStatusLecture(jTableHelper.getReelIdMessage(
-					table, table.getSelectedRow()));
+			boolean succes = bd.updateStatusLecture(jTableHelper
+					.getReelIdMessage(table, table.getSelectedRow()), true);
 			bd.closeConnexion();
 			if (succes) {
 				table.getModel().setValueAt(true, table.getSelectedRow(),

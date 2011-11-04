@@ -16,6 +16,7 @@ public enum EnActionMain {
 	SUPPRIMER("Supprimer"), //
 	CREER_REGLE("Créer une règle a partir de ce message"), //
 	MARQUER_SPAM("Marquer ce courrier comme indésirable"), //
+	MARQUER_LU("Marquer comme lu"), //
 	OUVRIR_PJ("Ouvrir"), //
 	ENREGISTRER_PJ("Enregistrer ce fichier"), //
 	TOUT_ENREGISTRER_PJ("Enregistrer toutes les pièces jointes");

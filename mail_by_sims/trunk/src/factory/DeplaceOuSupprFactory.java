@@ -8,7 +8,6 @@ import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Store;
-import javax.swing.JProgressBar;
 
 import mdl.MlCompteMail;
 import mdl.MlListeMessage;
@@ -34,7 +33,9 @@ public class DeplaceOuSupprFactory {
 	private final MlListeMessage listeMessage;
 	private Store store;
 	private final BDRequette bd;
-	private final JProgressBar progressBar;
+	private final Patience fenetre;
+
+	// private final JProgressBar progressBar;
 
 	/**
 	 * Constructeur
@@ -46,24 +47,29 @@ public class DeplaceOuSupprFactory {
 			MlListeMessage p_lstMessage, Patience p_fenetre) {
 		this.compteMail = p_cptMail;
 		this.listeMessage = p_lstMessage;
-		this.progressBar = p_fenetre.getjProgressBar();
+		this.fenetre = p_fenetre;
 		this.bd = new BDRequette();
 
 	}
 
 	public boolean deplaceMessageVersCorbeille() throws MessagingException {
 		if (checkParametreEntree()) {
+			fenetre.setVisible(true);
 			StoreFactory storeFact = new StoreFactory(compteMail);
 			store = storeFact.getConnectedStore();
 			switch (compteMail.getTypeCompte()) {
 				case GMAIL:
 				case IMAP:
-					return deplaceGMAIL();
+					deplaceGMAIL();
+					break;
 				case HOTMAIL:
 					break;
 				case POP:
-					return deplacePOP();
+					deplacePOP();
+					break;
 			}
+			fenetre.setVisible(false);
+			return true;
 		}
 
 		return false;
@@ -81,7 +87,13 @@ public class DeplaceOuSupprFactory {
 		POP3Folder inbox = (POP3Folder) store.getFolder("INBOX");
 		gestionOuvertureDossier(inbox);
 		Message[] tabMessage = inbox.getMessages();
+		int count = 1;
+		int tailleListe = tabMessage.length;
 		for (Message popMessage : tabMessage) {
+			int pourcent = ((count + 1) * 100) / tailleListe;
+			fenetre.afficheInfo("Déplacement vers la corbeille", pourcent
+					+ " %", pourcent);
+			count++;
 			if (listeMessage.contains(popMessage)) {
 				popMessage.setFlag(Flags.Flag.DELETED, true);
 				supprAFaire = true;
@@ -105,9 +117,9 @@ public class DeplaceOuSupprFactory {
 				.getNomInternetDossier(listeMessage.get(0).getIdDossier()));
 		gestionOuvertureDossier(src);
 		gestionOuvertureDossier(dest);
-		progressBar.setIndeterminate(true);
-		progressBar.setValue(0);
-		progressBar.setString("Récuperation des infos sur le serveur");
+		fenetre.afficheInfo("Récuperation des infos sur le serveur", 0 + " %",
+				0);
+		fenetre.getjProgressBar().setIndeterminate(true);
 		for (int i = 0; i < listeMessage.size(); i++) {
 			MlMessage m = listeMessage.get(i);
 			recupNouvelUID(tabMessIMAP, src, i, m);
@@ -122,15 +134,17 @@ public class DeplaceOuSupprFactory {
 			return false;
 		}
 		AppendUID[] tabNewUId = dest.appendUIDMessages(tabMessIMAP);
-		progressBar.setIndeterminate(false);
+		fenetre.getjProgressBar().setIndeterminate(false);
 		for (int i = 0; i < tabNewUId.length && tabNewUId[i] != null; i++) {
 			int nbMessage = i + 1;
 			Historique.ecrireReleveBal(compteMail, src.getFullName(),
 					"Deplacement du message de " + src.getFullName() + " vers "
 							+ dest.getFullName());
-			progressBar.setValue((100 * nbMessage) / tabNewUId.length);
-			progressBar.setString("maj message " + (i + 1) + " sur "
-					+ tabNewUId.length);
+			fenetre.afficheInfo("Deplacement du message de "
+					+ src.getFullName() + " vers " + dest.getFullName(),
+					"maj message " + (i + 1) + " sur " + tabNewUId.length,
+					(100 * nbMessage) / tabNewUId.length);
+
 			// on recupere les nouveaux uid et on met a jour les
 			// message
 			Message messImapOriginial = tabMessIMAP[i];
@@ -191,7 +205,7 @@ public class DeplaceOuSupprFactory {
 	 * d'entrée. return true si AUCUN parametre n'est à NULL
 	 */
 	private boolean checkParametreEntree() {
-		if (listeMessage == null || compteMail == null || progressBar == null) {
+		if (listeMessage == null || compteMail == null || fenetre == null) {
 			try {
 				throw new DonneeAbsenteException(TAG,
 						"un des parametres d'entrée est null");
@@ -218,7 +232,12 @@ public class DeplaceOuSupprFactory {
 				case HOTMAIL:
 					break;
 				case POP:
+					int count = 1;
 					for (MlMessage m : listeMessage) {
+						fenetre.afficheInfo("Suppression de message(s) ",
+								(count) + " sur " + listeMessage.size(),
+								(100 * count) / listeMessage.size());
+						count++;
 						bd.deleteMessageRecu(m.getIdMessage());
 					}
 					bd.closeConnexion();
@@ -244,14 +263,29 @@ public class DeplaceOuSupprFactory {
 			if (!fldr.isOpen()) {
 				fldr.open(Folder.READ_WRITE);
 			}
-			for (MlMessage m : listeMessage) {
-				Message messageServeur = fldr.getMessageByUID(Long.parseLong(m
-						.getUIDMessage()));
-				if (messageServeur != null) {
-					messageServeur.setFlag(Flags.Flag.DELETED, true);
-					bd.deleteMessageRecu(m.getIdMessage());
+			long[] tabUID = new long[listeMessage.size()];
+			for (int i = 0; i < listeMessage.size(); i++) {
+				MlMessage messBase = listeMessage.get(i);
+				if (messBase != null) {
+					tabUID[i] = Long.parseLong(messBase.getUIDMessage());
+					bd.deleteMessageRecu(messBase.getIdMessage());
 				}
 			}
+
+			Message[] messageServeur = fldr.getMessagesByUID(tabUID);
+			if (messageServeur != null) {
+				for (int i = 0; i < messageServeur.length; i++) {
+					fenetre.afficheInfo("Suppression de message(s) ", (i)
+							+ " sur " + listeMessage.size(), (100 * (i + 1))
+							/ listeMessage.size());
+					Message messJavaMail = messageServeur[i];
+					if (messJavaMail != null) {
+						messJavaMail.setFlag(Flags.Flag.DELETED, true);
+					}
+				}
+
+			}
+
 			fldr.expunge();
 			fldr.close(true);
 		}

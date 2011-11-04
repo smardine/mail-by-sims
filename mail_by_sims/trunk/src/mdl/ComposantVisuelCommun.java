@@ -6,6 +6,7 @@ package mdl;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JList;
+import javax.swing.JTable;
 import javax.swing.JTree;
 
 /**
@@ -17,6 +18,7 @@ public final class ComposantVisuelCommun {
 	private static JButton btChoixReleve;
 	private static JTree tree;
 	private static JEditorPane htmlPane;
+	private static JTable jTable;
 
 	/**
 	 * Constructeur privé pour classe utilitaire
@@ -78,6 +80,20 @@ public final class ComposantVisuelCommun {
 	 */
 	public static JEditorPane getHtmlPane() {
 		return htmlPane;
+	}
+
+	/**
+	 * @return the jTable
+	 */
+	public static JTable getJTable() {
+		return jTable;
+	}
+
+	/**
+	 * @param p_jTable the jTable to set
+	 */
+	public static void setjTable(JTable p_jTable) {
+		jTable = p_jTable;
 	}
 
 }

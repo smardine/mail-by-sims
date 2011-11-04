@@ -9,7 +9,7 @@ import java.util.Locale;
 import releve.imap.util.messageUtilisateur;
 
 public class RecupDate {
-	private final static String TAG = "RecupDate";
+	private static final String TAG = "RecupDate";
 	// * Choix de la langue francaise
 	Locale locale = Locale.getDefault();
 	private static Date actuelle = new Date();

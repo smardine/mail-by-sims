@@ -231,6 +231,7 @@ public class Main extends JFrame {
 			jTree.setRootVisible(false);
 			jTree.setToggleClickCount(2);
 			jTree.setFont(new Font("Perpetua", Font.PLAIN, 12));
+			jTree.setVisibleRowCount(100);
 			jTree.setExpandsSelectedPaths(true);
 
 		}
@@ -491,8 +492,7 @@ public class Main extends JFrame {
 		tableModel = new MyTableModel(ColoneModel);
 		tableModel.valorisetable(new MlListeMessage());
 		jTable.setModel(tableModel);
-		jTable.addMouseListener(new MlActionJtable(jTree, jTable, htmlPane,
-				jListPJ));
+		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jListPJ));
 
 		jMenuContact.addActionListener(new MlActionMain());
 		jTree.addMouseListener(new MlActionJtree(jTree, jTable));
@@ -503,8 +503,7 @@ public class Main extends JFrame {
 
 		btRecevoir.addActionListener(new MlActionMain(jTree));
 		btEnvoyer.addActionListener(new MlActionMain(jTree));
-		btSupprMessage.addActionListener(new MlActionPopupJTable(jTree, jTable,
-				jListPJ));
+		btSupprMessage.addActionListener(new MlActionPopupJTable(jTable));
 		jMenuCompte.addActionListener(new MlActionMain(jTree));
 		btChoixReleve.addMouseListener(new MlActionMainCombo());
 
@@ -512,7 +511,9 @@ public class Main extends JFrame {
 		ComposantVisuelCommun.setbtChoixReleve(btChoixReleve);
 		ComposantVisuelCommun.setTree(jTree);
 		ComposantVisuelCommun.setHTMLPane(htmlPane);
+		ComposantVisuelCommun.setjTable(jTable);
 		jTree.setCellRenderer(new CustomTreeCellRenderer());
+		// ComposantVisuelCommun.getJTree();
 		// treeFact.expandAll(jTree, true);
 		// treeFact.expandAll(jTree, false);
 

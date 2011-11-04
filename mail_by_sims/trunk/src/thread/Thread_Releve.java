@@ -1,19 +1,13 @@
 package thread;
 
-import javax.mail.MessagingException;
-
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
-import mdl.MlListeMessage;
 import releve.hotmail.ReleveHotmail;
 import releve.imap.ReleveGmail;
-import releve.imap.util.messageUtilisateur;
 import releve.pop.ClientMail;
-import factory.DeplaceOuSupprFactory;
 import fenetre.Patience;
 
 public class Thread_Releve extends Thread {
-	private final String TAG = this.getClass().getSimpleName();
 
 	private final MlListeCompteMail listeDeCompte;
 
@@ -56,35 +50,4 @@ public class Thread_Releve extends Thread {
 		}
 	}
 
-	public void SupprMessage(MlListeMessage p_listeMessageASupprimer) {
-		MlCompteMail cpt = new MlCompteMail(p_listeMessageASupprimer.get(0)
-				.getIdCompte());
-		fenetre.setVisible(true);
-		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt,
-				p_listeMessageASupprimer, fenetre);
-		try {
-			fact.supprMessage();
-
-		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"erreur à la suppression des messages dans la corbeille");
-		}
-		fenetre.setVisible(false);
-
-	}
-
-	public void DeplaceMessageVersCorbeille(MlListeMessage p_listMess) {
-		MlCompteMail cpt = new MlCompteMail(p_listMess.get(0).getIdCompte());
-		fenetre.setVisible(true);
-		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt, p_listMess,
-				fenetre);
-
-		try {
-			fact.deplaceMessageVersCorbeille();
-		} catch (MessagingException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"erreur au deplacement des messages vers la corbeille");
-		}
-		fenetre.setVisible(false);
-	}
 }

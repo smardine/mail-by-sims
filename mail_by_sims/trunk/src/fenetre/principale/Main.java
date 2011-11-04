@@ -227,11 +227,12 @@ public class Main extends JFrame {
 			ArborescenceBoiteMail arbo = new ArborescenceBoiteMail(treeFact
 					.getTreeNode());
 			jTree = new JTree(arbo);
+			jTree.setLargeModel(true);
 			jTree.setShowsRootHandles(true);
 			jTree.setRootVisible(false);
 			jTree.setToggleClickCount(2);
 			jTree.setFont(new Font("Perpetua", Font.PLAIN, 12));
-			jTree.setVisibleRowCount(100);
+			jTree.setVisibleRowCount(20);
 			jTree.setExpandsSelectedPaths(true);
 
 		}

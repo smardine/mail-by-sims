@@ -96,8 +96,9 @@ public class ReleveFactory {
 						.getFolders();
 				for (com.googlecode.jdeltasync.Folder unDossier : lstFolder) {
 					releveDossierDeltaSync(unDossier);
-					client.getStore().resetFolders(compteMail.getUserName());
+
 				}
+				client.getStore().resetFolders(compteMail.getUserName());
 				client.disconnect();
 				break;
 		}
@@ -301,13 +302,6 @@ public class ReleveFactory {
 		int messBaseCount = bd.getnbMessageParDossier(compteMail.getIdCompte(),
 				p_idDossier);
 		int nbMessARelever = lstMessagesHotmail.length - messBaseCount;
-		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
-				"Ouverture du dossier ");
-		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
-				"Nombre de messages dans le dossier: "
-						+ lstMessagesHotmail.length);
-		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
-				"Nombre de message a relever: " + nbMessARelever);
 
 		if (nbMessARelever < 0) {
 			Historique.ecrireReleveBal(compteMail, p_folder.getName(),
@@ -321,8 +315,15 @@ public class ReleveFactory {
 							+ " %", 100);
 			return checkMessDeltaARelever(p_folder, p_idDossier);
 		}
-		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
-				"Nombre de message a relever: " + nbMessARelever);
+		if (nbMessARelever > 0) {
+			Historique.ecrireReleveBal(compteMail, p_folder.getName(),
+					"Ouverture du dossier ");
+			Historique.ecrireReleveBal(compteMail, p_folder.getName(),
+					"Nombre de messages dans le dossier: "
+							+ lstMessagesHotmail.length);
+			Historique.ecrireReleveBal(compteMail, p_folder.getName(),
+					"Nombre de message a relever: " + nbMessARelever);
+		}
 
 		return client.getMessages(p_folder);
 
@@ -387,11 +388,6 @@ public class ReleveFactory {
 				p_idDossier);
 		int nbMessARelever = imapcount - messBaseCount;
 
-		Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
-				"Ouverture du dossier ");
-		Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
-				"Nombre de messages dans le dossier: " + imapcount);
-
 		if (nbMessARelever < 0) {
 			// il y a moin de message sur le serveur qu'en
 			// base, il faut faire une synchro
@@ -404,10 +400,17 @@ public class ReleveFactory {
 							+ 100 + " %", 100);
 			return checkMessARelever(p_folder, p_idDossier);
 		}
+		if (nbMessARelever > 0) {
+			Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
+					"Ouverture du dossier ");
+			Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
+					"Nombre de messages dans le dossier: " + imapcount);
+			Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
+					"Nombre de message a relever: " + nbMessARelever);
+		}
 		Message[] tabMessageARelever = p_folder.getMessages(
 				(imapcount - nbMessARelever) + 1, imapcount);
-		Historique.ecrireReleveBal(compteMail, p_folder.getFullName(),
-				"Nombre de message a relever: " + nbMessARelever);
+
 		return tabMessageARelever;
 	}
 
@@ -427,10 +430,6 @@ public class ReleveFactory {
 				+ p_folder.getFullName(), 0);
 		Message[] lstMessages = p_listeMessages;
 
-		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
-				"Ouverture du dossier");
-		Historique.ecrireReleveBal(compteMail, p_folder.getName(),
-				"Nombre de messages dans le dossier: " + lstMessages.length);
 		int nbActu = 1;
 		for (int i = lstMessages.length; i > 0; i--) {
 			if (!p_folder.isOpen()) {
@@ -484,9 +483,6 @@ public class ReleveFactory {
 	private String getUIdMessage(Folder p_folder, Message p_message)
 			throws MessagingException {
 		String uidMessage = null;
-		if (!p_folder.getStore().isConnected()) {
-			p_folder.getStore().connect();
-		}
 		if (p_folder instanceof POP3Folder) {
 			uidMessage = ((POP3Folder) p_folder).getUID(p_message);
 		} else if (p_folder instanceof IMAPFolder) {

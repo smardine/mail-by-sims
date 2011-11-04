@@ -23,6 +23,7 @@ public class MlMessage {
 	private String uIDMessage;
 	private List<File> listePieceJointe;
 	private int idMessage;
+	private boolean statuLecture;
 
 	public MlMessage() {
 		listePieceJointe = new ArrayList<File>();
@@ -84,6 +85,11 @@ public class MlMessage {
 					.parseInt(unEnregistrement.get(9))));
 
 			this.idCompte = (Integer.parseInt(unEnregistrement.get(10)));
+			if (unEnregistrement.get(11).equals("1")) {
+				this.statuLecture = true;
+			} else {
+				this.statuLecture = false;
+			}
 
 		}
 	}
@@ -277,6 +283,20 @@ public class MlMessage {
 
 	public int getIdMessage() {
 		return idMessage;
+	}
+
+	/**
+	 * @param statuLecture true si le message est lu, false si il est non lu
+	 */
+	public void setStatuLecture(boolean statuLecture) {
+		this.statuLecture = statuLecture;
+	}
+
+	/**
+	 * @return true si le message est lu, false si il est non lu
+	 */
+	public boolean isStatuLecture() {
+		return statuLecture;
 	}
 
 }

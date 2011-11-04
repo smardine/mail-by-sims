@@ -202,7 +202,8 @@ public class BDRequette {
 				+ EnStructCompte.ID.getNomChamp() + "=" + p_idCompte //
 				+ " and "//
 				+ EnStructDossier.ID_DOSSIER_PARENT.getNomChamp() + "=0 "// 
-				+ "ORDER BY " + EnStructDossier.NOM.getNomChamp();
+				+ "ORDER BY " + EnStructDossier.ID_DOSSIER.getNomChamp();
+
 		return requeteFact.getListeDeChamp(requete);
 
 	}
@@ -406,8 +407,8 @@ public class BDRequette {
 		requette.append("?,'");// c'est pour le contenu qui sera stocké dans un
 		// blob
 		requette.append(dateReception + "',");//
-		requette.append("0)");// le status de lecture du message (0= non
-		// lu,1=lu)
+		requette.append("0)");
+		// le status de lecture du message (0= nonlu,1=lu)
 
 		// on l'execute
 
@@ -738,10 +739,26 @@ public class BDRequette {
 
 	}
 
-	public boolean setStatusLecture(int p_idMessage) {
-		String script = "UPDATE " + EnTable.MAIL_RECU.getNomTable()
-				+ " SET STATUT=1 WHERE "
-				+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "=" + p_idMessage;
+	/**
+	 * change le statut de lecture d'un message
+	 * @param p_idMessage l'id du message concerné
+	 * @param p_isLu true si le message est lu, false si le message est non lu
+	 * @return true si ca a reussi
+	 */
+	public boolean updateStatusLecture(int p_idMessage, boolean p_isLu) {
+		String script;
+		if (p_isLu) {
+			script = "UPDATE " + EnTable.MAIL_RECU.getNomTable()
+					+ " SET STATUT=1 WHERE "
+					+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "="
+					+ p_idMessage;
+		} else {
+			script = "UPDATE " + EnTable.MAIL_RECU.getNomTable()
+					+ " SET STATUT=0 WHERE "
+					+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "="
+					+ p_idMessage;
+		}
+
 		return requeteFact.executeRequete(script);
 
 	}
@@ -758,7 +775,8 @@ public class BDRequette {
 				EnStructMailRecu.CONTENU.getNomChamp() + ", " + //
 				EnStructMailRecu.DATE_RECEPTION.getNomChamp() + ", " + //
 				EnStructMailRecu.ID_DOSSIER.getNomChamp() + ", " + //
-				EnStructMailRecu.ID_COMPTE.getNomChamp() + //
+				EnStructMailRecu.ID_COMPTE.getNomChamp() + ", " + //
+				EnStructMailRecu.STATUT.getNomChamp() + //
 				" FROM " + EnTable.MAIL_RECU.getNomTable() + // 
 				" WHERE "// 
 				+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "=" + p_idMessage;

@@ -18,10 +18,10 @@ import tools.Historique;
 import tools.ReadFile;
 import bdd.BDRequette;
 import factory.DossierFactory;
+import factory.JTreeFactory;
 import factory.MessageFactory;
 import fenetre.Patience;
 import fenetre.comptes.EnDossierBase;
-import fenetre.principale.jtree.JTreeHelper;
 
 public class thread_Import extends Thread {
 	private final JTree tree;
@@ -155,9 +155,9 @@ public class thread_Import extends Thread {
 					MlCompteMail cptMail = new MlCompteMail(p_compte);
 					DossierFactory dossierFact = new DossierFactory(cptMail);
 					if (!dossierFact.isDossierPresentImport(nomDossier)) {
-						newTp = JTreeHelper.createNewDossierAndRefreshTree(
-								tree, p_treePath, nomDossier, cptMail
-										.getIdCompte());
+						JTreeFactory treeFact = new JTreeFactory();
+						newTp = treeFact.createNewDossierAndRefreshTree(
+								p_treePath, nomDossier, cptMail.getIdCompte());
 					}
 				}
 				if (f.getName().endsWith(".eml")) {

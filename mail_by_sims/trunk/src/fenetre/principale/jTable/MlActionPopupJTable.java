@@ -4,27 +4,29 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
-import javax.swing.JList;
 import javax.swing.JTable;
-import javax.swing.JTree;
 
+import mdl.MlCompteMail;
+import mdl.MlListeMessage;
+import mdl.MlMessage;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
-import thread.thread_deplaceOuSuppr;
+import thread.ThreadDeplaceMessage;
+import thread.ThreadSupprimeMessage;
+import bdd.BDRequette;
+import factory.JTableFactory;
+import factory.JTreeFactory;
 import fenetre.Patience;
 import fenetre.principale.MlAction.EnActionMain;
 
 public class MlActionPopupJTable implements ActionListener {
 
 	private final JTable table;
-	private final JList list;
-	private final JTree tree;
+
 	private final Patience fenetre;
 
-	public MlActionPopupJTable(JTree p_tree, JTable p_table, JList jList) {
-		this.tree = p_tree;
+	public MlActionPopupJTable(JTable p_table) {
 		this.table = p_table;
-		this.list = jList;
 		this.fenetre = new Patience("");
 
 	}
@@ -45,15 +47,64 @@ public class MlActionPopupJTable implements ActionListener {
 			case MARQUER_SPAM:
 				traiteMarquerSpam();
 				break;
-
+			case MARQUER_LU:
+				traiteMarquerLu();
+				break;
 			default:
 				break;
 		}
 
 	}
 
+	/**
+	 * 
+	 */
+	private void traiteMarquerLu() {
+		int[] tabIdLigneSelectionnee = table.getSelectedRows();
+		if (tabIdLigneSelectionnee.length == 0) {
+			messageUtilisateur
+					.affMessageInfo("Merci de d'abord selectionner un message  à supprimer");
+			return;
+		}
+		lanceMarquageLu(tabIdLigneSelectionnee);
+
+	}
+
+	/**
+	 * @param p_tabIdLigneSelectionnee
+	 */
+	private void lanceMarquageLu(int[] p_tabIdLigneSelectionnee) {
+		BDRequette bd = new BDRequette();
+		MlListeMessage lst = new MlListeMessage();
+		int idDossier = -1;
+		int idCompte = -1;
+		for (int i = 0; i < p_tabIdLigneSelectionnee.length; i++) {
+
+			int selectedLine = p_tabIdLigneSelectionnee[i];
+			Integer idMessage = jTableHelper.getReelIdMessage(table,
+					selectedLine);
+
+			MlMessage m = new MlMessage(idMessage);
+			idDossier = m.getIdDossier();
+			idCompte = m.getIdCompte();
+			lst.add(m);
+
+		}// fin de for
+
+		for (MlMessage m : lst) {
+			m.setStatuLecture(true);
+			bd.updateStatusLecture(m.getIdMessage(), true);
+		}
+
+		MlListeMessage lstDossier = bd.getListeDeMessage(idCompte, idDossier);
+		bd.closeConnexion();
+		JTreeFactory treeFact = new JTreeFactory();
+		treeFact.refreshJTree();
+		JTableFactory tableFact = new JTableFactory();
+		tableFact.refreshJTable(lstDossier);
+	}
+
 	private void traiteCreerRegle() {
-		// TODO Auto-generated method stub
 
 	}
 
@@ -112,12 +163,55 @@ public class MlActionPopupJTable implements ActionListener {
 		}
 
 		if (reponse == REPONSE.OUI) {
-			fenetre.setTitle("Deplacement de message");
-			thread_deplaceOuSuppr t = new thread_deplaceOuSuppr(tree, table,
-					list, fenetre, tabIdLigneSelectionnee);
-			t.start();
-
+			lanceSuppressionOuDeplacementCorbeille(tabIdLigneSelectionnee);
 		}
+	}
+
+	/**
+	 * @param p_tabIdLigneSelectionnee
+	 */
+	private void lanceSuppressionOuDeplacementCorbeille(
+			int[] p_tabIdLigneSelectionnee) {
+		MlListeMessage lstASuppr = new MlListeMessage();
+		MlListeMessage lstADepl = new MlListeMessage();
+		fenetre.setVisible(true);
+		int nbMessTraite = 1;
+		for (int i = 0; i < p_tabIdLigneSelectionnee.length; i++) {
+			fenetre.afficheInfo("Creation de la liste ...", "message "
+					+ nbMessTraite + " sur " + p_tabIdLigneSelectionnee.length,
+					(100 * nbMessTraite) / p_tabIdLigneSelectionnee.length);
+
+			int selectedLine = p_tabIdLigneSelectionnee[i];
+			Integer idMessage = jTableHelper.getReelIdMessage(table,
+					selectedLine);
+
+			MlMessage m = new MlMessage(idMessage);
+			MlCompteMail cpt = new MlCompteMail(m.getIdCompte());
+
+			if (m.getIdDossier() != cpt.getIdCorbeille()) {
+				lstADepl.add(m);
+				fenetre.afficheInfo("Creation de la liste ...", "message n° "
+						+ nbMessTraite++ + " à deplacer vers la corbeille", 0);
+
+			} else {
+				lstASuppr.add(m);
+				fenetre.afficheInfo("Creation de la liste ...", "message n° "
+						+ nbMessTraite++ + " à supprimer", 0);
+
+			}
+
+		}// fin de for
+		fenetre.setVisible(false);
+
+		if (lstADepl.size() > 0) {
+			ThreadDeplaceMessage t = new ThreadDeplaceMessage(lstADepl);
+			t.start();
+		}
+		if (lstASuppr.size() > 0) {
+			ThreadSupprimeMessage t = new ThreadSupprimeMessage(lstASuppr);
+			t.start();
+		}
+
 	}
 
 }

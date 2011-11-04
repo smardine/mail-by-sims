@@ -40,32 +40,6 @@
             <fileset dir="src">
                 <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
-                <exclude name="fenetre/TreeExpandRowAndMakeRowVisible.java"/>
-                <exclude name="JTree/TreeExpandRowAndMakeRowVisible.java"/>
-                <exclude name="layout/BoxLayoutDemo2.java"/>
-                <exclude name="html/gui.java"/>
-                <exclude name="html/fetchMail.java"/>
-                <exclude name="fenetre/test.java"/>
-                <exclude name="fenetre/test1.java"/>
-                <exclude name="fenetre/test2.java"/>
-                <exclude name="fenetre/test3.java"/>
-                <exclude name="fenetre/test4.java"/>
-                <exclude name="jseparator/"/>
-                <exclude name="Mail/"/>
-                <exclude name="fenetre/principale/RightClick.java"/>
-                <exclude name="fenetre/principale/DocumentViewer.java"/>
-                <exclude name="fenetre/principale/Main_old.java"/>
-                <exclude name="fenetre/principale/test.java"/>
-                <exclude name="fenetre/ReleveMessagerie.java"/>
-                <exclude name="fenetre/principale/MlAction/MlActionBouton.java"/>
-                <exclude name="resizable/ComponentEventDemo.java"/>
-                <exclude name="resizable/JResizer.java"/>
-                <exclude name="resizable/MyMouseInputAdapter.java"/>
-                <exclude name="resizable/ResizableBorder.java"/>
-                <exclude name="resizable/ResizableComponent.java"/>
-                <exclude name="releve/imap/listener/messageListener.java"/>
-                <exclude name="releve/thread_VerifNewMess.java"/>
-                <exclude name="releve/pop/methodePop.java"/>
             </fileset>
         </copy>
         <copy includeemptydirs="false" todir="bin">
@@ -91,32 +65,6 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="src"/>
-            <exclude name="fenetre/TreeExpandRowAndMakeRowVisible.java"/>
-            <exclude name="JTree/TreeExpandRowAndMakeRowVisible.java"/>
-            <exclude name="layout/BoxLayoutDemo2.java"/>
-            <exclude name="html/gui.java"/>
-            <exclude name="html/fetchMail.java"/>
-            <exclude name="fenetre/test.java"/>
-            <exclude name="fenetre/test1.java"/>
-            <exclude name="fenetre/test2.java"/>
-            <exclude name="fenetre/test3.java"/>
-            <exclude name="fenetre/test4.java"/>
-            <exclude name="jseparator/"/>
-            <exclude name="Mail/"/>
-            <exclude name="fenetre/principale/RightClick.java"/>
-            <exclude name="fenetre/principale/DocumentViewer.java"/>
-            <exclude name="fenetre/principale/Main_old.java"/>
-            <exclude name="fenetre/principale/test.java"/>
-            <exclude name="fenetre/ReleveMessagerie.java"/>
-            <exclude name="fenetre/principale/MlAction/MlActionBouton.java"/>
-            <exclude name="resizable/ComponentEventDemo.java"/>
-            <exclude name="resizable/JResizer.java"/>
-            <exclude name="resizable/MyMouseInputAdapter.java"/>
-            <exclude name="resizable/ResizableBorder.java"/>
-            <exclude name="resizable/ResizableComponent.java"/>
-            <exclude name="releve/imap/listener/messageListener.java"/>
-            <exclude name="releve/thread_VerifNewMess.java"/>
-            <exclude name="releve/pop/methodePop.java"/>
             <classpath refid="Mail by sims.classpath"/>
         </javac>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
@@ -141,15 +89,6 @@
     <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
-    </target>
-    <target name="Mail by sims">
-        <mkdir dir="${junit.output.dir}"/>
-        <junit fork="yes" printsummary="withOutAndErr">
-            <formatter type="xml"/>
-            <test name="test.CompteMailFactoryTest" todir="${junit.output.dir}"/>
-            <test name="test.TestSuiteClientMail" todir="${junit.output.dir}"/>
-            <classpath refid="Mail by sims.classpath"/>
-        </junit>
     </target>
     <target name="main">
         <java classname="fenetre.principale.Main" failonerror="true" fork="yes">

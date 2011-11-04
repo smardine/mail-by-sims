@@ -90,41 +90,20 @@ public class MlActionJtree implements MouseListener, TreeSelectionListener,
 
 		tree.setSelectionPath(newPath);
 		ComposantVisuelCommun.setTree(tree);
-		//		
-		// if (null != newPath) {
-		// valoriseTreeEtNomCompte(newPath);
-		// } else {
-		// valoriseTreeEtNomCompte(p_event.getOldLeadSelectionPath());
-		// }
 
 	}
-
-	// /**
-	// * @param p_event
-	// */
-	// private void valoriseTreeEtNomCompte(TreePath p_path) {
-	//
-	// if (null != p_path) {
-	// tree.setSelectionPath(p_path);
-	// ComposantVisuelCommun.setTree(tree);
-	// }
-	//
-	// }
 
 	@Override
 	public void treeCollapsed(TreeExpansionEvent p_event) {
 		tree.setSelectionPath(p_event.getPath());
 		ComposantVisuelCommun.setTree(tree);
-		// valoriseTreeEtNomCompte(p_event.getPath());
 
 	}
 
 	@Override
 	public void treeExpanded(TreeExpansionEvent p_event) {
 
-		TreePath newPath = p_event.getPath();// ComposantVisuelCommun.getTreePath();
-		// Object[] pathComplet = newPath.getPath();
-		// String nomCompte = pathComplet[1].toString();
+		TreePath newPath = p_event.getPath();
 		if (null != newPath) {
 			tree.setSelectionPath(newPath);
 			ComposantVisuelCommun.setTree(tree);

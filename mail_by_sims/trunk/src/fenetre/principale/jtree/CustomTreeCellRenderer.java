@@ -98,12 +98,12 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 
 				}
 
-				int unreadCount = bd.getUnreadMessageFromFolder(cpt
+				int unreadMess = bd.getUnreadMessageFromFolder(cpt
 						.getIdCompte(), bd.getIdDossier(value.toString(), cpt
 						.getIdCompte()));
-				if (unreadCount > 0) {
-					label.setText(value.toString() + " (" + unreadCount + ")");
-					label.setFont(new Font("Perpetua", Font.BOLD, 12));
+				if (unreadMess > 0) {
+					label.setText(value.toString() + " (" + unreadMess + ")");
+					label.setFont(new Font("Perpetua", Font.PLAIN, 12));
 				} else {
 					label.setText(value.toString());
 					label.setFont(new Font("Perpetua", Font.PLAIN, 12));

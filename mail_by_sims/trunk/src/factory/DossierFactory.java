@@ -207,18 +207,23 @@ public class DossierFactory {
 		if (isInbox(p_imapF)) {
 			idDossier = cptMail.getIdInbox();
 			bd.updateNomDossierInternet(idDossier, p_imapF.getFullName(), 0);
+			return;
 		} else if (isBrouillon(p_imapF)) {
 			idDossier = cptMail.getIdBrouillons();
 			bd.updateNomDossierInternet(idDossier, p_imapF.getFullName(), 0);
+			return;
 		} else if (isCorbeille(p_imapF)) {
 			idDossier = cptMail.getIdCorbeille();
 			bd.updateNomDossierInternet(idDossier, p_imapF.getFullName(), 0);
+			return;
 		} else if (isEnvoye(p_imapF)) {
 			idDossier = cptMail.getIdEnvoye();
 			bd.updateNomDossierInternet(idDossier, p_imapF.getFullName(), 0);
+			return;
 		} else if (isSpam(p_imapF)) {
 			idDossier = cptMail.getIdSpam();
 			bd.updateNomDossierInternet(idDossier, p_imapF.getFullName(), 0);
+			return;
 		} else {
 			idDossier = bd.getIdDossierWithFullName(p_imapF.getName(), p_imapF
 					.getFullName(), cptMail.getIdCompte());

@@ -5,13 +5,19 @@ package factory;
 
 import javax.mail.Folder;
 import javax.mail.MessagingException;
+import javax.swing.tree.TreePath;
 
+import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
+import releve.imap.util.REPONSE;
+import releve.imap.util.messageUtilisateur;
 import tools.Historique;
 import bdd.BDRequette;
 
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.pop3.POP3Folder;
+
+import fenetre.principale.jtree.ActionTree;
 
 /**
  * Cette classe gere tout ce qui a trait aux dossier ({@link IMAPFolder},
@@ -385,6 +391,39 @@ public class DossierFactory {
 				deltaFldr.getName().trim(), cptMail.getIdCompte());
 		JTreeFactory treeFact = new JTreeFactory();
 		treeFact.reloadJtree();
+	}
+
+	public void deleteDossier(TreePath p_selectionPath) {
+		String dossierASupprimer = p_selectionPath.getLastPathComponent()
+				.toString();
+
+		REPONSE rep = messageUtilisateur
+				.affMessageQuestionOuiNon(
+						"Question",
+						"Voulez vous supprimer le dossier \""
+								+ dossierASupprimer
+								+ "\" ? \n\r Vous supprimerez egalement tous les messages contenu dans ce dossier et ses sous dossiers");
+
+		switch (rep) {
+			case OUI:// on supprime le dossier
+				int idDossier = bd.getIdDossier(dossierASupprimer, cptMail
+						.getIdCompte());
+				bd.deleteDossier(cptMail.getIdCompte(), idDossier, null);
+
+				ComposantVisuelCommun.getJTree().getModel()
+						.valueForPathChanged(p_selectionPath,
+								ActionTree.SUPPRIMER);
+				ComposantVisuelCommun.getJTree().setSelectionPath(
+						p_selectionPath.getParentPath());
+
+				JTreeFactory treeFact = new JTreeFactory();
+				treeFact.refreshJTree();
+				break;
+			case NON:// on ne fait rien
+				break;
+
+		}
+
 	}
 
 }

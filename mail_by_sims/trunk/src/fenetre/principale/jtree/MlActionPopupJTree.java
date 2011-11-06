@@ -7,9 +7,10 @@ import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
-import releve.imap.util.REPONSE;
+import mdl.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
 import bdd.BDRequette;
+import factory.DossierFactory;
 
 public class MlActionPopupJTree implements ActionListener {
 
@@ -60,34 +61,39 @@ public class MlActionPopupJTree implements ActionListener {
 
 		}
 		if ("SUPPRIMER".equals(actionCommand)) {
-			String dossierASupprimer = (String) selectionPath
-					.getLastPathComponent();
-			BDRequette bd = new BDRequette();
-			int idCompte = bd.getIdComptes((String) selectionPath
-					.getPathComponent(1));
-			int idDossier = bd.getIdDossier(dossierASupprimer, idCompte);
-
-			REPONSE rep = messageUtilisateur
-					.affMessageQuestionOuiNon(
-							"Question",
-							"Voulez vous supprimer le dossier \""
-									+ dossierASupprimer
-									+ "\" ? \n\r Vous supprimerez egalement tous les messages contenu dans ce dossier et ses sous dossiers");
-
-			switch (rep) {
-				case OUI:// on supprime le dossier
-					bd.deleteDossier(idCompte, idDossier, null);
-					// ComposantVisuelCommun.setTreePath(selectionPath
-					// .getParentPath());
-					tree.getModel().valueForPathChanged(selectionPath,
-							ActionTree.SUPPRIMER);
-					tree.setSelectionPath(selectionPath.getParentPath());
-					break;
-				case NON:// on ne fait rien
-					break;
-
-			}
-			bd.closeConnexion();
+			Object[] pathComplet = selectionPath.getPath();
+			DossierFactory dossierFact = new DossierFactory(new MlCompteMail(
+					pathComplet[1].toString()));
+			dossierFact.deleteDossier(selectionPath);
+			// String dossierASupprimer = (String) selectionPath
+			// .getLastPathComponent();
+			// BDRequette bd = new BDRequette();
+			// int idCompte = bd.getIdComptes((String) selectionPath
+			// .getPathComponent(1));
+			// int idDossier = bd.getIdDossier(dossierASupprimer, idCompte);
+			//
+			// REPONSE rep = messageUtilisateur
+			// .affMessageQuestionOuiNon(
+			// "Question",
+			// "Voulez vous supprimer le dossier \""
+			// + dossierASupprimer
+			// +
+			// "\" ? \n\r Vous supprimerez egalement tous les messages contenu dans ce dossier et ses sous dossiers");
+			//
+			// switch (rep) {
+			// case OUI:// on supprime le dossier
+			// bd.deleteDossier(idCompte, idDossier, null);
+			// // ComposantVisuelCommun.setTreePath(selectionPath
+			// // .getParentPath());
+			// tree.getModel().valueForPathChanged(selectionPath,
+			// ActionTree.SUPPRIMER);
+			// tree.setSelectionPath(selectionPath.getParentPath());
+			// break;
+			// case NON:// on ne fait rien
+			// break;
+			//
+			// }
+			// bd.closeConnexion();
 
 		}
 

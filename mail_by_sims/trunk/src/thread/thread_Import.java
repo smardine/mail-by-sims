@@ -80,7 +80,6 @@ public class thread_Import extends Thread {
 
 		Historique.ecrire("fin de l'enregistrement des messages en base");
 
-		bd.closeConnexion();
 		fenetre.setVisible(false);
 
 	}
@@ -126,7 +125,7 @@ public class thread_Import extends Thread {
 		} catch (IOException e) {
 
 		}
-		bd.closeConnexion();
+
 		return lstMessage;
 
 	}

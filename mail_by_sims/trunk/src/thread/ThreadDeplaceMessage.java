@@ -51,7 +51,7 @@ public class ThreadDeplaceMessage extends Thread {
 			messageUtilisateur.affMessageException(TAG, e,
 					"erreur au deplacement des messages vers la corbeille");
 		}
-		bd.closeConnexion();
+
 		fenetre.setVisible(false);
 
 	}

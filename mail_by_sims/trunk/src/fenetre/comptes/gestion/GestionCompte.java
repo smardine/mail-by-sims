@@ -46,7 +46,7 @@ public class GestionCompte extends JFrame {
 		// on recupere la liste des comptes et on l'affiche
 		BDRequette bd = new BDRequette();
 		MlListeCompteMail lst = bd.getListeDeComptes();
-		bd.closeConnexion();
+
 		for (MlCompteMail cpt : lst) {
 			modelList.addElement(cpt.getNomCompte());
 		}

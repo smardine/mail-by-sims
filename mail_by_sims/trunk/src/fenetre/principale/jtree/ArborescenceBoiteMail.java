@@ -9,13 +9,20 @@ import javax.swing.UIManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import releve.imap.util.messageUtilisateur;
 
-public class ArborescenceBoiteMail implements TreeModel {
+public class ArborescenceBoiteMail extends DefaultTreeModel implements
+		TreeModel {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7347327240892103181L;
 
 	private final List<TreeModelListener> listeners; // Declare the listeners
 	// vector
@@ -25,6 +32,7 @@ public class ArborescenceBoiteMail implements TreeModel {
 	private final DefaultMutableTreeNode rootNode;
 
 	public ArborescenceBoiteMail(DefaultMutableTreeNode p_rootNode) {
+		super(p_rootNode);
 		this.rootNode = p_rootNode;
 		listeners = new Vector<TreeModelListener>();
 
@@ -36,20 +44,24 @@ public class ArborescenceBoiteMail implements TreeModel {
 				"Images/dossier-ferme-16.png"));
 	}
 
+	@Override
 	public DefaultMutableTreeNode getRoot() {
 		return rootNode;
 	}
 
+	@Override
 	public TreeNode getChild(Object p_parent, int p_index) {
 		return ((DefaultMutableTreeNode) p_parent).getChildAt(p_index);
 
 	}
 
+	@Override
 	public int getChildCount(Object p_parent) {
 		return ((DefaultMutableTreeNode) p_parent).getChildCount();
 
 	}
 
+	@Override
 	public int getIndexOfChild(Object p_parent, Object p_child) {
 		DefaultMutableTreeNode unParent = (DefaultMutableTreeNode) p_parent;
 		DefaultMutableTreeNode unChild = (DefaultMutableTreeNode) p_child;
@@ -57,46 +69,24 @@ public class ArborescenceBoiteMail implements TreeModel {
 
 	}
 
+	@Override
 	public boolean isLeaf(Object p_node) {
 		return ((DefaultMutableTreeNode) p_node).isLeaf();
 
 	}
 
+	@Override
 	public void addTreeModelListener(TreeModelListener l) {
 		if (l != null && !listeners.contains(l)) {
 			((Vector<TreeModelListener>) listeners).addElement(l);
 		}
 	}
 
+	@Override
 	public void removeTreeModelListener(TreeModelListener l) {
 		if (l != null) {
 			((Vector<TreeModelListener>) listeners).removeElement(l);
 		}
-	}
-
-	public void valueForPathChanged(TreePath path, Object newValue) {
-		try {
-			ActionTree action = (ActionTree) newValue;
-			switch (action) {
-				case AJOUTER:
-					fireTreeStructureChanged(new TreeModelEvent(this, path));
-					fireTreeNodesInserted(new TreeModelEvent(this, path));
-					break;
-				case SUPPRIMER:
-					// 
-					fireTreeNodesRemoved(new TreeModelEvent(this, path));
-					fireTreeStructureChanged(new TreeModelEvent(this, path
-							.getParentPath()));
-					break;
-				case RAFFRAICHIR:
-					fireTreeStructureChanged(new TreeModelEvent(this, path));
-					break;
-			}
-		} catch (Exception e) {
-			messageUtilisateur.affMessageException(TAG, e, "Dans l'action "
-					+ (ActionTree) newValue);
-		}
-
 	}
 
 	public void fireTreeNodesInserted(TreeModelEvent e) {
@@ -143,6 +133,25 @@ public class ArborescenceBoiteMail implements TreeModel {
 	 */
 	public TreeNode getRootNode() {
 		return rootNode;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see
+	 * javax.swing.tree.TreeModel#valueForPathChanged(javax.swing.tree.TreePath,
+	 * java.lang.Object)
+	 */
+
+	@Override
+	public void valueForPathChanged(TreePath p_path, Object p_newValue) {
+		try {
+			if (p_newValue == null) {// rafraichir
+				fireTreeStructureChanged(new TreeModelEvent(this, p_path));
+			}
+		} catch (Exception e) {
+			messageUtilisateur.affMessageException(TAG, e,
+					"valueForPathChanged");
+		}
 	}
 
 }

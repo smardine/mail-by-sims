@@ -86,15 +86,16 @@ public class MlActionJtree implements MouseListener, TreeSelectionListener,
 
 	@Override
 	public void valueChanged(TreeSelectionEvent p_event) {
-		TreePath newPath = p_event.getNewLeadSelectionPath();
-
-		tree.setSelectionPath(newPath);
-		ComposantVisuelCommun.setTree(tree);
+		// TreePath newPath = p_event.getNewLeadSelectionPath();
+		// tree.setSelectionPath(newPath);
+		// ComposantVisuelCommun.setTree(tree);
 
 	}
 
 	@Override
 	public void treeCollapsed(TreeExpansionEvent p_event) {
+		// JTreeFactory treeFact = new JTreeFactory();
+		// treeFact.refreshJTree();
 		tree.setSelectionPath(p_event.getPath());
 		ComposantVisuelCommun.setTree(tree);
 
@@ -102,12 +103,16 @@ public class MlActionJtree implements MouseListener, TreeSelectionListener,
 
 	@Override
 	public void treeExpanded(TreeExpansionEvent p_event) {
+		// tree = (JTree) p_event.getSource();
 
 		TreePath newPath = p_event.getPath();
 		if (null != newPath) {
 			tree.setSelectionPath(newPath);
-			ComposantVisuelCommun.setTree(tree);
+			// ComposantVisuelCommun.setTree(tree);
 		}
+		ComposantVisuelCommun.setTree((JTree) p_event.getSource());
+		// JTreeFactory treeFact = new JTreeFactory();
+		// treeFact.refreshJTree();
 
 	}
 
@@ -139,10 +144,13 @@ public class MlActionJtree implements MouseListener, TreeSelectionListener,
 				for (MlCompteMail cpt : bd.getListeDeComptes()) {
 					if (pathFromEvent.getLastPathComponent().toString().equals(
 							cpt.getNomCompte())) {
+
 						return;
 					}
 
 				}
+				// JTreeFactory treeFact = new JTreeFactory();
+				// treeFact.refreshJTree();
 				String dossierChoisi = pathFromEvent.getLastPathComponent()
 						.toString();
 				Object[] pathComplet = pathFromEvent.getPath();
@@ -168,7 +176,6 @@ public class MlActionJtree implements MouseListener, TreeSelectionListener,
 
 			}
 
-			bd.closeConnexion();
 		}
 
 		int selRow = tree.getRowForLocation(e.getX(), e.getY());
@@ -187,7 +194,6 @@ public class MlActionJtree implements MouseListener, TreeSelectionListener,
 				} else {
 					Supprimer.setEnabled(true);
 				}
-				bd.closeConnexion();
 
 				popUpMenu.show(e.getComponent(), e.getX(), e.getY());
 

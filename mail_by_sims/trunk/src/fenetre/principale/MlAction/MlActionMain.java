@@ -59,7 +59,7 @@ public class MlActionMain implements ActionListener {
 			BDRequette bd = new BDRequette();
 			Thread_Releve t = new Thread_Releve(bd.getListeDeComptes());
 			t.start();
-			bd.closeConnexion();
+
 		}
 
 	}

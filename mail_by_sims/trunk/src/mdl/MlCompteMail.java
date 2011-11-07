@@ -30,7 +30,7 @@ public class MlCompteMail {
 		if (p_nomCompte != null && !p_nomCompte.equals("")) {
 			BDRequette bd = new BDRequette();
 			this.idCompte = bd.getIdComptes(p_nomCompte);
-			bd.closeConnexion();
+
 			initialiseCompte(idCompte);
 		}
 
@@ -71,8 +71,6 @@ public class MlCompteMail {
 		}// fin de for
 
 		initDossierDeBase(bd);
-
-		bd.closeConnexion();
 
 	}
 

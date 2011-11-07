@@ -3,7 +3,10 @@ package bdd;
 import java.io.File;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.List;
 
 import javax.swing.JOptionPane;
@@ -236,8 +239,38 @@ public class BDAcces {
 	public String getVersionActuelle() {
 		String script = "SELECT " + EnStructParam.VERSION_BASE + " FROM "
 				+ EnTable.PARAM;
-		RequetteFactory requetteFact = new RequetteFactory(connexion);
-		return requetteFact.get1Champ(script);
+		String chaine_champ = "";
+		ResultSet jeuEnregistrements = null;
+		Statement state = null;
+		try {
+			state = connexion.createStatement();
+			jeuEnregistrements = state.executeQuery(script);
+			final ResultSetMetaData infojeuEnregistrements = jeuEnregistrements
+					.getMetaData();
+
+			while (jeuEnregistrements.next()) {
+				for (int i = 1; i <= infojeuEnregistrements.getColumnCount(); i++) {
+					chaine_champ = jeuEnregistrements.getString(i);
+				}
+			}
+
+		} catch (SQLException e) {
+			Historique.ecrire("Erreur SQL :" + e);
+			messageUtilisateur.affMessageException(TAG, e, "Erreur SQL");
+		} finally {
+			try {
+				jeuEnregistrements.close();
+				state.close();
+				connexion.rollback();
+
+			} catch (SQLException e) {
+				messageUtilisateur.affMessageException(TAG, e,
+						RequetteFactory.IMPOSSIBLE_DE_FERMER_LA_TRANSACTION);
+			}
+
+		}
+
+		return chaine_champ;
 	}
 
 	public boolean isExist() {

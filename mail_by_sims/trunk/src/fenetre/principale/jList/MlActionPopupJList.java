@@ -84,7 +84,7 @@ public class MlActionPopupJList implements ActionListener {
 		BDRequette bd = new BDRequette();
 		File fichier = bd
 				.getPieceJointeFromIDMessage(idMessage, nomPieceJointe);
-		bd.closeConnexion();
+
 		File emplacementFichier = new File(ManipFichier.SaveFile(fichier
 				.getName()));
 		ManipFichier.deplacer(fichier, emplacementFichier);
@@ -99,7 +99,7 @@ public class MlActionPopupJList implements ActionListener {
 		BDRequette bd = new BDRequette();
 		File fichier = bd
 				.getPieceJointeFromIDMessage(idMessage, nomPieceJointe);
-		bd.closeConnexion();
+
 		OpenWithDefaultViewer.open(fichier.getAbsolutePath());
 
 	}

@@ -62,7 +62,7 @@ public class CompteMailFactory {
 			p_compteMail.setIdEnvoye(bd.getIdEnvoye(idCpt));
 			p_compteMail.setIdSpam(bd.getIdSpam(idCpt));
 		}
-		bd.closeConnexion();
+
 		return result;
 
 	}
@@ -80,7 +80,7 @@ public class CompteMailFactory {
 		BDRequette bd = new BDRequette();
 		boolean result = bd.deleteCompte(p_cpt.getIdCompte(), p_label,
 				p_progressBar);
-		bd.closeConnexion();
+
 		return result;
 	}
 

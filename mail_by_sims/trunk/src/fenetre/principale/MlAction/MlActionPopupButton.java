@@ -37,7 +37,6 @@ public class MlActionPopupButton implements ActionListener {
 			t.start();
 
 		}
-		bd.closeConnexion();
 
 	}
 

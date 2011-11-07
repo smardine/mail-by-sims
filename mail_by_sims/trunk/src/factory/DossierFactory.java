@@ -5,6 +5,7 @@ package factory;
 
 import javax.mail.Folder;
 import javax.mail.MessagingException;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
@@ -16,8 +17,6 @@ import bdd.BDRequette;
 
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.pop3.POP3Folder;
-
-import fenetre.principale.jtree.ActionTree;
 
 /**
  * Cette classe gere tout ce qui a trait aux dossier ({@link IMAPFolder},
@@ -406,18 +405,20 @@ public class DossierFactory {
 
 		switch (rep) {
 			case OUI:// on supprime le dossier
-				int idDossier = bd.getIdDossier(dossierASupprimer, cptMail
+				idDossier = bd.getIdDossier(dossierASupprimer, cptMail
 						.getIdCompte());
 				bd.deleteDossier(cptMail.getIdCompte(), idDossier, null);
 
-				ComposantVisuelCommun.getJTree().getModel()
-						.valueForPathChanged(p_selectionPath,
-								ActionTree.SUPPRIMER);
+				JTreeFactory treeFact = new JTreeFactory();
+				treeFact.supprimeNode(p_selectionPath,
+						(DefaultMutableTreeNode) p_selectionPath
+								.getLastPathComponent());
+				// ComposantVisuelCommun.getJTree().getModel()
+				// .valueForPathChanged(p_selectionPath,
+				// p_selectionPath.getLastPathComponent());
 				ComposantVisuelCommun.getJTree().setSelectionPath(
 						p_selectionPath.getParentPath());
 
-				JTreeFactory treeFact = new JTreeFactory();
-				treeFact.refreshJTree();
 				break;
 			case NON:// on ne fait rien
 				break;

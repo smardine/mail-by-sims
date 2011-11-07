@@ -102,7 +102,7 @@ public class ReleveFactory {
 				client.disconnect();
 				break;
 		}
-		bd.closeConnexion();
+
 	}
 
 	/**

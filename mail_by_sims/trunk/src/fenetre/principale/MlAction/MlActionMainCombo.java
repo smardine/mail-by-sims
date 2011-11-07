@@ -32,7 +32,6 @@ public class MlActionMainCombo implements MouseListener {
 		popUpMenu = new JPopupMenu();
 		BDRequette bd = new BDRequette();
 		MlListeCompteMail lstCpt = bd.getListeDeComptes();
-		bd.closeConnexion();
 
 		popUpMenu.add(creerNouveauItem("Relever tous les comptes"));
 

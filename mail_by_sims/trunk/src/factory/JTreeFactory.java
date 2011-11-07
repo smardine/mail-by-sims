@@ -7,6 +7,7 @@ import java.awt.event.MouseListener;
 import java.util.Enumeration;
 
 import javax.swing.JTree;
+import javax.swing.event.TreeModelEvent;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
@@ -19,7 +20,6 @@ import bdd.BDRequette;
 import exception.DonneeAbsenteException;
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.MlAction.MlActionMainCombo;
-import fenetre.principale.jtree.ActionTree;
 import fenetre.principale.jtree.ArborescenceBoiteMail;
 
 /**
@@ -124,30 +124,52 @@ public class JTreeFactory {
 		}
 	}
 
-	public void refreshJTree() {
+	public DefaultMutableTreeNode refreshJTree() {
 		if (tree == null) {
 			try {
 				throw new DonneeAbsenteException(TAG,
 						"la variable tree doit etre differente de NULL");
 			} catch (DonneeAbsenteException e) {
 				messageUtilisateur.affMessageException(TAG, e, "Erreur UI");
-				return;
+				return null;
 			}
 		}
-		TreePath treePath = tree.getSelectionPath();
-		String dossierChoisi = (String) treePath.getLastPathComponent()
-				.toString();
-		// BDRequette bd = new BDRequette();
-		if (!bd.getListeDeComptes().contains(dossierChoisi)) {
-			Object[] pathComplet = treePath.getPath();
-			int idCompte = bd.getIdComptes(pathComplet[1].toString());
-			int idDossierChoisi = bd.getIdDossier(dossierChoisi, idCompte);
-			MlListeMessage listeMessage = bd.getListeDeMessage(idCompte,
-					idDossierChoisi);
-			JTableFactory tableFact = new JTableFactory();
-			tableFact.refreshJTable(listeMessage);
+		final TreePath treePath = tree.getSelectionPath();
+		if (treePath != null) {
+			new Thread(new Runnable() {
 
+				@Override
+				public void run() {
+					((ArborescenceBoiteMail) tree.getModel())
+							.fireTreeStructureChanged(new TreeModelEvent(this,
+									treePath));
+				}
+			}).start();
+
+			return (DefaultMutableTreeNode) treePath.getLastPathComponent();
 		}
+		return null;
+
+	}
+
+	public void refreshJTreeAndJTable() {
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				DefaultMutableTreeNode dossierChoisi = refreshJTree();
+
+				if (!bd.getListeDeComptes().contains(dossierChoisi.toString())) {
+					Object[] pathComplet = dossierChoisi.getPath();
+					int idCompte = bd.getIdComptes(pathComplet[1].toString());
+					int idDossierChoisi = bd.getIdDossier(dossierChoisi
+							.toString(), idCompte);
+					MlListeMessage listeMessage = bd.getListeDeMessage(
+							idCompte, idDossierChoisi);
+					JTableFactory tableFact = new JTableFactory();
+					tableFact.refreshJTable(listeMessage);
+				}
+			}
+		}).start();
 
 	}
 
@@ -180,10 +202,58 @@ public class JTreeFactory {
 		String dossierParent = (String) p_treePath.getLastPathComponent();
 		int idDossierParent = bd.getIdDossier(dossierParent, p_idCompte);
 		bd.createNewDossier(p_idCompte, idDossierParent, nomDossier, "");
-		tree.getModel().valueForPathChanged(newTp, ActionTree.AJOUTER);
+		ajouteNode(p_treePath, new DefaultMutableTreeNode(nomDossier));
+		// tree.getModel()
+		// .valueForPathChanged(newTp, newTp.getLastPathComponent());
 
 		return newTp;
 
+	}
+
+	public void refreshNode(TreePath p_path) {
+		((ArborescenceBoiteMail) tree.getModel()).reload((TreeNode) p_path
+				.getLastPathComponent());
+
+		// ((ArborescenceBoiteMail) tree.getModel())
+		// .fireTreeStructureChanged(new TreeModelEvent(this, p_path));
+	}
+
+	public boolean ajouteNode(TreePath p_path, TreeNode p_newValue) {
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) p_path
+				.getLastPathComponent();
+
+		node.add((DefaultMutableTreeNode) p_newValue);
+		int childCount = node.getChildCount();
+		int[] tabIdx = new int[childCount];
+		Object[] tabChild = new Object[childCount];
+		for (int i = 0; i < childCount; i++) {
+			tabChild[i] = node.getChildAt(i);
+			tabIdx[i] = node.getIndex((TreeNode) tabChild[i]);
+		}
+		((ArborescenceBoiteMail) tree.getModel())
+				.fireTreeStructureChanged(new TreeModelEvent(this, p_path,
+						tabIdx, tabChild));
+		return true;
+	}
+
+	public boolean supprimeNode(TreePath p_path, TreeNode p_newValue) {
+		DefaultMutableTreeNode node = (DefaultMutableTreeNode) p_path
+				.getLastPathComponent();
+		node = (DefaultMutableTreeNode) node.getParent();
+		node.remove((DefaultMutableTreeNode) p_newValue);
+
+		int childCount = node.getChildCount();
+		int[] tabIdx = new int[childCount];
+		Object[] tabChild = new Object[childCount];
+		for (int i = 0; i < childCount; i++) {
+			tabChild[i] = node.getChildAt(i);
+			tabIdx[i] = node.getIndex((TreeNode) tabChild[i]);
+		}
+
+		((ArborescenceBoiteMail) tree.getModel())
+				.fireTreeStructureChanged(new TreeModelEvent(this, p_path
+						.getParentPath(), tabIdx, tabChild));
+		return true;
 	}
 
 }

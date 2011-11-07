@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JTree;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
@@ -11,6 +12,7 @@ import mdl.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
 import bdd.BDRequette;
 import factory.DossierFactory;
+import factory.JTreeFactory;
 
 public class MlActionPopupJTree implements ActionListener {
 
@@ -34,30 +36,37 @@ public class MlActionPopupJTree implements ActionListener {
 			if (null == nomNewDossier || nomNewDossier.equals("")) {
 				return;
 			}
-			String dossierParent = (String) selectionPath
+			DefaultMutableTreeNode dossierParent = (DefaultMutableTreeNode) selectionPath
 					.getLastPathComponent();
 			BDRequette bd = new BDRequette();
 			int idCompte = bd.getIdComptes((String) selectionPath
-					.getPathComponent(1));
+					.getPathComponent(1).toString());
 
-			int idDossierParent = bd.getIdDossier(dossierParent, idCompte);
+			int idDossierParent = bd.getIdDossier(dossierParent.toString(),
+					idCompte);
 
 			if ("".equals(idDossierParent)) {
 				idDossierParent = 0;
 			}
 			if (bd.createNewDossier(idCompte, idDossierParent, nomNewDossier,
 					"")) {
-				TreePath newTreePath = new TreePath(selectionPath.toString()
-						.replace("[", "").replace("]", "")
-						+ ", " + nomNewDossier);
+				TreePath newTreePath = selectionPath
+						.pathByAddingChild(new DefaultMutableTreeNode(
+								nomNewDossier));
+				// TreePath newTreePath = new TreePath(selectionPath.toString()
+				// .replace("[", "").replace("]", "")
+				// + ", " + nomNewDossier);
 				// ComposantVisuelCommun.setTreePath(newTreePath);
-				tree.getModel().valueForPathChanged(newTreePath,
-						ActionTree.AJOUTER);
+				JTreeFactory treeFact = new JTreeFactory();
+				treeFact.ajouteNode(selectionPath,
+						(DefaultMutableTreeNode) newTreePath
+								.getLastPathComponent());
+				// tree.getModel().valueForPathChanged(selectionPath,
+				// newTreePath.getLastPathComponent());
 				tree.setSelectionPath(newTreePath);
 				ComposantVisuelCommun.setTree(tree);
 
 			}
-			bd.closeConnexion();
 
 		}
 		if ("SUPPRIMER".equals(actionCommand)) {

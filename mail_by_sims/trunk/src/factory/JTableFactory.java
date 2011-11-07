@@ -3,12 +3,10 @@
  */
 package factory;
 
-import javax.swing.JList;
 import javax.swing.JTable;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlListeMessage;
-import fenetre.principale.jTable.MlActionJtable;
 import fenetre.principale.jTable.MyTableModel;
 
 /**
@@ -17,11 +15,10 @@ import fenetre.principale.jTable.MyTableModel;
 public class JTableFactory {
 
 	private final JTable table;
-	private final JList list;
 
 	public JTableFactory() {
 		this.table = ComposantVisuelCommun.getJTable();
-		this.list = ComposantVisuelCommun.getJListPJ();
+
 	}
 
 	public void refreshJTable(MlListeMessage p_list) {
@@ -29,9 +26,10 @@ public class JTableFactory {
 		modelDetable.valorisetable(p_list);
 		if (table.getRowCount() > 0) {
 			table.setRowSelectionInterval(0, 0);
+			MessageFactory messFact = new MessageFactory();
+			messFact.afficheContenuMail(p_list.get(0));
 		}
 
-		MlActionJtable.afficheContenuMail(table, list);
 	}
 
 }

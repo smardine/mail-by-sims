@@ -4,16 +4,19 @@
 package fenetre.principale.jtree;
 
 import java.awt.Component;
-import java.awt.Font;
 
-import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JTree;
+import javax.swing.text.Position.Bias;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 
 import mdl.MlCompteMail;
 import bdd.BDRequette;
+import factory.Fontfactory;
+import factory.IconeTreeFactory;
+import factory.JTreeFactory;
 import fenetre.comptes.EnDossierBase;
 
 /**
@@ -32,26 +35,45 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 	}
 
 	@Override
-	public Component getTreeCellRendererComponent(JTree tree, Object value,
+	public Component getTreeCellRendererComponent(JTree tree, Object p_value,
 			boolean selected, boolean expanded, boolean leaf, int row,
 			boolean hasFocus) {
 
-		super.getTreeCellRendererComponent(tree, value, selected, expanded,
+		super.getTreeCellRendererComponent(tree, p_value, selected, expanded,
 				leaf, row, hasFocus);
-		if (!value.toString().equals(EnDossierBase.ROOT.getLib())) {
+		DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) p_value;
+		if (!aNode.toString().equals(EnDossierBase.ROOT.getLib())) {
 
-			TreePath treePath = tree.getPathForRow(row);
+			TreePath treePath;
+			if (row != -1) {
+				treePath = tree.getPathForRow(row);
+			} else {
+				treePath = tree.getNextMatch(aNode.toString(), 0, Bias.Forward);
+				if (treePath == null) {
+					treePath = tree.getNextMatch(aNode.toString(), 0,
+							Bias.Backward);
+				}
+				if (treePath == null) {
+					treePath = tree.getSelectionPath();
+				}
+			}
+
 			if (treePath == null) {
 				return this;
 			}
 			int pathCount = treePath.getPathCount();
 			JLabel label = (JLabel) this;
 			if (pathCount == 2) {
-				traiteNomCompte(value, label);
+				traiteNomCompte(aNode, label);
+				JTreeFactory treeFact = new JTreeFactory();
+				treeFact.refreshNode(treePath);
+
 				return this;
 
 			} else if (pathCount >= 3) {
-				traiteNomDossier(value, treePath, label, leaf);
+				traiteNomDossier(aNode, treePath, label, leaf);
+				JTreeFactory treeFact = new JTreeFactory();
+				treeFact.refreshNode(treePath);
 				return this;
 			}
 		}
@@ -71,29 +93,27 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 		for (MlCompteMail cpt : bd.getListeDeComptes()) {
 			if (pathComplet[1].toString().equals(cpt.getNomCompte())) {
 				if (value.toString().equals(EnDossierBase.BROUILLON.getLib())) {
-					label.setIcon(new ImageIcon("Images/brouillon_16.png"));
+					label.setIcon(IconeTreeFactory.getBrouillon());
 				} else if (value.toString().equals(
 						EnDossierBase.CORBEILLE.getLib())) {
-					label.setIcon(new ImageIcon("Images/supprimer_16.png"));
+					label.setIcon(IconeTreeFactory.getCorbeille());
 
 				} else if (value.toString().equals(
 						EnDossierBase.ENVOYES.getLib())) {
-					label.setIcon(new ImageIcon("Images/envoyer_16.png"));
+					label.setIcon(IconeTreeFactory.getEnvoye());
 
 				} else if (value.toString().equals(
 						EnDossierBase.RECEPTION.getLib())) {
-					label.setIcon(new ImageIcon("Images/recevoir_16.png"));
+					label.setIcon(IconeTreeFactory.getReception());
 
 				} else if (value.toString().equals(EnDossierBase.SPAM.getLib())) {
-					label.setIcon(new ImageIcon("Images/spam_16.png"));
+					label.setIcon(IconeTreeFactory.getSpam());
 
 				} else {
 					if (p_leaf) {
-						label.setIcon(new ImageIcon(
-								"Images/dossier-ferme-16.png"));
+						label.setIcon(IconeTreeFactory.getDossierFerme());
 					} else {
-						label.setIcon(new ImageIcon(
-								"Images/dossier-ouvert-16.png"));
+						label.setIcon(IconeTreeFactory.getDossierOuvert());
 					}
 
 				}
@@ -103,10 +123,10 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 						.getIdCompte()));
 				if (unreadMess > 0) {
 					label.setText(value.toString() + " (" + unreadMess + ")");
-					label.setFont(new Font("Perpetua", Font.PLAIN, 12));
+					label.setFont(Fontfactory.getTREE_FONT_GRAS());
 				} else {
 					label.setText(value.toString());
-					label.setFont(new Font("Perpetua", Font.PLAIN, 12));
+					label.setFont(Fontfactory.getTREE_FONT_PLAIN());
 				}
 				return;
 			}
@@ -117,17 +137,17 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 	 * @param value
 	 * @param label
 	 */
-	private void traiteNomCompte(Object value, JLabel label) {
+	private void traiteNomCompte(DefaultMutableTreeNode value, JLabel label) {
 		int unreadMess = bd.getUnreadMessageFromCompte(bd.getIdComptes(value
 				.toString()));
 		if (unreadMess > 0) {
 			label.setText(value.toString() + " (" + unreadMess + ")");
-			label.setFont(new Font("Perpetua", Font.BOLD, 12));
+			label.setFont(Fontfactory.getTREE_FONT_GRAS());
 		} else {
 			label.setText(value.toString());
-			label.setFont(new Font("Perpetua", Font.PLAIN, 12));
+			label.setFont(Fontfactory.getTREE_FONT_PLAIN());
 		}
-		label.setIcon(new ImageIcon("Images/dossier-ouvert-16.png"));
+		label.setIcon(IconeTreeFactory.getDossierOuvert());
 
 	}
 }

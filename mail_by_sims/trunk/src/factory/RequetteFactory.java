@@ -20,22 +20,25 @@ import java.util.List;
 
 import releve.imap.util.messageUtilisateur;
 import tools.Historique;
+import bdd.BDAcces;
+import bdd.structure.EnStructPieceJointe;
+import bdd.structure.EnTable;
 
 /**
  * Cette classe s'occupent des toutes les requettes effectuée en base
  * @author smardine
  */
 public class RequetteFactory {
-	private static final String IMPOSSIBLE_DE_FERMER_LA_TRANSACTION = "Impossible de fermer la transaction";
+	public static final String IMPOSSIBLE_DE_FERMER_LA_TRANSACTION = "Impossible de fermer la transaction";
 	private final String TAG = this.getClass().getSimpleName();
-	private final Connection connexion;
 
 	/**
 	 * Constructeur
+	 * @param p_connexion
 	 * @param p_connexion - la connexion a la base
 	 */
-	public RequetteFactory(Connection p_connexion) {
-		this.connexion = p_connexion;
+	public RequetteFactory() {
+
 	}
 
 	/**
@@ -44,7 +47,7 @@ public class RequetteFactory {
 	 * @return la valeur recherchée, "" si aune valeur trouvée.
 	 */
 	public String get1Champ(String requete) {
-
+		Connection connexion = checkConnexion();
 		String chaine_champ = "";
 		ResultSet jeuEnregistrements = null;
 		Statement state = null;
@@ -68,6 +71,7 @@ public class RequetteFactory {
 				jeuEnregistrements.close();
 				state.close();
 				connexion.rollback();
+				connexion.close();
 
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(TAG, e,
@@ -84,6 +88,7 @@ public class RequetteFactory {
 	 * @return la liste des valeurs de champs trouvée, liste vide si rien trouvé
 	 */
 	public List<String> getListeDeChamp(String p_requete) {
+		Connection connexion = checkConnexion();
 		Statement state = null;
 		ResultSet jeuEnregistrements = null;
 		ArrayList<String> lst = new ArrayList<String>();
@@ -108,6 +113,7 @@ public class RequetteFactory {
 				connexion.rollback();
 				jeuEnregistrements.close();
 				state.close();
+				connexion.close();
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(TAG, e,
 						IMPOSSIBLE_DE_FERMER_LA_TRANSACTION);
@@ -123,6 +129,7 @@ public class RequetteFactory {
 	 * @return
 	 */
 	public List<ArrayList<String>> getListeDenregistrement(String p_requete) {
+		Connection connexion = checkConnexion();
 		Statement state = null;
 		ResultSet jeuEnregistrements = null;
 		ArrayList<ArrayList<String>> lstRetour = new ArrayList<ArrayList<String>>();
@@ -148,6 +155,7 @@ public class RequetteFactory {
 				connexion.rollback();
 				jeuEnregistrements.close();
 				state.close();
+				connexion.close();
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(TAG, e,
 						IMPOSSIBLE_DE_FERMER_LA_TRANSACTION);
@@ -163,7 +171,7 @@ public class RequetteFactory {
 	 * @return true si ca a marché, sinon false
 	 */
 	public boolean executeRequete(final String requete) {
-
+		Connection connexion = checkConnexion();
 		Statement state = null;
 		boolean resultatRequete = false;
 		try {
@@ -188,6 +196,7 @@ public class RequetteFactory {
 					}
 				}
 				state.close();
+				connexion.close();
 
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(TAG, e,
@@ -212,7 +221,7 @@ public class RequetteFactory {
 	 */
 	public boolean executeRequeteWithBlob(String requete, File p_fContenu,
 			File p_fDest, File p_fDestCopy, File p_fDestCache) {
-
+		Connection connexion = checkConnexion();
 		PreparedStatement ps = null;
 		FileInputStream inputContenu = null;
 		FileInputStream inputDestinataire = null;
@@ -248,6 +257,7 @@ public class RequetteFactory {
 				if (ps != null) {
 					ps.close();
 				}
+				connexion.close();
 				checkBinarayStreamOnClose(inputContenu);
 				checkBinarayStreamOnClose(inputDestinataire);
 				checkBinarayStreamOnClose(inputDestCopy);
@@ -322,6 +332,7 @@ public class RequetteFactory {
 	 * @return vrai si ca a marché, sinon faux
 	 */
 	public boolean executeMiseAJour(final String requete) {
+		Connection connexion = checkConnexion();
 		String[] tab = requete.split(";");
 		int EXECUTE_FAILED = -3;
 		Statement state = null;
@@ -353,7 +364,7 @@ public class RequetteFactory {
 				}
 
 				state.close();
-
+				connexion.close();
 			} catch (SQLException e) {
 				Historique.ecrire("Message d'erreur: " + e
 						+ "\n\r sur la requete : " + requete);
@@ -369,6 +380,7 @@ public class RequetteFactory {
 	 * @return le fichier crée
 	 */
 	public File writeBlobToFile(String requette, File p_file) {
+		Connection connexion = checkConnexion();
 		ResultSet resultSet = null;
 		try {
 			PreparedStatement stmt = connexion.prepareStatement(requette);
@@ -396,7 +408,7 @@ public class RequetteFactory {
 			try {
 				resultSet.close();
 				connexion.rollback();
-
+				connexion.close();
 			} catch (SQLException e) {
 				messageUtilisateur.affMessageException(TAG, e,
 						IMPOSSIBLE_DE_FERMER_LA_TRANSACTION);
@@ -404,6 +416,74 @@ public class RequetteFactory {
 
 		}
 		return p_file;
+
+	}
+
+	/**
+	 * Permet de verifier l'etat de la connexion a la base, si connexion est
+	 * null ou bien si la connexion est férmée, on relance une connexion a la
+	 * bdd
+	 */
+	private Connection checkConnexion() {
+		return new BDAcces().getConnexion();
+	}
+
+	/**
+	 * enregistrer une piece jointe en base sous forme de blob
+	 * @param p_idMessageParent l'id du message parent
+	 * @param p_PieceJointe le fichier piece jointe a enregistrer en base
+	 * @return true ou false suivant si ca a reussi
+	 */
+	public boolean enregistrePieceJointe(String p_idMessageParent,
+			File p_PieceJointe) {
+		Connection connexion = checkConnexion();
+		String requette = "INSERT INTO " + EnTable.PIECE_JOINTE.getNomTable()
+				+ " (" + EnStructPieceJointe.CONTENU.getNomChamp() + ","
+				+ EnStructPieceJointe.NOM.getNomChamp() + ","
+				+ EnStructPieceJointe.ID_MESSAGE.getNomChamp() + ") VALUES ("
+				+ "?,'" + p_PieceJointe.getName().replace("'", "_") + "','"
+				+ p_idMessageParent + "')";
+		PreparedStatement ps = null;
+		FileInputStream inPieceJointe = null;
+		boolean resultatRequete = false;
+		try {
+			ps = connexion.prepareStatement(requette);
+			inPieceJointe = new FileInputStream(p_PieceJointe);
+			ps.setBinaryStream(1, inPieceJointe, (int) p_PieceJointe.length());
+			ps.executeUpdate();
+			resultatRequete = true;
+
+		} catch (SQLException e) {
+			messageUtilisateur.affMessageException(TAG, e,
+					"Erreur à l'insertion d'un blob");
+			return false;
+		} catch (FileNotFoundException e) {
+			messageUtilisateur.affMessageException(TAG, e,
+					"impossible de trouver le fichier");
+			return false;
+		} finally {
+			try {
+				if (resultatRequete) {
+					connexion.commit();
+				} else {
+					connexion.rollback();
+				}
+				ps.close();
+				inPieceJointe.close();
+				connexion.close();
+
+			} catch (SQLException e) {
+				messageUtilisateur.affMessageException(TAG, e,
+						"Erreur à l'insertion d'un blob");
+				return false;
+			} catch (IOException e) {
+				messageUtilisateur.affMessageException(TAG, e,
+						"fichier non trouvé");
+				return false;
+
+			}
+		}
+		return true;
 
 	}
 }

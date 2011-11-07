@@ -14,7 +14,6 @@ import releve.imap.util.messageUtilisateur;
 import thread.ThreadDeplaceMessage;
 import thread.ThreadSupprimeMessage;
 import bdd.BDRequette;
-import factory.JTableFactory;
 import factory.JTreeFactory;
 import fenetre.Patience;
 import fenetre.principale.MlAction.EnActionMain;
@@ -76,8 +75,8 @@ public class MlActionPopupJTable implements ActionListener {
 	private void lanceMarquageLu(int[] p_tabIdLigneSelectionnee) {
 		BDRequette bd = new BDRequette();
 		MlListeMessage lst = new MlListeMessage();
-		int idDossier = -1;
-		int idCompte = -1;
+		// int idDossier = -1;
+		// int idCompte = -1;
 		for (int i = 0; i < p_tabIdLigneSelectionnee.length; i++) {
 
 			int selectedLine = p_tabIdLigneSelectionnee[i];
@@ -85,8 +84,8 @@ public class MlActionPopupJTable implements ActionListener {
 					selectedLine);
 
 			MlMessage m = new MlMessage(idMessage);
-			idDossier = m.getIdDossier();
-			idCompte = m.getIdCompte();
+			// idDossier = m.getIdDossier();
+			// idCompte = m.getIdCompte();
 			lst.add(m);
 
 		}// fin de for
@@ -96,12 +95,12 @@ public class MlActionPopupJTable implements ActionListener {
 			bd.updateStatusLecture(m.getIdMessage(), true);
 		}
 
-		MlListeMessage lstDossier = bd.getListeDeMessage(idCompte, idDossier);
-		bd.closeConnexion();
+		// MlListeMessage lstDossier = bd.getListeDeMessage(idCompte,
+		// idDossier);
+
 		JTreeFactory treeFact = new JTreeFactory();
-		treeFact.refreshJTree();
-		JTableFactory tableFact = new JTableFactory();
-		tableFact.refreshJTable(lstDossier);
+		treeFact.refreshJTreeAndJTable();
+
 	}
 
 	private void traiteCreerRegle() {

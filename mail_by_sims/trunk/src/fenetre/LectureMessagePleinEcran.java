@@ -52,7 +52,7 @@ public class LectureMessagePleinEcran extends JFrame {
 		afficheContenuMail(p_idMessage);
 		BDRequette bd = new BDRequette();
 		this.setTitle(bd.getSujetFromId(p_idMessage));
-		bd.closeConnexion();
+
 	}
 
 	private void afficheContenuMail(int p_idMessage) {
@@ -71,7 +71,7 @@ public class LectureMessagePleinEcran extends JFrame {
 
 		// affichage des piece jointe dans la liste (si il y en a)
 		List<String> lstPj = bd.getListeNomPieceJointe(p_idMessage);
-		bd.closeConnexion();
+
 		DefaultListModel model = (DefaultListModel) jList.getModel();
 		int nbLigne = model.getSize();
 		if (nbLigne > 0) {// si la liste est deja repli, on la vide

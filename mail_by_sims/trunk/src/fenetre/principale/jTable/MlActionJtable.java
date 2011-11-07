@@ -1,48 +1,37 @@
 package fenetre.principale.jTable;
 
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
 
-import javax.swing.DefaultListModel;
-import javax.swing.JEditorPane;
-import javax.swing.JList;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
-import javax.swing.text.Document;
 
-import mdl.ComposantVisuelCommun;
-import releve.imap.util.messageUtilisateur;
-import tools.GestionRepertoire;
+import mdl.MlMessage;
 import bdd.BDRequette;
+import factory.JTreeFactory;
+import factory.MessageFactory;
 import fenetre.LectureMessagePleinEcran;
 import fenetre.principale.MlAction.EnActionMain;
 
-public class MlActionJtable implements MouseListener, ActionListener {
+public class MlActionJtable implements MouseListener {
 
 	private JPopupMenu popUpMenu;
 	private JMenuItem CreerRegle;
 	private JMenuItem Supprimer;
 	private final JTable table;
-	private final JList jList;
 
 	private JMenuItem MarquerSpam;
 	private JMenuItem MarquerLu;
 
-	private static JEditorPane editor;
-	private static final String TAG = MlActionJtable.class.getSimpleName();
+	// private static final String TAG = MlActionJtable.class.getSimpleName();
 
-	public MlActionJtable(JTable p_table, JEditorPane jEditorPane, JList jList) {
+	public MlActionJtable(JTable p_table) {
 
 		this.table = p_table;
-		MlActionJtable.editor = jEditorPane;
-		this.jList = jList;
+		// MlActionJtable.editor = jEditorPane;
+		// this.jList = jList;
 		this.popUpMenu = getJPopupMenu();
 	}
 
@@ -154,13 +143,6 @@ public class MlActionJtable implements MouseListener, ActionListener {
 		// get the row index that contains that coordinate
 		int rowNumber = table.rowAtPoint(p);
 
-		// Get the ListSelectionModel of the JTable
-		// ListSelectionModel model = table.getSelectionModel();
-
-		// set the selected interval of rows. Using the "rowNumber"
-		// variable for the beginning and end selects only that one row.
-		// model.setSelectionInterval(rowNumber, rowNumber);
-
 		if (e.isPopupTrigger()) {
 			popUpMenu.show(e.getComponent(), e.getX(), e.getY());
 
@@ -169,88 +151,24 @@ public class MlActionJtable implements MouseListener, ActionListener {
 				// on affiche le contenu du mail et on rafraichi le status de
 				// lecture uniquement
 				// si une seule ligne est selectionnée
-				afficheContenuMail(table, jList);
+
+				Integer idMessage = jTableHelper.getReelIdMessage(table, table
+						.getSelectedRow());
+				MlMessage m = new MlMessage(idMessage);
+				MessageFactory messFact = new MessageFactory();
+				messFact.afficheContenuMail(m);
 				BDRequette bd = new BDRequette();
 				boolean succes = bd.updateStatusLecture(jTableHelper
 						.getReelIdMessage(table, rowNumber), true);
-				bd.closeConnexion();
+
+				JTreeFactory treeFact = new JTreeFactory();
+				treeFact.refreshJTreeAndJTable();
 				if (succes) {
 					table.getModel().setValueAt(true, rowNumber,
 							table.getModel().getColumnCount() - 1);
 				}
 			}
 
-		}
-
-	}
-
-	public static void afficheContenuMail(JTable table, JList jList) {
-		int selectedLine = table.getSelectedRow();
-		if (selectedLine >= 0) {
-			Integer idMessage = jTableHelper.getReelIdMessage(table,
-					selectedLine);
-			// le n° du message (meme si il est caché).
-			BDRequette bd = new BDRequette();
-			File contenu = bd.getContenuFromId(idMessage, false);
-
-			// on RAZ le contenu du panelEditor
-			Document doc = editor.getDocument();
-			doc.putProperty(Document.StreamDescriptionProperty, null);
-			if (contenu != null && contenu.exists()) {
-				try {
-					editor.setPage("file:///" + contenu.getAbsolutePath());
-					// affichage des piece jointe dans la liste (si il y en a)
-					List<String> lstPj = bd.getListeNomPieceJointe(idMessage);
-					DefaultListModel model = (DefaultListModel) jList
-							.getModel();
-					int nbLigne = model.getSize();
-					if (nbLigne > 0) {// si la liste est deja repli, on la vide
-						model.removeAllElements();
-					}
-					if (lstPj.size() > 0) {
-						for (String s : lstPj) {
-							model.addElement(s);
-						}
-
-					}
-				} catch (IOException e) {
-					messageUtilisateur.affMessageException(TAG, e,
-							"impossible d'afficher le mail");
-				}
-			}
-
-			bd.closeConnexion();
-		} else {
-			table.removeAll();
-			jList.removeAll();
-			Document doc = editor.getDocument();
-			doc.putProperty(Document.StreamDescriptionProperty, null);
-			try {
-				ComposantVisuelCommun.getHtmlPane().setPage(
-						"file:///" + GestionRepertoire.RecupRepTemplate()
-								+ "/vide.html");
-			} catch (IOException e1) {
-				return;
-			}
-		}
-
-	}
-
-	@Override
-	public void actionPerformed(ActionEvent e) {
-		if (table.getSelectedRowCount() == 1) {
-			// on affiche le contenu du mail et on rafraichi le status de
-			// lecture uniquement
-			// si une seule ligne est selectionnée
-			afficheContenuMail(table, jList);
-			BDRequette bd = new BDRequette();
-			boolean succes = bd.updateStatusLecture(jTableHelper
-					.getReelIdMessage(table, table.getSelectedRow()), true);
-			bd.closeConnexion();
-			if (succes) {
-				table.getModel().setValueAt(true, table.getSelectedRow(),
-						table.getModel().getColumnCount() - 1);
-			}
 		}
 
 	}

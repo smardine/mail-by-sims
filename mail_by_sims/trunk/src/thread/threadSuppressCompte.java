@@ -54,7 +54,7 @@ public class threadSuppressCompte extends Thread {
 			// on recupere la liste des comptes et on l'affiche
 			BDRequette bd = new BDRequette();
 			MlListeCompteMail lst = bd.getListeDeComptes();
-			bd.closeConnexion();
+
 			DefaultListModel model = (DefaultListModel) ComposantVisuelCommun
 					.getJListCompteMail().getModel();
 			model.clear();

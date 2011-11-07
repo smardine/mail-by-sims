@@ -160,7 +160,7 @@ public class DeplaceOuSupprFactory {
 		store.close();
 		Historique.ecrireReleveBal(compteMail, TAG, "Fermeture des dossiers "
 				+ src.getFullName() + " et " + dest.getFullName());
-		bd.closeConnexion();
+
 		Historique.ecrireReleveBal(compteMail, TAG,
 				"Déplacement des messages réussi");
 		return true;
@@ -240,7 +240,7 @@ public class DeplaceOuSupprFactory {
 						count++;
 						bd.deleteMessageRecu(m.getIdMessage());
 					}
-					bd.closeConnexion();
+
 					return true;
 			}
 		}
@@ -290,6 +290,6 @@ public class DeplaceOuSupprFactory {
 			fldr.close(true);
 		}
 		store.close();
-		bd.closeConnexion();
+
 	}
 }

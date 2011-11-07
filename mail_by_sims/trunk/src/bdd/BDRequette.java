@@ -1,14 +1,7 @@
 package bdd;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 import java.text.CharacterIterator;
 import java.text.StringCharacterIterator;
 import java.util.ArrayList;
@@ -30,7 +23,6 @@ import bdd.structure.EnStructDossier;
 import bdd.structure.EnStructMailRecu;
 import bdd.structure.EnStructPieceJointe;
 import bdd.structure.EnTable;
-import bdd.structure.StructureTable;
 import exception.DonneeAbsenteException;
 import factory.RequetteFactory;
 import fenetre.comptes.EnDossierBase;
@@ -49,60 +41,13 @@ public class BDRequette {
 	 */
 
 	private final String TAG = this.getClass().getSimpleName();
-	private final Connection laConnexion;
 	private final RequetteFactory requeteFact;
 
 	/**
 	 * Constructeur privé car c'est une classe utilitaire (que des methode )
 	 */
 	public BDRequette() {
-		BDAcces acess = new BDAcces();
-		laConnexion = acess.getConnexion();
-		requeteFact = new RequetteFactory(laConnexion);
-
-	}
-
-	/**
-	 * Obtenir le nombre d'enregistrement d'une table
-	 * @param p_table - {@link EnTable}
-	 * @param p_champ - {@link EnStructureTable} - le nom d'un champ de la table
-	 * @return le nombre de ligne dans cette table
-	 */
-	public int getNbEnregistrementFromTable(EnTable p_table,
-			StructureTable p_champ) {
-
-		int nbRecords = 0;
-		String requete = BDRequette.SELECT + p_champ.getNomChamp() + " from "
-				+ p_table.getNomTable();
-
-		Statement state = null;
-		ResultSet jeuEnregistrements = null;
-		try {
-			state = laConnexion.createStatement();
-			jeuEnregistrements = state.executeQuery(requete);
-			while (jeuEnregistrements.next()) {
-				nbRecords++;
-			}
-
-		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"Impossible de recuperer le nombre de champ dans la table "
-							+ p_table.getNomTable());
-		} finally {
-			try {
-				jeuEnregistrements.close();
-				state.close();
-				laConnexion.rollback();// on ne fait que de la lecture, donc on
-				// peut
-				// faire un rollback
-			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG, e,
-						"Impossible de fermer la base");
-			}
-
-		}
-
-		return nbRecords;
+		requeteFact = new RequetteFactory();
 	}
 
 	/**
@@ -110,6 +55,7 @@ public class BDRequette {
 	 * @return
 	 */
 	public MlListeCompteMail getListeDeComptes() {
+
 		String requete = BDRequette.SELECT + EnStructCompte.ID.getNomChamp()
 				+ " from " + EnTable.COMPTES.getNomTable();
 		List<String> lst = requeteFact.getListeDeChamp(requete);
@@ -118,7 +64,6 @@ public class BDRequette {
 			MlCompteMail cpt = new MlCompteMail(Integer.parseInt(s));
 			listeCompte.add(cpt);
 		}
-
 		return listeCompte;
 
 	}
@@ -133,10 +78,11 @@ public class BDRequette {
 		String requete = BDRequette.SELECT + EnStructCompte.ID.getNomChamp()
 				+ " from " + EnTable.COMPTES.getNomTable() + " where "
 				+ EnStructCompte.NOM.getNomChamp() + " ='" + p_nomCompte + "'";
-		if ("".equals(requeteFact.get1Champ(requete))) {
+		String result = requeteFact.get1Champ(requete);
+		if ("".equals(result)) {
 			return -1;
 		} else {
-			return Integer.parseInt(requeteFact.get1Champ(requete));
+			return Integer.parseInt(result);
 		}
 
 	}
@@ -435,7 +381,7 @@ public class BDRequette {
 			// si des pieces jointe sont presente, on enregistre leur chemin en
 			// base avec l'id du message
 			for (File f1 : m.getListePieceJointe()) {
-				if (enregistrePieceJointe(maxId, f1)) {
+				if (requeteFact.enregistrePieceJointe(maxId, f1)) {
 					f1.delete();
 				}
 			}
@@ -468,56 +414,6 @@ public class BDRequette {
 		}
 		String destinataires = sbDest.toString();
 		return createFileForBlob(destinataires, p_extension);
-	}
-
-	private boolean enregistrePieceJointe(String maxId, File p_PieceJointe) {
-		String requette = "INSERT INTO " + EnTable.PIECE_JOINTE.getNomTable()
-				+ " (" + EnStructPieceJointe.CONTENU.getNomChamp() + ","
-				+ EnStructPieceJointe.NOM.getNomChamp() + ","
-				+ EnStructPieceJointe.ID_MESSAGE.getNomChamp() + ") VALUES ("
-				+ "?,'" + p_PieceJointe.getName().replace("'", "_") + "','"
-				+ maxId + "')";
-		PreparedStatement ps = null;
-		FileInputStream inPieceJointe = null;
-		boolean resultatRequete = false;
-		try {
-			ps = laConnexion.prepareStatement(requette);
-			inPieceJointe = new FileInputStream(p_PieceJointe);
-			ps.setBinaryStream(1, inPieceJointe, (int) p_PieceJointe.length());
-			ps.executeUpdate();
-			resultatRequete = true;
-
-		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"Erreur à l'insertion d'un blob");
-			return false;
-		} catch (FileNotFoundException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"impossible de trouver le fichier");
-			return false;
-		} finally {
-			try {
-				if (resultatRequete) {
-					laConnexion.commit();
-				} else {
-					laConnexion.rollback();
-				}
-				ps.close();
-				inPieceJointe.close();
-
-			} catch (SQLException e) {
-				messageUtilisateur.affMessageException(TAG, e,
-						"Erreur à l'insertion d'un blob");
-				return false;
-			} catch (IOException e) {
-				messageUtilisateur.affMessageException(TAG, e,
-						"fichier non trouvé");
-				return false;
-
-			}
-		}
-		return true;
-
 	}
 
 	private File createFileForBlob(String contenu, String p_extension) {
@@ -893,16 +789,6 @@ public class BDRequette {
 		return requeteFact.get1Champ(requette);
 	}
 
-	public void closeConnexion() {
-		try {
-			laConnexion.close();
-		} catch (SQLException e) {
-			messageUtilisateur.affMessageException(TAG, e,
-					"Impossible de fermer la base");
-		}
-
-	}
-
 	public boolean createNewCompte(MlCompteMail p_compte) {
 		StringBuilder sb = new StringBuilder();
 		sb.append("Insert into " + EnTable.COMPTES.getNomTable() + " ("
@@ -1081,7 +967,13 @@ public class BDRequette {
 				+ " and " + EnStructMailRecu.ID_DOSSIER.getNomChamp() + "="
 				+ p_idDossier + " and " + EnStructMailRecu.STATUT.getNomChamp()
 				+ "='0'";
-		return Integer.parseInt(requeteFact.get1Champ(requette));
+		int nb = Integer.parseInt(requeteFact.get1Champ(requette));
+		for (String sousDossier : getListeSousDossier(p_idDossier)) {
+			nb = nb
+					+ getUnreadMessageFromFolder(p_idCompte, getIdDossier(
+							sousDossier, p_idCompte));
+		}
+		return nb;
 	}
 
 }

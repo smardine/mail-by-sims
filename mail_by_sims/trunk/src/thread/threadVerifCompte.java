@@ -70,7 +70,7 @@ public class threadVerifCompte extends Thread {
 				BDRequette bd = new BDRequette();
 				MlListeCompteMail lst = bd.getListeDeComptes();
 				model.clear();
-				bd.closeConnexion();
+
 				for (MlCompteMail cpt : lst) {
 					model.addElement(cpt.getNomCompte());
 				}

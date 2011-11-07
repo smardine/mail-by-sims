@@ -35,7 +35,6 @@ import javax.swing.border.EtchedBorder;
 import mdl.ComposantVisuelCommun;
 import mdl.MlListeMessage;
 import verification.Thread_Verif;
-import bdd.BDAcces;
 import factory.JTreeFactory;
 import fenetre.EnTitreFenetre;
 import fenetre.principale.MlAction.EnActionMain;
@@ -462,8 +461,8 @@ public class Main extends JFrame {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		BDAcces bd = new BDAcces();
-		bd.verifVersionBDD();
+		// BDAcces bd = new BDAcces();
+		// bd.verifVersionBDD();
 		SwingUtilities.invokeLater(new Runnable() {
 			public void run() {
 				Main thisClass = new Main();
@@ -493,7 +492,7 @@ public class Main extends JFrame {
 		tableModel = new MyTableModel(ColoneModel);
 		tableModel.valorisetable(new MlListeMessage());
 		jTable.setModel(tableModel);
-		jTable.addMouseListener(new MlActionJtable(jTable, htmlPane, jListPJ));
+		jTable.addMouseListener(new MlActionJtable(jTable));
 
 		jMenuContact.addActionListener(new MlActionMain());
 		jTree.addMouseListener(new MlActionJtree(jTree, jTable));
@@ -523,20 +522,12 @@ public class Main extends JFrame {
 		//
 		// @Override
 		// public void run() {
-		// BDRequette bd = new BDRequette();
-		//
-		// threadReleveAuto = new thread_SynchroImap(jProgressBarReleve,
-		// jProgressBarPieceJointe, jTextArea, jScrollPane3,
-		// false, bd.getListeDeComptes());
-		// if (!threadReleveAuto.isAlive()) {
-		// // on ne lance la recup que si elle n'est pas
-		// // deja lancée
-		// threadReleveAuto.start();
-		// }
-		//
+		// treeFact = new JTreeFactory();
+		// treeFact.refreshJTree();
 		// }
 		// };
-		// timer.schedule(task, 1000, 300000);
+		// // timer.schedule(task, 1000, 300000);
+		// timer.schedule(task, 1000, 1000);
 
 	}
 

@@ -10,6 +10,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 import javax.mail.Address;
@@ -21,12 +22,16 @@ import javax.mail.Session;
 import javax.mail.Message.RecipientType;
 import javax.mail.internet.AddressException;
 import javax.mail.internet.MimeMessage;
+import javax.swing.DefaultListModel;
 import javax.swing.JOptionPane;
+import javax.swing.text.Document;
 
+import mdl.ComposantVisuelCommun;
 import mdl.MlMessage;
 import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.Historique;
+import bdd.BDRequette;
 import fenetre.Patience;
 
 /**
@@ -179,7 +184,6 @@ public class MessageFactory {
 			for (int j = 0; j < mp.getCount(); j++) {
 				// Part are numbered starting at 0
 				BodyPart b = mp.getBodyPart(j);
-				// String contentType = b.getContentType();
 				Object o2 = b.getContent();
 				if (o2 instanceof String) {
 					if (j == mp.getCount() - 1) {
@@ -189,13 +193,9 @@ public class MessageFactory {
 
 				} else if (o2 instanceof Multipart) {
 					Multipart mp2 = (Multipart) o2;
-					decodeMultipart(p_mlMessage, mp2, sb, p_fenetre);// ,
-					// p_prefixeNomFichier);
-
+					decodeMultipart(p_mlMessage, mp2, sb, p_fenetre);
 				} else if (o2 instanceof InputStream) {
-
 					recuperePieceJointe(p_mlMessage, b, o2, p_fenetre);
-
 				}
 
 			}
@@ -309,4 +309,52 @@ public class MessageFactory {
 		return s;
 	}
 
+	public void afficheContenuMail(MlMessage p_message) {
+
+		// le n° du message (meme si il est caché).
+		BDRequette bd = new BDRequette();
+		File contenu = bd.getContenuFromId(p_message.getIdMessage(), false);
+
+		// on RAZ le contenu du panelEditor
+		Document doc = ComposantVisuelCommun.getHtmlPane().getDocument();
+		doc.putProperty(Document.StreamDescriptionProperty, null);
+		if (contenu != null && contenu.exists()) {
+			try {
+				ComposantVisuelCommun.getHtmlPane().setPage(
+						"file:///" + contenu.getAbsolutePath());
+				// affichage des piece jointe dans la liste (si il y en a)
+				List<String> lstPj = bd.getListeNomPieceJointe(p_message
+						.getIdMessage());
+				DefaultListModel model = (DefaultListModel) ComposantVisuelCommun
+						.getJListPJ().getModel();
+				int nbLigne = model.getSize();
+				if (nbLigne > 0) {// si la liste est deja repli, on la vide
+					model.removeAllElements();
+				}
+				if (lstPj.size() > 0) {
+					for (String s : lstPj) {
+						model.addElement(s);
+					}
+
+				}
+			} catch (IOException e) {
+				messageUtilisateur.affMessageException(TAG, e,
+						"impossible d'afficher le mail");
+			}
+
+		} else {
+			ComposantVisuelCommun.getJTable().removeAll();
+			ComposantVisuelCommun.getJListPJ().removeAll();
+			doc = ComposantVisuelCommun.getHtmlPane().getDocument();
+			doc.putProperty(Document.StreamDescriptionProperty, null);
+			try {
+				ComposantVisuelCommun.getHtmlPane().setPage(
+						"file:///" + GestionRepertoire.RecupRepTemplate()
+								+ "/vide.html");
+			} catch (IOException e1) {
+				return;
+			}
+		}
+
+	}
 }

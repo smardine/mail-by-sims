@@ -11,7 +11,9 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
 import mdl.MlCompteMail;
+import mdl.MlDossier;
 import mdl.MlListeCompteMail;
+import mdl.MlListeDossier;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import releve.imap.util.messageUtilisateur;
@@ -141,16 +143,20 @@ public class BDRequette {
 	 * @param p_idCompte
 	 * @return
 	 */
-	public List<String> getListeSousDossierBase(int p_idCompte) {
-		String requete = "SELECT " + EnStructDossier.NOM.getNomChamp()
+	public MlListeDossier getListeSousDossierBase(int p_idCompte) {
+		String requete = "SELECT " + EnStructDossier.ID_DOSSIER.getNomChamp()
 				+ " FROM " + EnTable.DOSSIER.getNomTable()// 
 				+ " where " //
 				+ EnStructCompte.ID.getNomChamp() + "=" + p_idCompte //
 				+ " and "//
 				+ EnStructDossier.ID_DOSSIER_PARENT.getNomChamp() + "=0 "// 
 				+ "ORDER BY " + EnStructDossier.ID_DOSSIER.getNomChamp();
-
-		return requeteFact.getListeDeChamp(requete);
+		List<String> lstRetour = requeteFact.getListeDeChamp(requete);
+		MlListeDossier lst = new MlListeDossier();
+		for (String s : lstRetour) {
+			lst.add(new MlDossier(Integer.parseInt(s)));
+		}
+		return lst;
 
 	}
 
@@ -169,13 +175,18 @@ public class BDRequette {
 	 * @param p_idDossier
 	 * @return
 	 */
-	public List<String> getListeSousDossier(int p_idDossier) {
-		String requete = "SELECT " + EnStructDossier.NOM.getNomChamp()
+	public MlListeDossier getListeSousDossier(int p_idDossier) {
+		String requete = "SELECT " + EnStructDossier.ID_DOSSIER.getNomChamp()
 				+ " FROM " + EnTable.DOSSIER.getNomTable() + " where "
 				+ EnStructDossier.ID_DOSSIER_PARENT.getNomChamp() + "="
 				+ p_idDossier + " ORDER BY "
 				+ EnStructDossier.NOM.getNomChamp();
-		return requeteFact.getListeDeChamp(requete);
+		List<String> lstRetour = requeteFact.getListeDeChamp(requete);
+		MlListeDossier lst = new MlListeDossier();
+		for (String s : lstRetour) {
+			lst.add(new MlDossier(Integer.parseInt(s)));
+		}
+		return lst;
 
 	}
 
@@ -224,11 +235,9 @@ public class BDRequette {
 	public boolean deleteDossier(int p_idCompte, int p_idDossier,
 			JProgressBar p_progressBar) {
 
-		List<String> lstSousDossier = getListeSousDossier(p_idDossier);
-		for (String dossier : lstSousDossier) {
-			deleteDossier(p_idCompte, getIdDossierWithFullName(dossier,
-					getNomInternetDossier(p_idDossier), p_idCompte),
-					p_progressBar);
+		MlListeDossier lstSousDossier = getListeSousDossier(p_idDossier);
+		for (MlDossier dossier : lstSousDossier) {
+			deleteDossier(p_idCompte, dossier.getIdDossier(), p_progressBar);
 		}
 		String requette = "DELETE FROM " + EnTable.DOSSIER.getNomTable()
 				+ " WHERE " + EnStructDossier.ID_COMPTE.getNomChamp() + "="
@@ -293,12 +302,17 @@ public class BDRequette {
 		return requeteFact.getListeDeChamp(requette);
 	}
 
-	public List<String> getListeDossier(int p_idCompte) {
-		String requette = "SELECT " + EnStructDossier.NOM.getNomChamp()
+	public MlListeDossier getListeDossier(int p_idCompte) {
+		String requette = "SELECT " + EnStructDossier.ID_DOSSIER.getNomChamp()
 				+ " FROM " + EnTable.DOSSIER.getNomTable() + " where "
 				+ EnStructDossier.ID_COMPTE.getNomChamp() + "=" + p_idCompte
 				+ " ORDER BY " + EnStructDossier.NOM.getNomChamp();
-		return requeteFact.getListeDeChamp(requette);
+		List<String> lstRetour = requeteFact.getListeDeChamp(requette);
+		MlListeDossier lst = new MlListeDossier();
+		for (String s : lstRetour) {
+			lst.add(new MlDossier(Integer.parseInt(s)));
+		}
+		return lst;
 
 	}
 
@@ -744,6 +758,21 @@ public class BDRequette {
 
 	}
 
+	public List<String> getDossierByID(int p_idDOssier) {
+		String script = "Select " + EnStructDossier.ID_COMPTE.getNomChamp()
+				+ ", "// 
+				+ EnStructDossier.ID_DOSSIER_PARENT.getNomChamp() + ", "//
+				+ EnStructDossier.NOM.getNomChamp() + ", "//
+				+ EnStructDossier.NOM_INTERNET.getNomChamp() + " From "//
+				+ EnTable.DOSSIER.getNomTable() + " where "//
+				+ EnStructDossier.ID_DOSSIER.getNomChamp() + "=" + p_idDOssier;
+		List<ArrayList<String>> lstResultat = requeteFact
+				.getListeDenregistrement(script);
+
+		return lstResultat.get(0);
+
+	}
+
 	/**
 	 * Cette fonction parcours tout les dossier enregistré du compte mail 1 par
 	 * 1 pour supprimer en cascade les messages et PJ associées.
@@ -759,7 +788,7 @@ public class BDRequette {
 			throw new DonneeAbsenteException(TAG,
 					"le compte à supprimé n'existe pas en base");
 		}
-		List<String> listeDossier = getListeDossier(p_idCompte);
+		MlListeDossier listeDossier = getListeDossier(p_idCompte);
 		for (int i = 0; i < listeDossier.size(); i++) {
 			if (null != p_label) {
 				p_label
@@ -771,8 +800,8 @@ public class BDRequette {
 				p_progressBar.setValue(pourcent);
 				p_progressBar.setString(pourcent + " %");
 			}
-			deleteDossier(p_idCompte, getIdDossier(listeDossier.get(i),
-					p_idCompte), p_progressBar);
+			deleteDossier(p_idCompte, listeDossier.get(i).getIdDossier(),
+					p_progressBar);
 		}
 
 		String requete = "DELETE FROM " + EnTable.COMPTES.getNomTable()
@@ -968,10 +997,10 @@ public class BDRequette {
 				+ p_idDossier + " and " + EnStructMailRecu.STATUT.getNomChamp()
 				+ "='0'";
 		int nb = Integer.parseInt(requeteFact.get1Champ(requette));
-		for (String sousDossier : getListeSousDossier(p_idDossier)) {
+		for (MlDossier sousDossier : getListeSousDossier(p_idDossier)) {
 			nb = nb
-					+ getUnreadMessageFromFolder(p_idCompte, getIdDossier(
-							sousDossier, p_idCompte));
+					+ getUnreadMessageFromFolder(p_idCompte, sousDossier
+							.getIdDossier());
 		}
 		return nb;
 	}

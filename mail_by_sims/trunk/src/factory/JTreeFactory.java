@@ -14,6 +14,7 @@ import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
+import mdl.MlDossier;
 import mdl.MlListeMessage;
 import releve.imap.util.messageUtilisateur;
 import bdd.BDRequette;
@@ -44,7 +45,7 @@ public class JTreeFactory {
 				DefaultMutableTreeNode compteNode = new DefaultMutableTreeNode(
 						cpt.getNomCompte());
 
-				for (String nomDossier : bd.getListeSousDossierBase(cpt
+				for (MlDossier nomDossier : bd.getListeSousDossierBase(cpt
 						.getIdCompte())) {
 					DefaultMutableTreeNode dossierBaseNode = new DefaultMutableTreeNode(
 							nomDossier);
@@ -66,10 +67,10 @@ public class JTreeFactory {
 	 * @param p_dossierBaseNode
 	 */
 	private DefaultMutableTreeNode recupereSousDossier(
-			DefaultMutableTreeNode p_dossierBaseNode, String p_nomDossier,
-			MlCompteMail p_cptMail) {
-		for (String nomSousDossier : bd.getListeSousDossier(bd.getIdDossier(
-				p_nomDossier, p_cptMail.getIdCompte()))) {
+			DefaultMutableTreeNode p_dossierBaseNode,
+			MlDossier p_nomSousDossier, MlCompteMail p_cptMail) {
+		for (MlDossier nomSousDossier : bd.getListeSousDossier(p_nomSousDossier
+				.getIdDossier())) {
 			DefaultMutableTreeNode sousDossierTreeNode = new DefaultMutableTreeNode(
 					nomSousDossier);
 			p_dossierBaseNode.add(sousDossierTreeNode);

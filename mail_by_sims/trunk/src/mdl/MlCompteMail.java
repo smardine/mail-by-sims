@@ -13,6 +13,7 @@ public class MlCompteMail {
 	private long portPop, portSMTP;
 	private String userName, password, serveurSMTP, serveurReception,
 			nomCompte;
+	private MlListeDossier listDossier;
 
 	private EnTypeCompte typeCompte;
 
@@ -71,6 +72,7 @@ public class MlCompteMail {
 		}// fin de for
 
 		initDossierDeBase(bd);
+		this.listDossier = bd.getListeDossier(idCompte);
 
 	}
 

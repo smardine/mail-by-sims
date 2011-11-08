@@ -15,7 +15,6 @@ import javax.swing.tree.TreePath;
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlDossier;
-import mdl.MlListeMessage;
 import releve.imap.util.messageUtilisateur;
 import bdd.BDRequette;
 import exception.DonneeAbsenteException;
@@ -43,16 +42,15 @@ public class JTreeFactory {
 			treeNode = new DefaultMutableTreeNode(EnDossierBase.ROOT.getLib());
 			for (MlCompteMail cpt : bd.getListeDeComptes()) {
 				DefaultMutableTreeNode compteNode = new DefaultMutableTreeNode(
-						cpt.getNomCompte());
+						cpt);
 
-				for (MlDossier nomDossier : bd.getListeSousDossierBase(cpt
-						.getIdCompte())) {
+				for (MlDossier unDossier : cpt.getListDossierPrincipaux()) {
 					DefaultMutableTreeNode dossierBaseNode = new DefaultMutableTreeNode(
-							nomDossier);
+							unDossier);
 					// pour chacun des dossier de base, on prend la liste des
 					// sous dossier
 					dossierBaseNode = recupereSousDossier(dossierBaseNode,
-							nomDossier, cpt);
+							unDossier, cpt);
 					compteNode.add(dossierBaseNode);
 
 				}
@@ -69,8 +67,7 @@ public class JTreeFactory {
 	private DefaultMutableTreeNode recupereSousDossier(
 			DefaultMutableTreeNode p_dossierBaseNode,
 			MlDossier p_nomSousDossier, MlCompteMail p_cptMail) {
-		for (MlDossier nomSousDossier : bd.getListeSousDossier(p_nomSousDossier
-				.getIdDossier())) {
+		for (MlDossier nomSousDossier : p_nomSousDossier.getListSousDossier()) {
 			DefaultMutableTreeNode sousDossierTreeNode = new DefaultMutableTreeNode(
 					nomSousDossier);
 			p_dossierBaseNode.add(sousDossierTreeNode);
@@ -157,18 +154,14 @@ public class JTreeFactory {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				DefaultMutableTreeNode dossierChoisi = refreshJTree();
-
-				if (!bd.getListeDeComptes().contains(dossierChoisi.toString())) {
-					Object[] pathComplet = dossierChoisi.getPath();
-					int idCompte = bd.getIdComptes(pathComplet[1].toString());
-					int idDossierChoisi = bd.getIdDossier(dossierChoisi
-							.toString(), idCompte);
-					MlListeMessage listeMessage = bd.getListeDeMessage(
-							idCompte, idDossierChoisi);
+				DefaultMutableTreeNode aNode = refreshJTree();
+				Object userObject = aNode.getUserObject();
+				if (userObject instanceof MlDossier) {
 					JTableFactory tableFact = new JTableFactory();
-					tableFact.refreshJTable(listeMessage);
+					tableFact.refreshJTable(((MlDossier) userObject)
+							.getListMessage());
 				}
+
 			}
 		}).start();
 

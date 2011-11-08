@@ -14,7 +14,7 @@ public class MlCompteMail {
 	private String userName, password, serveurSMTP, serveurReception,
 			nomCompte;
 	private MlListeDossier listDossier;
-
+	private int ureadMessCount;
 	private EnTypeCompte typeCompte;
 
 	/**
@@ -72,7 +72,7 @@ public class MlCompteMail {
 		}// fin de for
 
 		initDossierDeBase(bd);
-		this.listDossier = bd.getListeDossier(idCompte);
+		// this.listDossier =
 
 	}
 
@@ -251,7 +251,7 @@ public class MlCompteMail {
 	/**
 	 * @return the idBrouillons
 	 */
-	public int getIdBrouillons() {
+	public final int getIdBrouillons() {
 		return this.idBrouillons;
 	}
 
@@ -316,6 +316,22 @@ public class MlCompteMail {
 	 */
 	public void setIdCompte(int p_idCompte) {
 		this.idCompte = p_idCompte;
+	}
+
+	/**
+	 * @return the listDossier
+	 */
+	public MlListeDossier getListDossierPrincipaux() {
+		listDossier = new BDRequette().getListeSousDossierBase(idCompte);
+		return listDossier;
+	}
+
+	/**
+	 * @return the ureadMessCount
+	 */
+	public int getUreadMessCount() {
+		ureadMessCount = new BDRequette().getUnreadMessageFromCompte(idCompte);
+		return ureadMessCount;
 	}
 
 }

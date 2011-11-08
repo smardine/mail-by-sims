@@ -3,8 +3,6 @@ package fenetre.principale.jtree;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
 
 import javax.swing.DefaultListModel;
 import javax.swing.JMenuItem;
@@ -16,28 +14,28 @@ import javax.swing.event.TreeExpansionListener;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
 import javax.swing.text.Document;
+import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
+import mdl.MlDossier;
 import mdl.MlListeMessage;
 import tools.GestionRepertoire;
-import bdd.BDRequette;
-import fenetre.comptes.EnDossierBase;
-import fenetre.principale.jTable.MyTableModel;
+import factory.JTableFactory;
 
 public class MlActionJtree implements MouseListener, TreeSelectionListener,
 		TreeExpansionListener {
 
 	private final JTree tree;
-	private final JTable table;
+	// private final JTable table;
 	private JPopupMenu popUpMenu;
 	private JMenuItem Ajouter;
 	private JMenuItem Supprimer;
 
 	public MlActionJtree(JTree p_jTree, JTable p_jTable) {
 		this.tree = p_jTree;
-		this.table = p_jTable;
+		// this.table = p_jTable;
 		this.popUpMenu = getJPopupMenu();
 	}
 
@@ -136,46 +134,54 @@ public class MlActionJtree implements MouseListener, TreeSelectionListener,
 	public void mouseReleased(MouseEvent e) {
 		TreePath pathFromEvent = getPathFromEvent(e);
 		if (e.getClickCount() == 1) {
-			BDRequette bd = new BDRequette();
-
 			if (null != pathFromEvent)// on verifie si on a cliqué sur le nom
 			// d'un compte
 			{
-				for (MlCompteMail cpt : bd.getListeDeComptes()) {
-					if (pathFromEvent.getLastPathComponent().toString().equals(
-							cpt.getNomCompte())) {
-
+				DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) pathFromEvent
+						.getLastPathComponent();
+				Object userObject = aNode.getUserObject();
+				if (userObject instanceof MlDossier) {
+					MlDossier dossier = (MlDossier) userObject;
+					MlListeMessage lstMess = dossier.getListMessage();
+					JTableFactory tableFact = new JTableFactory();
+					tableFact.refreshJTable(lstMess);
+					// MyTableModel modelDetable = (MyTableModel)
+					// table.getModel();
+					// modelDetable.valorisetable(lstMess);
+					((DefaultListModel) ComposantVisuelCommun.getJListPJ()
+							.getModel()).removeAllElements();
+					Document doc = ComposantVisuelCommun.getHtmlPane()
+							.getDocument();
+					doc.putProperty(Document.StreamDescriptionProperty, null);
+					try {
+						ComposantVisuelCommun.getHtmlPane().setPage(
+								"file:///"
+										+ GestionRepertoire.RecupRepTemplate()
+										+ "/vide.html");
+						return;
+					} catch (IOException e1) {
+						return;
+					}
+				} else if (userObject instanceof MlCompteMail) {
+					JTableFactory tableFact = new JTableFactory();
+					tableFact.refreshJTable(new MlListeMessage());
+					((DefaultListModel) ComposantVisuelCommun.getJListPJ()
+							.getModel()).removeAllElements();
+					Document doc = ComposantVisuelCommun.getHtmlPane()
+							.getDocument();
+					doc.putProperty(Document.StreamDescriptionProperty, null);
+					try {
+						ComposantVisuelCommun.getHtmlPane().setPage(
+								"file:///"
+										+ GestionRepertoire.RecupRepTemplate()
+										+ "/vide.html");
+						return;
+					} catch (IOException e1) {
 						return;
 					}
 
 				}
-				// JTreeFactory treeFact = new JTreeFactory();
-				// treeFact.refreshJTree();
-				String dossierChoisi = pathFromEvent.getLastPathComponent()
-						.toString();
-				Object[] pathComplet = pathFromEvent.getPath();
-				int idCompte = bd.getIdComptes(pathComplet[1].toString());
-				int idDossierChoisi = bd.getIdDossier(dossierChoisi, idCompte);
-				MlListeMessage listeMessage = bd.getListeDeMessage(idCompte,
-						idDossierChoisi);
-
-				MyTableModel modelDetable = (MyTableModel) table.getModel();
-				modelDetable.valorisetable(listeMessage);
-				((DefaultListModel) ComposantVisuelCommun.getJListPJ()
-						.getModel()).removeAllElements();
-				Document doc = ComposantVisuelCommun.getHtmlPane()
-						.getDocument();
-				doc.putProperty(Document.StreamDescriptionProperty, null);
-				try {
-					ComposantVisuelCommun.getHtmlPane().setPage(
-							"file:///" + GestionRepertoire.RecupRepTemplate()
-									+ "/vide.html");
-				} catch (IOException e1) {
-					return;
-				}
-
 			}
-
 		}
 
 		int selRow = tree.getRowForLocation(e.getX(), e.getY());
@@ -183,28 +189,29 @@ public class MlActionJtree implements MouseListener, TreeSelectionListener,
 
 		tree.setSelectionPath(selPath);
 		tree.setSelectionRow(selRow);
-		if (selRow != -1) {
-			if (e.isPopupTrigger()) {
 
-				Object lastPathComponent = selPath.getLastPathComponent();
-				BDRequette bd = new BDRequette();
-				if (getListeDossierdeBase().contains(lastPathComponent)//
-						|| bd.getListeDeComptes().contains(lastPathComponent)) {
+		if (e.isPopupTrigger()) {
+			DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) selPath
+					.getLastPathComponent();
+			Object userObject = aNode.getUserObject();
+			if (userObject instanceof MlCompteMail) {
+				Supprimer.setEnabled(false);
+			} else if (userObject instanceof MlDossier) {
+				MlDossier dossier = (MlDossier) userObject;
+				if (dossier.getIdDossierParent() == 0) {
 					Supprimer.setEnabled(false);
 				} else {
 					Supprimer.setEnabled(true);
 				}
-
-				popUpMenu.show(e.getComponent(), e.getX(), e.getY());
-
 			}
-
-			// if (e.getClickCount() == 1) {
-			// System.out.println("mySingleClick(selRow, selPath)");
-			// } else if (e.getClickCount() == 2) {
-			// System.out.println("myDoubleClick(selRow, selPath)");
-			// }
+			popUpMenu.show(e.getComponent(), e.getX(), e.getY());
 		}
+
+		// if (e.getClickCount() == 1) {
+		// System.out.println("mySingleClick(selRow, selPath)");
+		// } else if (e.getClickCount() == 2) {
+		// System.out.println("myDoubleClick(selRow, selPath)");
+		// }
 
 	}
 
@@ -216,16 +223,16 @@ public class MlActionJtree implements MouseListener, TreeSelectionListener,
 		return tree.getPathForLocation(e.getX(), e.getY());
 	}
 
-	private List<String> getListeDossierdeBase() {
-		ArrayList<String> lstDossierBase = new ArrayList<String>(4);
-		EnDossierBase[] lstEnum = EnDossierBase.values();
-		for (EnDossierBase dossier : lstEnum) {
-			if (dossier != EnDossierBase.ROOT) {
-				lstDossierBase.add(dossier.getLib());
-			}
-
-		}
-		return lstDossierBase;
-	}
+	// private List<String> getListeDossierdeBase() {
+	// ArrayList<String> lstDossierBase = new ArrayList<String>(4);
+	// EnDossierBase[] lstEnum = EnDossierBase.values();
+	// for (EnDossierBase dossier : lstEnum) {
+	// if (dossier != EnDossierBase.ROOT) {
+	// lstDossierBase.add(dossier.getLib());
+	// }
+	//
+	// }
+	// return lstDossierBase;
+	// }
 
 }

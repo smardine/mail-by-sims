@@ -12,6 +12,8 @@ public class MlDossier {
 	private String nomDossier;
 	private String nomInternet;
 	private MlListeDossier listSousDossier;
+	private int unreadMessCount;
+	private MlListeMessage listMessage;
 
 	public MlDossier(int p_idDossier) {
 		this.idDossier = p_idDossier;
@@ -84,6 +86,24 @@ public class MlDossier {
 
 	public int getIdDossier() {
 		return idDossier;
+	}
+
+	/**
+	 * @return the unreadMessCount
+	 */
+	public int getUnreadMessCount() {
+		this.unreadMessCount = new BDRequette().getUnreadMessageFromFolder(
+				idCompte, idDossier);
+		return unreadMessCount;
+	}
+
+	/**
+	 * @return
+	 */
+	public MlListeMessage getListMessage() {
+		this.listMessage = new BDRequette().getListeDeMessage(idCompte,
+				idDossier);
+		return listMessage;
 	}
 
 }

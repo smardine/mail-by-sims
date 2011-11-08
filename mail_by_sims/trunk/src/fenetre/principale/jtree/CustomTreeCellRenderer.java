@@ -13,6 +13,7 @@ import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 
 import mdl.MlCompteMail;
+import mdl.MlDossier;
 import bdd.BDRequette;
 import factory.Fontfactory;
 import factory.IconeTreeFactory;
@@ -42,40 +43,37 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 		super.getTreeCellRendererComponent(tree, p_value, selected, expanded,
 				leaf, row, hasFocus);
 		DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) p_value;
-		if (!aNode.toString().equals(EnDossierBase.ROOT.getLib())) {
 
-			TreePath treePath;
-			if (row != -1) {
-				treePath = tree.getPathForRow(row);
-			} else {
-				treePath = tree.getNextMatch(aNode.toString(), 0, Bias.Forward);
-				if (treePath == null) {
-					treePath = tree.getNextMatch(aNode.toString(), 0,
-							Bias.Backward);
-				}
-				if (treePath == null) {
-					treePath = tree.getSelectionPath();
-				}
-			}
-
+		TreePath treePath;
+		if (row != -1) {
+			treePath = tree.getPathForRow(row);
+		} else {
+			treePath = tree.getNextMatch(aNode.toString(), 0, Bias.Forward);
 			if (treePath == null) {
-				return this;
+				treePath = tree
+						.getNextMatch(aNode.toString(), 0, Bias.Backward);
 			}
-			int pathCount = treePath.getPathCount();
-			JLabel label = (JLabel) this;
-			if (pathCount == 2) {
-				traiteNomCompte(aNode, label);
-				JTreeFactory treeFact = new JTreeFactory();
-				treeFact.refreshNode(treePath);
-
-				return this;
-
-			} else if (pathCount >= 3) {
-				traiteNomDossier(aNode, treePath, label, leaf);
-				JTreeFactory treeFact = new JTreeFactory();
-				treeFact.refreshNode(treePath);
-				return this;
+			if (treePath == null) {
+				treePath = tree.getSelectionPath();
 			}
+		}
+
+		if (treePath == null) {
+			return this;
+		}
+		// int pathCount = treePath.getPathCount();
+		JLabel label = (JLabel) this;
+		if (aNode.getUserObject() instanceof MlCompteMail) {
+			traiteNomCompte((MlCompteMail) aNode.getUserObject(), label);
+			JTreeFactory treeFact = new JTreeFactory();
+			treeFact.refreshNode(treePath);
+
+			return this;
+		} else if (aNode.getUserObject() instanceof MlDossier) {
+			traiteNomDossier((MlDossier) aNode.getUserObject(), label, leaf);
+			JTreeFactory treeFact = new JTreeFactory();
+			treeFact.refreshNode(treePath);
+			return this;
 		}
 
 		return this;
@@ -87,64 +85,60 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 	 * @param label
 	 * @param p_leaf
 	 */
-	private void traiteNomDossier(Object value, TreePath treePath,
-			JLabel label, boolean p_leaf) {
-		Object[] pathComplet = treePath.getPath();
-		for (MlCompteMail cpt : bd.getListeDeComptes()) {
-			if (pathComplet[1].toString().equals(cpt.getNomCompte())) {
-				if (value.toString().equals(EnDossierBase.BROUILLON.getLib())) {
-					label.setIcon(IconeTreeFactory.getBrouillon());
-				} else if (value.toString().equals(
-						EnDossierBase.CORBEILLE.getLib())) {
-					label.setIcon(IconeTreeFactory.getCorbeille());
+	private void traiteNomDossier(MlDossier p_dossier, JLabel label,
+			boolean p_leaf) {
+		// Object[] pathComplet = treePath.getPath();
+		// for (MlCompteMail cpt : bd.getListeDeComptes()) {
+		// if (pathComplet[1].toString().equals(cpt.getNomCompte())) {
+		// MlCompteMail cptParent = new MlCompteMail(p_dossier.getIdCompte());
+		String nomDossier = p_dossier.getNomDossier();
+		if (nomDossier.equals(EnDossierBase.BROUILLON.getLib())) {
+			label.setIcon(IconeTreeFactory.getBrouillon());
+		} else if (nomDossier.equals(EnDossierBase.CORBEILLE.getLib())) {
+			label.setIcon(IconeTreeFactory.getCorbeille());
 
-				} else if (value.toString().equals(
-						EnDossierBase.ENVOYES.getLib())) {
-					label.setIcon(IconeTreeFactory.getEnvoye());
+		} else if (nomDossier.equals(EnDossierBase.ENVOYES.getLib())) {
+			label.setIcon(IconeTreeFactory.getEnvoye());
 
-				} else if (value.toString().equals(
-						EnDossierBase.RECEPTION.getLib())) {
-					label.setIcon(IconeTreeFactory.getReception());
+		} else if (nomDossier.equals(EnDossierBase.RECEPTION.getLib())) {
+			label.setIcon(IconeTreeFactory.getReception());
 
-				} else if (value.toString().equals(EnDossierBase.SPAM.getLib())) {
-					label.setIcon(IconeTreeFactory.getSpam());
+		} else if (nomDossier.equals(EnDossierBase.SPAM.getLib())) {
+			label.setIcon(IconeTreeFactory.getSpam());
 
-				} else {
-					if (p_leaf) {
-						label.setIcon(IconeTreeFactory.getDossierFerme());
-					} else {
-						label.setIcon(IconeTreeFactory.getDossierOuvert());
-					}
-
-				}
-
-				int unreadMess = bd.getUnreadMessageFromFolder(cpt
-						.getIdCompte(), bd.getIdDossier(value.toString(), cpt
-						.getIdCompte()));
-				if (unreadMess > 0) {
-					label.setText(value.toString() + " (" + unreadMess + ")");
-					label.setFont(Fontfactory.getTREE_FONT_GRAS());
-				} else {
-					label.setText(value.toString());
-					label.setFont(Fontfactory.getTREE_FONT_PLAIN());
-				}
-				return;
-			}
+		} else if (p_leaf) {
+			label.setIcon(IconeTreeFactory.getDossierFerme());
+		} else {
+			label.setIcon(IconeTreeFactory.getDossierOuvert());
 		}
+
+		int unreadMess = p_dossier.getUnreadMessCount();
+		if (unreadMess > 0) {
+			label.setText(nomDossier + " (" + unreadMess + ")");
+			label.setFont(Fontfactory.getTREE_FONT_GRAS());
+		} else {
+			label.setText(nomDossier);
+			label.setFont(Fontfactory.getTREE_FONT_PLAIN());
+		}
+		return;
 	}
+
+	// }
+	// }
 
 	/**
 	 * @param value
 	 * @param label
 	 */
-	private void traiteNomCompte(DefaultMutableTreeNode value, JLabel label) {
-		int unreadMess = bd.getUnreadMessageFromCompte(bd.getIdComptes(value
-				.toString()));
+	private void traiteNomCompte(MlCompteMail p_compteMail, JLabel label) {
+		int unreadMess = p_compteMail.getUreadMessCount();
 		if (unreadMess > 0) {
-			label.setText(value.toString() + " (" + unreadMess + ")");
+			label
+					.setText(p_compteMail.getNomCompte() + " (" + unreadMess
+							+ ")");
 			label.setFont(Fontfactory.getTREE_FONT_GRAS());
 		} else {
-			label.setText(value.toString());
+			label.setText(p_compteMail.getNomCompte());
 			label.setFont(Fontfactory.getTREE_FONT_PLAIN());
 		}
 		label.setIcon(IconeTreeFactory.getDossierOuvert());

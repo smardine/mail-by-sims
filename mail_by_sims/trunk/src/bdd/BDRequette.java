@@ -302,7 +302,7 @@ public class BDRequette {
 		return requeteFact.getListeDeChamp(requette);
 	}
 
-	public MlListeDossier getListeDossier(int p_idCompte) {
+	public MlListeDossier getListeToutLesDossier(int p_idCompte) {
 		String requette = "SELECT " + EnStructDossier.ID_DOSSIER.getNomChamp()
 				+ " FROM " + EnTable.DOSSIER.getNomTable() + " where "
 				+ EnStructDossier.ID_COMPTE.getNomChamp() + "=" + p_idCompte
@@ -788,7 +788,7 @@ public class BDRequette {
 			throw new DonneeAbsenteException(TAG,
 					"le compte à supprimé n'existe pas en base");
 		}
-		MlListeDossier listeDossier = getListeDossier(p_idCompte);
+		MlListeDossier listeDossier = getListeToutLesDossier(p_idCompte);
 		for (int i = 0; i < listeDossier.size(); i++) {
 			if (null != p_label) {
 				p_label

@@ -31,6 +31,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.SwingUtilities;
 import javax.swing.WindowConstants;
 import javax.swing.border.EtchedBorder;
+import javax.swing.tree.TreeSelectionModel;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlListeMessage;
@@ -48,6 +49,8 @@ import fenetre.principale.jTable.MyTableModel;
 import fenetre.principale.jTable.XTableColumnModel;
 import fenetre.principale.jtree.ArborescenceBoiteMail;
 import fenetre.principale.jtree.CustomTreeCellRenderer;
+import fenetre.principale.jtree.CustomTreeExpensionListener;
+import fenetre.principale.jtree.CustomTreeSelectionListener;
 import fenetre.principale.jtree.MlActionJtree;
 
 public class Main extends JFrame {
@@ -233,6 +236,8 @@ public class Main extends JFrame {
 			jTree.setFont(new Font("Perpetua", Font.PLAIN, 12));
 			jTree.setVisibleRowCount(20);
 			jTree.setExpandsSelectedPaths(true);
+			jTree.getSelectionModel().setSelectionMode(
+					TreeSelectionModel.SINGLE_TREE_SELECTION);
 
 		}
 		return jTree;
@@ -246,8 +251,6 @@ public class Main extends JFrame {
 		htmlPane = new JEditorPane();
 		htmlPane.setComponentOrientation(ComponentOrientation.UNKNOWN);
 		htmlPane.setFont(new Font("Dialog", Font.PLAIN, 12));
-		// htmlPane.setContentType("text/html");
-		// htmlPane.setContentType("text/html");
 		htmlPane.setEditable(false);
 		htmlPane.addHyperlinkListener(new MlActionHtmlPane());
 
@@ -495,9 +498,10 @@ public class Main extends JFrame {
 		jTable.addMouseListener(new MlActionJtable(jTable));
 
 		jMenuContact.addActionListener(new MlActionMain());
-		jTree.addMouseListener(new MlActionJtree(jTree, jTable));
-		jTree.addTreeSelectionListener(new MlActionJtree(jTree, jTable));
-		jTree.addTreeExpansionListener(new MlActionJtree(jTree, jTable));
+		jTree.addMouseListener(new MlActionJtree(jTree));
+		jTree.addTreeSelectionListener(new CustomTreeSelectionListener());
+		jTree.addTreeWillExpandListener(new CustomTreeExpensionListener());
+		jTree.addTreeExpansionListener(new CustomTreeExpensionListener());
 		jMenuItemImporter.addActionListener(new MlActionMain(jTree));
 		jMenuItemReleve.addActionListener(new MlActionMain(jTree));
 

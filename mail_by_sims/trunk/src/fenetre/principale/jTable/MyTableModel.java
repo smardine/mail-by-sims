@@ -123,6 +123,10 @@ public class MyTableModel extends AbstractTableModel {
 
 	public void valorisetable(MlListeMessage p_liste) {
 		data = new Object[p_liste.size()][columnNames.length];
+		if (p_liste.size() == 0) {
+			fireTableDataChanged();
+			return;
+		}
 		BDRequette bd = new BDRequette();
 		for (int i = 0; i < p_liste.size(); i++) {// on parcour la liste des
 			// messages
@@ -147,6 +151,7 @@ public class MyTableModel extends AbstractTableModel {
 			} else {
 				data[i][5] = Boolean.FALSE;
 			}
+			fireTableRowsInserted(i, i);
 
 		}
 

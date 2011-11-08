@@ -2,40 +2,26 @@ package fenetre.principale.jtree;
 
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.io.IOException;
 
-import javax.swing.DefaultListModel;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
-import javax.swing.JTable;
 import javax.swing.JTree;
-import javax.swing.event.TreeExpansionEvent;
-import javax.swing.event.TreeExpansionListener;
-import javax.swing.event.TreeSelectionEvent;
-import javax.swing.event.TreeSelectionListener;
-import javax.swing.text.Document;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlDossier;
-import mdl.MlListeMessage;
-import tools.GestionRepertoire;
-import factory.JTableFactory;
 
-public class MlActionJtree implements MouseListener, TreeSelectionListener,
-		TreeExpansionListener {
+public class MlActionJtree implements MouseListener {
 
 	private final JTree tree;
-	// private final JTable table;
+
 	private JPopupMenu popUpMenu;
 	private JMenuItem Ajouter;
 	private JMenuItem Supprimer;
 
-	public MlActionJtree(JTree p_jTree, JTable p_jTable) {
+	public MlActionJtree(JTree p_jTree) {
 		this.tree = p_jTree;
-		// this.table = p_jTable;
 		this.popUpMenu = getJPopupMenu();
 	}
 
@@ -83,38 +69,6 @@ public class MlActionJtree implements MouseListener, TreeSelectionListener,
 	}
 
 	@Override
-	public void valueChanged(TreeSelectionEvent p_event) {
-		// TreePath newPath = p_event.getNewLeadSelectionPath();
-		// tree.setSelectionPath(newPath);
-		// ComposantVisuelCommun.setTree(tree);
-
-	}
-
-	@Override
-	public void treeCollapsed(TreeExpansionEvent p_event) {
-		// JTreeFactory treeFact = new JTreeFactory();
-		// treeFact.refreshJTree();
-		tree.setSelectionPath(p_event.getPath());
-		ComposantVisuelCommun.setTree(tree);
-
-	}
-
-	@Override
-	public void treeExpanded(TreeExpansionEvent p_event) {
-		// tree = (JTree) p_event.getSource();
-
-		TreePath newPath = p_event.getPath();
-		if (null != newPath) {
-			tree.setSelectionPath(newPath);
-			// ComposantVisuelCommun.setTree(tree);
-		}
-		ComposantVisuelCommun.setTree((JTree) p_event.getSource());
-		// JTreeFactory treeFact = new JTreeFactory();
-		// treeFact.refreshJTree();
-
-	}
-
-	@Override
 	public void mousePressed(MouseEvent e) {
 	}
 
@@ -133,65 +87,14 @@ public class MlActionJtree implements MouseListener, TreeSelectionListener,
 	@Override
 	public void mouseReleased(MouseEvent e) {
 		TreePath pathFromEvent = getPathFromEvent(e);
-		if (e.getClickCount() == 1) {
-			if (null != pathFromEvent)// on verifie si on a cliqué sur le nom
-			// d'un compte
-			{
-				DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) pathFromEvent
-						.getLastPathComponent();
-				Object userObject = aNode.getUserObject();
-				if (userObject instanceof MlDossier) {
-					MlDossier dossier = (MlDossier) userObject;
-					MlListeMessage lstMess = dossier.getListMessage();
-					JTableFactory tableFact = new JTableFactory();
-					tableFact.refreshJTable(lstMess);
-					// MyTableModel modelDetable = (MyTableModel)
-					// table.getModel();
-					// modelDetable.valorisetable(lstMess);
-					((DefaultListModel) ComposantVisuelCommun.getJListPJ()
-							.getModel()).removeAllElements();
-					Document doc = ComposantVisuelCommun.getHtmlPane()
-							.getDocument();
-					doc.putProperty(Document.StreamDescriptionProperty, null);
-					try {
-						ComposantVisuelCommun.getHtmlPane().setPage(
-								"file:///"
-										+ GestionRepertoire.RecupRepTemplate()
-										+ "/vide.html");
-						return;
-					} catch (IOException e1) {
-						return;
-					}
-				} else if (userObject instanceof MlCompteMail) {
-					JTableFactory tableFact = new JTableFactory();
-					tableFact.refreshJTable(new MlListeMessage());
-					((DefaultListModel) ComposantVisuelCommun.getJListPJ()
-							.getModel()).removeAllElements();
-					Document doc = ComposantVisuelCommun.getHtmlPane()
-							.getDocument();
-					doc.putProperty(Document.StreamDescriptionProperty, null);
-					try {
-						ComposantVisuelCommun.getHtmlPane().setPage(
-								"file:///"
-										+ GestionRepertoire.RecupRepTemplate()
-										+ "/vide.html");
-						return;
-					} catch (IOException e1) {
-						return;
-					}
+		if (e.isPopupTrigger() && pathFromEvent != null) {
 
-				}
-			}
-		}
+			int selRow = tree.getRowForLocation(e.getX(), e.getY());
 
-		int selRow = tree.getRowForLocation(e.getX(), e.getY());
-		TreePath selPath = pathFromEvent;
+			// tree.setSelectionPath(pathFromEvent);
+			tree.setSelectionRow(selRow);
 
-		tree.setSelectionPath(selPath);
-		tree.setSelectionRow(selRow);
-
-		if (e.isPopupTrigger()) {
-			DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) selPath
+			DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) pathFromEvent
 					.getLastPathComponent();
 			Object userObject = aNode.getUserObject();
 			if (userObject instanceof MlCompteMail) {

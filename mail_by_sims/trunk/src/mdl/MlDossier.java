@@ -42,6 +42,10 @@ public class MlDossier {
 			}// fin de switch
 		}// fin de for
 		this.listSousDossier = bd.getListeSousDossier(idDossier);
+		this.listMessage = bd.getListeDeMessage(idCompte, idDossier);
+		this.unreadMessCount = bd.getUnreadMessageFromFolder(idCompte,
+				idDossier);
+
 	}
 
 	public int getIdDossierParent() {
@@ -77,11 +81,9 @@ public class MlDossier {
 	}
 
 	public MlListeDossier getListSousDossier() {
+		// this.listSousDossier = new
+		// BDRequette().getListeSousDossier(idDossier);
 		return listSousDossier;
-	}
-
-	public void setListSousDossier(MlListeDossier p_listSousDossier) {
-		listSousDossier = p_listSousDossier;
 	}
 
 	public int getIdDossier() {
@@ -92,8 +94,8 @@ public class MlDossier {
 	 * @return the unreadMessCount
 	 */
 	public int getUnreadMessCount() {
-		this.unreadMessCount = new BDRequette().getUnreadMessageFromFolder(
-				idCompte, idDossier);
+		// this.unreadMessCount = new BDRequette().getUnreadMessageFromFolder(
+		// idCompte, idDossier);
 		return unreadMessCount;
 	}
 
@@ -101,9 +103,30 @@ public class MlDossier {
 	 * @return
 	 */
 	public MlListeMessage getListMessage() {
-		this.listMessage = new BDRequette().getListeDeMessage(idCompte,
-				idDossier);
+		// this.listMessage = new BDRequette().getListeDeMessage(idCompte,
+		// idDossier);
 		return listMessage;
+	}
+
+	/**
+	 * @param p_listSousDossier the listSousDossier to set
+	 */
+	public void setListSousDossier(MlListeDossier p_listSousDossier) {
+		this.listSousDossier = p_listSousDossier;
+	}
+
+	/**
+	 * @param p_unreadMessCount the unreadMessCount to set
+	 */
+	public void setUnreadMessCount(int p_unreadMessCount) {
+		this.unreadMessCount = p_unreadMessCount;
+	}
+
+	/**
+	 * @param p_listMessage the listMessage to set
+	 */
+	public void setListMessage(MlListeMessage p_listMessage) {
+		this.listMessage = p_listMessage;
 	}
 
 }

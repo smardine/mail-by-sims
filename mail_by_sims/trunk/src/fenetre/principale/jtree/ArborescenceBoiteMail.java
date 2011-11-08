@@ -4,20 +4,16 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.Vector;
 
-import javax.swing.ImageIcon;
-import javax.swing.UIManager;
 import javax.swing.event.TreeModelEvent;
 import javax.swing.event.TreeModelListener;
 import javax.swing.tree.DefaultMutableTreeNode;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import releve.imap.util.messageUtilisateur;
 
-public class ArborescenceBoiteMail extends DefaultTreeModel implements
-		TreeModel {
+public class ArborescenceBoiteMail implements TreeModel {
 
 	/**
 	 * 
@@ -32,16 +28,16 @@ public class ArborescenceBoiteMail extends DefaultTreeModel implements
 	private final DefaultMutableTreeNode rootNode;
 
 	public ArborescenceBoiteMail(DefaultMutableTreeNode p_rootNode) {
-		super(p_rootNode);
+		// super(p_rootNode);
 		this.rootNode = p_rootNode;
 		listeners = new Vector<TreeModelListener>();
 
-		UIManager.put("Tree.openIcon", new ImageIcon(
-				"Images/dossier-ouvert-16.png"));
-		UIManager.put("Tree.closedIcon", new ImageIcon(
-				"Images/dossier-ouvert-16.png"));
-		UIManager.put("Tree.leafIcon", new ImageIcon(
-				"Images/dossier-ferme-16.png"));
+		// UIManager.put("Tree.openIcon", new ImageIcon(
+		// "Images/dossier-ouvert-16.png"));
+		// UIManager.put("Tree.closedIcon", new ImageIcon(
+		// "Images/dossier-ouvert-16.png"));
+		// UIManager.put("Tree.leafIcon", new ImageIcon(
+		// "Images/dossier-ferme-16.png"));
 	}
 
 	@Override

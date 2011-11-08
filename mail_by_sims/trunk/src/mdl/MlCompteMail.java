@@ -13,7 +13,7 @@ public class MlCompteMail {
 	private long portPop, portSMTP;
 	private String userName, password, serveurSMTP, serveurReception,
 			nomCompte;
-	private MlListeDossier listDossier;
+	private MlListeDossier listDossierPrincipaux;
 	private int ureadMessCount;
 	private EnTypeCompte typeCompte;
 
@@ -72,7 +72,8 @@ public class MlCompteMail {
 		}// fin de for
 
 		initDossierDeBase(bd);
-		// this.listDossier =
+		this.listDossierPrincipaux = bd.getListeSousDossierBase(idCompte);
+		this.ureadMessCount = bd.getUnreadMessageFromCompte(idCompte);
 
 	}
 
@@ -322,16 +323,30 @@ public class MlCompteMail {
 	 * @return the listDossier
 	 */
 	public MlListeDossier getListDossierPrincipaux() {
-		listDossier = new BDRequette().getListeSousDossierBase(idCompte);
-		return listDossier;
+		return listDossierPrincipaux;
 	}
 
 	/**
 	 * @return the ureadMessCount
 	 */
 	public int getUreadMessCount() {
-		ureadMessCount = new BDRequette().getUnreadMessageFromCompte(idCompte);
+		// ureadMessCount = new
+		// BDRequette().getUnreadMessageFromCompte(idCompte);
 		return ureadMessCount;
+	}
+
+	/**
+	 * @param p_listDossier the listDossier to set
+	 */
+	public void setListDossier(MlListeDossier p_listDossier) {
+		this.listDossierPrincipaux = p_listDossier;
+	}
+
+	/**
+	 * @param p_ureadMessCount the ureadMessCount to set
+	 */
+	public void setUreadMessCount(int p_ureadMessCount) {
+		this.ureadMessCount = p_ureadMessCount;
 	}
 
 }

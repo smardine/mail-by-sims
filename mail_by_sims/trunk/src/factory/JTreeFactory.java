@@ -79,7 +79,7 @@ public class JTreeFactory {
 
 	// If expand is true, expands all nodes in the tree.
 	// Otherwise, collapses all nodes in the tree.
-	public void expandAll(JTree tree, boolean expand) {
+	private void expandAll(JTree tree, boolean expand) {
 		TreeNode root = (TreeNode) ((ArborescenceBoiteMail) tree.getModel())
 				.getRootNode();
 
@@ -133,6 +133,7 @@ public class JTreeFactory {
 			}
 		}
 		final TreePath treePath = tree.getSelectionPath();
+
 		if (treePath != null) {
 			new Thread(new Runnable() {
 
@@ -204,9 +205,9 @@ public class JTreeFactory {
 
 	}
 
-	public void refreshNode(TreePath p_path) {
-		((ArborescenceBoiteMail) tree.getModel()).reload((TreeNode) p_path
-				.getLastPathComponent());
+	private void refreshNode(TreePath p_path) {
+		// ((Object) tree.getModel()).reload((TreeNode) p_path
+		// .getLastPathComponent());
 
 		// ((ArborescenceBoiteMail) tree.getModel())
 		// .fireTreeStructureChanged(new TreeModelEvent(this, p_path));

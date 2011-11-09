@@ -54,11 +54,14 @@ public class MlActionPopupJTree implements ActionListener {
 			}
 			if (accesDossier.createNewDossier(idCompte, idDossierParent,
 					nomNewDossier, "")) {
+				MlDossier aDossier = new MlDossier(accesDossier.getIdDossier(
+						nomNewDossier, idCompte));
 				TreePath newTreePath = selectionPath
-						.pathByAddingChild(new DefaultMutableTreeNode(
-								nomNewDossier));
+						.pathByAddingChild(new DefaultMutableTreeNode(aDossier));
 				JTreeFactory treeFact = new JTreeFactory();
 				treeFact.ajouteNode(selectionPath,
+						(DefaultMutableTreeNode) selectionPath
+								.getLastPathComponent(),
 						(DefaultMutableTreeNode) newTreePath
 								.getLastPathComponent());
 				tree.setSelectionPath(newTreePath);

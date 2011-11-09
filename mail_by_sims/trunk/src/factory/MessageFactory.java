@@ -305,8 +305,8 @@ public class MessageFactory {
 				"=?iso-8859-1?Q?", "").replace("?", "").replace(",", "")
 				.replaceAll("=?UTF-8?Q?", "").replaceAll("=?utf-8?Q?", "")
 				.replace("=5F", "_").replace("=E9", "é").replace("=Q", "")
-				.replace("=CC=81e", "é").replace("=", "").replace("2E", ".");
-
+				.replace("=CC=81e", "é").replace("=", "").replace("2E", ".")
+				.replaceAll("\t", "");
 		return s;
 	}
 
@@ -314,8 +314,8 @@ public class MessageFactory {
 
 		// le n° du message (meme si il est caché).
 		AccesTableMailRecu accesMail = new AccesTableMailRecu();
-		File contenu = accesMail.getContenuFromIdForFile(p_message.getIdMessage(),
-				false);
+		File contenu = accesMail.getContenuFromIdForFile(p_message
+				.getIdMessage(), false);
 
 		// on RAZ le contenu du panelEditor
 		Document doc = ComposantVisuelCommun.getHtmlPane().getDocument();

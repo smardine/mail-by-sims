@@ -387,7 +387,7 @@ public class DossierFactory {
 				fldr.getName().trim(), fldr.getFullName().trim(), cptMail
 						.getIdCompte());
 		JTreeFactory treeFact = new JTreeFactory();
-		treeFact.reloadJtree();
+		treeFact.refreshJTree();
 
 	}
 

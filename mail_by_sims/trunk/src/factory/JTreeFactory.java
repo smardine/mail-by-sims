@@ -184,10 +184,10 @@ public class JTreeFactory {
 				p_idCompte);
 		accesDossier.createNewDossier(p_idCompte, idDossierParent, nomDossier,
 				"");
-		ajouteNode(p_treePath, new DefaultMutableTreeNode(nomDossier));
-		// tree.getModel()
-		// .valueForPathChanged(newTp, newTp.getLastPathComponent());
-
+		MlDossier aDossier = new MlDossier(accesDossier.getIdDossier(
+				nomDossier, p_idCompte));
+		ajouteNode(p_treePath, (DefaultMutableTreeNode) p_treePath
+				.getLastPathComponent(), new DefaultMutableTreeNode(aDossier));
 		return newTp;
 
 	}
@@ -200,17 +200,17 @@ public class JTreeFactory {
 		// .fireTreeStructureChanged(new TreeModelEvent(this, p_path));
 	}
 
-	public boolean ajouteNode(TreePath p_path, TreeNode p_newValue) {
-		DefaultMutableTreeNode node = (DefaultMutableTreeNode) p_path
-				.getLastPathComponent();
+	public boolean ajouteNode(TreePath p_path,
+			DefaultMutableTreeNode p_nodeParent,
+			DefaultMutableTreeNode p_newNode) {
 
-		node.add((DefaultMutableTreeNode) p_newValue);
-		int childCount = node.getChildCount();
+		p_nodeParent.add(p_newNode);
+		int childCount = p_nodeParent.getChildCount();
 		int[] tabIdx = new int[childCount];
 		Object[] tabChild = new Object[childCount];
 		for (int i = 0; i < childCount; i++) {
-			tabChild[i] = node.getChildAt(i);
-			tabIdx[i] = node.getIndex((TreeNode) tabChild[i]);
+			tabChild[i] = p_nodeParent.getChildAt(i);
+			tabIdx[i] = p_nodeParent.getIndex((TreeNode) tabChild[i]);
 		}
 		((ArborescenceBoiteMail) tree.getModel())
 				.fireTreeStructureChanged(new TreeModelEvent(this, p_path,

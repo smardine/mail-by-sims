@@ -15,7 +15,7 @@ import mdl.MlCompteMail;
 import mdl.MlMessage;
 import tools.GestionRepertoire;
 import tools.Historique;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableMailRecu;
 
 import com.googlecode.jdeltasync.AuthenticationException;
 import com.googlecode.jdeltasync.DeltaSyncClient;
@@ -42,7 +42,7 @@ public class ReleveFactory {
 	private final MlCompteMail compteMail;
 
 	private Store st;
-	private final BDRequette bd;
+	private final AccesTableMailRecu bd;
 
 	private DeltaSyncClientHelper client;
 	private final Patience fenetre;
@@ -58,7 +58,7 @@ public class ReleveFactory {
 	public ReleveFactory(MlCompteMail p_cpt, Patience p_fenetre) {
 		this.compteMail = p_cpt;
 		this.fenetre = p_fenetre;
-		this.bd = new BDRequette();
+		this.bd = new AccesTableMailRecu();
 	}
 
 	/**

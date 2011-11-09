@@ -10,7 +10,7 @@ import javax.mail.MessagingException;
 import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableMailRecu;
 
 import com.sun.mail.imap.IMAPFolder;
 
@@ -47,12 +47,12 @@ public class SynchroFactory {
 	public void synchroniseUnDossierDeltaSync(
 			com.googlecode.jdeltasync.Folder p_folder,
 			com.googlecode.jdeltasync.Message[] p_lstMessageHotmail) {
-		BDRequette bd = new BDRequette();
+		AccesTableMailRecu accesMail = new AccesTableMailRecu();
 		DossierFactory dossierFact = new DossierFactory(p_folder, compteMail);
 		dossierFact.isDossierDejaPresentEnBase();
 
-		int messBaseCount = bd.getnbMessageParDossier(compteMail.getIdCompte(),
-				dossierFact.getIdDossier());
+		int messBaseCount = accesMail.getnbMessageParDossier(compteMail
+				.getIdCompte(), dossierFact.getIdDossier());
 		int nbMessASynchroniser = p_lstMessageHotmail.length - messBaseCount;
 
 		if (nbMessASynchroniser >= 0) {
@@ -61,7 +61,7 @@ public class SynchroFactory {
 			return;
 		}
 
-		MlListeMessage listeMessage = bd.getListeDeMessage(compteMail
+		MlListeMessage listeMessage = accesMail.getListeDeMessage(compteMail
 				.getIdCompte(), dossierFact.getIdDossier());
 		int nbActu = 0;
 		for (MlMessage m : listeMessage) {
@@ -71,7 +71,7 @@ public class SynchroFactory {
 					+ pourcent + " %", pourcent);
 
 			if (!verifUIDDeltaMessage(m.getUIDMessage(), p_lstMessageHotmail)) {
-				bd.deleteMessageRecu(m.getIdMessage());
+				accesMail.deleteMessageRecu(m.getIdMessage());
 			}
 
 		}
@@ -101,7 +101,7 @@ public class SynchroFactory {
 	 * @throws MessagingException
 	 */
 	public void synchroniseUnDossier(Folder p_folder) throws MessagingException {
-		BDRequette bd = new BDRequette();
+		AccesTableMailRecu bd = new AccesTableMailRecu();
 		if (!p_folder.isOpen()) {
 			p_folder.open(Folder.READ_WRITE);
 		}

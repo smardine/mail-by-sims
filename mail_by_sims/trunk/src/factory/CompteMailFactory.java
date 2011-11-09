@@ -13,7 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
 import mdl.MlCompteMail;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableCompte;
+import bdd.accesTable.AccesTableDossier;
 
 import com.googlecode.jdeltasync.DeltaSyncClient;
 import com.googlecode.jdeltasync.DeltaSyncClientHelper;
@@ -39,10 +40,10 @@ public class CompteMailFactory {
 	 * @param p_compteMail
 	 */
 	public boolean creationCompteMail(MlCompteMail p_compteMail) {
-		BDRequette bd = new BDRequette();
-		boolean result = bd.createNewCompte(p_compteMail);
+		AccesTableCompte accesCompte = new AccesTableCompte();
+		boolean result = accesCompte.createNewCompte(p_compteMail);
 		if (result) {
-			int idCpt = bd.getIdComptes(p_compteMail.getNomCompte());
+			int idCpt = accesCompte.getIdComptes(p_compteMail.getNomCompte());
 			p_compteMail.setIdCompte(idCpt);
 
 			// creation des dossiers de base (boite de reception,
@@ -55,12 +56,14 @@ public class CompteMailFactory {
 					lstDossierBase.add(dossier.getLib());
 				}
 			}
-			result = bd.createListeDossierDeBase(p_compteMail, lstDossierBase);
-			p_compteMail.setIdInbox(bd.getIdInbox(idCpt));
-			p_compteMail.setIdBrouillons(bd.getIdBrouillon(idCpt));
-			p_compteMail.setIdCorbeille(bd.getIdCorbeille(idCpt));
-			p_compteMail.setIdEnvoye(bd.getIdEnvoye(idCpt));
-			p_compteMail.setIdSpam(bd.getIdSpam(idCpt));
+			AccesTableDossier accesDossier = new AccesTableDossier();
+			result = accesDossier.createListeDossierDeBase(p_compteMail,
+					lstDossierBase);
+			p_compteMail.setIdInbox(accesCompte.getIdInbox(idCpt));
+			p_compteMail.setIdBrouillons(accesCompte.getIdBrouillon(idCpt));
+			p_compteMail.setIdCorbeille(accesCompte.getIdCorbeille(idCpt));
+			p_compteMail.setIdEnvoye(accesCompte.getIdEnvoye(idCpt));
+			p_compteMail.setIdSpam(accesCompte.getIdSpam(idCpt));
 		}
 
 		return result;
@@ -77,8 +80,8 @@ public class CompteMailFactory {
 	 */
 	public boolean suppressionCompteMail(MlCompteMail p_cpt, JLabel p_label,
 			JProgressBar p_progressBar) throws DonneeAbsenteException {
-		BDRequette bd = new BDRequette();
-		boolean result = bd.deleteCompte(p_cpt.getIdCompte(), p_label,
+		AccesTableCompte accesCompte = new AccesTableCompte();
+		boolean result = accesCompte.deleteCompte(p_cpt.getIdCompte(), p_label,
 				p_progressBar);
 
 		return result;

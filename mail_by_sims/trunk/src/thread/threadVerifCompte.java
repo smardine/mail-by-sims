@@ -7,7 +7,7 @@ import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import releve.imap.util.messageUtilisateur;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableCompte;
 import factory.CompteMailFactory;
 import factory.ReleveFactory;
 import fenetre.Patience;
@@ -67,8 +67,8 @@ public class threadVerifCompte extends Thread {
 				DefaultListModel model = (DefaultListModel) ComposantVisuelCommun
 						.getJListCompteMail().getModel();
 
-				BDRequette bd = new BDRequette();
-				MlListeCompteMail lst = bd.getListeDeComptes();
+				AccesTableCompte accesCompte = new AccesTableCompte();
+				MlListeCompteMail lst = accesCompte.getListeDeComptes();
 				model.clear();
 
 				for (MlCompteMail cpt : lst) {

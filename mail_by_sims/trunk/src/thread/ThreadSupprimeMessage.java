@@ -6,6 +6,7 @@ package thread;
 import javax.mail.MessagingException;
 
 import mdl.MlCompteMail;
+import mdl.MlDossier;
 import mdl.MlListeMessage;
 import releve.imap.util.messageUtilisateur;
 import factory.DeplaceOuSupprFactory;
@@ -32,12 +33,13 @@ public class ThreadSupprimeMessage extends Thread {
 		fenetre.setVisible(true);
 
 		MlCompteMail cpt = new MlCompteMail(list.get(0).getIdCompte());
+		MlDossier dossier = new MlDossier(list.get(0).getIdDossier());
 		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt, list,
 				fenetre);
 		try {
 			fact.supprMessage();
 			JTableFactory tableFactory = new JTableFactory();
-			tableFactory.refreshJTable(list);
+			tableFactory.refreshJTable(dossier.getListMessage());
 			JTreeFactory treeFactory = new JTreeFactory();
 			treeFactory.refreshJTree();
 

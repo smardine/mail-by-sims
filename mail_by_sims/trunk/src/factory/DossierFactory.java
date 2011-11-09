@@ -13,7 +13,7 @@ import mdl.MlCompteMail;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
 import tools.Historique;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableDossier;
 
 import com.sun.mail.imap.IMAPFolder;
 import com.sun.mail.pop3.POP3Folder;
@@ -28,7 +28,7 @@ public class DossierFactory {
 	private final Folder fldr;
 	private final com.googlecode.jdeltasync.Folder deltaFldr;
 	private final MlCompteMail cptMail;
-	private final BDRequette bd;
+	private final AccesTableDossier accesDossier;
 	private int idDossier = -1;
 
 	/**
@@ -41,7 +41,7 @@ public class DossierFactory {
 		this.deltaFldr = null;
 		this.fldr = p_fldr;
 		this.cptMail = p_compteMail;
-		this.bd = new BDRequette();
+		this.accesDossier = new AccesTableDossier();
 	}
 
 	/**
@@ -55,7 +55,7 @@ public class DossierFactory {
 		this.fldr = null;
 		this.deltaFldr = p_folder;
 		this.cptMail = p_compteMail;
-		this.bd = new BDRequette();
+		this.accesDossier = new AccesTableDossier();
 	}
 
 	/**
@@ -65,7 +65,7 @@ public class DossierFactory {
 		this.fldr = null;
 		this.deltaFldr = null;
 		this.cptMail = p_cptMail;
-		this.bd = new BDRequette();
+		this.accesDossier = new AccesTableDossier();
 	}
 
 	public boolean isDossierPresentImport(String p_nameToCheck) {
@@ -74,7 +74,7 @@ public class DossierFactory {
 			case HOTMAIL:
 			case IMAP:
 			case POP:
-				idDossier = bd.getIdDossier(p_nameToCheck, cptMail
+				idDossier = accesDossier.getIdDossier(p_nameToCheck, cptMail
 						.getIdCompte());
 
 		}
@@ -118,22 +118,27 @@ public class DossierFactory {
 	private void verifHotmail(com.googlecode.jdeltasync.Folder p_deltaFldr) {
 		if (isInboxDelta(p_deltaFldr)) {
 			idDossier = cptMail.getIdInbox();
-			bd.updateNomDossierInternet(idDossier, p_deltaFldr.getName(), 0);
+			accesDossier.updateNomDossierInternet(idDossier, p_deltaFldr
+					.getName(), 0);
 		} else if (isBrouillonDelta(p_deltaFldr)) {
 			idDossier = cptMail.getIdBrouillons();
-			bd.updateNomDossierInternet(idDossier, p_deltaFldr.getName(), 0);
+			accesDossier.updateNomDossierInternet(idDossier, p_deltaFldr
+					.getName(), 0);
 		} else if (isCorbeilleDelta(p_deltaFldr)) {
 			idDossier = cptMail.getIdCorbeille();
-			bd.updateNomDossierInternet(idDossier, p_deltaFldr.getName(), 0);
+			accesDossier.updateNomDossierInternet(idDossier, p_deltaFldr
+					.getName(), 0);
 		} else if (isEnvoyeDelta(p_deltaFldr)) {
 			idDossier = cptMail.getIdEnvoye();
-			bd.updateNomDossierInternet(idDossier, p_deltaFldr.getName(), 0);
+			accesDossier.updateNomDossierInternet(idDossier, p_deltaFldr
+					.getName(), 0);
 		} else if (isSpamDelta(p_deltaFldr)) {
 			idDossier = cptMail.getIdSpam();
-			bd.updateNomDossierInternet(idDossier, p_deltaFldr.getName(), 0);
+			accesDossier.updateNomDossierInternet(idDossier, p_deltaFldr
+					.getName(), 0);
 		} else {
-			idDossier = bd.getIdDossierWithFullName(p_deltaFldr.getName(),
-					p_deltaFldr.getName(), cptMail.getIdCompte());
+			idDossier = accesDossier.getIdDossierWithFullName(p_deltaFldr
+					.getName(), p_deltaFldr.getName(), cptMail.getIdCompte());
 			if (idDossier == -1) {
 				createNewDossierDeltaEnBase();
 			}
@@ -211,27 +216,33 @@ public class DossierFactory {
 
 		if (isInbox(p_imapF)) {
 			idDossier = cptMail.getIdInbox();
-			bd.updateNomDossierInternet(idDossier, p_imapF.getFullName(), 0);
+			accesDossier.updateNomDossierInternet(idDossier, p_imapF
+					.getFullName(), 0);
 			return;
 		} else if (isBrouillon(p_imapF)) {
 			idDossier = cptMail.getIdBrouillons();
-			bd.updateNomDossierInternet(idDossier, p_imapF.getFullName(), 0);
+			accesDossier.updateNomDossierInternet(idDossier, p_imapF
+					.getFullName(), 0);
 			return;
 		} else if (isCorbeille(p_imapF)) {
 			idDossier = cptMail.getIdCorbeille();
-			bd.updateNomDossierInternet(idDossier, p_imapF.getFullName(), 0);
+			accesDossier.updateNomDossierInternet(idDossier, p_imapF
+					.getFullName(), 0);
 			return;
 		} else if (isEnvoye(p_imapF)) {
 			idDossier = cptMail.getIdEnvoye();
-			bd.updateNomDossierInternet(idDossier, p_imapF.getFullName(), 0);
+			accesDossier.updateNomDossierInternet(idDossier, p_imapF
+					.getFullName(), 0);
 			return;
 		} else if (isSpam(p_imapF)) {
 			idDossier = cptMail.getIdSpam();
-			bd.updateNomDossierInternet(idDossier, p_imapF.getFullName(), 0);
+			accesDossier.updateNomDossierInternet(idDossier, p_imapF
+					.getFullName(), 0);
 			return;
 		} else {
-			idDossier = bd.getIdDossierWithFullName(p_imapF.getName(), p_imapF
-					.getFullName(), cptMail.getIdCompte());
+			idDossier = accesDossier.getIdDossierWithFullName(
+					p_imapF.getName(), p_imapF.getFullName(), cptMail
+							.getIdCompte());
 
 			if (idDossier != -1) {
 
@@ -239,7 +250,7 @@ public class DossierFactory {
 				// base est le meme que
 				// le dossier testé
 				if (!p_imapF.getFullName().equals(
-						bd.getNomInternetDossier(idDossier))) {
+						accesDossier.getNomInternetDossier(idDossier))) {
 					// le dossier a été deplacé sur le serveur, maj du nom
 					// internet et de l'id dossier parent
 					// dans le cas où l'utilisateur a créer un dossier du meme
@@ -255,12 +266,13 @@ public class DossierFactory {
 								"mise a jour de la base de données");
 						int idDossierParent;
 
-						idDossierParent = bd.getIdDossierWithFullName(p_imapF
-								.getParent().getName(), p_imapF.getParent()
-								.getFullName(), cptMail.getIdCompte());
+						idDossierParent = accesDossier
+								.getIdDossierWithFullName(p_imapF.getParent()
+										.getName(), p_imapF.getParent()
+										.getFullName(), cptMail.getIdCompte());
 
-						bd.updateNomDossierInternet(idDossier, p_imapF
-								.getFullName(), idDossierParent);
+						accesDossier.updateNomDossierInternet(idDossier,
+								p_imapF.getFullName(), idDossierParent);
 					} catch (MessagingException e) {
 						Historique
 								.ecrireReleveBal(cptMail,
@@ -344,8 +356,8 @@ public class DossierFactory {
 			// de cette facon, les dossier
 			// "Important","Tous les messages"...
 			// seront a la racine du compte dans le jtree
-			bd.createNewDossier(cptMail.getIdCompte(), 0, fldr.getName(), fldr
-					.getFullName());
+			accesDossier.createNewDossier(cptMail.getIdCompte(), 0, fldr
+					.getName(), fldr.getFullName());
 		} else {
 			// sinon, les dossiers créés le seront sous INBOX
 			String nomDossierParent = "";
@@ -357,21 +369,23 @@ public class DossierFactory {
 				Historique.ecrireReleveBal(cptMail, fldr.getFullName(),
 						"impossible de trouver le dossier parent");
 			}
-			int idDossierParent = bd.getIdDossierWithFullName(nomDossierParent,
-					nomDossierParentComplet, cptMail.getIdCompte());
+			int idDossierParent = accesDossier.getIdDossierWithFullName(
+					nomDossierParent, nomDossierParentComplet, cptMail
+							.getIdCompte());
 			if (idDossierParent != -1) {
-				bd.createNewDossier(cptMail.getIdCompte(), idDossierParent,
-						fldr.getName(), fldr.getFullName());
+				accesDossier.createNewDossier(cptMail.getIdCompte(),
+						idDossierParent, fldr.getName(), fldr.getFullName());
 			} else {
-				bd.createNewDossier(cptMail.getIdCompte(),
-						cptMail.getIdInbox(), fldr.getName().trim(), fldr
-								.getFullName().trim());
+				accesDossier.createNewDossier(cptMail.getIdCompte(), cptMail
+						.getIdInbox(), fldr.getName().trim(), fldr
+						.getFullName().trim());
 			}
 
 		}
 
-		idDossier = bd.getIdDossierWithFullName(fldr.getName().trim(), fldr
-				.getFullName().trim(), cptMail.getIdCompte());
+		idDossier = accesDossier.getIdDossierWithFullName(
+				fldr.getName().trim(), fldr.getFullName().trim(), cptMail
+						.getIdCompte());
 		JTreeFactory treeFact = new JTreeFactory();
 		treeFact.reloadJtree();
 
@@ -384,10 +398,10 @@ public class DossierFactory {
 	public void createNewDossierDeltaEnBase() {
 		Historique.ecrireReleveBal(cptMail, deltaFldr.getName(),
 				"Création d'un nouveau dossier");
-		bd.createNewDossier(cptMail.getIdCompte(), cptMail.getIdInbox(),
-				deltaFldr.getName(), deltaFldr.getName());
-		idDossier = bd.getIdDossierWithFullName(deltaFldr.getName().trim(),
-				deltaFldr.getName().trim(), cptMail.getIdCompte());
+		accesDossier.createNewDossier(cptMail.getIdCompte(), cptMail
+				.getIdInbox(), deltaFldr.getName(), deltaFldr.getName());
+		idDossier = accesDossier.getIdDossierWithFullName(deltaFldr.getName()
+				.trim(), deltaFldr.getName().trim(), cptMail.getIdCompte());
 		JTreeFactory treeFact = new JTreeFactory();
 		treeFact.reloadJtree();
 	}
@@ -405,9 +419,10 @@ public class DossierFactory {
 
 		switch (rep) {
 			case OUI:// on supprime le dossier
-				idDossier = bd.getIdDossier(dossierASupprimer, cptMail
-						.getIdCompte());
-				bd.deleteDossier(cptMail.getIdCompte(), idDossier, null);
+				idDossier = accesDossier.getIdDossier(dossierASupprimer,
+						cptMail.getIdCompte());
+				accesDossier.deleteDossier(cptMail.getIdCompte(), idDossier,
+						null);
 
 				JTreeFactory treeFact = new JTreeFactory();
 				treeFact.supprimeNode(p_selectionPath,

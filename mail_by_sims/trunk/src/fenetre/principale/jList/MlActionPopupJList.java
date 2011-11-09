@@ -11,7 +11,7 @@ import javax.swing.JTable;
 import releve.imap.util.messageUtilisateur;
 import tools.ManipFichier;
 import tools.OpenWithDefaultViewer;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTablePieceJointe;
 import fenetre.principale.MlAction.EnActionMain;
 import fenetre.principale.jTable.jTableHelper;
 
@@ -64,12 +64,13 @@ public class MlActionPopupJList implements ActionListener {
 	private void traiteToutEnregistrerPJ() {
 		int idMessage = jTableHelper.getReelIdMessage(table, table
 				.getSelectedRow());
-		BDRequette bd = new BDRequette();
-		List<String> lstPJ = bd.getListeNomPieceJointe(idMessage);
+		AccesTablePieceJointe accesPJ = new AccesTablePieceJointe();
+		List<String> lstPJ = accesPJ.getListeNomPieceJointe(idMessage);
 		String emplacementEnregistrement = ManipFichier.OpenFolder();
 
 		for (String unePJ : lstPJ) {
-			File fichier = bd.getPieceJointeFromIDMessage(idMessage, unePJ);
+			File fichier = accesPJ
+					.getPieceJointeFromIDMessage(idMessage, unePJ);
 			File emplacementFichier = new File(emplacementEnregistrement + "/"
 					+ unePJ);
 			ManipFichier.deplacer(fichier, emplacementFichier);
@@ -81,9 +82,9 @@ public class MlActionPopupJList implements ActionListener {
 		int idMessage = jTableHelper.getReelIdMessage(table, table
 				.getSelectedRow());
 		String nomPieceJointe = (String) list.getSelectedValue();
-		BDRequette bd = new BDRequette();
-		File fichier = bd
-				.getPieceJointeFromIDMessage(idMessage, nomPieceJointe);
+		AccesTablePieceJointe accesPJ = new AccesTablePieceJointe();
+		File fichier = accesPJ.getPieceJointeFromIDMessage(idMessage,
+				nomPieceJointe);
 
 		File emplacementFichier = new File(ManipFichier.SaveFile(fichier
 				.getName()));
@@ -96,9 +97,9 @@ public class MlActionPopupJList implements ActionListener {
 				.getSelectedRow());
 		String nomPieceJointe = (String) list.getSelectedValue();
 
-		BDRequette bd = new BDRequette();
-		File fichier = bd
-				.getPieceJointeFromIDMessage(idMessage, nomPieceJointe);
+		AccesTablePieceJointe accesPJ = new AccesTablePieceJointe();
+		File fichier = accesPJ.getPieceJointeFromIDMessage(idMessage,
+				nomPieceJointe);
 
 		OpenWithDefaultViewer.open(fichier.getAbsolutePath());
 

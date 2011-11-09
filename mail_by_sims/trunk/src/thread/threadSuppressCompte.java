@@ -11,7 +11,7 @@ import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import releve.imap.util.messageUtilisateur;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableCompte;
 import exception.DonneeAbsenteException;
 import factory.CompteMailFactory;
 import fenetre.Patience;
@@ -52,8 +52,8 @@ public class threadSuppressCompte extends Thread {
 		if (result) {
 			messageUtilisateur.affMessageInfo("Suppression du compte réussie");
 			// on recupere la liste des comptes et on l'affiche
-			BDRequette bd = new BDRequette();
-			MlListeCompteMail lst = bd.getListeDeComptes();
+			AccesTableCompte accesCompte = new AccesTableCompte();
+			MlListeCompteMail lst = accesCompte.getListeDeComptes();
 
 			DefaultListModel model = (DefaultListModel) ComposantVisuelCommun
 					.getJListCompteMail().getModel();

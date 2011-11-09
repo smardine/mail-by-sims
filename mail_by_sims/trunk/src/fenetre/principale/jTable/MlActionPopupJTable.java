@@ -13,7 +13,7 @@ import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
 import thread.ThreadDeplaceMessage;
 import thread.ThreadSupprimeMessage;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableMailRecu;
 import factory.JTreeFactory;
 import fenetre.Patience;
 import fenetre.principale.MlAction.EnActionMain;
@@ -73,7 +73,7 @@ public class MlActionPopupJTable implements ActionListener {
 	 * @param p_tabIdLigneSelectionnee
 	 */
 	private void lanceMarquageLu(int[] p_tabIdLigneSelectionnee) {
-		BDRequette bd = new BDRequette();
+		AccesTableMailRecu accesMail = new AccesTableMailRecu();
 		MlListeMessage lst = new MlListeMessage();
 		// int idDossier = -1;
 		// int idCompte = -1;
@@ -84,20 +84,14 @@ public class MlActionPopupJTable implements ActionListener {
 					selectedLine);
 
 			MlMessage m = new MlMessage(idMessage);
-			// idDossier = m.getIdDossier();
-			// idCompte = m.getIdCompte();
 			lst.add(m);
 
 		}// fin de for
 
 		for (MlMessage m : lst) {
-			m.setStatuLecture(true);
-			bd.updateStatusLecture(m.getIdMessage(), true);
+			m.setLu(true);
+			accesMail.updateStatusLecture(m.getIdMessage(), true);
 		}
-
-		// MlListeMessage lstDossier = bd.getListeDeMessage(idCompte,
-		// idDossier);
-
 		JTreeFactory treeFact = new JTreeFactory();
 		treeFact.refreshJTreeAndJTable();
 

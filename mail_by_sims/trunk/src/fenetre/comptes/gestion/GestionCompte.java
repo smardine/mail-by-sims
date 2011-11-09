@@ -16,7 +16,7 @@ import javax.swing.WindowConstants;
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableCompte;
 import factory.JTreeFactory;
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.gestion.MlActionGestion.EnActionComptes;
@@ -44,8 +44,8 @@ public class GestionCompte extends JFrame {
 		modelList = new DefaultListModel();
 		jList.setModel(modelList);
 		// on recupere la liste des comptes et on l'affiche
-		BDRequette bd = new BDRequette();
-		MlListeCompteMail lst = bd.getListeDeComptes();
+		AccesTableCompte accesCompte = new AccesTableCompte();
+		MlListeCompteMail lst = accesCompte.getListeDeComptes();
 
 		for (MlCompteMail cpt : lst) {
 			modelList.addElement(cpt.getNomCompte());

@@ -16,7 +16,8 @@ import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlDossier;
 import releve.imap.util.messageUtilisateur;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableCompte;
+import bdd.accesTable.AccesTableDossier;
 import exception.DonneeAbsenteException;
 import fenetre.comptes.EnDossierBase;
 import fenetre.principale.MlAction.MlActionMainCombo;
@@ -28,19 +29,19 @@ import fenetre.principale.jtree.ArborescenceBoiteMail;
 public class JTreeFactory {
 
 	private DefaultMutableTreeNode treeNode;
-	private final BDRequette bd;
+	private final AccesTableCompte accesCompte;
 	private final JTree tree;
 	private final String TAG = this.getClass().getSimpleName();
 
 	public JTreeFactory() {
 		this.tree = ComposantVisuelCommun.getJTree();
-		this.bd = new BDRequette();
+		this.accesCompte = new AccesTableCompte();
 	}
 
 	public DefaultMutableTreeNode getTreeNode() {
 		if (treeNode == null) {
 			treeNode = new DefaultMutableTreeNode(EnDossierBase.ROOT.getLib());
-			for (MlCompteMail cpt : bd.getListeDeComptes()) {
+			for (MlCompteMail cpt : accesCompte.getListeDeComptes()) {
 				DefaultMutableTreeNode compteNode = new DefaultMutableTreeNode(
 						cpt);
 
@@ -79,7 +80,7 @@ public class JTreeFactory {
 
 	// If expand is true, expands all nodes in the tree.
 	// Otherwise, collapses all nodes in the tree.
-	private void expandAll(JTree tree, boolean expand) {
+	public void expandAll(JTree tree, boolean expand) {
 		TreeNode root = (TreeNode) ((ArborescenceBoiteMail) tree.getModel())
 				.getRootNode();
 
@@ -135,16 +136,8 @@ public class JTreeFactory {
 		final TreePath treePath = tree.getSelectionPath();
 
 		if (treePath != null) {
-			new Thread(new Runnable() {
-
-				@Override
-				public void run() {
-					((ArborescenceBoiteMail) tree.getModel())
-							.fireTreeStructureChanged(new TreeModelEvent(this,
-									treePath));
-				}
-			}).start();
-
+			((ArborescenceBoiteMail) tree.getModel())
+					.fireTreeStructureChanged(new TreeModelEvent(this, treePath));
 			return (DefaultMutableTreeNode) treePath.getLastPathComponent();
 		}
 		return null;
@@ -152,20 +145,12 @@ public class JTreeFactory {
 	}
 
 	public void refreshJTreeAndJTable() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				DefaultMutableTreeNode aNode = refreshJTree();
-				Object userObject = aNode.getUserObject();
-				if (userObject instanceof MlDossier) {
-					JTableFactory tableFact = new JTableFactory();
-					tableFact.refreshJTable(((MlDossier) userObject)
-							.getListMessage());
-				}
-
-			}
-		}).start();
-
+		DefaultMutableTreeNode aNode = refreshJTree();
+		Object userObject = aNode.getUserObject();
+		if (userObject instanceof MlDossier) {
+			JTableFactory tableFact = new JTableFactory();
+			tableFact.refreshJTable(((MlDossier) userObject).getListMessage());
+		}
 	}
 
 	public void reloadJtree() {
@@ -192,11 +177,13 @@ public class JTreeFactory {
 	 */
 	public TreePath createNewDossierAndRefreshTree(TreePath p_treePath,
 			String nomDossier, int p_idCompte) {
-
+		AccesTableDossier accesDossier = new AccesTableDossier();
 		TreePath newTp = p_treePath.pathByAddingChild(nomDossier);
 		String dossierParent = (String) p_treePath.getLastPathComponent();
-		int idDossierParent = bd.getIdDossier(dossierParent, p_idCompte);
-		bd.createNewDossier(p_idCompte, idDossierParent, nomDossier, "");
+		int idDossierParent = accesDossier.getIdDossier(dossierParent,
+				p_idCompte);
+		accesDossier.createNewDossier(p_idCompte, idDossierParent, nomDossier,
+				"");
 		ajouteNode(p_treePath, new DefaultMutableTreeNode(nomDossier));
 		// tree.getModel()
 		// .valueForPathChanged(newTp, newTp.getLastPathComponent());
@@ -205,7 +192,7 @@ public class JTreeFactory {
 
 	}
 
-	private void refreshNode(TreePath p_path) {
+	public void refreshNode(TreePath p_path) {
 		// ((Object) tree.getModel()).reload((TreeNode) p_path
 		// .getLastPathComponent());
 

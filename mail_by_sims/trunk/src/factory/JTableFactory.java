@@ -24,12 +24,6 @@ public class JTableFactory {
 	public void refreshJTable(MlListeMessage p_list) {
 		MyTableModel modelDetable = (MyTableModel) table.getModel();
 		modelDetable.valorisetable(p_list);
-		if (table.getRowCount() > 0) {
-			table.setRowSelectionInterval(0, 0);
-			MessageFactory messFact = new MessageFactory();
-			messFact.afficheContenuMail(p_list.get(0));
-		}
-
 	}
 
 }

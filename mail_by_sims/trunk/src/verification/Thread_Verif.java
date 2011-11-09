@@ -3,7 +3,7 @@ package verification;
 import javax.swing.JOptionPane;
 import javax.swing.JTree;
 
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableCompte;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class Thread_Verif extends Thread {
@@ -17,8 +17,8 @@ public class Thread_Verif extends Thread {
 
 	@Override
 	public void run() {
-		BDRequette bd = new BDRequette();
-		int nbRecord = bd.getListeDeComptes().size();
+		AccesTableCompte accesCompte = new AccesTableCompte();
+		int nbRecord = accesCompte.getListeDeComptes().size();
 
 		if (nbRecord == 0) {
 			final int creerCompte = JOptionPane.showConfirmDialog(null,

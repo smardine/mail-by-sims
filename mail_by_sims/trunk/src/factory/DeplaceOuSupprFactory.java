@@ -13,7 +13,8 @@ import mdl.MlCompteMail;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.Historique;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableDossier;
+import bdd.accesTable.AccesTableMailRecu;
 
 import com.sun.mail.imap.AppendUID;
 import com.sun.mail.imap.IMAPFolder;
@@ -32,7 +33,6 @@ public class DeplaceOuSupprFactory {
 	private final MlCompteMail compteMail;
 	private final MlListeMessage listeMessage;
 	private Store store;
-	private final BDRequette bd;
 	private final Patience fenetre;
 
 	// private final JProgressBar progressBar;
@@ -48,7 +48,6 @@ public class DeplaceOuSupprFactory {
 		this.compteMail = p_cptMail;
 		this.listeMessage = p_lstMessage;
 		this.fenetre = p_fenetre;
-		this.bd = new BDRequette();
 
 	}
 
@@ -111,9 +110,10 @@ public class DeplaceOuSupprFactory {
 	 * @throws MessagingException - si une erreur intervient
 	 */
 	private boolean deplaceGMAIL() throws MessagingException {
+		AccesTableDossier accesDossier = new AccesTableDossier();
 		IMAPFolder dest = (IMAPFolder) store.getFolder("[Gmail]/Corbeille");
 		Message[] tabMessIMAP = new Message[listeMessage.size()];
-		IMAPFolder src = (IMAPFolder) store.getFolder(bd
+		IMAPFolder src = (IMAPFolder) store.getFolder(accesDossier
 				.getNomInternetDossier(listeMessage.get(0).getIdDossier()));
 		gestionOuvertureDossier(src);
 		gestionOuvertureDossier(dest);
@@ -135,6 +135,7 @@ public class DeplaceOuSupprFactory {
 		}
 		AppendUID[] tabNewUId = dest.appendUIDMessages(tabMessIMAP);
 		fenetre.getjProgressBar().setIndeterminate(false);
+		AccesTableMailRecu accesMail = new AccesTableMailRecu();
 		for (int i = 0; i < tabNewUId.length && tabNewUId[i] != null; i++) {
 			int nbMessage = i + 1;
 			Historique.ecrireReleveBal(compteMail, src.getFullName(),
@@ -150,7 +151,7 @@ public class DeplaceOuSupprFactory {
 			Message messImapOriginial = tabMessIMAP[i];
 			messImapOriginial.setFlag(Flags.Flag.DELETED, true);
 			listeMessage.get(i).setUIDMessage("" + tabNewUId[i].uid);
-			bd.updateUIDMessage(listeMessage.get(i));
+			accesMail.updateUIDMessage(listeMessage.get(i));
 		}
 		src.expunge();
 		src.close(true);// on confirme la suppression des messages
@@ -238,7 +239,8 @@ public class DeplaceOuSupprFactory {
 								(count) + " sur " + listeMessage.size(),
 								(100 * count) / listeMessage.size());
 						count++;
-						bd.deleteMessageRecu(m.getIdMessage());
+						AccesTableMailRecu accesMail = new AccesTableMailRecu();
+						accesMail.deleteMessageRecu(m.getIdMessage());
 					}
 
 					return true;
@@ -258,17 +260,19 @@ public class DeplaceOuSupprFactory {
 
 		MlMessage messageTest = listeMessage.get(0);
 		if (messageTest.getIdDossier() == compteMail.getIdCorbeille()) {
-			IMAPFolder fldr = (IMAPFolder) store.getFolder(bd
+			AccesTableDossier accesDossier = new AccesTableDossier();
+			IMAPFolder fldr = (IMAPFolder) store.getFolder(accesDossier
 					.getNomInternetDossier(messageTest.getIdDossier()));
 			if (!fldr.isOpen()) {
 				fldr.open(Folder.READ_WRITE);
 			}
 			long[] tabUID = new long[listeMessage.size()];
+			AccesTableMailRecu accesMail = new AccesTableMailRecu();
 			for (int i = 0; i < listeMessage.size(); i++) {
 				MlMessage messBase = listeMessage.get(i);
 				if (messBase != null) {
 					tabUID[i] = Long.parseLong(messBase.getUIDMessage());
-					bd.deleteMessageRecu(messBase.getIdMessage());
+					accesMail.deleteMessageRecu(messBase.getIdMessage());
 				}
 			}
 

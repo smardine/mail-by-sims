@@ -8,7 +8,7 @@ import javax.swing.JPopupMenu;
 
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableCompte;
 
 public class MlActionMainCombo implements MouseListener {
 
@@ -30,8 +30,8 @@ public class MlActionMainCombo implements MouseListener {
 	private JPopupMenu getJPopupMenu() {
 
 		popUpMenu = new JPopupMenu();
-		BDRequette bd = new BDRequette();
-		MlListeCompteMail lstCpt = bd.getListeDeComptes();
+		AccesTableCompte accesCompte = new AccesTableCompte();
+		MlListeCompteMail lstCpt = accesCompte.getListeDeComptes();
 
 		popUpMenu.add(creerNouveauItem("Relever tous les comptes"));
 

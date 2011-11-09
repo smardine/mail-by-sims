@@ -2,7 +2,8 @@ package mdl;
 
 import java.util.List;
 
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableCompte;
+import bdd.accesTable.AccesTableDossier;
 import fenetre.comptes.EnDossierBase;
 import fenetre.comptes.EnTypeCompte;
 
@@ -13,8 +14,6 @@ public class MlCompteMail {
 	private long portPop, portSMTP;
 	private String userName, password, serveurSMTP, serveurReception,
 			nomCompte;
-	private MlListeDossier listDossierPrincipaux;
-	private int ureadMessCount;
 	private EnTypeCompte typeCompte;
 
 	/**
@@ -29,7 +28,7 @@ public class MlCompteMail {
 
 	public MlCompteMail(String p_nomCompte) {
 		if (p_nomCompte != null && !p_nomCompte.equals("")) {
-			BDRequette bd = new BDRequette();
+			AccesTableCompte bd = new AccesTableCompte();
 			this.idCompte = bd.getIdComptes(p_nomCompte);
 
 			initialiseCompte(idCompte);
@@ -38,8 +37,8 @@ public class MlCompteMail {
 	}
 
 	private void initialiseCompte(int p_idCompte) {
-		BDRequette bd = new BDRequette();
-		List<String> defCompte = bd.getCompteByID(p_idCompte);
+		AccesTableCompte accesCompte = new AccesTableCompte();
+		List<String> defCompte = accesCompte.getCompteByID(p_idCompte);
 
 		for (int i = 0; i < defCompte.size(); i++) {
 			switch (i) {
@@ -71,38 +70,49 @@ public class MlCompteMail {
 			}
 		}// fin de for
 
-		initDossierDeBase(bd);
-		this.listDossierPrincipaux = bd.getListeSousDossierBase(idCompte);
-		this.ureadMessCount = bd.getUnreadMessageFromCompte(idCompte);
+		initDossierDeBase();
+		// this.listDossierPrincipaux = bd.getListeSousDossierBase(idCompte);
+		// this.unreadMessCount = bd.getUnreadMessageFromCompte(idCompte);
+
+	}
+
+	@Override
+	public String toString() {
+		int nb = getUnreadMessCount();
+		if (nb > 0) {
+			return nomCompte + " (" + nb + ")";
+		}
+		return nomCompte;
 
 	}
 
 	/**
-	 * @param bd
+	 * @param p_accesCompte
 	 */
-	private void initDossierDeBase(BDRequette bd) {
+	private void initDossierDeBase() {
+		AccesTableDossier accesDossier = new AccesTableDossier();
 		EnDossierBase[] lstDossierBase = EnDossierBase.values();
 		for (EnDossierBase unDossier : lstDossierBase) {
 			switch (unDossier) {
 				case RECEPTION:
-					this.idInbox = (bd.getIdDossier(unDossier.getLib(),
-							idCompte));
+					this.idInbox = (accesDossier.getIdDossier(unDossier
+							.getLib(), idCompte));
 					break;
 				case BROUILLON:
-					this.idBrouillons = (bd.getIdDossier(unDossier.getLib(),
-							idCompte));
+					this.idBrouillons = (accesDossier.getIdDossier(unDossier
+							.getLib(), idCompte));
 					break;
 				case SPAM:
-					this.idSpam = (bd
-							.getIdDossier(unDossier.getLib(), idCompte));
+					this.idSpam = (accesDossier.getIdDossier(
+							unDossier.getLib(), idCompte));
 					break;
 				case CORBEILLE:
-					this.idCorbeille = (bd.getIdDossier(unDossier.getLib(),
-							idCompte));
+					this.idCorbeille = (accesDossier.getIdDossier(unDossier
+							.getLib(), idCompte));
 					break;
 				case ENVOYES:
-					this.idEnvoye = (bd.getIdDossier(unDossier.getLib(),
-							idCompte));
+					this.idEnvoye = (accesDossier.getIdDossier(unDossier
+							.getLib(), idCompte));
 					break;
 			}
 		}
@@ -323,30 +333,14 @@ public class MlCompteMail {
 	 * @return the listDossier
 	 */
 	public MlListeDossier getListDossierPrincipaux() {
-		return listDossierPrincipaux;
+		return new AccesTableDossier().getListeSousDossierBase(idCompte);
 	}
 
 	/**
 	 * @return the ureadMessCount
 	 */
-	public int getUreadMessCount() {
-		// ureadMessCount = new
-		// BDRequette().getUnreadMessageFromCompte(idCompte);
-		return ureadMessCount;
-	}
-
-	/**
-	 * @param p_listDossier the listDossier to set
-	 */
-	public void setListDossier(MlListeDossier p_listDossier) {
-		this.listDossierPrincipaux = p_listDossier;
-	}
-
-	/**
-	 * @param p_ureadMessCount the ureadMessCount to set
-	 */
-	public void setUreadMessCount(int p_ureadMessCount) {
-		this.ureadMessCount = p_ureadMessCount;
+	public int getUnreadMessCount() {
+		return new AccesTableCompte().getUnreadMessageFromCompte(idCompte);
 	}
 
 }

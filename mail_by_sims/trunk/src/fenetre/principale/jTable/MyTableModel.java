@@ -9,7 +9,6 @@ import javax.swing.table.TableColumn;
 import mdl.MlListeMessage;
 import mdl.MlMessage;
 import tools.RecupDate;
-import bdd.BDRequette;
 
 public class MyTableModel extends AbstractTableModel {
 	/**
@@ -96,9 +95,8 @@ public class MyTableModel extends AbstractTableModel {
 		return columnNames[col];
 	}
 
-	@SuppressWarnings("unchecked")
 	@Override
-	public Class getColumnClass(int c) {
+	public Class<?> getColumnClass(int c) {
 		return types[c];
 	}
 
@@ -106,28 +104,13 @@ public class MyTableModel extends AbstractTableModel {
 		return data[row][col];
 	}
 
-	// /*
-	// * Don't need to implement this method unless your table's editable.
-	// */
-	// @Override
-	// public boolean isCellEditable(int row, int col) {
-	// // Note that the data/cell address is constant,
-	// // no matter where the cell appears onscreen.
-	// // if (col < 2) {
-	// // return false;
-	// // } else {
-	// // return true;
-	// // }
-	// return false;
-	// }
-
 	public void valorisetable(MlListeMessage p_liste) {
 		data = new Object[p_liste.size()][columnNames.length];
 		if (p_liste.size() == 0) {
 			fireTableDataChanged();
 			return;
 		}
-		BDRequette bd = new BDRequette();
+
 		for (int i = 0; i < p_liste.size(); i++) {// on parcour la liste des
 			// messages
 			MlMessage m = p_liste.get(i);
@@ -140,19 +123,17 @@ public class MyTableModel extends AbstractTableModel {
 			// sujet
 			data[i][3] = m.getSujet();
 
-			if (bd.messageHavePieceJointe(m.getIdMessage())) {
+			if (m.isHavePieceJointe()) {
 				data[i][4] = new ImageIcon(getClass().getResource(
 						"/piece_jointe16.png"));
 			} else {
 				data[i][4] = null;
 			}
-			if (bd.isMessageLu(m.getIdMessage())) {
+			if (m.isLu()) {
 				data[i][5] = Boolean.TRUE;
 			} else {
 				data[i][5] = Boolean.FALSE;
 			}
-			fireTableRowsInserted(i, i);
-
 		}
 
 		fireTableDataChanged();

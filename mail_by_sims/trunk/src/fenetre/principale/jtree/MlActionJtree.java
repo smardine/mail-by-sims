@@ -20,9 +20,11 @@ public class MlActionJtree implements MouseListener {
 	private JMenuItem Ajouter;
 	private JMenuItem Supprimer;
 
+	private JMenuItem viderCorbeille;
+
 	public MlActionJtree(JTree p_jTree) {
 		this.tree = p_jTree;
-		this.popUpMenu = getJPopupMenu();
+		// this.popUpMenu = getJPopupMenu();
 	}
 
 	/**
@@ -68,6 +70,16 @@ public class MlActionJtree implements MouseListener {
 		return Supprimer;
 	}
 
+	private JMenuItem getViderCorbeille() {
+		if (viderCorbeille == null) {
+			viderCorbeille = new JMenuItem();
+			viderCorbeille.setText("Vider la corbeille");
+			viderCorbeille.setActionCommand("VIDER");
+			viderCorbeille.addActionListener(new MlActionPopupJTree(tree));
+		}
+		return viderCorbeille;
+	}
+
 	@Override
 	public void mousePressed(MouseEvent e) {
 	}
@@ -88,7 +100,7 @@ public class MlActionJtree implements MouseListener {
 	public void mouseReleased(MouseEvent e) {
 		TreePath pathFromEvent = getPathFromEvent(e);
 		if (e.isPopupTrigger() && pathFromEvent != null) {
-
+			popUpMenu = getJPopupMenu();
 			int selRow = tree.getRowForLocation(e.getX(), e.getY());
 
 			// tree.setSelectionPath(pathFromEvent);
@@ -103,18 +115,23 @@ public class MlActionJtree implements MouseListener {
 				MlDossier dossier = (MlDossier) userObject;
 				if (dossier.getIdDossierParent() == 0) {
 					Supprimer.setEnabled(false);
+					DefaultMutableTreeNode parent = (DefaultMutableTreeNode) aNode
+							.getParent();
+					MlCompteMail compteMailParent = (MlCompteMail) parent
+							.getUserObject();
+					if (compteMailParent.getIdCorbeille() == dossier
+							.getIdDossier()) {
+						popUpMenu.add(getViderCorbeille());
+					}
+
 				} else {
 					Supprimer.setEnabled(true);
 				}
+
 			}
+
 			popUpMenu.show(e.getComponent(), e.getX(), e.getY());
 		}
-
-		// if (e.getClickCount() == 1) {
-		// System.out.println("mySingleClick(selRow, selPath)");
-		// } else if (e.getClickCount() == 2) {
-		// System.out.println("myDoubleClick(selRow, selPath)");
-		// }
 
 	}
 

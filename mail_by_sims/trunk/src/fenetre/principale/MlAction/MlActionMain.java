@@ -11,7 +11,7 @@ import thread.thread_Import;
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.OpenWithDefaultViewer;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableCompte;
 import fenetre.Patience;
 import fenetre.comptes.gestion.GestionCompte;
 
@@ -56,8 +56,8 @@ public class MlActionMain implements ActionListener {
 		}
 
 		if (e.getActionCommand().equals(EnActionMain.RECEVOIR.getLib())) {
-			BDRequette bd = new BDRequette();
-			Thread_Releve t = new Thread_Releve(bd.getListeDeComptes());
+			AccesTableCompte accesCompte = new AccesTableCompte();
+			Thread_Releve t = new Thread_Releve(accesCompte.getListeDeComptes());
 			t.start();
 
 		}

@@ -9,7 +9,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 
 import mdl.MlMessage;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableMailRecu;
 import factory.JTreeFactory;
 import factory.MessageFactory;
 import fenetre.LectureMessagePleinEcran;
@@ -157,12 +157,12 @@ public class MlActionJtable implements MouseListener {
 				MlMessage m = new MlMessage(idMessage);
 				MessageFactory messFact = new MessageFactory();
 				messFact.afficheContenuMail(m);
-				BDRequette bd = new BDRequette();
-				boolean succes = bd.updateStatusLecture(jTableHelper
+				AccesTableMailRecu accesMail = new AccesTableMailRecu();
+				boolean succes = accesMail.updateStatusLecture(jTableHelper
 						.getReelIdMessage(table, rowNumber), true);
 
 				JTreeFactory treeFact = new JTreeFactory();
-				treeFact.refreshJTreeAndJTable();
+				treeFact.refreshJTree();
 				if (succes) {
 					table.getModel().setValueAt(true, rowNumber,
 							table.getModel().getColumnCount() - 1);

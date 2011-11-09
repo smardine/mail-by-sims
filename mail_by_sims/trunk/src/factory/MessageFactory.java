@@ -31,7 +31,8 @@ import mdl.MlMessage;
 import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.Historique;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableMailRecu;
+import bdd.accesTable.AccesTablePieceJointe;
 import fenetre.Patience;
 
 /**
@@ -312,8 +313,9 @@ public class MessageFactory {
 	public void afficheContenuMail(MlMessage p_message) {
 
 		// le n° du message (meme si il est caché).
-		BDRequette bd = new BDRequette();
-		File contenu = bd.getContenuFromId(p_message.getIdMessage(), false);
+		AccesTableMailRecu accesMail = new AccesTableMailRecu();
+		File contenu = accesMail.getContenuFromIdForFile(p_message.getIdMessage(),
+				false);
 
 		// on RAZ le contenu du panelEditor
 		Document doc = ComposantVisuelCommun.getHtmlPane().getDocument();
@@ -323,7 +325,8 @@ public class MessageFactory {
 				ComposantVisuelCommun.getHtmlPane().setPage(
 						"file:///" + contenu.getAbsolutePath());
 				// affichage des piece jointe dans la liste (si il y en a)
-				List<String> lstPj = bd.getListeNomPieceJointe(p_message
+				AccesTablePieceJointe accesPJ = new AccesTablePieceJointe();
+				List<String> lstPj = accesPJ.getListeNomPieceJointe(p_message
 						.getIdMessage());
 				DefaultListModel model = (DefaultListModel) ComposantVisuelCommun
 						.getJListPJ().getModel();

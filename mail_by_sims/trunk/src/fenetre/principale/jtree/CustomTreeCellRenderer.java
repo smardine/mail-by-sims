@@ -43,7 +43,6 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 		if (row != -1) {
 			DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) p_value;
 			TreePath treePath;
-
 			treePath = tree.getPathForRow(row);
 			if (treePath == null) {
 				return this;
@@ -70,8 +69,8 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 					.getStringBounds(label.getText(), getGraphics());
 
 			final Dimension d = new Dimension((int) r.getWidth()
-					+ getIcon().getIconWidth() + getIconTextGap() + 50, (int) r
-					.getHeight());
+					+ getIcon().getIconWidth() + getIconTextGap() + 100,
+					(int) r.getHeight() + 2);
 
 			label.setMaximumSize(d);
 			label.setPreferredSize(d);
@@ -104,12 +103,13 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 		}
 		int unreadMess = p_dossier.getUnreadMessCount();
 		if (unreadMess > 0) {
-			label.setText(nomDossier + " (" + unreadMess + ")");
+			// label.setText(nomDossier + " (" + unreadMess + ")");
 			label.setFont(Fontfactory.getTREE_FONT_GRAS());
 		} else {
-			label.setText(nomDossier);
+			// label.setText(nomDossier);
 			label.setFont(Fontfactory.getTREE_FONT_PLAIN());
 		}
+		label.setText(p_dossier.toString());
 		calculateStringSize(label);
 		return;
 	}
@@ -119,16 +119,17 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 	 * @param label
 	 */
 	private void traiteNomCompte(MlCompteMail p_compteMail, JLabel label) {
-		int unreadMess = p_compteMail.getUreadMessCount();
-		String nomCompte = p_compteMail.getNomCompte();
+		int unreadMess = p_compteMail.getUnreadMessCount();
+		// String nomCompte = p_compteMail.getNomCompte();
 		if (unreadMess > 0) {
-			label.setText(nomCompte + " (" + unreadMess + ")");
+			// label.setText(nomCompte + " (" + unreadMess + ")");
 			label.setFont(Fontfactory.getTREE_FONT_GRAS());
 		} else {
-			label.setText(nomCompte);
+			// label.setText(nomCompte);
 			label.setFont(Fontfactory.getTREE_FONT_PLAIN());
 		}
 		label.setIcon(IconeTreeFactory.getDossierOuvert());
+		label.setText(p_compteMail.toString());
 		calculateStringSize(label);
 
 	}

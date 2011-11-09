@@ -9,8 +9,12 @@ import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
+import mdl.MlDossier;
+import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
-import bdd.BDRequette;
+import thread.ThreadSupprimeMessage;
+import bdd.accesTable.AccesTableCompte;
+import bdd.accesTable.AccesTableDossier;
 import factory.DossierFactory;
 import factory.JTreeFactory;
 
@@ -38,71 +42,53 @@ public class MlActionPopupJTree implements ActionListener {
 			}
 			DefaultMutableTreeNode dossierParent = (DefaultMutableTreeNode) selectionPath
 					.getLastPathComponent();
-			BDRequette bd = new BDRequette();
-			int idCompte = bd.getIdComptes((String) selectionPath
+			AccesTableCompte accesCompte = new AccesTableCompte();
+			int idCompte = accesCompte.getIdComptes((String) selectionPath
 					.getPathComponent(1).toString());
-
-			int idDossierParent = bd.getIdDossier(dossierParent.toString(),
-					idCompte);
+			AccesTableDossier accesDossier = new AccesTableDossier();
+			int idDossierParent = accesDossier.getIdDossier(dossierParent
+					.toString(), idCompte);
 
 			if ("".equals(idDossierParent)) {
 				idDossierParent = 0;
 			}
-			if (bd.createNewDossier(idCompte, idDossierParent, nomNewDossier,
-					"")) {
+			if (accesDossier.createNewDossier(idCompte, idDossierParent,
+					nomNewDossier, "")) {
 				TreePath newTreePath = selectionPath
 						.pathByAddingChild(new DefaultMutableTreeNode(
 								nomNewDossier));
-				// TreePath newTreePath = new TreePath(selectionPath.toString()
-				// .replace("[", "").replace("]", "")
-				// + ", " + nomNewDossier);
-				// ComposantVisuelCommun.setTreePath(newTreePath);
 				JTreeFactory treeFact = new JTreeFactory();
 				treeFact.ajouteNode(selectionPath,
 						(DefaultMutableTreeNode) newTreePath
 								.getLastPathComponent());
-				// tree.getModel().valueForPathChanged(selectionPath,
-				// newTreePath.getLastPathComponent());
 				tree.setSelectionPath(newTreePath);
 				ComposantVisuelCommun.setTree(tree);
 
 			}
 
-		}
-		if ("SUPPRIMER".equals(actionCommand)) {
+		} else if ("SUPPRIMER".equals(actionCommand)) {
 			Object[] pathComplet = selectionPath.getPath();
 			DossierFactory dossierFact = new DossierFactory(new MlCompteMail(
 					pathComplet[1].toString()));
 			dossierFact.deleteDossier(selectionPath);
-			// String dossierASupprimer = (String) selectionPath
-			// .getLastPathComponent();
-			// BDRequette bd = new BDRequette();
-			// int idCompte = bd.getIdComptes((String) selectionPath
-			// .getPathComponent(1));
-			// int idDossier = bd.getIdDossier(dossierASupprimer, idCompte);
-			//
-			// REPONSE rep = messageUtilisateur
-			// .affMessageQuestionOuiNon(
-			// "Question",
-			// "Voulez vous supprimer le dossier \""
-			// + dossierASupprimer
-			// +
-			// "\" ? \n\r Vous supprimerez egalement tous les messages contenu dans ce dossier et ses sous dossiers");
-			//
-			// switch (rep) {
-			// case OUI:// on supprime le dossier
-			// bd.deleteDossier(idCompte, idDossier, null);
-			// // ComposantVisuelCommun.setTreePath(selectionPath
-			// // .getParentPath());
-			// tree.getModel().valueForPathChanged(selectionPath,
-			// ActionTree.SUPPRIMER);
-			// tree.setSelectionPath(selectionPath.getParentPath());
-			// break;
-			// case NON:// on ne fait rien
-			// break;
-			//
-			// }
-			// bd.closeConnexion();
+
+		} else if ("VIDER".equals(actionCommand)) {
+			REPONSE reponse = messageUtilisateur.affMessageQuestionOuiNon(
+					"Vider la corbeille",
+					"Etes-vous sûr de vouloir vider la corbeille?");
+			switch (reponse) {
+				case OUI:
+					DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) selectionPath
+							.getLastPathComponent();
+					MlDossier aDossier = (MlDossier) aNode.getUserObject();
+
+					ThreadSupprimeMessage t = new ThreadSupprimeMessage(
+							aDossier.getListMessage());
+					t.start();
+					break;
+				case NON:
+					break;
+			}
 
 		}
 

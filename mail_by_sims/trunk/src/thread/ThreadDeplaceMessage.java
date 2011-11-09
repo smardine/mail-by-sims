@@ -6,9 +6,10 @@ package thread;
 import javax.mail.MessagingException;
 
 import mdl.MlCompteMail;
+import mdl.MlDossier;
 import mdl.MlListeMessage;
 import releve.imap.util.messageUtilisateur;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableMailRecu;
 import factory.DeplaceOuSupprFactory;
 import factory.JTableFactory;
 import factory.JTreeFactory;
@@ -22,13 +23,13 @@ public class ThreadDeplaceMessage extends Thread {
 	private final MlListeMessage list;
 	private final Patience fenetre;
 	private final String TAG = this.getClass().getSimpleName();
-	private final BDRequette bd;
+	private final AccesTableMailRecu accesMail;
 
 	public ThreadDeplaceMessage(MlListeMessage p_list) {
 		this.list = p_list;
 		this.fenetre = new Patience(
 				"Deplacement des messages vers la corbeille");
-		this.bd = new BDRequette();
+		this.accesMail = new AccesTableMailRecu();
 
 	}
 
@@ -36,15 +37,16 @@ public class ThreadDeplaceMessage extends Thread {
 	public void run() {
 
 		MlCompteMail cpt = new MlCompteMail(list.get(0).getIdCompte());
+		MlDossier dossier = new MlDossier(list.get(0).getIdDossier());
 		fenetre.setVisible(true);
 		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt, list,
 				fenetre);
 
 		try {
 			fact.deplaceMessageVersCorbeille();
-			bd.deplaceMessageVersCorbeille(list);
+			accesMail.deplaceMessageVersCorbeille(list);
 			JTableFactory tableFactory = new JTableFactory();
-			tableFactory.refreshJTable(list);
+			tableFactory.refreshJTable(dossier.getListMessage());
 			JTreeFactory treeFactory = new JTreeFactory();
 			treeFactory.refreshJTree();
 		} catch (MessagingException e) {

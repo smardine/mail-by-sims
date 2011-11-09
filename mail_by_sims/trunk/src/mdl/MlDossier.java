@@ -2,7 +2,8 @@ package mdl;
 
 import java.util.List;
 
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableDossier;
+import bdd.accesTable.AccesTableMailRecu;
 
 public class MlDossier {
 
@@ -11,18 +12,17 @@ public class MlDossier {
 	private int idCompte;
 	private String nomDossier;
 	private String nomInternet;
-	private MlListeDossier listSousDossier;
-	private int unreadMessCount;
-	private MlListeMessage listMessage;
+	private final AccesTableDossier accesDossier;
 
 	public MlDossier(int p_idDossier) {
 		this.idDossier = p_idDossier;
+		accesDossier = new AccesTableDossier();
 		initialiseDossier(idDossier);
 	}
 
 	private void initialiseDossier(int p_idDossier) {
-		BDRequette bd = new BDRequette();
-		List<String> defDossier = bd.getDossierByID(p_idDossier);
+
+		List<String> defDossier = accesDossier.getDossierByID(p_idDossier);
 
 		for (int i = 0; i < defDossier.size(); i++) {
 			switch (i) {
@@ -41,10 +41,16 @@ public class MlDossier {
 
 			}// fin de switch
 		}// fin de for
-		this.listSousDossier = bd.getListeSousDossier(idDossier);
-		this.listMessage = bd.getListeDeMessage(idCompte, idDossier);
-		this.unreadMessCount = bd.getUnreadMessageFromFolder(idCompte,
-				idDossier);
+
+	}
+
+	@Override
+	public String toString() {
+		int nb = getUnreadMessCount();
+		if (nb > 0) {
+			return nomDossier + " (" + nb + ")";
+		}
+		return nomDossier;
 
 	}
 
@@ -81,9 +87,7 @@ public class MlDossier {
 	}
 
 	public MlListeDossier getListSousDossier() {
-		// this.listSousDossier = new
-		// BDRequette().getListeSousDossier(idDossier);
-		return listSousDossier;
+		return accesDossier.getListeSousDossier(idDossier);
 	}
 
 	public int getIdDossier() {
@@ -94,39 +98,18 @@ public class MlDossier {
 	 * @return the unreadMessCount
 	 */
 	public int getUnreadMessCount() {
-		// this.unreadMessCount = new BDRequette().getUnreadMessageFromFolder(
-		// idCompte, idDossier);
-		return unreadMessCount;
+		int nb = accesDossier.getUnreadMessageFromFolder(idCompte, idDossier);
+		for (MlDossier d : getListSousDossier()) {
+			nb = nb + d.getUnreadMessCount();
+		}
+		return nb;
 	}
 
 	/**
 	 * @return
 	 */
 	public MlListeMessage getListMessage() {
-		// this.listMessage = new BDRequette().getListeDeMessage(idCompte,
-		// idDossier);
-		return listMessage;
-	}
-
-	/**
-	 * @param p_listSousDossier the listSousDossier to set
-	 */
-	public void setListSousDossier(MlListeDossier p_listSousDossier) {
-		this.listSousDossier = p_listSousDossier;
-	}
-
-	/**
-	 * @param p_unreadMessCount the unreadMessCount to set
-	 */
-	public void setUnreadMessCount(int p_unreadMessCount) {
-		this.unreadMessCount = p_unreadMessCount;
-	}
-
-	/**
-	 * @param p_listMessage the listMessage to set
-	 */
-	public void setListMessage(MlListeMessage p_listMessage) {
-		this.listMessage = p_listMessage;
+		return new AccesTableMailRecu().getListeDeMessage(idCompte, idDossier);
 	}
 
 }

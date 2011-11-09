@@ -21,7 +21,8 @@ import javax.swing.JTable;
 import javax.swing.text.Document;
 
 import releve.imap.util.messageUtilisateur;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableMailRecu;
+import bdd.accesTable.AccesTablePieceJointe;
 import fenetre.principale.EnNomComposant;
 import fenetre.principale.MlActionHtmlPane;
 import fenetre.principale.jList.MlActionjList;
@@ -39,6 +40,7 @@ public class LectureMessagePleinEcran extends JFrame {
 	private JList jList = null;
 	private JScrollPane jScrollPane1 = null;
 	private DefaultListModel modelList = null;
+	private final AccesTableMailRecu accesMessage;
 
 	/**
 	 * This is the default constructor
@@ -49,15 +51,15 @@ public class LectureMessagePleinEcran extends JFrame {
 		modelList = new DefaultListModel();
 		jList.setModel(modelList);
 		jList.addMouseListener(new MlActionjList(p_table, jList));
+		accesMessage = new AccesTableMailRecu();
 		afficheContenuMail(p_idMessage);
-		BDRequette bd = new BDRequette();
-		this.setTitle(bd.getSujetFromId(p_idMessage));
+
+		this.setTitle(accesMessage.getSujetFromId(p_idMessage));
 
 	}
 
 	private void afficheContenuMail(int p_idMessage) {
-		BDRequette bd = new BDRequette();
-		File contenu = bd.getContenuFromId(p_idMessage, true);
+		File contenu = accesMessage.getContenuFromIdForFile(p_idMessage, true);
 
 		// on RAZ le contenu du panelEditor
 		Document doc = htmlPane.getDocument();
@@ -69,8 +71,9 @@ public class LectureMessagePleinEcran extends JFrame {
 					"impossible d'afficher le mail");
 		}
 
+		AccesTablePieceJointe accesPJ = new AccesTablePieceJointe();
 		// affichage des piece jointe dans la liste (si il y en a)
-		List<String> lstPj = bd.getListeNomPieceJointe(p_idMessage);
+		List<String> lstPj = accesPJ.getListeNomPieceJointe(p_idMessage);
 
 		DefaultListModel model = (DefaultListModel) jList.getModel();
 		int nbLigne = model.getSize();

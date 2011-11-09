@@ -6,7 +6,8 @@ import java.util.Date;
 import java.util.List;
 
 import tools.RecupDate;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableDossier;
+import bdd.accesTable.AccesTableMailRecu;
 
 public class MlMessage {
 	private String NomDossier;
@@ -24,6 +25,11 @@ public class MlMessage {
 	private List<File> listePieceJointe;
 	private int idMessage;
 	private boolean statuLecture;
+	private boolean havePieceJointe;
+
+	private enum statutLecture {
+		T, F;
+	}
 
 	public MlMessage() {
 		listePieceJointe = new ArrayList<File>();
@@ -39,16 +45,17 @@ public class MlMessage {
 	 * @param p_idMessage
 	 */
 	private void constructMessage(int p_idMessage) {
-		BDRequette bd = new BDRequette();
-		List<ArrayList<String>> lstChamp = bd.getMessageById(p_idMessage);
+		AccesTableMailRecu accesMail = new AccesTableMailRecu();
+		List<ArrayList<String>> lstChamp = accesMail
+				.getMessageById(p_idMessage);
 		for (int i = 0; i < lstChamp.size(); i++) {
 			List<String> unEnregistrement = lstChamp.get(i);
 
 			this.idMessage = (Integer.parseInt(unEnregistrement.get(0)));
 			this.uIDMessage = (unEnregistrement.get(1));
 			if (unEnregistrement.get(2) != null) {
-				this.expediteur = (bd.decodeHTMLFromBase(unEnregistrement
-						.get(2)));
+				this.expediteur = (accesMail
+						.decodeHTMLFromBase(unEnregistrement.get(2)));
 			}
 			if (unEnregistrement.get(3) != null) {
 				String[] tabDestinaire = unEnregistrement.get(3).split(";");
@@ -76,22 +83,23 @@ public class MlMessage {
 				this.destinataireCache = (lstDest);
 			}
 
-			this.sujet = (bd.decodeHTMLFromBase(unEnregistrement.get(6)));
-			this.contenu = (unEnregistrement.get(7));
+			this.sujet = (accesMail.decodeHTMLFromBase(unEnregistrement.get(6)));
+			// this.contenu = (unEnregistrement.get(7));
 			this.dateReception = (RecupDate
-					.getdateFromTimeStamp((unEnregistrement.get(8))));
-			this.idDossier = (Integer.parseInt(unEnregistrement.get(9)));
-			this.NomDossier = (bd.getNomDossier(Integer
-					.parseInt(unEnregistrement.get(9))));
+					.getdateFromTimeStamp((unEnregistrement.get(7))));
+			this.idDossier = (Integer.parseInt(unEnregistrement.get(8)));
+			this.NomDossier = (new AccesTableDossier().getNomDossier(Integer
+					.parseInt(unEnregistrement.get(8))));
 
-			this.idCompte = (Integer.parseInt(unEnregistrement.get(10)));
-			if (unEnregistrement.get(11).equals("1")) {
+			this.idCompte = (Integer.parseInt(unEnregistrement.get(9)));
+			if (statutLecture.T.name().equals(unEnregistrement.get(10))) {
 				this.statuLecture = true;
 			} else {
 				this.statuLecture = false;
 			}
 
 		}
+		this.setHavePieceJointe(accesMail.messageHavePieceJointe(idMessage));
 	}
 
 	/**
@@ -210,6 +218,10 @@ public class MlMessage {
 	 * @return the contenu
 	 */
 	public String getContenu() {
+		if (contenu == null) {
+			contenu = new AccesTableMailRecu()
+					.getContenuFromIdForString(idMessage);
+		}
 		return contenu;
 	}
 
@@ -288,15 +300,29 @@ public class MlMessage {
 	/**
 	 * @param statuLecture true si le message est lu, false si il est non lu
 	 */
-	public void setStatuLecture(boolean statuLecture) {
+	public void setLu(boolean statuLecture) {
 		this.statuLecture = statuLecture;
 	}
 
 	/**
 	 * @return true si le message est lu, false si il est non lu
 	 */
-	public boolean isStatuLecture() {
+	public boolean isLu() {
 		return statuLecture;
+	}
+
+	/**
+	 * @param havePieceJointe the havePieceJointe to set
+	 */
+	public void setHavePieceJointe(boolean havePieceJointe) {
+		this.havePieceJointe = havePieceJointe;
+	}
+
+	/**
+	 * @return the havePieceJointe
+	 */
+	public boolean isHavePieceJointe() {
+		return havePieceJointe;
 	}
 
 }

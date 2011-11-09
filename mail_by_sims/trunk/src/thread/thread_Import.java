@@ -16,7 +16,8 @@ import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.Historique;
 import tools.ReadFile;
-import bdd.BDRequette;
+import bdd.accesTable.AccesTableCompte;
+import bdd.accesTable.AccesTableDossier;
 import factory.DossierFactory;
 import factory.JTreeFactory;
 import factory.MessageFactory;
@@ -39,11 +40,11 @@ public class thread_Import extends Thread {
 	@Override
 	public void run() {
 		fenetre.setVisible(true);
-		BDRequette bd = new BDRequette();
+		AccesTableCompte accesCompte = new AccesTableCompte();
 		String chemin = GestionRepertoire
 				.OpenFolder("Veuillez indiquer l'emplacement de vos mails Windows Mail");
 		// messageUtilisateur.affMessageInfo("Vous avez choisi: " + chemin);
-		MlListeCompteMail lst = bd.getListeDeComptes();
+		MlListeCompteMail lst = accesCompte.getListeDeComptes();
 		ArrayList<String> lstNomCompte = new ArrayList<String>(lst.getSize());
 		for (MlCompteMail cpt : lst) {
 			lstNomCompte.add(cpt.getNomCompte());
@@ -56,7 +57,7 @@ public class thread_Import extends Thread {
 		// parcour du repertoire de facon recursive
 		// les fichiers avec l'extension ".fol"contienne le nom du repertoire
 		Historique.ecrire("choix du compte: " + choixCompte);
-		idCompte = bd.getIdComptes(choixCompte);
+		idCompte = accesCompte.getIdComptes(choixCompte);
 
 		Object[] path = new Object[3];
 		path[0] = tree.getModel().getRoot();
@@ -86,7 +87,7 @@ public class thread_Import extends Thread {
 
 	private MlListeMessage parcoursDossier(String p_chemin, String p_compte,
 			TreePath p_treePath, Patience p_fenetre) {
-		BDRequette bd = new BDRequette();
+		AccesTableDossier accesDossier = new AccesTableDossier();
 
 		File dossier = new File(p_chemin);
 		File[] files = dossier.listFiles();
@@ -103,7 +104,7 @@ public class thread_Import extends Thread {
 			for (MlMessage m : lstMessage) {
 				m.setNomDossier(nomDossier);
 				m.setIdCompte(idCompte);
-				m.setIdDossier(bd.getIdDossier(nomDossier, idCompte));
+				m.setIdDossier(accesDossier.getIdDossier(nomDossier, idCompte));
 			}
 			for (File f : lstSousDossier) {
 				p_fenetre.afficheInfo("creation du dossier:" + f.getName(), "",

@@ -13,8 +13,7 @@ import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
 import thread.ThreadDeplaceMessage;
 import thread.ThreadSupprimeMessage;
-import bdd.accesTable.AccesTableMailRecu;
-import factory.JTreeFactory;
+import thread.threadMarquageLu;
 import fenetre.Patience;
 import fenetre.principale.MlAction.EnActionMain;
 
@@ -73,27 +72,16 @@ public class MlActionPopupJTable implements ActionListener {
 	 * @param p_tabIdLigneSelectionnee
 	 */
 	private void lanceMarquageLu(int[] p_tabIdLigneSelectionnee) {
-		AccesTableMailRecu accesMail = new AccesTableMailRecu();
-		MlListeMessage lst = new MlListeMessage();
-		// int idDossier = -1;
-		// int idCompte = -1;
+		int[] tabId = new int[p_tabIdLigneSelectionnee.length];
 		for (int i = 0; i < p_tabIdLigneSelectionnee.length; i++) {
-
 			int selectedLine = p_tabIdLigneSelectionnee[i];
 			Integer idMessage = jTableHelper.getReelIdMessage(table,
 					selectedLine);
-
-			MlMessage m = new MlMessage(idMessage);
-			lst.add(m);
-
-		}// fin de for
-
-		for (MlMessage m : lst) {
-			m.setLu(true);
-			accesMail.updateStatusLecture(m.getIdMessage(), true);
+			tabId[i] = idMessage;
 		}
-		JTreeFactory treeFact = new JTreeFactory();
-		treeFact.refreshJTreeAndJTable();
+
+		threadMarquageLu t = new threadMarquageLu(tabId);
+		t.start();
 
 	}
 

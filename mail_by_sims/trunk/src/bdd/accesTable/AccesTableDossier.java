@@ -352,9 +352,7 @@ public class AccesTableDossier {
 				+ " and " + EnStructMailRecu.ID_DOSSIER.getNomChamp() + "="
 				+ p_idDossier + " and " + EnStructMailRecu.STATUT.getNomChamp()
 				+ "='F'";
-
 		return Integer.parseInt(requeteFact.get1Champ(requette));
-
 	}
 
 }

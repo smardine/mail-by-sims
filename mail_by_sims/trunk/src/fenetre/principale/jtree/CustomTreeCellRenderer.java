@@ -101,7 +101,7 @@ public class CustomTreeCellRenderer extends DefaultTreeCellRenderer {
 		} else {
 			label.setIcon(IconeTreeFactory.getDossierOuvert());
 		}
-		int unreadMess = p_dossier.getUnreadMessCount();
+		int unreadMess = p_dossier.getUnreadMessageCount();
 		if (unreadMess > 0) {
 			// label.setText(nomDossier + " (" + unreadMess + ")");
 			label.setFont(Fontfactory.getTREE_FONT_GRAS());

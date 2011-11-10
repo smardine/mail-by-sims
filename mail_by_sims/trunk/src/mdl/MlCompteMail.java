@@ -2,8 +2,10 @@ package mdl;
 
 import java.util.List;
 
+import releve.imap.util.messageUtilisateur;
 import bdd.accesTable.AccesTableCompte;
 import bdd.accesTable.AccesTableDossier;
+import exception.DonneeAbsenteException;
 import fenetre.comptes.EnDossierBase;
 import fenetre.comptes.EnTypeCompte;
 
@@ -15,6 +17,10 @@ public class MlCompteMail {
 	private String userName, password, serveurSMTP, serveurReception,
 			nomCompte;
 	private EnTypeCompte typeCompte;
+	private final String TAG = this.getClass().getSimpleName();
+	private int unreadMessageCount;
+	private AccesTableCompte accesCompte;
+	private AccesTableDossier accesDossier;
 
 	/**
 	 * Constructeur d'object, si on connait son Id, l'initialisation se charge
@@ -22,22 +28,24 @@ public class MlCompteMail {
 	 * @param p_idCompte - int - l'id du compte
 	 */
 	public MlCompteMail(int p_idCompte) {
+		accesDossier = new AccesTableDossier();
+		accesCompte = new AccesTableCompte();
 		this.idCompte = p_idCompte;
 		initialiseCompte(idCompte);
+
 	}
 
 	public MlCompteMail(String p_nomCompte) {
 		if (p_nomCompte != null && !p_nomCompte.equals("")) {
-			AccesTableCompte bd = new AccesTableCompte();
-			this.idCompte = bd.getIdComptes(p_nomCompte);
-
+			accesCompte = new AccesTableCompte();
+			accesDossier = new AccesTableDossier();
+			this.idCompte = accesCompte.getIdComptes(p_nomCompte);
 			initialiseCompte(idCompte);
 		}
 
 	}
 
 	private void initialiseCompte(int p_idCompte) {
-		AccesTableCompte accesCompte = new AccesTableCompte();
 		List<String> defCompte = accesCompte.getCompteByID(p_idCompte);
 
 		for (int i = 0; i < defCompte.size(); i++) {
@@ -71,8 +79,8 @@ public class MlCompteMail {
 		}// fin de for
 
 		initDossierDeBase();
-		// this.listDossierPrincipaux = bd.getListeSousDossierBase(idCompte);
-		// this.unreadMessCount = bd.getUnreadMessageFromCompte(idCompte);
+		this.unreadMessageCount = accesCompte
+				.getUnreadMessageFromCompte(idCompte);
 
 	}
 
@@ -90,7 +98,6 @@ public class MlCompteMail {
 	 * @param p_accesCompte
 	 */
 	private void initDossierDeBase() {
-		AccesTableDossier accesDossier = new AccesTableDossier();
 		EnDossierBase[] lstDossierBase = EnDossierBase.values();
 		for (EnDossierBase unDossier : lstDossierBase) {
 			switch (unDossier) {
@@ -333,14 +340,46 @@ public class MlCompteMail {
 	 * @return the listDossier
 	 */
 	public MlListeDossier getListDossierPrincipaux() {
-		return new AccesTableDossier().getListeSousDossierBase(idCompte);
+		return accesDossier.getListeSousDossierBase(idCompte);
 	}
 
 	/**
 	 * @return the ureadMessCount
 	 */
 	public int getUnreadMessCount() {
-		return new AccesTableCompte().getUnreadMessageFromCompte(idCompte);
+		return unreadMessageCount;
+	}
+
+	public void setUnreadMessCount(int p_count) {
+		this.unreadMessageCount = p_count;
+	}
+
+	@Override
+	public boolean equals(Object p_object) {
+		if (!(p_object instanceof MlCompteMail)) {
+			try {
+				throw new DonneeAbsenteException(
+						TAG,
+						"l'objet présentée en entrée de la fonction equals doit etre de type MlCompteMail");
+			} catch (DonneeAbsenteException e) {
+				messageUtilisateur.affMessageException(TAG, e,
+						"Erreur de programmation");
+				return false;
+			}
+		}
+		if (idCompte == ((MlCompteMail) p_object).getIdCompte()) {
+			return true;
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 }

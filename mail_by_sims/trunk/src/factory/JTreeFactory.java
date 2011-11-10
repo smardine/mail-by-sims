@@ -192,14 +192,6 @@ public class JTreeFactory {
 
 	}
 
-	public void refreshNode(TreePath p_path) {
-		// ((Object) tree.getModel()).reload((TreeNode) p_path
-		// .getLastPathComponent());
-
-		// ((ArborescenceBoiteMail) tree.getModel())
-		// .fireTreeStructureChanged(new TreeModelEvent(this, p_path));
-	}
-
 	public boolean ajouteNode(TreePath p_path,
 			DefaultMutableTreeNode p_nodeParent,
 			DefaultMutableTreeNode p_newNode) {
@@ -238,4 +230,115 @@ public class JTreeFactory {
 		return true;
 	}
 
+	public MlCompteMail rechercheCompteMail(int p_idCompte) {
+		TreePath selPath = ComposantVisuelCommun.getJTree().getSelectionPath();
+		if (selPath == null) {
+			selPath = ComposantVisuelCommun.getJTree().getPathForRow(0);
+		}
+		DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) selPath
+				.getPathComponent(0);
+		MlCompteMail cptCandidat = new MlCompteMail(p_idCompte);
+		int nbChildCount = rootNode.getChildCount();
+		for (int i = 0; i < nbChildCount; i++) {
+			DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) rootNode
+					.getChildAt(i);
+			MlCompteMail userObject = (MlCompteMail) aNode.getUserObject();
+			if (userObject.equals(cptCandidat)) {
+				return userObject;
+			}
+		}
+		try {
+			throw new DonneeAbsenteException(TAG,
+					"Impossible de trouver le compteMail correspondant");
+		} catch (DonneeAbsenteException e) {
+			messageUtilisateur.affMessageException(TAG, e,
+					"Erreur de programmation");
+			return null;
+		}
+		// return (MlCompteMail) compteNode.getUserObject();
+	}
+
+	public DefaultMutableTreeNode rechercheCompteNode(int p_idCompte) {
+		TreePath selPath = ComposantVisuelCommun.getJTree().getSelectionPath();
+		if (selPath == null) {
+			selPath = ComposantVisuelCommun.getJTree().getPathForRow(0);
+		}
+		DefaultMutableTreeNode rootNode = (DefaultMutableTreeNode) selPath
+				.getPathComponent(0);
+		MlCompteMail cptCandidat = new MlCompteMail(p_idCompte);
+		int nbChildCount = rootNode.getChildCount();
+		for (int i = 0; i < nbChildCount; i++) {
+			DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) rootNode
+					.getChildAt(i);
+			MlCompteMail userObject = (MlCompteMail) aNode.getUserObject();
+			if (userObject.equals(cptCandidat)) {
+				return aNode;
+			}
+		}
+		try {
+			throw new DonneeAbsenteException(TAG,
+					"Impossible de trouver le compteMail correspondant");
+		} catch (DonneeAbsenteException e) {
+			messageUtilisateur.affMessageException(TAG, e,
+					"Erreur de programmation");
+			return null;
+		}
+	}
+
+	public MlDossier rechercheDossier(int p_idDossier, int p_idCompte) {
+		// TreePath selPath =
+		// ComposantVisuelCommun.getJTree().getSelectionPath();
+		DefaultMutableTreeNode compteNode;
+		// if (selPath == null) {
+		compteNode = rechercheCompteNode(p_idCompte);
+		// } else {
+		// compteNode = (DefaultMutableTreeNode) selPath.getPathComponent(1);
+		// }
+
+		MlDossier dossierCandidat = new MlDossier();
+		dossierCandidat.setIdDossier(p_idDossier);
+		int nbcandidat = compteNode.getChildCount();
+		for (int i = 0; i < nbcandidat; i++) {
+			DefaultMutableTreeNode aChild = (DefaultMutableTreeNode) compteNode
+					.getChildAt(i);
+			MlDossier userObject = (MlDossier) aChild.getUserObject();
+			if (dossierCandidat.equals(userObject)) {
+				return userObject;
+			}
+			MlDossier dossierPotentiel = parcoursSousDossier(aChild,
+					dossierCandidat);
+			if (dossierPotentiel != null) {
+				return dossierPotentiel;
+			}
+		}
+		return null;
+
+	}
+
+	/**
+	 * @param p_aNode
+	 * @param p_dossierCandidat
+	 * @return
+	 */
+	private MlDossier parcoursSousDossier(DefaultMutableTreeNode p_aNode,
+			MlDossier p_dossierCandidat) {
+		int nbcandidat = p_aNode.getChildCount();
+		for (int i = 0; i < nbcandidat; i++) {
+			DefaultMutableTreeNode aChild = (DefaultMutableTreeNode) p_aNode
+					.getChildAt(i);
+			MlDossier userObject = (MlDossier) aChild.getUserObject();
+			if (p_dossierCandidat.equals(userObject)) {
+				return userObject;
+			}
+			if (aChild.getChildCount() > 0) {
+				MlDossier dossierPotentiel = parcoursSousDossier(aChild,
+						p_dossierCandidat);
+				if (dossierPotentiel != null) {
+					return dossierPotentiel;
+				}
+			}
+
+		}
+		return null;
+	}
 }

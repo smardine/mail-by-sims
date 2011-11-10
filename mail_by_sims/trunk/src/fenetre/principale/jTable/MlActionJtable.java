@@ -1,6 +1,5 @@
 package fenetre.principale.jTable;
 
-import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -9,8 +8,7 @@ import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 
 import mdl.MlMessage;
-import bdd.accesTable.AccesTableMailRecu;
-import factory.JTreeFactory;
+import thread.threadMarquageLu;
 import factory.MessageFactory;
 import fenetre.LectureMessagePleinEcran;
 import fenetre.principale.MlAction.EnActionMain;
@@ -138,10 +136,10 @@ public class MlActionJtable implements MouseListener {
 
 	@Override
 	public void mouseReleased(MouseEvent e) {
-		Point p = e.getPoint();
+		// Point p = e.getPoint();
 
 		// get the row index that contains that coordinate
-		int rowNumber = table.rowAtPoint(p);
+		// int rowNumber = table.rowAtPoint(p);
 
 		if (e.isPopupTrigger()) {
 			popUpMenu.show(e.getComponent(), e.getX(), e.getY());
@@ -157,16 +155,19 @@ public class MlActionJtable implements MouseListener {
 				MlMessage m = new MlMessage(idMessage);
 				MessageFactory messFact = new MessageFactory();
 				messFact.afficheContenuMail(m);
-				AccesTableMailRecu accesMail = new AccesTableMailRecu();
-				boolean succes = accesMail.updateStatusLecture(jTableHelper
-						.getReelIdMessage(table, rowNumber), true);
-
-				JTreeFactory treeFact = new JTreeFactory();
-				treeFact.refreshJTree();
-				if (succes) {
-					table.getModel().setValueAt(true, rowNumber,
-							table.getModel().getColumnCount() - 1);
-				}
+				int[] tabID = new int[1];
+				tabID[0] = m.getIdMessage();
+				threadMarquageLu t = new threadMarquageLu(tabID);
+				t.start();
+				// AccesTableMailRecu accesMail = new AccesTableMailRecu();
+				// boolean succes = accesMail.updateStatusLecture(m, true);
+				//
+				// JTreeFactory treeFact = new JTreeFactory();
+				// treeFact.refreshJTree();
+				// if (succes) {
+				// table.getModel().setValueAt(true, rowNumber,
+				// table.getModel().getColumnCount() - 1);
+				// }
 			}
 
 		}

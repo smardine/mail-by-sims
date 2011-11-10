@@ -21,6 +21,7 @@ import tools.WriteFile;
 import bdd.structure.EnStructMailRecu;
 import bdd.structure.EnStructPieceJointe;
 import bdd.structure.EnTable;
+import factory.JTreeFactory;
 import factory.RequetteFactory;
 
 /**
@@ -134,6 +135,10 @@ public class AccesTableMailRecu {
 			String maxId = requeteFact.get1Champ(getMaxId);
 			// ("l'id de message que l'on vient d'enregistrer est: "
 			// + maxId);
+			MlListeMessage lst = new MlListeMessage();
+			lst.add(new MlMessage(Integer.parseInt(maxId)));
+
+			updateStatusLecture(lst, false);
 			verifEtSuppressionBlob(new File(m.getCheminPhysique()));
 			verifEtSuppressionBlob(fileToBlobContenu);
 			verifEtSuppressionBlob(fileToBlobDestinataires);
@@ -439,24 +444,56 @@ public class AccesTableMailRecu {
 		return false;
 	}
 
+	public boolean updateStatusLecture(MlListeMessage p_list, boolean p_isLu) {
+		for (MlMessage m : p_list) {
+			updateStatusLecture(m, p_isLu);
+		}
+		JTreeFactory treeFact = new JTreeFactory();
+		AccesTableDossier accesDossier = new AccesTableDossier();
+		AccesTableCompte accesCompte = new AccesTableCompte();
+		MlCompteMail cptMail = treeFact.rechercheCompteMail(p_list.get(0)
+				.getIdCompte());
+		MlDossier dossier = treeFact.rechercheDossier(p_list.get(0)
+				.getIdDossier(), p_list.get(0).getIdCompte());
+
+		cptMail.setUnreadMessCount(accesCompte
+				.getUnreadMessageFromCompte(cptMail.getIdCompte()));
+		dossier.setUnreadMessageCount(accesDossier.getUnreadMessageFromFolder(
+				cptMail.getIdCompte(), dossier.getIdDossier()));
+		while (dossier.getIdDossierParent() != 0) {
+			dossier = treeFact.rechercheDossier(dossier.getIdDossierParent(),
+					dossier.getIdCompte());
+			dossier.setUnreadMessageCount(dossier.getUnreadMessageCount() - 1);
+		}
+
+		treeFact.refreshJTree();
+		return true;
+	}
+
 	/**
 	 * change le statut de lecture d'un message
-	 * @param p_idMessage l'id du message concerné
+	 * @param p_message l'id du message concerné
 	 * @param p_isLu true si le message est lu, false si le message est non lu
 	 * @return true si ca a reussi
 	 */
-	public boolean updateStatusLecture(int p_idMessage, boolean p_isLu) {
+	private boolean updateStatusLecture(MlMessage p_message, boolean p_isLu) {
 		String script;
 		if (p_isLu) {
+			if (p_message.isLu()) {
+				return true;// pas besoin de le refaire
+			}
 			script = "UPDATE " + EnTable.MAIL_RECU.getNomTable()
 					+ " SET STATUT='T' WHERE "
 					+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "="
-					+ p_idMessage;
+					+ p_message.getIdMessage();
 		} else {
+			if (!p_message.isLu()) {
+				return true;// pas besoin de le refaire
+			}
 			script = "UPDATE " + EnTable.MAIL_RECU.getNomTable()
 					+ " SET STATUT='F' WHERE "
 					+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "="
-					+ p_idMessage;
+					+ p_message.getIdMessage();
 		}
 
 		return requeteFact.executeRequete(script);

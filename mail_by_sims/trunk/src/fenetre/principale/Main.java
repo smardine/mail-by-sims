@@ -49,9 +49,9 @@ import fenetre.principale.jTable.MyTableModel;
 import fenetre.principale.jTable.XTableColumnModel;
 import fenetre.principale.jtree.ArborescenceBoiteMail;
 import fenetre.principale.jtree.CustomTreeCellRenderer;
+import fenetre.principale.jtree.CustomTreeClickListener;
 import fenetre.principale.jtree.CustomTreeExpensionListener;
 import fenetre.principale.jtree.CustomTreeSelectionListener;
-import fenetre.principale.jtree.MlActionJtree;
 
 public class Main extends JFrame {
 
@@ -498,7 +498,7 @@ public class Main extends JFrame {
 		jTable.addMouseListener(new MlActionJtable(jTable));
 
 		jMenuContact.addActionListener(new MlActionMain());
-		jTree.addMouseListener(new MlActionJtree(jTree));
+		jTree.addMouseListener(new CustomTreeClickListener(jTree));
 		jTree.addTreeSelectionListener(new CustomTreeSelectionListener());
 		jTree.addTreeWillExpandListener(new CustomTreeExpensionListener());
 		jTree.addTreeExpansionListener(new CustomTreeExpensionListener());

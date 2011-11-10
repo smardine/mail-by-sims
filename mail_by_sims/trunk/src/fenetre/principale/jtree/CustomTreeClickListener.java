@@ -11,8 +11,9 @@ import javax.swing.tree.TreePath;
 
 import mdl.MlCompteMail;
 import mdl.MlDossier;
+import bdd.accesTable.AccesTableMailRecu;
 
-public class MlActionJtree implements MouseListener {
+public class CustomTreeClickListener implements MouseListener {
 
 	private final JTree tree;
 
@@ -22,9 +23,9 @@ public class MlActionJtree implements MouseListener {
 
 	private JMenuItem viderCorbeille;
 
-	public MlActionJtree(JTree p_jTree) {
+	public CustomTreeClickListener(JTree p_jTree) {
 		this.tree = p_jTree;
-		// this.popUpMenu = getJPopupMenu();
+
 	}
 
 	/**
@@ -103,7 +104,6 @@ public class MlActionJtree implements MouseListener {
 			popUpMenu = getJPopupMenu();
 			int selRow = tree.getRowForLocation(e.getX(), e.getY());
 
-			// tree.setSelectionPath(pathFromEvent);
 			tree.setSelectionRow(selRow);
 
 			DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) pathFromEvent
@@ -122,14 +122,18 @@ public class MlActionJtree implements MouseListener {
 					if (compteMailParent.getIdCorbeille() == dossier
 							.getIdDossier()) {
 						popUpMenu.add(getViderCorbeille());
+						if (new AccesTableMailRecu().getListeDeMessage(
+								compteMailParent.getIdCompte(),
+								dossier.getIdDossier()).size() == 0) {
+							viderCorbeille.setEnabled(false);
+						} else {
+							viderCorbeille.setEnabled(true);
+						}
 					}
-
 				} else {
 					Supprimer.setEnabled(true);
 				}
-
 			}
-
 			popUpMenu.show(e.getComponent(), e.getX(), e.getY());
 		}
 

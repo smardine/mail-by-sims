@@ -7,17 +7,28 @@ import bdd.accesTable.AccesTableMailRecu;
 
 public class MlDossier {
 
-	private final int idDossier;
+	private int idDossier;
 	private int idDossierParent;
 	private int idCompte;
+	private int unreadMessageCount;
 	private String nomDossier;
 	private String nomInternet;
 	private final AccesTableDossier accesDossier;
+	private final AccesTableMailRecu accesMailRecu;
 
 	public MlDossier(int p_idDossier) {
 		this.idDossier = p_idDossier;
 		accesDossier = new AccesTableDossier();
+		accesMailRecu = new AccesTableMailRecu();
 		initialiseDossier(idDossier);
+	}
+
+	/**
+	 * 
+	 */
+	public MlDossier() {
+		accesDossier = new AccesTableDossier();
+		accesMailRecu = new AccesTableMailRecu();
 	}
 
 	private void initialiseDossier(int p_idDossier) {
@@ -42,13 +53,15 @@ public class MlDossier {
 			}// fin de switch
 		}// fin de for
 
+		this.unreadMessageCount = accesDossier.getUnreadMessageFromFolder(
+				idCompte, idDossier);
+
 	}
 
 	@Override
 	public String toString() {
-		int nb = getUnreadMessCount();
-		if (nb > 0) {
-			return nomDossier + " (" + nb + ")";
+		if (unreadMessageCount > 0) {
+			return nomDossier + " (" + unreadMessageCount + ")";
 		}
 		return nomDossier;
 
@@ -95,21 +108,48 @@ public class MlDossier {
 	}
 
 	/**
-	 * @return the unreadMessCount
+	 * @param p_idDossier the idDossier to set
 	 */
-	public int getUnreadMessCount() {
-		int nb = accesDossier.getUnreadMessageFromFolder(idCompte, idDossier);
-		for (MlDossier d : getListSousDossier()) {
-			nb = nb + d.getUnreadMessCount();
-		}
-		return nb;
+	public void setIdDossier(int p_idDossier) {
+		this.idDossier = p_idDossier;
 	}
 
 	/**
 	 * @return
 	 */
 	public MlListeMessage getListMessage() {
-		return new AccesTableMailRecu().getListeDeMessage(idCompte, idDossier);
+		return accesMailRecu.getListeDeMessage(idCompte, idDossier);
+	}
+
+	/**
+	 * @return the unreadMessageCount
+	 */
+	public int getUnreadMessageCount() {
+		return this.unreadMessageCount;
+	}
+
+	/**
+	 * @param p_unreadMessageCount the unreadMessageCount to set
+	 */
+	public void setUnreadMessageCount(int p_unreadMessageCount) {
+		this.unreadMessageCount = p_unreadMessageCount;
+	}
+
+	@Override
+	public boolean equals(Object p_object) {
+		if (idDossier == ((MlDossier) p_object).getIdDossier()) {
+			return true;
+		}
+		return false;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		return super.hashCode();
 	}
 
 }

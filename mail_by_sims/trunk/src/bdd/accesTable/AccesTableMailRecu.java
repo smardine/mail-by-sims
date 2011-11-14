@@ -445,28 +445,31 @@ public class AccesTableMailRecu {
 	}
 
 	public boolean updateStatusLecture(MlListeMessage p_list, boolean p_isLu) {
-		for (MlMessage m : p_list) {
-			updateStatusLecture(m, p_isLu);
-		}
 		JTreeFactory treeFact = new JTreeFactory();
 		AccesTableDossier accesDossier = new AccesTableDossier();
 		AccesTableCompte accesCompte = new AccesTableCompte();
 		MlCompteMail cptMail = treeFact.rechercheCompteMail(p_list.get(0)
 				.getIdCompte());
-		MlDossier dossier = treeFact.rechercheDossier(p_list.get(0)
-				.getIdDossier(), p_list.get(0).getIdCompte());
 
-		cptMail.setUnreadMessCount(accesCompte
-				.getUnreadMessageFromCompte(cptMail.getIdCompte()));
-		dossier.setUnreadMessageCount(accesDossier.getUnreadMessageFromFolder(
-				cptMail.getIdCompte(), dossier.getIdDossier()));
-		while (dossier.getIdDossierParent() != 0) {
-			dossier = treeFact.rechercheDossier(dossier.getIdDossierParent(),
-					dossier.getIdCompte());
-			dossier.setUnreadMessageCount(dossier.getUnreadMessageCount() - 1);
+		for (MlMessage m : p_list) {
+			updateStatusLecture(m, p_isLu);
+			cptMail.setUnreadMessCount(accesCompte
+					.getUnreadMessageFromCompte(cptMail.getIdCompte()));
+			MlDossier dossier = treeFact.rechercheDossier(m.getIdDossier(), m
+					.getIdCompte());
+			dossier.setUnreadMessageCount(accesDossier
+					.getUnreadMessageFromFolder(cptMail.getIdCompte(), dossier
+							.getIdDossier()));
+			while (dossier.getIdDossierParent() != 0) {
+				dossier = treeFact.rechercheDossier(dossier
+						.getIdDossierParent(), dossier.getIdCompte());
+				dossier
+						.setUnreadMessageCount(dossier.getUnreadMessageCount() - 1);
+			}
+
+			treeFact.refreshJTree();
 		}
 
-		treeFact.refreshJTree();
 		return true;
 	}
 

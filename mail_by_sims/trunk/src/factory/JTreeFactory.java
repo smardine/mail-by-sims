@@ -315,6 +315,64 @@ public class JTreeFactory {
 
 	}
 
+	public DefaultMutableTreeNode rechercheDossierNode(int p_idDossier,
+			int p_idCompte) {
+		// TreePath selPath =
+		// ComposantVisuelCommun.getJTree().getSelectionPath();
+		DefaultMutableTreeNode compteNode;
+		// if (selPath == null) {
+		compteNode = rechercheCompteNode(p_idCompte);
+		// } else {
+		// compteNode = (DefaultMutableTreeNode) selPath.getPathComponent(1);
+		// }
+
+		MlDossier dossierCandidat = new MlDossier();
+		dossierCandidat.setIdDossier(p_idDossier);
+		int nbcandidat = compteNode.getChildCount();
+		for (int i = 0; i < nbcandidat; i++) {
+			DefaultMutableTreeNode aChildNode = (DefaultMutableTreeNode) compteNode
+					.getChildAt(i);
+			MlDossier userObject = (MlDossier) aChildNode.getUserObject();
+			if (dossierCandidat.equals(userObject)) {
+				return aChildNode;
+			}
+			DefaultMutableTreeNode nodePotentiel = parcoursSousDossierNode(
+					aChildNode, dossierCandidat);
+			if (nodePotentiel != null) {
+				return nodePotentiel;
+			}
+		}
+		return null;
+
+	}
+
+	/**
+	 * @param p_aNode
+	 * @param p_dossierCandidat
+	 * @return
+	 */
+	private DefaultMutableTreeNode parcoursSousDossierNode(
+			DefaultMutableTreeNode p_aNode, MlDossier p_dossierCandidat) {
+		int nbcandidat = p_aNode.getChildCount();
+		for (int i = 0; i < nbcandidat; i++) {
+			DefaultMutableTreeNode aChildNode = (DefaultMutableTreeNode) p_aNode
+					.getChildAt(i);
+			MlDossier userObject = (MlDossier) aChildNode.getUserObject();
+			if (p_dossierCandidat.equals(userObject)) {
+				return aChildNode;
+			}
+			if (aChildNode.getChildCount() > 0) {
+				DefaultMutableTreeNode nodePotentiel = parcoursSousDossierNode(
+						aChildNode, p_dossierCandidat);
+				if (nodePotentiel != null) {
+					return nodePotentiel;
+				}
+			}
+
+		}
+		return null;
+	}
+
 	/**
 	 * @param p_aNode
 	 * @param p_dossierCandidat

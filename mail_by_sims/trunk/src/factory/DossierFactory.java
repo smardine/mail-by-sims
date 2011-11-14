@@ -10,6 +10,7 @@ import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
+import mdl.MlDossier;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
 import tools.Historique;
@@ -387,6 +388,16 @@ public class DossierFactory {
 				fldr.getName().trim(), fldr.getFullName().trim(), cptMail
 						.getIdCompte());
 		JTreeFactory treeFact = new JTreeFactory();
+		MlDossier nouveauDossier = new MlDossier(idDossier);
+
+		MlDossier dossierParent = treeFact.rechercheDossier(nouveauDossier
+				.getIdDossierParent(), cptMail.getIdCompte());
+		// dossierParent.getListSousDossier().add(nouveauDossier);
+
+		DefaultMutableTreeNode nodeParent = treeFact.rechercheDossierNode(
+				dossierParent.getIdDossier(), cptMail.getIdCompte());
+		nodeParent.add(new DefaultMutableTreeNode(nouveauDossier));
+
 		treeFact.refreshJTree();
 
 	}

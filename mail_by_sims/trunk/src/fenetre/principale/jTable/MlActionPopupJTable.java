@@ -75,6 +75,8 @@ public class MlActionPopupJTable implements ActionListener {
 		int[] tabId = new int[p_tabIdLigneSelectionnee.length];
 		for (int i = 0; i < p_tabIdLigneSelectionnee.length; i++) {
 			int selectedLine = p_tabIdLigneSelectionnee[i];
+			table.getModel().setValueAt(true, selectedLine,
+					table.getModel().getColumnCount() - 1);
 			Integer idMessage = jTableHelper.getReelIdMessage(table,
 					selectedLine);
 			tabId[i] = idMessage;

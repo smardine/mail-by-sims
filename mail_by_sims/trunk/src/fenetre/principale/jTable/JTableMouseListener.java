@@ -13,7 +13,7 @@ import factory.MessageFactory;
 import fenetre.LectureMessagePleinEcran;
 import fenetre.principale.MlAction.EnActionMain;
 
-public class MlActionJtable implements MouseListener {
+public class JTableMouseListener implements MouseListener {
 
 	private JPopupMenu popUpMenu;
 	private JMenuItem CreerRegle;
@@ -25,7 +25,7 @@ public class MlActionJtable implements MouseListener {
 
 	// private static final String TAG = MlActionJtable.class.getSimpleName();
 
-	public MlActionJtable(JTable p_table) {
+	public JTableMouseListener(JTable p_table) {
 
 		this.table = p_table;
 		// MlActionJtable.editor = jEditorPane;
@@ -149,7 +149,8 @@ public class MlActionJtable implements MouseListener {
 				// on affiche le contenu du mail et on rafraichi le status de
 				// lecture uniquement
 				// si une seule ligne est selectionnée
-
+				table.getModel().setValueAt(true, table.getSelectedRow(),
+						table.getModel().getColumnCount() - 1);
 				Integer idMessage = jTableHelper.getReelIdMessage(table, table
 						.getSelectedRow());
 				MlMessage m = new MlMessage(idMessage);
@@ -165,8 +166,7 @@ public class MlActionJtable implements MouseListener {
 				// JTreeFactory treeFact = new JTreeFactory();
 				// treeFact.refreshJTree();
 				// if (succes) {
-				// table.getModel().setValueAt(true, rowNumber,
-				// table.getModel().getColumnCount() - 1);
+
 				// }
 			}
 

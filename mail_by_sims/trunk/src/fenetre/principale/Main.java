@@ -43,7 +43,7 @@ import fenetre.principale.MlAction.MlActionMain;
 import fenetre.principale.MlAction.MlActionMainCombo;
 import fenetre.principale.jList.MlActionjList;
 import fenetre.principale.jTable.DateTimeCellRenderer;
-import fenetre.principale.jTable.MlActionJtable;
+import fenetre.principale.jTable.JTableMouseListener;
 import fenetre.principale.jTable.MlActionPopupJTable;
 import fenetre.principale.jTable.MyTableModel;
 import fenetre.principale.jTable.XTableColumnModel;
@@ -495,7 +495,7 @@ public class Main extends JFrame {
 		tableModel = new MyTableModel(ColoneModel);
 		tableModel.valorisetable(new MlListeMessage());
 		jTable.setModel(tableModel);
-		jTable.addMouseListener(new MlActionJtable(jTable));
+		jTable.addMouseListener(new JTableMouseListener(jTable));
 
 		jMenuContact.addActionListener(new MlActionMain());
 		jTree.addMouseListener(new CustomTreeClickListener(jTree));

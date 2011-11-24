@@ -167,6 +167,7 @@ public class MlActionPopupJTable implements ActionListener {
 			int selectedLine = p_tabIdLigneSelectionnee[i];
 			Integer idMessage = jTableHelper.getReelIdMessage(table,
 					selectedLine);
+			// ((MyTableModel) table.getModel()).removeRow(selectedLine);
 
 			MlMessage m = new MlMessage(idMessage);
 			MlCompteMail cpt = new MlCompteMail(m.getIdCompte());

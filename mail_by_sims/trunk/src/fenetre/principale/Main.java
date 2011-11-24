@@ -489,11 +489,13 @@ public class Main extends JFrame {
 		modelList = new DefaultListModel();
 		jListPJ.setModel(modelList);
 		jListPJ.addMouseListener(new MlActionjList(jTable, jListPJ));
+
 		ColoneModel = new XTableColumnModel();
 		jTable.setColumnModel(ColoneModel);
 		jTable.setDefaultRenderer(Date.class, new DateTimeCellRenderer());
 		tableModel = new MyTableModel(ColoneModel);
 		tableModel.valorisetable(new MlListeMessage());
+		// tableModel.addTableModelListener(new MyTableModelListener());
 		jTable.setModel(tableModel);
 		jTable.addMouseListener(new JTableMouseListener(jTable));
 

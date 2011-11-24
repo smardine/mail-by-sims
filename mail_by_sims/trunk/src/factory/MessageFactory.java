@@ -74,7 +74,13 @@ public class MessageFactory {
 			mime = new MimeMessage(mailSession, source);
 			p_message.setSujet(mime.getSubject());
 			p_message.setDateReception(mime.getSentDate());
-			p_message.setExpediteur(mime.getFrom()[0].toString());
+			try {
+				p_message.setExpediteur(mime.getFrom()[0].toString());
+
+			} catch (AddressException e) {
+				p_message.setExpediteur("inconnu");
+			}
+
 			// ******************************//
 			try {
 				// liste des destinataires

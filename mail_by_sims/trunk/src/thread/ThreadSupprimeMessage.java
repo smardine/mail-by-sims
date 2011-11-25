@@ -12,7 +12,6 @@ import releve.imap.util.messageUtilisateur;
 import bdd.accesTable.AccesTableCompte;
 import bdd.accesTable.AccesTableDossier;
 import factory.DeplaceOuSupprFactory;
-import factory.JTableFactory;
 import factory.JTreeFactory;
 import fenetre.Patience;
 
@@ -26,9 +25,17 @@ public class ThreadSupprimeMessage extends Thread {
 	private final String TAG = this.getClass().getSimpleName();
 	private final AccesTableDossier accesDossier;
 	private final AccesTableCompte accesCompte;
+	private final MlCompteMail compteMail;
+	private MlDossier dossierMail;
 
-	public ThreadSupprimeMessage(MlListeMessage p_list) {
+	// private final MlDossier corbeille;
+
+	public ThreadSupprimeMessage(MlListeMessage p_list, MlCompteMail p_cptMail,
+			MlDossier p_dossier) {
 		this.list = p_list;
+		this.compteMail = p_cptMail;
+		this.dossierMail = p_dossier;
+		// this.corbeille = p_corbeille;
 		this.fenetre = new Patience("Suppression de message(s");
 		accesDossier = new AccesTableDossier();
 		accesCompte = new AccesTableCompte();
@@ -38,29 +45,29 @@ public class ThreadSupprimeMessage extends Thread {
 	public void run() {
 		fenetre.setVisible(true);
 		JTreeFactory treeFactory = new JTreeFactory();
-		MlCompteMail cpt = treeFactory.rechercheCompteMail(list.get(0)
-				.getIdCompte());
-		MlDossier dossier = treeFactory.rechercheDossier(list.get(0)
-				.getIdDossier(), cpt.getIdCompte());
+		// MlCompteMail cpt = treeFactory.rechercheCompteMail(list.get(0)
+		// .getIdCompte());
+		// MlDossier dossier = treeFactory.rechercheDossier(list.get(0)
+		// .getIdDossier(), cpt.getIdCompte());
 
-		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(cpt, list,
-				fenetre);
+		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(compteMail,
+				list, fenetre);
 		try {
 			fact.supprMessage();
-			cpt.setUnreadMessCount(accesCompte.getUnreadMessageFromCompte(cpt
-					.getIdCompte()));
-			dossier.setUnreadMessageCount(accesDossier
-					.getUnreadMessageFromFolder(dossier.getIdCompte(), dossier
-							.getIdDossier()));
-			while (dossier.getIdDossierParent() != 0) {
-				dossier = treeFactory.rechercheDossier(dossier
-						.getIdDossierParent(), cpt.getIdCompte());
-				dossier.setUnreadMessageCount(accesDossier
-						.getUnreadMessageFromFolder(dossier.getIdCompte(),
-								dossier.getIdDossier()));
+			compteMail.setUnreadMessCount(accesCompte
+					.getUnreadMessageFromCompte(compteMail.getIdCompte()));
+			dossierMail.setUnreadMessageCount(accesDossier
+					.getUnreadMessageFromFolder(dossierMail.getIdCompte(),
+							dossierMail.getIdDossier()));
+			while (dossierMail.getIdDossierParent() != 0) {
+				dossierMail = treeFactory.rechercheDossier(dossierMail
+						.getIdDossierParent(), compteMail.getIdCompte());
+				dossierMail.setUnreadMessageCount(accesDossier
+						.getUnreadMessageFromFolder(dossierMail.getIdCompte(),
+								dossierMail.getIdDossier()));
 			}
-			JTableFactory tableFactory = new JTableFactory();
-			tableFactory.refreshJTable(dossier.getListMessage());
+			// JTableFactory tableFactory = new JTableFactory();
+			// tableFactory.refreshJTable(dossier.getListMessage());
 
 			treeFactory.refreshJTree();
 

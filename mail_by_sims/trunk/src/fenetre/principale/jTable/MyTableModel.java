@@ -1,6 +1,8 @@
 package fenetre.principale.jTable;
 
 import java.util.Date;
+import java.util.Enumeration;
+import java.util.Vector;
 
 import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
@@ -8,7 +10,8 @@ import javax.swing.table.TableColumn;
 
 import mdl.MlListeMessage;
 import mdl.MlMessage;
-import tools.RecupDate;
+import releve.imap.util.messageUtilisateur;
+import exception.DonneeAbsenteException;
 
 public class MyTableModel extends AbstractTableModel {
 	/**
@@ -17,21 +20,29 @@ public class MyTableModel extends AbstractTableModel {
 	private static final long serialVersionUID = 1L;
 	private final String[] columnNames = { "n°", "Date reception",
 			"Expediteur", "Sujet", "Piece Jointe", "Statut" };
+	private final int COL_ID_MESS = 0, COL_DATE_REC = 1, COL_EXPE = 2,
+			COL_SUJET = 3, COL_PJ = 4, COL_STATU = 5;
 
 	Class<?> types[] = new Class[] { Number.class, Date.class, String.class,
 			String.class, ImageIcon.class, Boolean.class };
 	private final XTableColumnModel coloneModel;
 
+	private Vector<MlMessage> vData;
+	private final String TAG = this.getClass().getSimpleName();
+
+	// private Object[][] data;
+
 	// private final MlListeMessage rowValues = new MlListeMessage();
 	public MyTableModel(XTableColumnModel p_coloneModel) {
 
 		this.coloneModel = p_coloneModel;
-		coloneModel.addColumn(new TableColumn(0), "n°");
-		coloneModel.addColumn(new TableColumn(1), "Date de reception");
-		coloneModel.addColumn(new TableColumn(2), "Expediteur");
-		coloneModel.addColumn(new TableColumn(3), "Sujet");
-		coloneModel.addColumn(new TableColumn(4), "Piece Jointe");
-		coloneModel.addColumn(new TableColumn(5), "Statut");
+		coloneModel.addColumn(new TableColumn(COL_ID_MESS), "n°");
+		coloneModel.addColumn(new TableColumn(COL_DATE_REC),
+				"Date de reception");
+		coloneModel.addColumn(new TableColumn(COL_EXPE), "Expediteur");
+		coloneModel.addColumn(new TableColumn(COL_SUJET), "Sujet");
+		coloneModel.addColumn(new TableColumn(COL_PJ), "Piece Jointe");
+		coloneModel.addColumn(new TableColumn(COL_STATU), "Statut");
 
 		TableColumn columnId = coloneModel.getColumn(0);
 		TableColumn columnDate = coloneModel.getColumn(1);
@@ -80,14 +91,12 @@ public class MyTableModel extends AbstractTableModel {
 
 	}
 
-	private Object[][] data;
-
 	public int getColumnCount() {
 		return columnNames.length;
 	}
 
 	public int getRowCount() {
-		return data.length;
+		return vData.size();
 	}
 
 	@Override
@@ -101,40 +110,64 @@ public class MyTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int col) {
-		return data[row][col];
+		MlMessage aRow = vData.get(row);
+		switch (col) {
+			case COL_ID_MESS:
+				return aRow.getIdMessage();
+			case COL_DATE_REC:
+				return aRow.getDateReception();
+			case COL_EXPE:
+				return aRow.getExpediteur();
+			case COL_SUJET:
+				return aRow.getSujet();
+			case COL_PJ:
+				if (aRow.isHavePieceJointe()) {
+					return new ImageIcon(getClass().getResource(
+							"/piece_jointe16.png"));
+				}
+				return null;
+			case COL_STATU:
+				return aRow.isLu();
+		}
+		// return vData.get(row).data[row][col];
+		return aRow;
 	}
 
 	public void valorisetable(MlListeMessage p_liste) {
-		data = new Object[p_liste.size()][columnNames.length];
+		vData = new Vector<MlMessage>(p_liste.size());
+		// data = new Object[p_liste.size()][columnNames.length];
 		if (p_liste.size() == 0) {
 			fireTableDataChanged();
 			return;
 		}
-
-		for (int i = 0; i < p_liste.size(); i++) {// on parcour la liste des
-			// messages
-			MlMessage m = p_liste.get(i);
-			// numero de message
-			data[i][0] = m.getIdMessage();
-			// date de reception
-			data[i][1] = RecupDate.getDatepourTable(m.getDateReception());
-			// expediteur
-			data[i][2] = m.getExpediteur();
-			// sujet
-			data[i][3] = m.getSujet();
-
-			if (m.isHavePieceJointe()) {
-				data[i][4] = new ImageIcon(getClass().getResource(
-						"/piece_jointe16.png"));
-			} else {
-				data[i][4] = null;
-			}
-			if (m.isLu()) {
-				data[i][5] = Boolean.TRUE;
-			} else {
-				data[i][5] = Boolean.FALSE;
-			}
+		for (MlMessage m : p_liste) {
+			vData.add(m);
 		}
+		// for (int i = 0; i < p_liste.size(); i++) {// on parcour la liste des
+		// // messages
+		// MlMessage m = p_liste.get(i);
+		// numero de message
+		// vData.add(m);
+		// data[i][0] = m.getIdMessage();
+		// // date de reception
+		// data[i][1] = RecupDate.getDatepourTable(m.getDateReception());
+		// // expediteur
+		// data[i][2] = m.getExpediteur();
+		// // sujet
+		// data[i][3] = m.getSujet();
+
+		// if (m.isHavePieceJointe()) {
+		// data[i][4] = new ImageIcon(getClass().getResource(
+		// "/piece_jointe16.png"));
+		// } else {
+		// data[i][4] = null;
+		// }
+		// if (m.isLu()) {
+		// data[i][5] = Boolean.TRUE;
+		// } else {
+		// data[i][5] = Boolean.FALSE;
+		// }
+		// }
 
 		fireTableDataChanged();
 
@@ -145,8 +178,49 @@ public class MyTableModel extends AbstractTableModel {
 	 */
 	@Override
 	public void setValueAt(Object value, int row, int col) {
-		data[row][col] = value;
+		MlMessage aRow = vData.get(row);
+		switch (col) {
+			case COL_ID_MESS:
+			case COL_DATE_REC:
+			case COL_EXPE:
+			case COL_SUJET:
+			case COL_PJ:
+				messageUtilisateur.affMessageException(TAG,
+						new DonneeAbsenteException(TAG,
+								"Interdit de modifier ces données"),
+						"Erreur de programmation");
+			case COL_STATU:
+				Boolean statut = (Boolean) value;
+				aRow.setLu(statut);
+				break;
+		}
+		// data[row][col] = value;
 		fireTableCellUpdated(row, col);
 	}
 
+	// public void removeRow(int p_row) {
+	// vData.remove(p_row);
+	// fireTableRowsDeleted(p_row, p_row);
+	// }
+
+	/**
+	 * @param p_idMessage
+	 */
+	public void removeMessageRow(Integer p_idMessage) {
+		Enumeration<MlMessage> alldatas = vData.elements();
+
+		while (alldatas.hasMoreElements()) {
+			MlMessage m = alldatas.nextElement();
+			if (m.getIdMessage() == p_idMessage) {
+				int idx = vData.indexOf(m);
+				// vData.removeElementAt(idx);
+				boolean result = vData.remove(m);
+				// vData.remove(idx);
+				fireTableDataChanged();
+				// fireTableRowsDeleted(idx, idx);
+				return;
+			}
+		}
+
+	}
 }

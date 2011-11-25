@@ -266,6 +266,7 @@ public class AccesTableMailRecu {
 	 */
 	public MlListeMessage getListeDeMessage(int p_idCompte,
 			int p_idDossierChoisi) {
+		AccesTablePieceJointe accesPJ = new AccesTablePieceJointe();
 		MlListeMessage lstMessage = new MlListeMessage();
 		String requette = "SELECT " //
 				+ EnStructMailRecu.ID_MESSAGE.getNomChamp()
@@ -340,6 +341,9 @@ public class AccesTableMailRecu {
 			m.setLu((unEnregistrement.get(8).equals("T")));
 			m.setIdDossier(p_idDossierChoisi);
 			m.setIdCompte(p_idCompte);
+
+			m.setHavePieceJointe(accesPJ
+					.getListeIdPieceJointe(m.getIdMessage()).size() > 0);
 
 			lstMessage.add(m);
 

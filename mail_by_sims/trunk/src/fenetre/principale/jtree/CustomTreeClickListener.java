@@ -147,16 +147,4 @@ public class CustomTreeClickListener implements MouseListener {
 		return tree.getPathForLocation(e.getX(), e.getY());
 	}
 
-	// private List<String> getListeDossierdeBase() {
-	// ArrayList<String> lstDossierBase = new ArrayList<String>(4);
-	// EnDossierBase[] lstEnum = EnDossierBase.values();
-	// for (EnDossierBase dossier : lstEnum) {
-	// if (dossier != EnDossierBase.ROOT) {
-	// lstDossierBase.add(dossier.getLib());
-	// }
-	//
-	// }
-	// return lstDossierBase;
-	// }
-
 }

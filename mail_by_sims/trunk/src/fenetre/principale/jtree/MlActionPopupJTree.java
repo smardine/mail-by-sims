@@ -81,12 +81,16 @@ public class MlActionPopupJTree implements ActionListener {
 					"Etes-vous sûr de vouloir vider la corbeille?");
 			switch (reponse) {
 				case OUI:
+					JTreeFactory treeFactory = new JTreeFactory();
 					DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) selectionPath
 							.getLastPathComponent();
-					MlDossier aDossier = (MlDossier) aNode.getUserObject();
+					MlDossier dossierAVider = (MlDossier) aNode.getUserObject();
+
+					MlCompteMail cpt = treeFactory
+							.rechercheCompteMail(dossierAVider.getIdCompte());
 
 					ThreadSupprimeMessage t = new ThreadSupprimeMessage(
-							aDossier.getListMessage());
+							dossierAVider.getListMessage(), cpt, dossierAVider);
 					t.start();
 					break;
 				case NON:

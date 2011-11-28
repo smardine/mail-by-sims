@@ -1,7 +1,7 @@
 package fenetre.principale.jTable;
 
+import java.util.Arrays;
 import java.util.Date;
-import java.util.Enumeration;
 import java.util.Vector;
 
 import javax.swing.ImageIcon;
@@ -194,32 +194,22 @@ public class MyTableModel extends AbstractTableModel {
 				aRow.setLu(statut);
 				break;
 		}
-		// data[row][col] = value;
+
 		fireTableCellUpdated(row, col);
 	}
 
-	// public void removeRow(int p_row) {
-	// vData.remove(p_row);
-	// fireTableRowsDeleted(p_row, p_row);
-	// }
-
 	/**
-	 * @param p_idMessage
+	 * permet de supprimer une ligne dans une Jtable a partir de son index (de 0
+	 * à jTable.getRowCount)
+	 * @param p_rows tableau de int correspondant à l'index de la ligne a
+	 *            supprimer
 	 */
-	public void removeMessageRow(Integer p_idMessage) {
-		Enumeration<MlMessage> alldatas = vData.elements();
+	public void removeMessagesRows(int[] p_rows) {
+		Arrays.sort(p_rows);
+		for (int i = p_rows.length - 1; i >= 0; i--) {
+			this.vData.remove(p_rows[i]);
+			fireTableRowsDeleted(p_rows[i], p_rows[i]);
 
-		while (alldatas.hasMoreElements()) {
-			MlMessage m = alldatas.nextElement();
-			if (m.getIdMessage() == p_idMessage) {
-				int idx = vData.indexOf(m);
-				// vData.removeElementAt(idx);
-				boolean result = vData.remove(m);
-				// vData.remove(idx);
-				fireTableDataChanged();
-				// fireTableRowsDeleted(idx, idx);
-				return;
-			}
 		}
 
 	}

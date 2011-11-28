@@ -6,9 +6,14 @@ import java.util.ArrayList;
 
 import javax.swing.JTable;
 
+import mdl.MlCompteMail;
+import mdl.MlDossier;
 import mdl.MlListeMessage;
+import mdl.MlMessage;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
+import thread.ThreadDeplaceMessage;
+import thread.ThreadSupprimeMessage;
 import thread.threadMarquageLu;
 import factory.JTreeFactory;
 import fenetre.Patience;
@@ -157,56 +162,57 @@ public class MlActionPopupJTable implements ActionListener {
 		JTreeFactory treeFactory = new JTreeFactory();
 		fenetre.setVisible(true);
 		int nbMessTraite = 1;
+
 		for (int i = 0; i < p_tabIdLigneSelectionnee.length; i++) {
 			fenetre.afficheInfo("Creation de la liste ...", "message "
 					+ nbMessTraite + " sur " + p_tabIdLigneSelectionnee.length,
 					(100 * nbMessTraite) / p_tabIdLigneSelectionnee.length);
 
-			int selectedLine = p_tabIdLigneSelectionnee[i];
 			Integer idMessage = jTableHelper.getReelIdMessage(table,
-					selectedLine);
-			((MyTableModel) table.getModel()).removeMessageRow(idMessage);
+					p_tabIdLigneSelectionnee[i]);
 
-			// MlMessage m = new MlMessage(idMessage);
-			// MlCompteMail cpt = new MlCompteMail(m.getIdCompte());
-			//
-			// if (m.getIdDossier() != cpt.getIdCorbeille()) {
-			// lstADepl.add(m);
-			// fenetre.afficheInfo("Creation de la liste ...", "message n° "
-			// + nbMessTraite++ + " à deplacer vers la corbeille", 0);
-			//
-			// } else {
-			// lstASuppr.add(m);
-			// fenetre.afficheInfo("Creation de la liste ...", "message n° "
-			// + nbMessTraite++ + " à supprimer", 0);
-			//
-			// }
+			MlMessage m = new MlMessage(idMessage);
+			MlCompteMail cpt = new MlCompteMail(m.getIdCompte());
+
+			if (m.getIdDossier() != cpt.getIdCorbeille()) {
+				lstADepl.add(m);
+				fenetre.afficheInfo("Creation de la liste ...", "message n° "
+						+ nbMessTraite++ + " à deplacer vers la corbeille", 0);
+
+			} else {
+				lstASuppr.add(m);
+				fenetre.afficheInfo("Creation de la liste ...", "message n° "
+						+ nbMessTraite++ + " à supprimer", 0);
+			}
 
 		}// fin de for
 		fenetre.setVisible(false);
+		// raffraichissement de la jTable
+		((MyTableModel) table.getModel())
+				.removeMessagesRows(p_tabIdLigneSelectionnee);
 
-		// if (lstADepl.size() > 0) {
-		// MlCompteMail cpt = treeFactory.rechercheCompteMail(lstADepl.get(0)
-		// .getIdCompte());
-		// MlDossier dossier = treeFactory.rechercheDossier(lstADepl.get(0)
-		// .getIdDossier(), cpt.getIdCompte());
-		// MlDossier corbeille = treeFactory.rechercheDossier(cpt
-		// .getIdCorbeille(), cpt.getIdCompte());
-		//
-		// ThreadDeplaceMessage t = new ThreadDeplaceMessage(lstADepl, cpt,
-		// dossier, corbeille);
-		// t.start();
-		// }
-		// if (lstASuppr.size() > 0) {
-		// MlCompteMail cpt = treeFactory.rechercheCompteMail(lstASuppr.get(0)
-		// .getIdCompte());
-		// MlDossier dossier = treeFactory.rechercheDossier(lstASuppr.get(0)
-		// .getIdDossier(), cpt.getIdCompte());
-		//
-		// ThreadSupprimeMessage t = new ThreadSupprimeMessage(lstASuppr, cpt,
-		// dossier);
-		// t.start();
-		// }
+		if (lstADepl.size() > 0) {
+			MlCompteMail cpt = treeFactory.rechercheCompteMail(lstADepl.get(0)
+					.getIdCompte());
+			MlDossier dossier = treeFactory.rechercheDossier(lstADepl.get(0)
+					.getIdDossier(), cpt.getIdCompte());
+			MlDossier corbeille = treeFactory.rechercheDossier(cpt
+					.getIdCorbeille(), cpt.getIdCompte());
+
+			ThreadDeplaceMessage t = new ThreadDeplaceMessage(lstADepl, cpt,
+					dossier, corbeille);
+			t.start();
+		}
+		if (lstASuppr.size() > 0) {
+			MlCompteMail cpt = treeFactory.rechercheCompteMail(lstASuppr.get(0)
+					.getIdCompte());
+			MlDossier dossier = treeFactory.rechercheDossier(lstASuppr.get(0)
+					.getIdDossier(), cpt.getIdCompte());
+
+			ThreadSupprimeMessage t = new ThreadSupprimeMessage(lstASuppr, cpt,
+					dossier);
+			t.start();
+		}
 
 	}
 

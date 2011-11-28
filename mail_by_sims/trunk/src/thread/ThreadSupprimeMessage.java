@@ -28,14 +28,12 @@ public class ThreadSupprimeMessage extends Thread {
 	private final MlCompteMail compteMail;
 	private MlDossier dossierMail;
 
-	// private final MlDossier corbeille;
-
 	public ThreadSupprimeMessage(MlListeMessage p_list, MlCompteMail p_cptMail,
 			MlDossier p_dossier) {
 		this.list = p_list;
 		this.compteMail = p_cptMail;
 		this.dossierMail = p_dossier;
-		// this.corbeille = p_corbeille;
+
 		this.fenetre = new Patience("Suppression de message(s");
 		accesDossier = new AccesTableDossier();
 		accesCompte = new AccesTableCompte();
@@ -45,10 +43,6 @@ public class ThreadSupprimeMessage extends Thread {
 	public void run() {
 		fenetre.setVisible(true);
 		JTreeFactory treeFactory = new JTreeFactory();
-		// MlCompteMail cpt = treeFactory.rechercheCompteMail(list.get(0)
-		// .getIdCompte());
-		// MlDossier dossier = treeFactory.rechercheDossier(list.get(0)
-		// .getIdDossier(), cpt.getIdCompte());
 
 		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(compteMail,
 				list, fenetre);
@@ -66,8 +60,6 @@ public class ThreadSupprimeMessage extends Thread {
 						.getUnreadMessageFromFolder(dossierMail.getIdCompte(),
 								dossierMail.getIdDossier()));
 			}
-			// JTableFactory tableFactory = new JTableFactory();
-			// tableFactory.refreshJTable(dossier.getListMessage());
 
 			treeFactory.refreshJTree();
 

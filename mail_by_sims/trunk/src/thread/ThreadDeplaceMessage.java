@@ -47,10 +47,6 @@ public class ThreadDeplaceMessage extends Thread {
 	@Override
 	public void run() {
 		JTreeFactory treeFactory = new JTreeFactory();
-		// MlCompteMail cpt = treeFactory.rechercheCompteMail(list.get(0)
-		// .getIdCompte());
-		// MlDossier dossier = treeFactory.rechercheDossier(list.get(0)
-		// .getIdDossier(), cpt.getIdCompte());
 
 		fenetre.setVisible(true);
 		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(compteMail,
@@ -69,13 +65,10 @@ public class ThreadDeplaceMessage extends Thread {
 						.getUnreadMessageFromFolder(dossierMail.getIdCompte(),
 								dossierMail.getIdDossier()));
 			}
-			// MlDossier corbeille = treeFactory.rechercheDossier(cpt
-			// .getIdCorbeille(), cpt.getIdCompte());
+
 			corbeille.setUnreadMessageCount(accesDossier
 					.getUnreadMessageFromFolder(corbeille.getIdCompte(),
 							corbeille.getIdDossier()));
-			// JTableFactory tableFactory = new JTableFactory();
-			// tableFactory.refreshJTable(dossier.getListMessage());
 
 			treeFactory.refreshJTree();
 		} catch (MessagingException e) {

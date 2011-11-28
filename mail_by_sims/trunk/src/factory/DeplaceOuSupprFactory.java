@@ -266,29 +266,37 @@ public class DeplaceOuSupprFactory {
 			if (!fldr.isOpen()) {
 				fldr.open(Folder.READ_WRITE);
 			}
-			long[] tabUID = new long[listeMessage.size()];
+			// long[] tabUID = new long[listeMessage.size()];
 			AccesTableMailRecu accesMail = new AccesTableMailRecu();
 			for (int i = 0; i < listeMessage.size(); i++) {
 				MlMessage messBase = listeMessage.get(i);
+				fenetre.afficheInfo("Suppression de message(s) ", (i) + " sur "
+						+ listeMessage.size(), (100 * (i + 1))
+						/ listeMessage.size());
 				if (messBase != null) {
-					tabUID[i] = Long.parseLong(messBase.getUIDMessage());
+					Message messServeur = fldr.getMessageByUID(Long
+							.parseLong(messBase.getUIDMessage()));
+					if (messServeur != null) {
+						messServeur.setFlag(Flags.Flag.DELETED, true);
+					}
+					// tabUID[i] = Long.parseLong(messBase.getUIDMessage());
 					accesMail.deleteMessageRecu(messBase.getIdMessage());
 				}
 			}
-
-			Message[] messageServeur = fldr.getMessagesByUID(tabUID);
-			if (messageServeur != null) {
-				for (int i = 0; i < messageServeur.length; i++) {
-					fenetre.afficheInfo("Suppression de message(s) ", (i)
-							+ " sur " + listeMessage.size(), (100 * (i + 1))
-							/ listeMessage.size());
-					Message messJavaMail = messageServeur[i];
-					if (messJavaMail != null) {
-						messJavaMail.setFlag(Flags.Flag.DELETED, true);
-					}
-				}
-
-			}
+			// fldr.getMessageByUID(arg0)
+			// Message[] messageServeur = fldr.getMessagesByUID(tabUID);
+			// if (messageServeur != null) {
+			// for (int i = 0; i < messageServeur.length; i++) {
+			// fenetre.afficheInfo("Suppression de message(s) ", (i)
+			// + " sur " + listeMessage.size(), (100 * (i + 1))
+			// / listeMessage.size());
+			// Message messJavaMail = messageServeur[i];
+			// if (messJavaMail != null) {
+			// messJavaMail.setFlag(Flags.Flag.DELETED, true);
+			// }
+			// }
+			//
+			// }
 
 			fldr.expunge();
 			fldr.close(true);

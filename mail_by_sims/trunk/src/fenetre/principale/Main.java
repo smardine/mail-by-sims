@@ -495,7 +495,7 @@ public class Main extends JFrame {
 		jTable.setDefaultRenderer(Date.class, new DateTimeCellRenderer());
 		tableModel = new MyTableModel(ColoneModel);
 		tableModel.valorisetable(new MlListeMessage());
-		// tableModel.addTableModelListener(new MyTableModelListener());
+
 		jTable.setModel(tableModel);
 		jTable.addMouseListener(new JTableMouseListener(jTable));
 

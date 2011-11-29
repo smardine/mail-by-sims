@@ -124,7 +124,6 @@ public class DeplaceOuSupprFactory {
 			MlMessage m = listeMessage.get(i);
 			recupNouvelUID(tabMessIMAP, src, i, m);
 		}
-
 		if (tabMessIMAP == null) {
 			Historique
 					.ecrireReleveBal(compteMail, TAG,
@@ -133,6 +132,17 @@ public class DeplaceOuSupprFactory {
 			dest.close(false);
 			return false;
 		}
+		for (int i = 0; i < tabMessIMAP.length; i++) {
+			if (tabMessIMAP[i] == null) {
+				Historique
+						.ecrireReleveBal(compteMail, TAG,
+								"impossible de recuperer les nouveau UID des messages a deplacer");
+				src.close(false);
+				dest.close(false);
+				return false;
+			}
+		}
+
 		AppendUID[] tabNewUId = dest.appendUIDMessages(tabMessIMAP);
 		fenetre.getjProgressBar().setIndeterminate(false);
 		AccesTableMailRecu accesMail = new AccesTableMailRecu();

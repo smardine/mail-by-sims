@@ -35,8 +35,6 @@ public class DeplaceOuSupprFactory {
 	private Store store;
 	private final Patience fenetre;
 
-	// private final JProgressBar progressBar;
-
 	/**
 	 * Constructeur
 	 * @param p_cptMail - le compte mail concerné
@@ -112,7 +110,7 @@ public class DeplaceOuSupprFactory {
 	private boolean deplaceGMAIL() throws MessagingException {
 		AccesTableDossier accesDossier = new AccesTableDossier();
 		IMAPFolder dest = (IMAPFolder) store.getFolder("[Gmail]/Corbeille");
-		Message[] tabMessIMAP = new Message[listeMessage.size()];
+		Message[] tabMessIMAPOriginaux = new Message[listeMessage.size()];
 		IMAPFolder src = (IMAPFolder) store.getFolder(accesDossier
 				.getNomInternetDossier(listeMessage.get(0).getIdDossier()));
 		gestionOuvertureDossier(src);
@@ -122,47 +120,34 @@ public class DeplaceOuSupprFactory {
 		fenetre.getjProgressBar().setIndeterminate(true);
 		for (int i = 0; i < listeMessage.size(); i++) {
 			MlMessage m = listeMessage.get(i);
-			recupNouvelUID(tabMessIMAP, src, i, m);
+			tabMessIMAPOriginaux[i] = recupNouvelUID(src, m);
 		}
-		if (tabMessIMAP == null) {
-			Historique
-					.ecrireReleveBal(compteMail, TAG,
-							"impossible de recuperer les nouveau UID des messages a deplacer");
-			src.close(false);
-			dest.close(false);
-			return false;
-		}
-		for (int i = 0; i < tabMessIMAP.length; i++) {
-			if (tabMessIMAP[i] == null) {
-				Historique
-						.ecrireReleveBal(compteMail, TAG,
-								"impossible de recuperer les nouveau UID des messages a deplacer");
-				src.close(false);
-				dest.close(false);
-				return false;
+
+		fenetre.getjProgressBar().setIndeterminate(false);
+		AccesTableMailRecu accesMail = new AccesTableMailRecu();
+
+		for (int i = 0; i < tabMessIMAPOriginaux.length; i++) {
+			fenetre.afficheInfo("Deplacement du message de "
+					+ src.getFullName() + " vers " + dest.getFullName(),
+					"maj message " + (i + 1) + " sur "
+							+ tabMessIMAPOriginaux.length, (100 * (i + 1))
+							/ tabMessIMAPOriginaux.length);
+
+			if (tabMessIMAPOriginaux[i] == null) {
+				Historique.ecrireReleveBal(compteMail, TAG,
+						"le message n'existe plus sur le serveur");
+			} else {
+				Message[] tabUnMessImap = new Message[1];
+				tabUnMessImap[0] = tabMessIMAPOriginaux[i];
+				AppendUID[] tabNewUId = dest.appendUIDMessages(tabUnMessImap);
+				// Message messImapOriginial = tabMessIMAPOriginaux[i];
+				tabMessIMAPOriginaux[i].setFlag(Flags.Flag.DELETED, true);
+				listeMessage.get(i).setUIDMessage("" + tabNewUId[0].uid);
+				accesMail.updateUIDMessage(listeMessage.get(i));
+
 			}
 		}
 
-		AppendUID[] tabNewUId = dest.appendUIDMessages(tabMessIMAP);
-		fenetre.getjProgressBar().setIndeterminate(false);
-		AccesTableMailRecu accesMail = new AccesTableMailRecu();
-		for (int i = 0; i < tabNewUId.length && tabNewUId[i] != null; i++) {
-			int nbMessage = i + 1;
-			Historique.ecrireReleveBal(compteMail, src.getFullName(),
-					"Deplacement du message de " + src.getFullName() + " vers "
-							+ dest.getFullName());
-			fenetre.afficheInfo("Deplacement du message de "
-					+ src.getFullName() + " vers " + dest.getFullName(),
-					"maj message " + (i + 1) + " sur " + tabNewUId.length,
-					(100 * nbMessage) / tabNewUId.length);
-
-			// on recupere les nouveaux uid et on met a jour les
-			// message
-			Message messImapOriginial = tabMessIMAP[i];
-			messImapOriginial.setFlag(Flags.Flag.DELETED, true);
-			listeMessage.get(i).setUIDMessage("" + tabNewUId[i].uid);
-			accesMail.updateUIDMessage(listeMessage.get(i));
-		}
 		src.expunge();
 		src.close(true);// on confirme la suppression des messages
 		// du
@@ -185,15 +170,15 @@ public class DeplaceOuSupprFactory {
 	 * @param src - le dossier source
 	 * @param i - l'index de message a traiter
 	 * @param m - le message enregistré dans la base de données.
+	 * @return
 	 * @throws MessagingException - si une erreur est survenue
 	 */
-	private void recupNouvelUID(Message[] tabMessIMAP, IMAPFolder src, int i,
-			MlMessage m) throws MessagingException {
+	private Message recupNouvelUID(IMAPFolder src, MlMessage m)
+			throws MessagingException {
 		Message messImap = src.getMessageByUID(Long
 				.parseLong(m.getUIDMessage()));
-		if (messImap != null) {
-			tabMessIMAP[i] = messImap;
-		}
+		return messImap;
+
 	}
 
 	/**
@@ -276,7 +261,7 @@ public class DeplaceOuSupprFactory {
 			if (!fldr.isOpen()) {
 				fldr.open(Folder.READ_WRITE);
 			}
-			// long[] tabUID = new long[listeMessage.size()];
+
 			AccesTableMailRecu accesMail = new AccesTableMailRecu();
 			for (int i = 0; i < listeMessage.size(); i++) {
 				MlMessage messBase = listeMessage.get(i);
@@ -289,24 +274,9 @@ public class DeplaceOuSupprFactory {
 					if (messServeur != null) {
 						messServeur.setFlag(Flags.Flag.DELETED, true);
 					}
-					// tabUID[i] = Long.parseLong(messBase.getUIDMessage());
 					accesMail.deleteMessageRecu(messBase.getIdMessage());
 				}
 			}
-			// fldr.getMessageByUID(arg0)
-			// Message[] messageServeur = fldr.getMessagesByUID(tabUID);
-			// if (messageServeur != null) {
-			// for (int i = 0; i < messageServeur.length; i++) {
-			// fenetre.afficheInfo("Suppression de message(s) ", (i)
-			// + " sur " + listeMessage.size(), (100 * (i + 1))
-			// / listeMessage.size());
-			// Message messJavaMail = messageServeur[i];
-			// if (messJavaMail != null) {
-			// messJavaMail.setFlag(Flags.Flag.DELETED, true);
-			// }
-			// }
-			//
-			// }
 
 			fldr.expunge();
 			fldr.close(true);

@@ -15,6 +15,7 @@ import java.util.Properties;
 
 import javax.mail.Address;
 import javax.mail.BodyPart;
+import javax.mail.Flags;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -96,6 +97,8 @@ public class MessageFactory {
 					p_message.setUIDMessage("" + System.currentTimeMillis());// getMessageID());
 				}
 			}
+
+			p_message.setLu(mime.getFlags().contains(Flags.Flag.SEEN));
 
 			/**
 			 * il faut decoder le message de maniere a voir si il y a des piece

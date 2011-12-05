@@ -15,6 +15,7 @@ import javax.swing.tree.TreePath;
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlDossier;
+import mdl.MlMessage;
 import releve.imap.util.messageUtilisateur;
 import bdd.accesTable.AccesTableCompte;
 import bdd.accesTable.AccesTableDossier;
@@ -398,5 +399,28 @@ public class JTreeFactory {
 
 		}
 		return null;
+	}
+
+	/**
+	 * Mise a jour du compteur de message non lu pour l'afficher a l'utilisateur
+	 * @param p_message le MlMessage que l'on vient de créer ou de mette a jour
+	 *            (statut lecture)
+	 */
+	public void majUnreadCount(MlMessage p_message) {
+		AccesTableDossier accesDossier = new AccesTableDossier();
+		MlCompteMail cptMail = rechercheCompteMail(p_message.getIdCompte());
+		cptMail.setUnreadMessCount(accesCompte
+				.getUnreadMessageFromCompte(cptMail.getIdCompte()));
+		MlDossier dossier = rechercheDossier(p_message.getIdDossier(),
+				p_message.getIdCompte());
+		dossier.setUnreadMessageCount(accesDossier.getUnreadMessageFromFolder(
+				cptMail.getIdCompte(), dossier.getIdDossier()));
+		while (dossier.getIdDossierParent() != 0) {
+			dossier = rechercheDossier(dossier.getIdDossierParent(), dossier
+					.getIdCompte());
+			dossier.setUnreadMessageCount(dossier.getUnreadMessageCount() - 1);
+		}
+
+		refreshJTree();
 	}
 }

@@ -117,7 +117,12 @@ public class AccesTableMailRecu {
 		requette.append("?,'");// c'est pour le contenu qui sera stocké dans un
 		// blob
 		requette.append(dateReception + "',");//
-		requette.append("'F')");
+		if (m.isLu()) {
+			requette.append("'T')");
+		} else {
+			requette.append("'F')");
+		}
+
 		// le status de lecture du message (F= nonlu,T=lu)
 
 		// on l'execute
@@ -135,10 +140,14 @@ public class AccesTableMailRecu {
 			String maxId = requeteFact.get1Champ(getMaxId);
 			// ("l'id de message que l'on vient d'enregistrer est: "
 			// + maxId);
-			MlListeMessage lst = new MlListeMessage();
-			lst.add(new MlMessage(Integer.parseInt(maxId)));
 
-			updateStatusLecture(lst, false);
+			// lst.add();
+
+			// updateStatusLecture(lst, false);
+
+			JTreeFactory treeFact = new JTreeFactory();
+			treeFact.majUnreadCount(new MlMessage(Integer.parseInt(maxId)));
+
 			verifEtSuppressionBlob(new File(m.getCheminPhysique()));
 			verifEtSuppressionBlob(fileToBlobContenu);
 			verifEtSuppressionBlob(fileToBlobDestinataires);
@@ -449,29 +458,31 @@ public class AccesTableMailRecu {
 	}
 
 	public boolean updateStatusLecture(MlListeMessage p_list, boolean p_isLu) {
+
 		JTreeFactory treeFact = new JTreeFactory();
-		AccesTableDossier accesDossier = new AccesTableDossier();
-		AccesTableCompte accesCompte = new AccesTableCompte();
-		MlCompteMail cptMail = treeFact.rechercheCompteMail(p_list.get(0)
-				.getIdCompte());
+		// AccesTableDossier accesDossier = new AccesTableDossier();
+		// AccesTableCompte accesCompte = new AccesTableCompte();
+		// MlCompteMail cptMail = treeFact.rechercheCompteMail(p_list.get(0)
+		// .getIdCompte());
 
 		for (MlMessage m : p_list) {
 			updateStatusLecture(m, p_isLu);
-			cptMail.setUnreadMessCount(accesCompte
-					.getUnreadMessageFromCompte(cptMail.getIdCompte()));
-			MlDossier dossier = treeFact.rechercheDossier(m.getIdDossier(), m
-					.getIdCompte());
-			dossier.setUnreadMessageCount(accesDossier
-					.getUnreadMessageFromFolder(cptMail.getIdCompte(), dossier
-							.getIdDossier()));
-			while (dossier.getIdDossierParent() != 0) {
-				dossier = treeFact.rechercheDossier(dossier
-						.getIdDossierParent(), dossier.getIdCompte());
-				dossier
-						.setUnreadMessageCount(dossier.getUnreadMessageCount() - 1);
-			}
-
-			treeFact.refreshJTree();
+			treeFact.majUnreadCount(m);
+			// cptMail.setUnreadMessCount(accesCompte
+			// .getUnreadMessageFromCompte(cptMail.getIdCompte()));
+			// MlDossier dossier = treeFact.rechercheDossier(m.getIdDossier(), m
+			// .getIdCompte());
+			// dossier.setUnreadMessageCount(accesDossier
+			// .getUnreadMessageFromFolder(cptMail.getIdCompte(), dossier
+			// .getIdDossier()));
+			// while (dossier.getIdDossierParent() != 0) {
+			// dossier = treeFact.rechercheDossier(dossier
+			// .getIdDossierParent(), dossier.getIdCompte());
+			// dossier
+			// .setUnreadMessageCount(dossier.getUnreadMessageCount() - 1);
+			// }
+			//
+			// treeFact.refreshJTree();
 		}
 
 		return true;

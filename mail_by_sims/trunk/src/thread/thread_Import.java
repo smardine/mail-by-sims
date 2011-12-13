@@ -45,7 +45,7 @@ public class thread_Import extends Thread {
 				.OpenFolder("Veuillez indiquer l'emplacement de vos mails Windows Mail");
 		// messageUtilisateur.affMessageInfo("Vous avez choisi: " + chemin);
 		MlListeCompteMail lst = accesCompte.getListeDeComptes();
-		ArrayList<String> lstNomCompte = new ArrayList<String>(lst.getSize());
+		ArrayList<String> lstNomCompte = new ArrayList<String>(lst.size());
 		for (MlCompteMail cpt : lst) {
 			lstNomCompte.add(cpt.getNomCompte());
 		}

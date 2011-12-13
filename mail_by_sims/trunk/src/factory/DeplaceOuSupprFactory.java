@@ -10,8 +10,8 @@ import javax.mail.MessagingException;
 import javax.mail.Store;
 
 import mdl.MlCompteMail;
-import mdl.MlListeMessage;
-import mdl.MlMessage;
+import mdl.MlListeMessageGrille;
+import mdl.MlMessageGrille;
 import tools.Historique;
 import bdd.accesTable.AccesTableDossier;
 import bdd.accesTable.AccesTableMailRecu;
@@ -31,20 +31,20 @@ import fenetre.Patience;
 public class DeplaceOuSupprFactory {
 	private final String TAG = this.getClass().getSimpleName();
 	private final MlCompteMail compteMail;
-	private final MlListeMessage listeMessage;
+	private final MlListeMessageGrille listeMessage;
 	private Store store;
 	private final Patience fenetre;
 
 	/**
 	 * Constructeur
 	 * @param p_cptMail - le compte mail concerné
-	 * @param p_lstMessage - la liste des messages a traiter
+	 * @param p_list - la liste des messages a traiter
 	 * @param p_fenetre - une barrre de progression
 	 */
 	public DeplaceOuSupprFactory(MlCompteMail p_cptMail,
-			MlListeMessage p_lstMessage, Patience p_fenetre) {
+			MlListeMessageGrille p_list, Patience p_fenetre) {
 		this.compteMail = p_cptMail;
-		this.listeMessage = p_lstMessage;
+		this.listeMessage = p_list;
 		this.fenetre = p_fenetre;
 
 	}
@@ -119,7 +119,7 @@ public class DeplaceOuSupprFactory {
 				0);
 		fenetre.getjProgressBar().setIndeterminate(true);
 		for (int i = 0; i < listeMessage.size(); i++) {
-			MlMessage m = listeMessage.get(i);
+			MlMessageGrille m = listeMessage.get(i);
 			tabMessIMAPOriginaux[i] = recupNouvelUID(src, m);
 		}
 
@@ -142,7 +142,7 @@ public class DeplaceOuSupprFactory {
 				AppendUID[] tabNewUId = dest.appendUIDMessages(tabUnMessImap);
 				// Message messImapOriginial = tabMessIMAPOriginaux[i];
 				tabMessIMAPOriginaux[i].setFlag(Flags.Flag.DELETED, true);
-				listeMessage.get(i).setUIDMessage("" + tabNewUId[0].uid);
+				listeMessage.get(i).setUidMessage("" + tabNewUId[0].uid);
 				accesMail.updateUIDMessage(listeMessage.get(i));
 
 			}
@@ -169,14 +169,14 @@ public class DeplaceOuSupprFactory {
 	 * @param tabMessIMAP - le tableau de messages (IMAP) a traiter
 	 * @param src - le dossier source
 	 * @param i - l'index de message a traiter
-	 * @param m - le message enregistré dans la base de données.
+	 * @param p_m - le message enregistré dans la base de données.
 	 * @return
 	 * @throws MessagingException - si une erreur est survenue
 	 */
-	private Message recupNouvelUID(IMAPFolder src, MlMessage m)
+	private Message recupNouvelUID(IMAPFolder src, MlMessageGrille p_m)
 			throws MessagingException {
-		Message messImap = src.getMessageByUID(Long
-				.parseLong(m.getUIDMessage()));
+		Message messImap = src.getMessageByUID(Long.parseLong(p_m
+				.getUidMessage()));
 		return messImap;
 
 	}
@@ -229,7 +229,7 @@ public class DeplaceOuSupprFactory {
 					break;
 				case POP:
 					int count = 1;
-					for (MlMessage m : listeMessage) {
+					for (MlMessageGrille m : listeMessage) {
 						fenetre.afficheInfo("Suppression de message(s) ",
 								(count) + " sur " + listeMessage.size(),
 								(100 * count) / listeMessage.size());
@@ -253,7 +253,7 @@ public class DeplaceOuSupprFactory {
 		StoreFactory storeFact = new StoreFactory(compteMail);
 		store = storeFact.getConnectedStore();
 
-		MlMessage messageTest = listeMessage.get(0);
+		MlMessageGrille messageTest = listeMessage.get(0);
 		if (messageTest.getIdDossier() == compteMail.getIdCorbeille()) {
 			AccesTableDossier accesDossier = new AccesTableDossier();
 			IMAPFolder fldr = (IMAPFolder) store.getFolder(accesDossier
@@ -264,13 +264,13 @@ public class DeplaceOuSupprFactory {
 
 			AccesTableMailRecu accesMail = new AccesTableMailRecu();
 			for (int i = 0; i < listeMessage.size(); i++) {
-				MlMessage messBase = listeMessage.get(i);
+				MlMessageGrille messBase = listeMessage.get(i);
 				fenetre.afficheInfo("Suppression de message(s) ", (i) + " sur "
 						+ listeMessage.size(), (100 * (i + 1))
 						/ listeMessage.size());
 				if (messBase != null) {
 					Message messServeur = fldr.getMessageByUID(Long
-							.parseLong(messBase.getUIDMessage()));
+							.parseLong(messBase.getUidMessage()));
 					if (messServeur != null) {
 						messServeur.setFlag(Flags.Flag.DELETED, true);
 					}

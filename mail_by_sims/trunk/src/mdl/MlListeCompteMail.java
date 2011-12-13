@@ -15,8 +15,4 @@ public class MlListeCompteMail extends ArrayList<MlCompteMail> {
 		return list;
 	}
 
-	public int getSize() {
-		return list.size();
-	}
-
 }

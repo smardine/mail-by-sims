@@ -14,7 +14,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlDossier;
-import mdl.MlListeMessage;
+import mdl.MlListeMessageGrille;
 import tools.GestionRepertoire;
 import factory.JTableFactory;
 
@@ -42,7 +42,7 @@ public class CustomTreeSelectionListener implements TreeSelectionListener {
 		Object userObject = node.getUserObject();
 		if (userObject instanceof MlCompteMail) {
 			JTableFactory tableFact = new JTableFactory();
-			tableFact.refreshJTable(new MlListeMessage());
+			tableFact.refreshJTable(new MlListeMessageGrille());
 			((DefaultListModel) ComposantVisuelCommun.getJListPJ().getModel())
 					.removeAllElements();
 			Document doc = ComposantVisuelCommun.getHtmlPane().getDocument();
@@ -57,7 +57,8 @@ public class CustomTreeSelectionListener implements TreeSelectionListener {
 			}
 		} else if (userObject instanceof MlDossier) {
 			JTableFactory tableFact = new JTableFactory();
-			tableFact.refreshJTable(((MlDossier) userObject).getListMessage());
+			tableFact.refreshJTable(((MlDossier) userObject)
+					.getListMessageGrille());
 			((DefaultListModel) ComposantVisuelCommun.getJListPJ().getModel())
 					.removeAllElements();
 			Document doc = ComposantVisuelCommun.getHtmlPane().getDocument();

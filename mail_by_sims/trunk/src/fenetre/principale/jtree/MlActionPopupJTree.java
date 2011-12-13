@@ -90,7 +90,8 @@ public class MlActionPopupJTree implements ActionListener {
 							.rechercheCompteMail(dossierAVider.getIdCompte());
 
 					ThreadSupprimeMessage t = new ThreadSupprimeMessage(
-							dossierAVider.getListMessage(), cpt, dossierAVider);
+							dossierAVider.getListMessageGrille(), cpt,
+							dossierAVider);
 					t.start();
 					break;
 				case NON:

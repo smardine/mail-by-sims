@@ -6,7 +6,7 @@ package factory;
 import javax.swing.JTable;
 
 import mdl.ComposantVisuelCommun;
-import mdl.MlListeMessage;
+import mdl.MlListeMessageGrille;
 import fenetre.principale.jTable.MyTableModel;
 
 /**
@@ -21,7 +21,7 @@ public class JTableFactory {
 
 	}
 
-	public void refreshJTable(MlListeMessage p_list) {
+	public void refreshJTable(MlListeMessageGrille p_list) {
 		MyTableModel modelDetable = (MyTableModel) table.getModel();
 		modelDetable.valorisetable(p_list);
 	}

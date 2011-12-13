@@ -7,7 +7,7 @@ import javax.mail.MessagingException;
 
 import mdl.MlCompteMail;
 import mdl.MlDossier;
-import mdl.MlListeMessage;
+import mdl.MlListeMessageGrille;
 import releve.imap.util.messageUtilisateur;
 import bdd.accesTable.AccesTableDossier;
 import bdd.accesTable.AccesTableMailRecu;
@@ -20,7 +20,7 @@ import fenetre.Patience;
  */
 public class ThreadDeplaceMessage extends Thread {
 
-	private final MlListeMessage list;
+	private final MlListeMessageGrille list;
 	private final Patience fenetre;
 	private final String TAG = this.getClass().getSimpleName();
 	private final AccesTableMailRecu accesMail;
@@ -30,9 +30,10 @@ public class ThreadDeplaceMessage extends Thread {
 	private MlDossier dossierMail;
 	private final MlDossier corbeille;
 
-	public ThreadDeplaceMessage(MlListeMessage p_list, MlCompteMail p_cptMail,
-			MlDossier p_dossierMail, MlDossier p_corbeille) {
-		this.list = p_list;
+	public ThreadDeplaceMessage(MlListeMessageGrille p_lstADepl,
+			MlCompteMail p_cptMail, MlDossier p_dossierMail,
+			MlDossier p_corbeille) {
+		this.list = p_lstADepl;
 		this.compteMail = p_cptMail;
 		this.dossierMail = p_dossierMail;
 		this.corbeille = p_corbeille;

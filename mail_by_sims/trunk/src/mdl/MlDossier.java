@@ -117,8 +117,12 @@ public class MlDossier {
 	/**
 	 * @return
 	 */
-	public MlListeMessage getListMessage() {
-		return accesMailRecu.getListeDeMessage(idCompte, idDossier);
+	// public MlListeMessage getListMessage() {
+	// return accesMailRecu.getListeDeMessage(idCompte, idDossier);
+	// }
+
+	public MlListeMessageGrille getListMessageGrille() {
+		return accesMailRecu.getListeMessageGrille(idCompte, idDossier);
 	}
 
 	/**

@@ -8,8 +8,8 @@ import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
-import mdl.MlListeMessage;
-import mdl.MlMessage;
+import mdl.MlListeMessageGrille;
+import mdl.MlMessageGrille;
 import releve.imap.util.messageUtilisateur;
 import exception.DonneeAbsenteException;
 
@@ -27,7 +27,7 @@ public class MyTableModel extends AbstractTableModel {
 			String.class, ImageIcon.class, Boolean.class };
 	private final XTableColumnModel coloneModel;
 
-	private Vector<MlMessage> vData;
+	private Vector<MlMessageGrille> vData;
 	private final String TAG = this.getClass().getSimpleName();
 
 	// private Object[][] data;
@@ -110,7 +110,7 @@ public class MyTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int col) {
-		MlMessage aRow = vData.get(row);
+		MlMessageGrille aRow = vData.get(row);
 		switch (col) {
 			case COL_ID_MESS:
 				return aRow.getIdMessage();
@@ -133,41 +133,16 @@ public class MyTableModel extends AbstractTableModel {
 		return aRow;
 	}
 
-	public void valorisetable(MlListeMessage p_liste) {
-		vData = new Vector<MlMessage>(p_liste.size());
+	public void valorisetable(MlListeMessageGrille p_liste) {
+		vData = new Vector<MlMessageGrille>(p_liste.size());
 		// data = new Object[p_liste.size()][columnNames.length];
 		if (p_liste.size() == 0) {
 			fireTableDataChanged();
 			return;
 		}
-		for (MlMessage m : p_liste) {
+		for (MlMessageGrille m : p_liste) {
 			vData.add(m);
 		}
-		// for (int i = 0; i < p_liste.size(); i++) {// on parcour la liste des
-		// // messages
-		// MlMessage m = p_liste.get(i);
-		// numero de message
-		// vData.add(m);
-		// data[i][0] = m.getIdMessage();
-		// // date de reception
-		// data[i][1] = RecupDate.getDatepourTable(m.getDateReception());
-		// // expediteur
-		// data[i][2] = m.getExpediteur();
-		// // sujet
-		// data[i][3] = m.getSujet();
-
-		// if (m.isHavePieceJointe()) {
-		// data[i][4] = new ImageIcon(getClass().getResource(
-		// "/piece_jointe16.png"));
-		// } else {
-		// data[i][4] = null;
-		// }
-		// if (m.isLu()) {
-		// data[i][5] = Boolean.TRUE;
-		// } else {
-		// data[i][5] = Boolean.FALSE;
-		// }
-		// }
 
 		fireTableDataChanged();
 
@@ -178,7 +153,7 @@ public class MyTableModel extends AbstractTableModel {
 	 */
 	@Override
 	public void setValueAt(Object value, int row, int col) {
-		MlMessage aRow = vData.get(row);
+		MlMessageGrille aRow = vData.get(row);
 		switch (col) {
 			case COL_ID_MESS:
 			case COL_DATE_REC:

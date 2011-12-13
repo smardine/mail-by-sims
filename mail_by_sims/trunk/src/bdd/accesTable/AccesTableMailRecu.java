@@ -13,7 +13,9 @@ import java.util.List;
 import mdl.MlCompteMail;
 import mdl.MlDossier;
 import mdl.MlListeMessage;
+import mdl.MlListeMessageGrille;
 import mdl.MlMessage;
+import mdl.MlMessageGrille;
 import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.RecupDate;
@@ -146,7 +148,8 @@ public class AccesTableMailRecu {
 			// updateStatusLecture(lst, false);
 
 			JTreeFactory treeFact = new JTreeFactory();
-			treeFact.majUnreadCount(new MlMessage(Integer.parseInt(maxId)));
+			treeFact
+					.majUnreadCount(new MlMessageGrille(Integer.parseInt(maxId)));
 
 			verifEtSuppressionBlob(new File(m.getCheminPhysique()));
 			verifEtSuppressionBlob(fileToBlobContenu);
@@ -362,6 +365,37 @@ public class AccesTableMailRecu {
 		// return null;
 	}
 
+	public MlListeMessageGrille getListeMessageGrille(int p_idCompte,
+			int p_idDossierChoisi) {
+
+		MlListeMessageGrille lstMessage = new MlListeMessageGrille();
+		String requette = "SELECT " //
+				+ EnStructMailRecu.ID_MESSAGE.getNomChamp()
+				+ " FROM "
+				+ EnTable.MAIL_RECU.getNomTable() //
+				+ " where " + EnStructMailRecu.ID_COMPTE.getNomChamp()
+				+ "="
+				+ p_idCompte
+				+ " and "
+				+ EnStructMailRecu.ID_DOSSIER.getNomChamp()
+				+ "="
+				+ p_idDossierChoisi
+				+ " ORDER BY "
+				+ EnStructMailRecu.DATE_RECEPTION.getNomChamp() + " DESC";
+		List<ArrayList<String>> lstResultat = requeteFact
+				.getListeDenregistrement(requette);
+		for (int i = 0; i < lstResultat.size(); i++) {
+			ArrayList<String> aRecord = lstResultat.get(i);
+			MlMessageGrille m = new MlMessageGrille(Integer.parseInt(aRecord
+					.get(0)));
+
+			lstMessage.add(m);
+
+		}
+
+		return lstMessage;
+	}
+
 	/**
 	 * Est ce que le message à au moins une piece jointe?
 	 * @param p_idMessage
@@ -457,7 +491,8 @@ public class AccesTableMailRecu {
 		return false;
 	}
 
-	public boolean updateStatusLecture(MlListeMessage p_list, boolean p_isLu) {
+	public boolean updateStatusLecture(MlListeMessageGrille p_lstMailLu,
+			boolean p_isLu) {
 
 		JTreeFactory treeFact = new JTreeFactory();
 		// AccesTableDossier accesDossier = new AccesTableDossier();
@@ -465,24 +500,9 @@ public class AccesTableMailRecu {
 		// MlCompteMail cptMail = treeFact.rechercheCompteMail(p_list.get(0)
 		// .getIdCompte());
 
-		for (MlMessage m : p_list) {
+		for (MlMessageGrille m : p_lstMailLu) {
 			updateStatusLecture(m, p_isLu);
 			treeFact.majUnreadCount(m);
-			// cptMail.setUnreadMessCount(accesCompte
-			// .getUnreadMessageFromCompte(cptMail.getIdCompte()));
-			// MlDossier dossier = treeFact.rechercheDossier(m.getIdDossier(), m
-			// .getIdCompte());
-			// dossier.setUnreadMessageCount(accesDossier
-			// .getUnreadMessageFromFolder(cptMail.getIdCompte(), dossier
-			// .getIdDossier()));
-			// while (dossier.getIdDossierParent() != 0) {
-			// dossier = treeFact.rechercheDossier(dossier
-			// .getIdDossierParent(), dossier.getIdCompte());
-			// dossier
-			// .setUnreadMessageCount(dossier.getUnreadMessageCount() - 1);
-			// }
-			//
-			// treeFact.refreshJTree();
 		}
 
 		return true;
@@ -494,7 +514,8 @@ public class AccesTableMailRecu {
 	 * @param p_isLu true si le message est lu, false si le message est non lu
 	 * @return true si ca a reussi
 	 */
-	private boolean updateStatusLecture(MlMessage p_message, boolean p_isLu) {
+	private boolean updateStatusLecture(MlMessageGrille p_message,
+			boolean p_isLu) {
 		String script;
 		if (p_isLu) {
 			if (p_message.isLu()) {
@@ -546,6 +567,23 @@ public class AccesTableMailRecu {
 		return lstResultat;
 	}
 
+	public List<ArrayList<String>> getMessageGrilleById(int p_idMessage) {
+		String script = "SELECT "//
+				+ EnStructMailRecu.EXPEDITEUR.getNomChamp() + ", " + //
+				EnStructMailRecu.SUJET.getNomChamp() + ", " + //
+				EnStructMailRecu.DATE_RECEPTION.getNomChamp() + ", " + //
+				EnStructMailRecu.STATUT.getNomChamp() + ", " + //
+				EnStructMailRecu.UID.getNomChamp() + ", " + //
+				EnStructMailRecu.ID_COMPTE.getNomChamp() + ", " + //
+				EnStructMailRecu.ID_DOSSIER.getNomChamp()//
+				+ " FROM " + EnTable.MAIL_RECU.getNomTable() + // 
+				" WHERE "// 
+				+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "=" + p_idMessage;
+		List<ArrayList<String>> lstResultat = requeteFact
+				.getListeDenregistrement(script);
+		return lstResultat;
+	}
+
 	/**
 	 * Obtenir le sujet d'un message a partir de son ID
 	 * @param p_idMessage
@@ -563,9 +601,9 @@ public class AccesTableMailRecu {
 	 * @param p_list
 	 * @return
 	 */
-	public boolean deplaceMessageVersCorbeille(MlListeMessage p_list) {
+	public boolean deplaceMessageVersCorbeille(MlListeMessageGrille p_list) {
 
-		for (MlMessage m : p_list) {
+		for (MlMessageGrille m : p_list) {
 			MlCompteMail cpt = new MlCompteMail(m.getIdCompte());
 
 			String requete = "UPDATE " + EnTable.MAIL_RECU.getNomTable()
@@ -585,15 +623,15 @@ public class AccesTableMailRecu {
 	/**
 	 * Met a jour l'UID d'un message (lors du deplacement d'un message d'un
 	 * dossier vers un autre (Serveur IMAP par exemple)
-	 * @param p_m
+	 * @param p_mlMessageGrille
 	 * @return
 	 */
-	public boolean updateUIDMessage(MlMessage p_m) {
+	public boolean updateUIDMessage(MlMessageGrille p_mlMessageGrille) {
 		String requete = "UPDATE " + EnTable.MAIL_RECU.getNomTable() + " SET "
 				+ EnStructMailRecu.UID.getNomChamp() + "='"
-				+ p_m.getUIDMessage() + "' WHERE "
+				+ p_mlMessageGrille.getUidMessage() + "' WHERE "
 				+ EnStructMailRecu.ID_MESSAGE.getNomChamp() + "="
-				+ p_m.getIdMessage();
+				+ p_mlMessageGrille.getIdMessage();
 		return requeteFact.executeRequete(requete);
 
 	}

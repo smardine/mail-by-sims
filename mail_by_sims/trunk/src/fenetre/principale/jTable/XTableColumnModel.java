@@ -7,23 +7,6 @@ import java.util.Vector;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 
-/**
- * <code>XTableColumnModel</code> extends the DefaultTableColumnModel . It
- * provides a comfortable way to hide/show columns. Columns keep their positions
- * when hidden and shown again. In order to work with JTable it cannot add any
- * events to <code>TableColumnModelListener</code>. Therefore hiding a column
- * will result in <code>columnRemoved</code> event and showing it again will
- * notify listeners of a <code>columnAdded</code>, and possibly a
- * <code>columnMoved</code> event. For the same reason the following methods
- * still deal with visible columns only: getColumnCount(), getColumns(),
- * getColumnIndex(), getColumn() There are overloaded versions of these methods
- * that take a parameter <code>onlyVisible</code> which let's you specify wether
- * you want invisible columns taken into account.
- * @version 0.9 04/03/01
- * @author Stephen Kelvin, mail@StephenKelvin.de
- * @see DefaultTableColumnModel
- */
-
 public class XTableColumnModel extends DefaultTableColumnModel {
 	/**
 	 * 

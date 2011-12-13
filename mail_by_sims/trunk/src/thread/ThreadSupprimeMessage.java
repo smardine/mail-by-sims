@@ -7,7 +7,7 @@ import javax.mail.MessagingException;
 
 import mdl.MlCompteMail;
 import mdl.MlDossier;
-import mdl.MlListeMessage;
+import mdl.MlListeMessageGrille;
 import releve.imap.util.messageUtilisateur;
 import bdd.accesTable.AccesTableCompte;
 import bdd.accesTable.AccesTableDossier;
@@ -20,7 +20,7 @@ import fenetre.Patience;
  */
 public class ThreadSupprimeMessage extends Thread {
 
-	private final MlListeMessage list;
+	private final MlListeMessageGrille list;
 	private final Patience fenetre;
 	private final String TAG = this.getClass().getSimpleName();
 	private final AccesTableDossier accesDossier;
@@ -28,9 +28,9 @@ public class ThreadSupprimeMessage extends Thread {
 	private final MlCompteMail compteMail;
 	private MlDossier dossierMail;
 
-	public ThreadSupprimeMessage(MlListeMessage p_list, MlCompteMail p_cptMail,
-			MlDossier p_dossier) {
-		this.list = p_list;
+	public ThreadSupprimeMessage(MlListeMessageGrille p_mlListeMessageGrille,
+			MlCompteMail p_cptMail, MlDossier p_dossier) {
+		this.list = p_mlListeMessageGrille;
 		this.compteMail = p_cptMail;
 		this.dossierMail = p_dossier;
 

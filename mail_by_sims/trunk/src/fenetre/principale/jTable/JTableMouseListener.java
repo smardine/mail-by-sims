@@ -7,7 +7,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 
-import mdl.MlMessage;
+import mdl.MlMessageGrille;
 import thread.threadMarquageLu;
 import factory.MessageFactory;
 import fenetre.LectureMessagePleinEcran;
@@ -153,7 +153,7 @@ public class JTableMouseListener implements MouseListener {
 						table.getModel().getColumnCount() - 1);
 				Integer idMessage = jTableHelper.getReelIdMessage(table, table
 						.getSelectedRow());
-				MlMessage m = new MlMessage(idMessage);
+				MlMessageGrille m = new MlMessageGrille(idMessage);
 				MessageFactory messFact = new MessageFactory();
 				messFact.afficheContenuMail(m);
 				int[] tabID = new int[1];

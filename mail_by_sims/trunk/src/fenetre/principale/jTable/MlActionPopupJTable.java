@@ -8,8 +8,8 @@ import javax.swing.JTable;
 
 import mdl.MlCompteMail;
 import mdl.MlDossier;
-import mdl.MlListeMessage;
-import mdl.MlMessage;
+import mdl.MlListeMessageGrille;
+import mdl.MlMessageGrille;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
 import thread.ThreadDeplaceMessage;
@@ -157,8 +157,8 @@ public class MlActionPopupJTable implements ActionListener {
 	 */
 	private void lanceSuppressionOuDeplacementCorbeille(
 			int[] p_tabIdLigneSelectionnee) {
-		MlListeMessage lstASuppr = new MlListeMessage();
-		MlListeMessage lstADepl = new MlListeMessage();
+		MlListeMessageGrille lstASuppr = new MlListeMessageGrille();
+		MlListeMessageGrille lstADepl = new MlListeMessageGrille();
 		JTreeFactory treeFactory = new JTreeFactory();
 		fenetre.setVisible(true);
 		int nbMessTraite = 1;
@@ -171,7 +171,7 @@ public class MlActionPopupJTable implements ActionListener {
 			Integer idMessage = jTableHelper.getReelIdMessage(table,
 					p_tabIdLigneSelectionnee[i]);
 
-			MlMessage m = new MlMessage(idMessage);
+			MlMessageGrille m = new MlMessageGrille(idMessage);
 			MlCompteMail cpt = new MlCompteMail(m.getIdCompte());
 
 			if (m.getIdDossier() != cpt.getIdCorbeille()) {

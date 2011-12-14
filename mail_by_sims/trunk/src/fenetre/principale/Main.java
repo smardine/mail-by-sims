@@ -84,8 +84,8 @@ public class Main extends JFrame {
 		super();
 		initialize();
 
-		ThreadDemarrage verifAuDemarrage = new ThreadDemarrage(this,
-				operation_jLabel, jTextField, jProgressBar);
+		ThreadDemarrage verifAuDemarrage = new ThreadDemarrage(this, jLabel,
+				operation_jLabel, jProgressBar);
 		verifAuDemarrage.start();
 
 	}

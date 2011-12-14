@@ -495,10 +495,6 @@ public class AccesTableMailRecu {
 			boolean p_isLu) {
 
 		JTreeFactory treeFact = new JTreeFactory();
-		// AccesTableDossier accesDossier = new AccesTableDossier();
-		// AccesTableCompte accesCompte = new AccesTableCompte();
-		// MlCompteMail cptMail = treeFact.rechercheCompteMail(p_list.get(0)
-		// .getIdCompte());
 
 		for (MlMessageGrille m : p_lstMailLu) {
 			updateStatusLecture(m, p_isLu);
@@ -602,9 +598,11 @@ public class AccesTableMailRecu {
 	 * @return
 	 */
 	public boolean deplaceMessageVersCorbeille(MlListeMessageGrille p_list) {
-
+		MlCompteMail cpt = null;
+		if (p_list != null && p_list.size() > 0) {
+			cpt = new MlCompteMail(p_list.get(0).getIdCompte());
+		}
 		for (MlMessageGrille m : p_list) {
-			MlCompteMail cpt = new MlCompteMail(m.getIdCompte());
 
 			String requete = "UPDATE " + EnTable.MAIL_RECU.getNomTable()
 					+ " SET " + EnStructMailRecu.ID_DOSSIER.getNomChamp() + "="

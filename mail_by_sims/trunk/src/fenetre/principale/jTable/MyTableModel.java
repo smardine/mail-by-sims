@@ -29,6 +29,8 @@ public class MyTableModel extends AbstractTableModel {
 
 	private Vector<MlMessageGrille> vData;
 	private final String TAG = this.getClass().getSimpleName();
+	private final ImageIcon IconePJ = new ImageIcon(getClass().getResource(
+			"/piece_jointe16.png"));
 
 	// private Object[][] data;
 
@@ -110,7 +112,9 @@ public class MyTableModel extends AbstractTableModel {
 	}
 
 	public Object getValueAt(int row, int col) {
+
 		MlMessageGrille aRow = vData.get(row);
+
 		switch (col) {
 			case COL_ID_MESS:
 				return aRow.getIdMessage();
@@ -122,8 +126,7 @@ public class MyTableModel extends AbstractTableModel {
 				return aRow.getSujet();
 			case COL_PJ:
 				if (aRow.isHavePieceJointe()) {
-					return new ImageIcon(getClass().getResource(
-							"/piece_jointe16.png"));
+					return IconePJ;
 				}
 				return null;
 			case COL_STATU:
@@ -133,7 +136,7 @@ public class MyTableModel extends AbstractTableModel {
 		return aRow;
 	}
 
-	public void valorisetable(MlListeMessageGrille p_liste) {
+	public void valorisetable(final MlListeMessageGrille p_liste) {
 		vData = new Vector<MlMessageGrille>(p_liste.size());
 		// data = new Object[p_liste.size()][columnNames.length];
 		if (p_liste.size() == 0) {
@@ -142,9 +145,10 @@ public class MyTableModel extends AbstractTableModel {
 		}
 		for (MlMessageGrille m : p_liste) {
 			vData.add(m);
+			fireTableRowsInserted(0, 0);
 		}
 
-		fireTableDataChanged();
+		// fireTableDataChanged();
 
 	}
 

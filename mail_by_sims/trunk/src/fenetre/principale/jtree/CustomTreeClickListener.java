@@ -122,7 +122,7 @@ public class CustomTreeClickListener implements MouseListener {
 					if (compteMailParent.getIdCorbeille() == dossier
 							.getIdDossier()) {
 						popUpMenu.add(getViderCorbeille());
-						if (new AccesTableMailRecu().getListeDeMessage(
+						if (new AccesTableMailRecu().getListeMessageGrille(
 								compteMailParent.getIdCompte(),
 								dossier.getIdDossier()).size() == 0) {
 							viderCorbeille.setEnabled(false);

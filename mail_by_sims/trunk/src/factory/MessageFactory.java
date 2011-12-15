@@ -29,7 +29,6 @@ import javax.swing.text.Document;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlMessage;
-import mdl.MlMessageGrille;
 import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.Historique;
@@ -320,12 +319,11 @@ public class MessageFactory {
 		return s;
 	}
 
-	public void afficheContenuMail(MlMessageGrille p_m) {
+	public void afficheContenuMail(int p_idMessage) {
 
 		// le n° du message (meme si il est caché).
 		AccesTableMailRecu accesMail = new AccesTableMailRecu();
-		File contenu = accesMail.getContenuFromIdForFile(p_m.getIdMessage(),
-				false);
+		File contenu = accesMail.getContenuFromIdForFile(p_idMessage, false);
 
 		// on RAZ le contenu du panelEditor
 		Document doc = ComposantVisuelCommun.getHtmlPane().getDocument();
@@ -336,8 +334,8 @@ public class MessageFactory {
 						"file:///" + contenu.getAbsolutePath());
 				// affichage des piece jointe dans la liste (si il y en a)
 				AccesTablePieceJointe accesPJ = new AccesTablePieceJointe();
-				List<String> lstPj = accesPJ.getListeNomPieceJointe(p_m
-						.getIdMessage());
+				List<String> lstPj = accesPJ
+						.getListeNomPieceJointe(p_idMessage);
 				DefaultListModel model = (DefaultListModel) ComposantVisuelCommun
 						.getJListPJ().getModel();
 				int nbLigne = model.getSize();

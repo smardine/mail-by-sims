@@ -25,7 +25,7 @@ public class MlMessageGrille {
 	private int idDossier;
 	private int idCompte;
 
-	private enum statutLecture {
+	public enum statutLecture {
 		T, F;
 	}
 

@@ -16,6 +16,7 @@ import mdl.MlListeMessage;
 import mdl.MlListeMessageGrille;
 import mdl.MlMessage;
 import mdl.MlMessageGrille;
+import mdl.MlMessageGrille.statutLecture;
 import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.RecupDate;
@@ -369,25 +370,51 @@ public class AccesTableMailRecu {
 			int p_idDossierChoisi) {
 
 		MlListeMessageGrille lstMessage = new MlListeMessageGrille();
-		String requette = "SELECT " //
+		String script = "SELECT "//
+				+ EnStructMailRecu.EXPEDITEUR.getNomChamp()
+				+ ", "
+				+ EnStructMailRecu.SUJET.getNomChamp()
+				+ ", "
+				+ EnStructMailRecu.DATE_RECEPTION.getNomChamp()
+				+ ", "
+				+ EnStructMailRecu.STATUT.getNomChamp()
+				+ ", "
+				+ EnStructMailRecu.UID.getNomChamp()
+				+ ", "
 				+ EnStructMailRecu.ID_MESSAGE.getNomChamp()
+
 				+ " FROM "
-				+ EnTable.MAIL_RECU.getNomTable() //
-				+ " where " + EnStructMailRecu.ID_COMPTE.getNomChamp()
-				+ "="
-				+ p_idCompte
-				+ " and "
+				+ EnTable.MAIL_RECU.getNomTable() // 
+				+ " WHERE "// 
 				+ EnStructMailRecu.ID_DOSSIER.getNomChamp()
 				+ "="
-				+ p_idDossierChoisi
+				+ p_idDossierChoisi//
+				+ " AND "//
+				+ EnStructMailRecu.ID_COMPTE.getNomChamp() + "="
+				+ p_idCompte//
 				+ " ORDER BY "
-				+ EnStructMailRecu.DATE_RECEPTION.getNomChamp() + " DESC";
+				+ EnStructMailRecu.DATE_RECEPTION.getNomChamp()
+				+ " DESC";
+
 		List<ArrayList<String>> lstResultat = requeteFact
-				.getListeDenregistrement(requette);
+				.getListeDenregistrement(script);
+
 		for (int i = 0; i < lstResultat.size(); i++) {
 			ArrayList<String> aRecord = lstResultat.get(i);
-			MlMessageGrille m = new MlMessageGrille(Integer.parseInt(aRecord
-					.get(0)));
+
+			MlMessageGrille m = new MlMessageGrille();
+
+			m.setExpediteur(decodeHTMLFromBase(aRecord.get(0)));
+			m.setSujet(decodeHTMLFromBase(aRecord.get(1)));
+			m
+					.setDateReception(RecupDate.getdateFromTimeStamp((aRecord
+							.get(2))));
+			m.setLu(statutLecture.T.name().equals(aRecord.get(3)));
+			m.setUidMessage(aRecord.get(4));
+			m.setIdCompte(p_idCompte);
+			m.setIdDossier(p_idDossierChoisi);
+			m.setIdMessage(Integer.parseInt(aRecord.get(5)));
+			m.setHavePieceJointe(messageHavePieceJointe(m.getIdMessage()));
 
 			lstMessage.add(m);
 

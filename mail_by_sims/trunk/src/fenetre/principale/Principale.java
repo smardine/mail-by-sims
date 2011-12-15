@@ -93,7 +93,6 @@ public class Principale extends JFrame {
 	private JPanel jPanel = null;
 	private JButton btChoixReleve = null;
 	private Timer timer = null; // @jve:decl-index=0:visual-constraint="31,619"
-	private JTreeFactory treeFact; // @jve:decl-index=0:
 	private final ArborescenceBoiteMail arbo;
 
 	/**
@@ -223,8 +222,7 @@ public class Principale extends JFrame {
 	 */
 	private JTree getJTree() {
 		if (jTree == null) {
-			// new BDAcces();
-			treeFact = new JTreeFactory();
+			new JTreeFactory();
 
 			// ArborescenceBoiteMail arbo = new ArborescenceBoiteMail(treeFact
 			// .getTreeNode());

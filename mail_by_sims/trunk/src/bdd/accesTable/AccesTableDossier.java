@@ -11,8 +11,8 @@ import javax.swing.JProgressBar;
 import mdl.MlCompteMail;
 import mdl.MlDossier;
 import mdl.MlListeDossier;
-import mdl.MlListeMessage;
-import mdl.MlMessage;
+import mdl.MlListeMessageGrille;
+import mdl.MlMessageGrille;
 import releve.imap.util.messageUtilisateur;
 import bdd.structure.EnStructCompte;
 import bdd.structure.EnStructDossier;
@@ -201,12 +201,11 @@ public class AccesTableDossier {
 		int count = 0;
 
 		AccesTableMailRecu accesMail = new AccesTableMailRecu();
-		MlListeMessage listeMessage = accesMail.getListeDeMessage(p_idCompte,
-				p_idDossier);
+		MlListeMessageGrille listeMessage = accesMail.getListeMessageGrille(
+				p_idCompte, p_idDossier);
 		int tailleListe = listeMessage.size();
 		// pour chaque dossier, on supprime la liste des messages associés
-		for (MlMessage unMessage : accesMail.getListeDeMessage(p_idCompte,
-				p_idDossier)) {
+		for (MlMessageGrille unMessage : listeMessage) {
 			if (null != p_progressBar) {
 				p_progressBar.setString("Suppression du message " + (count + 1)
 						+ " sur " + tailleListe);

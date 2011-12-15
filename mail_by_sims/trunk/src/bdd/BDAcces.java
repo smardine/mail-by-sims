@@ -29,11 +29,11 @@ public class BDAcces {
 	private final String TAG = this.getClass().getSimpleName();
 	private boolean etatConnexion;
 	private Connection connexion;
-	private FBManager firebirdManager;
+	private static FBManager firebirdManager;
 	final int VERSION_BASE = 8;
 
 	private boolean ttACreer = false;
-	private FBMaintenanceManager maintenance;
+	private static FBMaintenanceManager maintenance;
 
 	/**
 	 * constructeur
@@ -61,24 +61,40 @@ public class BDAcces {
 			if (!isDataBaseExist(parametres.getEmplacementBase())) {
 				ttACreer = true;
 			}
-			FBManager fbManager = new FBManager();
-			firebirdManager = fbManager;
-			fbManager.setCreateOnStart(true);// si le fichier base n'existe pas
-			// , il est créer
-			fbManager.setUserName(parametres.getUSER());
-			fbManager.setPassword(parametres.getPASSWORD());
-			fbManager.setServer(parametres.getHOSTNAME());
-			fbManager.setPort(3050);
-			fbManager.setFileName(parametres.getEmplacementBase());
-
-			maintenance = new FBMaintenanceManager();
-			maintenance.setDatabase(parametres.getEmplacementBase());
-			maintenance.setHost(parametres.getHOSTNAME());
-			maintenance.setUser(parametres.getUSER());
-			maintenance.setPassword(parametres.getPASSWORD());
+			if (firebirdManager == null) {
+				firebirdManager = new FBManager();
+				firebirdManager.setCreateOnStart(true);// si le fichier base
+				// n'existe pas
+				// , il est créer
+				firebirdManager.setUserName(parametres.getUSER());
+				firebirdManager.setPassword(parametres.getPASSWORD());
+				firebirdManager.setServer(parametres.getHOSTNAME());
+				firebirdManager.setPort(3050);
+				firebirdManager.setFileName(parametres.getEmplacementBase());
+			}
+			// FBManager fbManager = new FBManager();
+			// firebirdManager = fbManager;
+			// fbManager.setCreateOnStart(true);// si le fichier base n'existe
+			// pas
+			// // , il est créer
+			// fbManager.setUserName(parametres.getUSER());
+			// fbManager.setPassword(parametres.getPASSWORD());
+			// fbManager.setServer(parametres.getHOSTNAME());
+			// fbManager.setPort(3050);
+			// fbManager.setFileName(parametres.getEmplacementBase());
+			if (maintenance == null) {
+				maintenance = new FBMaintenanceManager();
+				maintenance.setDatabase(parametres.getEmplacementBase());
+				maintenance.setHost(parametres.getHOSTNAME());
+				maintenance.setUser(parametres.getUSER());
+				maintenance.setPassword(parametres.getPASSWORD());
+			}
 
 			try {
-				fbManager.start();
+				if (firebirdManager.getState().equals("Stopped")) {
+					firebirdManager.start();
+				}
+
 			} catch (Exception e2) {
 				messageUtilisateur.affMessageException(TAG, e2,
 						"impossible de se connecter a la base");
@@ -226,7 +242,7 @@ public class BDAcces {
 	 * @return the firebirdManager
 	 */
 	public FBManager getFirebirdManager() {
-		return this.firebirdManager;
+		return BDAcces.firebirdManager;
 	}
 
 	/**
@@ -281,7 +297,7 @@ public class BDAcces {
 	 * @param maintenance the maintenance to set
 	 */
 	public void setMaintenanceManager(FBMaintenanceManager maintenance) {
-		this.maintenance = maintenance;
+		BDAcces.maintenance = maintenance;
 	}
 
 	/**

@@ -8,8 +8,8 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 
 import mdl.MlCompteMail;
-import mdl.MlListeMessage;
-import mdl.MlMessage;
+import mdl.MlListeMessageGrille;
+import mdl.MlMessageGrille;
 import bdd.accesTable.AccesTableMailRecu;
 
 import com.sun.mail.imap.IMAPFolder;
@@ -61,16 +61,16 @@ public class SynchroFactory {
 			return;
 		}
 
-		MlListeMessage listeMessage = accesMail.getListeDeMessage(compteMail
-				.getIdCompte(), dossierFact.getIdDossier());
+		MlListeMessageGrille listeMessage = accesMail.getListeMessageGrille(
+				compteMail.getIdCompte(), dossierFact.getIdDossier());
 		int nbActu = 0;
-		for (MlMessage m : listeMessage) {
+		for (MlMessageGrille m : listeMessage) {
 			nbActu++;
 			int pourcent = (nbActu * 100) / listeMessage.size();
 			fenetre.afficheInfo("Maj dossier", p_folder.getName() + " : "
 					+ pourcent + " %", pourcent);
 
-			if (!verifUIDDeltaMessage(m.getUIDMessage(), p_lstMessageHotmail)) {
+			if (!verifUIDDeltaMessage(m.getUidMessage(), p_lstMessageHotmail)) {
 				accesMail.deleteMessageRecu(m.getIdMessage());
 			}
 
@@ -122,17 +122,17 @@ public class SynchroFactory {
 
 		}
 
-		MlListeMessage listeMessage = bd.getListeDeMessage(compteMail
+		MlListeMessageGrille listeMessage = bd.getListeMessageGrille(compteMail
 				.getIdCompte(), dossierFact.getIdDossier());
 		int nbActu = 0;
-		for (MlMessage m : listeMessage) {
+		for (MlMessageGrille m : listeMessage) {
 			nbActu++;
 			int pourcent = (nbActu * 100) / listeMessage.size();
 			fenetre.afficheInfo("Maj dossier", p_folder.getFullName() + " : "
 					+ pourcent + " %", pourcent);
 
 			Message messToCheck = ((IMAPFolder) p_folder).getMessageByUID(Long
-					.parseLong(m.getUIDMessage()));
+					.parseLong(m.getUidMessage()));
 
 			if (messToCheck == null) {
 				bd.deleteMessageRecu(m.getIdMessage());

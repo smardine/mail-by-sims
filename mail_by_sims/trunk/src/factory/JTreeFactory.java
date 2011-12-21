@@ -419,21 +419,31 @@ public class JTreeFactory {
 	 * @param p_m le MlMessage que l'on vient de créer ou de mette a jour
 	 *            (statut lecture)
 	 */
-	public void majUnreadCount(MlMessageGrille p_m) {
-		AccesTableDossier accesDossier = new AccesTableDossier();
-		MlCompteMail cptMail = rechercheCompteMail(p_m.getIdCompte());
-		cptMail.setUnreadMessCount(accesCompte
-				.getUnreadMessageFromCompte(cptMail.getIdCompte()));
-		MlDossier dossier = rechercheDossier(p_m.getIdDossier(), p_m
-				.getIdCompte());
-		dossier.setUnreadMessageCount(accesDossier.getUnreadMessageFromFolder(
-				cptMail.getIdCompte(), dossier.getIdDossier()));
-		while (dossier.getIdDossierParent() != 0) {
-			dossier = rechercheDossier(dossier.getIdDossierParent(), dossier
-					.getIdCompte());
-			dossier.setUnreadMessageCount(dossier.getUnreadMessageCount() - 1);
-		}
+	public void majUnreadCount(final MlMessageGrille p_m) {
 
-		refreshJTree();
+		new Thread(new Runnable() {
+
+			@Override
+			public void run() {
+				AccesTableDossier accesDossier = new AccesTableDossier();
+				MlCompteMail cptMail = rechercheCompteMail(p_m.getIdCompte());
+				cptMail.setUnreadMessCount(accesCompte
+						.getUnreadMessageFromCompte(cptMail.getIdCompte()));
+				MlDossier dossier = rechercheDossier(p_m.getIdDossier(), p_m
+						.getIdCompte());
+				dossier.setUnreadMessageCount(accesDossier
+						.getUnreadMessageFromFolder(cptMail.getIdCompte(),
+								dossier.getIdDossier()));
+				while (dossier.getIdDossierParent() != 0) {
+					dossier = rechercheDossier(dossier.getIdDossierParent(),
+							dossier.getIdCompte());
+					dossier.setUnreadMessageCount(dossier
+							.getUnreadMessageCount() - 1);
+				}
+
+				refreshJTree();
+			}
+		}).start();
+
 	}
 }

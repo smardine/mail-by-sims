@@ -35,6 +35,21 @@ public class StoreFactory {
 	private Store getStore() throws MessagingException {
 		switch (compteMail.getTypeCompte()) {
 			case IMAP:
+				props = System.getProperties();
+				props.setProperty("mail.store.protocol", "imaps");
+				props.setProperty("mail.imap.socketFactory.class",
+						"javax.net.ssl.SSLSocketFactory");
+				props.setProperty("mail.imap.socketFactory.fallback", "false");
+				props.setProperty("mail.imaps.partialfetch", "false");
+				// necessaire pour les connexion avec SSl
+				props.setProperty("mail.imaps.ssl.trust", "*");
+
+				Session sessionImap = Session.getInstance(props);
+				// Get a Store object
+				store = sessionImap.getStore("imaps");
+
+				return store;
+
 			case GMAIL:
 				props = System.getProperties();
 				props.setProperty("mail.store.protocol", "imaps");
@@ -43,16 +58,16 @@ public class StoreFactory {
 				props.setProperty("mail.imap.socketFactory.fallback", "false");
 				props.setProperty("mail.imaps.partialfetch", "false");
 
-				Session session = Session.getInstance(props);
+				Session sessionGmail = Session.getInstance(props);
 				// Get a Store object
-				store = session.getStore("imaps");
+				store = sessionGmail.getStore("imaps");
 
 				return store;
 			case POP:
 				props = System.getProperties();
-				Session sess = Session.getDefaultInstance(props, null);
-				sess.setDebug(false);
-				store = sess.getStore("pop3");
+				Session sessionPop = Session.getDefaultInstance(props, null);
+				sessionPop.setDebug(false);
+				store = sessionPop.getStore("pop3");
 				return store;
 			default:
 				break;
@@ -67,8 +82,11 @@ public class StoreFactory {
 	public Store getConnectedStore() throws MessagingException {
 		getStore();
 		if (store != null && !store.isConnected()) {
-			store.connect(compteMail.getServeurReception(), compteMail
-					.getUserName(), compteMail.getPassword());
+			switch (compteMail.getTypeCompte()) {
+				default:
+					store.connect(compteMail.getServeurReception(), compteMail
+							.getUserName(), compteMail.getPassword());
+			}
 
 		}
 		return store;

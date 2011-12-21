@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project default="create_run_jar" name="Create Runnable Jar for Project Mail by sims">
+    <!--this file was created by Eclipse Runnable JAR Export Wizard-->
+    <!--ANT 1.7 is required                                        -->
+    <target name="create_run_jar">
+        <jar destfile="./mbs.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="fenetre.principale.Main"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="./bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/activation.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/jaybird_full_2_1_6.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/mail.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/apache-mime4j-0.5.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/commons-codec-1.5-javadoc.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/commons-codec-1.5-sources.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/commons-codec-1.5.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/commons-logging-1.1.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/httpclient-4.1.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/httpclient-cache-4.1.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/httpcore-4.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/httpmime-4.1.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/logback-classic-0.9.29-sources.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/logback-classic-0.9.29.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/logback-core-0.9.29-sources.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/logback-core-0.9.29.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/slf4j-api-1.6.1-sources.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/libdeltasync/slf4j-api-1.6.1.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/deltasync.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="./lib/junit.jar"/>
+        </jar>
+    </target>
+</project>

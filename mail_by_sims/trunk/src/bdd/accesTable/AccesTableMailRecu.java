@@ -518,6 +518,11 @@ public class AccesTableMailRecu {
 		return false;
 	}
 
+	/**
+	 * met a jour le statut de lecture d'une liste de message
+	 * @param p_lstMailLu la liste a mettre a jour
+	 * @param p_isLu la liste complete est lu si = true, est non lu si =false
+	 */
 	public boolean updateStatusLecture(MlListeMessageGrille p_lstMailLu,
 			boolean p_isLu) {
 

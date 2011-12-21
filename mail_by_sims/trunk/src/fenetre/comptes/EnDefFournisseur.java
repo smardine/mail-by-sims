@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum EnDefFournisseur {
-
+	ALLO_DRE("allo dre ", "pop.allodre.fr", 110, "smtp.allodre.fr", 25,
+			EnTypeCompte.IMAP), //
 	NEUF_TELECOM("9 Telecom", "pop.neuf.fr", 110, "smtp.neuf.fr", 25,
 			EnTypeCompte.POP), //
 	NEUF_ONLINE("9 Online", "pop.9Online.fr", 110, "smtp.9online.fr", 25,

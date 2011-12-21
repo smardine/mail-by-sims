@@ -77,8 +77,8 @@ public class Principale extends JFrame {
 	private JMenuItem jMenuExplorer;
 	private JMenuItem jMenuHistorique;
 	private JMenuItem jMenuContact;
-	private final XTableColumnModel ColoneModel;
-	private final MyTableModel tableModel;
+	private XTableColumnModel ColoneModel;
+	private MyTableModel tableModel;
 	private JMenu jMenuImportExport;
 	private JMenuItem jMenuItemImporter; // @jve:decl-index=0:
 	private JScrollPane jScrollPane1 = null;
@@ -468,43 +468,6 @@ public class Principale extends JFrame {
 		this.arbo = p_arbo;
 		// new BDAcces();
 		initialize();
-		this.addComponentListener(new MlComposantListener(panelPrincipal));
-		Thread_Verif verif = new Thread_Verif(jTree);
-		verif.start();
-
-		modelList = new DefaultListModel();
-		jListPJ.setModel(modelList);
-		jListPJ.addMouseListener(new MlActionjList(jTable, jListPJ));
-
-		ColoneModel = new XTableColumnModel();
-		jTable.setColumnModel(ColoneModel);
-		jTable.setDefaultRenderer(Date.class, new DateTimeCellRenderer());
-		tableModel = new MyTableModel(ColoneModel);
-		tableModel.valorisetable(new MlListeMessageGrille());
-
-		jTable.setModel(tableModel);
-		jTable.addMouseListener(new JTableMouseListener(jTable));
-
-		jMenuContact.addActionListener(new MlActionMain());
-		jTree.addMouseListener(new CustomTreeClickListener(jTree));
-		jTree.addTreeSelectionListener(new CustomTreeSelectionListener());
-		jTree.addTreeWillExpandListener(new CustomTreeExpensionListener());
-		jTree.addTreeExpansionListener(new CustomTreeExpensionListener());
-		jMenuItemImporter.addActionListener(new MlActionMain(jTree));
-		jMenuItemReleve.addActionListener(new MlActionMain(jTree));
-
-		btRecevoir.addActionListener(new MlActionMain(jTree));
-		btEnvoyer.addActionListener(new MlActionMain(jTree));
-		btSupprMessage.addActionListener(new MlActionPopupJTable(jTable));
-		jMenuCompte.addActionListener(new MlActionMain(jTree));
-		btChoixReleve.addMouseListener(new MlActionMainCombo());
-
-		ComposantVisuelCommun.setJListPJ(jListPJ);
-		ComposantVisuelCommun.setbtChoixReleve(btChoixReleve);
-		ComposantVisuelCommun.setTree(jTree);
-		ComposantVisuelCommun.setHTMLPane(htmlPane);
-		ComposantVisuelCommun.setjTable(jTable);
-		jTree.setCellRenderer(new CustomTreeCellRenderer());
 
 		// timer = getTimer();
 		// TimerTask task = new TimerTask() {
@@ -551,6 +514,47 @@ public class Principale extends JFrame {
 		this.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 		this.setIconImage(Toolkit.getDefaultToolkit().getImage(
 				getClass().getResource("/logo_appli.png")));
+
+		this.addComponentListener(new MlComposantListener(panelPrincipal));
+		Thread_Verif verif = new Thread_Verif(jTree);
+		verif.start();
+
+		modelList = new DefaultListModel();
+		jListPJ.setModel(modelList);
+		jListPJ.addMouseListener(new MlActionjList(jTable, jListPJ));
+
+		ColoneModel = new XTableColumnModel();
+		jTable.setColumnModel(ColoneModel);
+		jTable.setDefaultRenderer(Date.class, new DateTimeCellRenderer());
+		tableModel = new MyTableModel(ColoneModel);
+		tableModel.valorisetable(new MlListeMessageGrille());
+
+		jTable.setModel(tableModel);
+		jTable.addMouseListener(new JTableMouseListener(jTable));
+
+		jMenuContact.addActionListener(new MlActionMain());
+		jTree.addMouseListener(new CustomTreeClickListener(jTree));
+		jTree.addTreeSelectionListener(new CustomTreeSelectionListener());
+		jTree.addTreeWillExpandListener(new CustomTreeExpensionListener());
+		jTree.addTreeExpansionListener(new CustomTreeExpensionListener());
+		jMenuItemImporter.addActionListener(new MlActionMain(jTree));
+		jMenuItemReleve.addActionListener(new MlActionMain(jTree));
+
+		btRecevoir.addActionListener(new MlActionMain(jTree));
+		btEnvoyer.addActionListener(new MlActionMain(jTree));
+		btSupprMessage.addActionListener(new MlActionPopupJTable(jTable));
+		jMenuCompte.addActionListener(new MlActionMain(jTree));
+		btChoixReleve.addMouseListener(new MlActionMainCombo());
+
+		ComposantVisuelCommun.setJListPJ(jListPJ);
+		ComposantVisuelCommun.setbtChoixReleve(btChoixReleve);
+		ComposantVisuelCommun.setTree(jTree);
+		ComposantVisuelCommun.setHTMLPane(htmlPane);
+		ComposantVisuelCommun.setjTable(jTable);
+		jTree.setCellRenderer(new CustomTreeCellRenderer());
+
+		JTreeFactory treeFact = new JTreeFactory();
+		treeFact.refreshJTree();
 
 	}
 

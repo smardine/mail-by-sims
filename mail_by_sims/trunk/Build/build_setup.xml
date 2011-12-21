@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="setupmaj" name="Mail by sims Setup">
+
+
+<!-- Lecture des déclarations de marcos et autres utilitaires-->
+	<import file="./etc/macrodefs.xml"/>	
+<target name="setupmaj"  description="compiler le logiciel isetup.exe a envoyer sur le site" >
+   		<echo message="  - compilation INNOSETUP de  Setup.iss  "/>
+		<call-inno script="isetup" dir="${basedir}"/>	
+	    <!--
+		<mkdir  dir="${build}\SMAJ\Setup"/>	
+		<mkdir  dir="${build}\SMAJ\Setup\Beta"/>	
+		
+		
+		<copy file="${basedir}/setup.exe" tofile="c:\iSetup.exe"/> -->
+	</target>
+</project>

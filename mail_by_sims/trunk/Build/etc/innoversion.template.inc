@@ -3,5 +3,3 @@
 ;*******************************************************************************
 #define VERSION_INFO "${version.point}"
 #define VERSION_FICHIER "${version.buildinfo}"
-VersionInfoVersion={#VERSION_INFO}
-VersionInfoTextVersion={#VERSION_FICHIER}

@@ -301,8 +301,9 @@
   	    <property name="version.comma" value="${version.major},${version.minor},${version.release},${version.build}"/>
 		<property name="version.point" value="${version.major}.${version.minor}.${version.release}.${version.build}"/>
 				
-		<condition property="version.buildinfo" value="${version.point}${version.buildinfo.type}" />
-			
+		<condition property="version.buildinfo" value="${version.point}${version.buildinfo.type}" >
+			<isset property="version.production"/>
+        </condition>
 		
 
 		<!-- retrouver l'année pour le copyright -->

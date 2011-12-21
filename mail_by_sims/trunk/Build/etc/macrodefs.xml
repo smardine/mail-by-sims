@@ -342,7 +342,7 @@
 		<echo message="Version ${version.point}"/>
 
     	<!-- Créer le fichier  '.inc' qui contient la constante du numéro de version. -->
-		<copy file="./etc/innoversion.template.inc" tofile="${dir}\Setup.version.inc" overwrite="true">
+		<copy file="./etc/innoversion.template.inc" tofile="${dir}\{script}.version.inc" overwrite="true">
 			<filterchain>
 				<expandproperties/>
 			</filterchain>

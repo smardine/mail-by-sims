@@ -4,6 +4,8 @@
 
 <!-- Lecture des déclarations de marcos et autres utilitaires-->
 	<import file="./etc/macrodefs.xml"/>	
+	<!-- Lecture des informations propres au projet ( n° de version...)-->
+	<property file="version.properties"/>
 <target name="setupmaj"  description="compiler le logiciel isetup.exe a envoyer sur le site" >
    		<echo message="  - compilation INNOSETUP de  Setup.iss  "/>
 		<call-inno script="isetup" dir="${basedir}"/>	

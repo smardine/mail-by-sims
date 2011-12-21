@@ -1,0 +1,484 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<project name="macrodefs">
+	<!--
+	=======================================================================
+	   Constantes d'utilisation de subversion
+	=======================================================================
+	<property name="svn" value="${svn.home}\svn.exe"/>
+	-->
+
+    <condition property="svn" value="${svn.home}\svn.exe" else="svn.exe">
+	   <isset property="svn.home"/>
+    </condition>
+
+	<!--
+	=======================================================================
+	   Macro d'appel de subversion
+	   Paramètres	   :
+		dir : répertoire ou poser le fichier de ressources.
+		function: fonction à appeler
+		svn-elements : arguments optionnels.
+	  note : cette macro utilise toujour l'utilisateur MICROCONECPT et interdit
+	         le mode interactif.
+	=======================================================================
+	-->
+	<macrodef name="call-svn">
+		<attribute name="function"/>
+		<attribute name="dir"/>
+		<element name="svn-elements" implicit="yes" optional="true"/>
+		<sequential>
+			<exec executable="${svn}" dir="@{dir}" failonerror="true">
+     			<arg value="--non-interactive"/>
+     			<arg value="--no-auth-cache"/>				
+				<arg line="--username MICROCONCEPT"/>
+				<arg line="--password 2450"/>				
+				<arg value="@{function}"/>
+				<svn-elements/>
+			</exec>		
+		</sequential>
+	</macrodef>
+
+	<!-- RENVOYER dans type le nº de build du dernier COMMIT réalisé sur chemin -->
+	<macrodef name="get-svnrev">
+		<attribute name="type"/>
+		<attribute name="chemin"/>
+		<sequential>
+			<!-- Exécuter "svn - -xml info" pour obtenir les details  -->
+			<exec executable="${svn}" dir="@{chemin}" failonerror="true" output=".svnInfo1.xml">
+	   			<arg value="--non-interactive"/>
+	   			<arg value="--no-auth-cache"/>				
+				<arg line="--username MICROCONCEPT"/>
+				<arg line="--password 2450"/>				
+	   			<arg value="--xml"/>				
+				<arg value="info"/>
+			</exec>
+
+			<!-- extraire le numéro de version  du fichier XML -->
+			<xmlproperty file=".svnInfo1.xml"/>
+			<property name="@{type}" value="${info.entry.commit(revision)}"/>
+			<delete file=".svnInfo1.xml" />
+		</sequential>
+	</macrodef>
+	
+	
+	<!--
+	=======================================================================
+	   Tache de lecture du numéro de révision de la copie de travail.
+	   propriétés :
+	      basedir répertoire de la copie de travail
+	  retour
+	    svn.revion= version de la copie de travail.
+	=======================================================================
+	-->
+	<target name="svnrevision"  description="Extraire le numéro de la copie de travail" >
+		<!-- Exécuter "svn - -xml info" pour obtenir les details  -->
+		<exec executable="${svn}" dir="${basedir}" failonerror="true" output=".svnInfo.xml">
+   			<arg value="--non-interactive"/>
+   			<arg value="--no-auth-cache"/>				
+			<arg line="--username MICROCONCEPT"/>
+			<arg line="--password 2450"/>				
+			
+   			<arg value="--xml"/>				
+			<arg value="info"/>
+		</exec>
+
+		<!-- extraire le numéro de version  du fichier XML -->
+		<xmlproperty file=".svnInfo.xml"/>
+		<property name="svn.revision" value="${info.entry.commit(revision)}" />
+		<echo message="Version de la copie de travail:${svn.revision}"/>
+		<delete file=".svnInfo.xml" />
+	</target>
+	
+	<!--
+	=======================================================================
+	Mise à jour de la copie de travail
+	=======================================================================
+	-->
+	<target name="updateCopieDeTravail" >
+		<call-svn function="up" dir="${basedir}"/>
+	</target>
+	
+	<!--
+	=======================================================================
+	   Tâche (utilisée via antcall)  de création du fichier de ressource comprenant
+	   le nom, et la version du projet.
+	   
+	   propriétés :
+	    dir : repertoire de destination du fichier de ressources
+	     productname : nom du produit.
+	     version.major : version majeur
+	     version.minor: version.mineur
+ 	     version.release: numéro de la sous version
+	    version.build: numéro de compliation, 0 si non défini
+	    version.production: si non définie, le numéro de révision sera suivi de '-beta'
+             		
+	      basedir=répertoire de la copie de travail
+	  retour
+	    svn.revion= version de la copie de travail.
+	=======================================================================
+	-->
+	<target name="resource-versioninfo" depends="svnrevision" description="construire le fichier ressource de version">
+	    <property name="version.build" value="${svn.revision}"/>
+	    <property name="my.filedescription" value="${filedescription}"/>
+		
+	    <condition property="version.build" value="0">
+			<not>
+				<isset property="version.build"/>
+			</not>
+        </condition>
+
+  	    <property name="version.comma" value="${version.major},${version.minor},${version.release},${version.build}"/>
+		<property name="version.point" value="${version.major}.${version.minor}.${version.release}.${version.build}"/>
+				
+		<condition property="version.buildinfo.type" value="-debug" else="">
+			<isset property="debug"/>
+        </condition>
+
+		<condition property="version.buildinfo" value="${version.point}${version.buildinfo.type}" else="${version.point}-beta${version.buildinfo.type}">
+			<isset property="reel"/>
+        </condition>
+		
+
+		<!-- retrouver l'année pour le copyright -->
+		<tstamp>
+			<format property="my.year" pattern="yyyy"/>
+		</tstamp>
+
+		<echo message="Creation fichier de version : ${productname} rev ${version.buildinfo}"></echo>
+		<!-- création du fichier de ressources à partir du modèle générique -->
+		<copy file="${build}\etc\versioninfo.template.rc" tofile="${dir}\versioninfo.rc" overwrite="true">
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</copy>
+		<!-- compiler la ressource -->
+		<exec executable="${brcc32}" dir="." failonerror="true">
+			<arg file="${dir}/versioninfo.rc"/>
+		</exec>
+    </target>
+
+	<!--
+	=======================================================================
+	   Macro de création et de compilation du fichier manifiest UAC de Vista
+	   Paramètre	   :
+		dir : répertoire ou poser le fichier de ressources.
+		executionlevel : niveau d'exécution requis
+			   requireAdministrator
+	                         highestAvailable
+	                        asInvoker
+	    Retour : 3 fichiers créés
+		vista.UAC.manifest.res : fichier de ressources compilé
+		vista.UAC.manifest.rc : source du fichier de ressoures
+		vista.UAC.manifest.xml : manifest proprement dit.
+	=======================================================================
+	-->
+	<macrodef name="resource-vista.UAC">
+		<attribute name="executionlevel" default="asInvoker"/>
+		<attribute name="dir" default="."/>
+		<sequential>
+			<copy file="${build}\etc\vista.UAC.manifest.template.rc" tofile="@{dir}\vista.UAC.manifest.rc" overwrite="true"/>
+			<!-- créer le fichier XML de manifest à partir du modèle générique  ( en remplaçant 'executionlevel' par sa valeur-->
+			<copy file="${build}\etc\vista.UAC.manifest.template.xml" tofile="@{dir}\vista.UAC.manifest.xml" overwrite="true">
+				<filterchain>
+					<replacetokens>
+						<token key="ELEVATION" value="@{executionlevel}"/>
+					</replacetokens>
+				</filterchain>
+			</copy>		
+			<exec executable="${brcc32}" dir="@{dir}" failonerror="true">
+				<arg value="vista.UAC.manifest.rc"/>
+			</exec>		
+		</sequential>
+	</macrodef>
+	
+	<!--
+	=======================================================================
+	   Macro de génération d'un exécutable avec delphi
+	   
+	   Paramètres :
+		projet : nom du projet ( avec l'extension )
+		dir : répertoire de base
+		productname : nom  commercial du produit.
+		executionlevel : niveau d'exécution requis sous vista  (voir resource-vista.UAC)
+		executionlevel : niveau d'exécution requis sous vista  (voir resource-vista.UAC)
+		<delphi-elements> : arguments complémentaires à passer au compilateur.
+	=======================================================================
+	-->
+	<macrodef name="make-delphi">
+		<attribute name="project"/>
+		<attribute name="dir" default="."/>
+		<attribute name="productname" default="Microconcept"/>		
+		<attribute name="filedescription"/>
+		<attribute name="executionlevel" default="asInvoker"/>
+		<element name="delphi-elements" optional="true"/>		
+		<sequential>
+
+			<!-- Contruire le fichier de version -->
+			<antcall target="resource-versioninfo">
+				<param name="dir" value="@{dir}"/>
+				<param name="productname" value="@{productname}"/>
+				<param name="filedescription" value="@{filedescription}"/>
+			</antcall>
+			
+			<!-- Contruire le fichier UAC  de Vista en demandant le mode administrateur -->
+			<resource-vista.UAC executionlevel="@{executionlevel}" dir="@{dir}" />
+
+			<!-- Compilation -->
+			<call-delphi project="@{project}" dir="@{dir}" >
+				<delphi-elements/>
+			</call-delphi>
+		</sequential>
+	</macrodef>
+	
+<!--
+	=======================================================================
+	   Constantes d'utilisation du compilateur d'aide Microcosoft.
+	=======================================================================
+-->
+
+    <condition property="hhc" value="${svn.home}\hhc.exe" else="C:\Program Files\HTML Help Workshop\hhc.exe">
+	   <isset property="hhc.home"/>
+    </condition>
+
+
+
+	<!--
+	=======================================================================
+	   Macro d'appel du compilateur d'aide Microsoft
+	   Paramètres	   :
+		dir : répertoire ou poser le fichier de ressources.
+		name: nom du projet à compiler.
+	=======================================================================
+	-->
+	<macrodef name="call-hhc">
+		<attribute name="name"/>
+		<attribute name="dir"/>
+		<sequential>
+			<!--
+			Appel du compilateur d'aide : Attention celui-ci renvoie '1' lorsque l'opération réussi.
+			-->
+			<exec executable="${hhc}" dir="@{dir}" failonerror="false" resultproperty="hcc-result">
+				<arg value="@{name}"/>
+			</exec>		
+			<fail message="Erreur à la compilation de l'aide">
+				<condition>
+					<not>
+						<equals arg1="${hcc-result}" arg2="1"/>
+					</not>
+				</condition> 
+			</fail>
+		</sequential>
+	    
+	</macrodef>	
+
+	<!--
+	=======================================================================
+	   Tache de calcul de constante de version..
+	   propriétés :
+	      dir répertoire de la copie de travail
+		  
+	  retour
+	     productname : nom du produit.
+	     version.major : version majeur
+	     version.minor: version.mineur
+ 	     version.release: numéro de la sous version
+	    version.build: numéro de compliation, 0 si non défini
+	    version.production: si non définie, le numéro de révision sera suivi de '-beta'
+	    version.year : année de la compilation ( utile pour le copyright)
+
+  	    svn.revion= version de la copie de travail.
+	=======================================================================
+	-->
+	<target name="global-versioninfo" depends="svnrevision" description="Calcul des n° de version" >
+	    <property name="version.build" value="${svn.revision}"/>
+		
+	    <condition property="version.build" value="0">
+			<not>
+				<isset property="version.build"/>
+			</not>
+        </condition>
+
+  	    <property name="version.comma" value="${version.major},${version.minor},${version.release},${version.build}"/>
+		<property name="version.point" value="${version.major}.${version.minor}.${version.release}.${version.build}"/>
+				
+		<condition property="version.buildinfo.type" value=".debug" else="">
+			<isset property="debug"/>
+        </condition>
+
+		<condition property="version.buildinfo" value="${version.point}${version.buildinfo.type}" else="${version.point}-beta${version.buildinfo.type}">
+			<isset property="version.production"/>
+        </condition>
+		
+
+		<!-- retrouver l'année pour le copyright -->
+		<tstamp>
+			<format property="versioninfo.year" pattern="yyyy"/>
+		</tstamp>
+
+	</target>
+
+	<!--
+	=======================================================================
+	   Constantes d'utilisation du compilateur de setup Inno Setup 5
+	=======================================================================
+           -->
+
+    <condition property="iscc" value="${inno.home}\iscc.exe" else="C:\Program Files\Inno Setup 5\iscc.exe">
+	   <isset property="inno.home"/>
+    </condition>
+	
+	<!--
+	=======================================================================
+	   Macro de création et de compilation du fichier de version pour innosetup.
+	   Paramètre	   :
+		dir : répertoire ou se trouve le .iss
+		script : nom du script .iss
+	    Retour : 1 fichier créé
+		dir/script.verision.inc
+	=======================================================================
+	-->
+	<target name="inno-versioninfo" depends="global-versioninfo" description="construire le fichier de version pour inno">	
+
+		<echo message="Version ${version.point}"/>
+
+    	<!-- Créer le fichier  '.inc' qui contient la constante du numéro de version. -->
+		<copy file="${build}\etc\innoversion.template.inc" tofile="${dir}\${script}.version.inc" overwrite="true">
+			<filterchain>
+				<expandproperties/>
+			</filterchain>
+		</copy>
+
+	</target>
+	
+<!--
+	=======================================================================
+	   Macro de création et de compilation du fichier de version pour innosetup.
+	   Paramètre	   :
+		dir : répertoire ou se trouve le .iss
+		script : nom du script .iss
+	    Retour : 1 fichier créé
+		dir/script.verision.inc
+	=======================================================================
+	-->
+	<macrodef name="call-inno">
+		<attribute name="dir" default="."/>
+		<attribute name="script" />
+
+		<sequential>
+			<!-- Créer le fichier include qui comprend le numéro de version -->
+			<!-- Contruire le fichier de version -->
+			<antcall target="inno-versioninfo">
+				<param name="dir" value="@{dir}"/>
+				<param name="script" value="@{script}"/>
+				<param name="filedescription" value="@{filedescription}"/>
+			</antcall>			
+			<!-- Appel du compiltateur en lui même -->
+			<exec executable="${iscc}" dir="@{dir}" failonerror="true">
+				<arg value="@{dir}\@{script}.iss"/>
+			</exec>		
+		</sequential>
+	</macrodef>	
+	
+<!--
+	=======================================================================
+	   Constantes d'accès au site de mise à jour
+	=======================================================================
+           -->
+	
+	<property name="ftp_userid" value="microconcept"/>
+	<property name="ftp_password" value="GiovohChe9"/>
+	<property name="ftp_server" value="10.36.3.1"/>
+	<property name="ftp_datas" value="/Datas"/>
+<!--
+	=======================================================================
+	   Macros d'envoi d'informations vers le site FTP de MICROCONCEPT
+	   Paramètres ( voir les paramètres du même nom de la balise FTP)   :
+		action       : action à effectuer 
+		remotedir : chemin sur la machine FTP
+		dir            : chemin source sur la machine locale (à placer dans fileset)
+		name        :  valeur à placer dans la balise include
+	=======================================================================
+	-->		
+	<macrodef name="ftp_createdir">
+		<attribute name="remotedir"/>		
+		<sequential>
+			<ftp action="mkdir" server="${ftp_server}" userid="${ftp_userid}" password="${ftp_password}" remotedir="@{remotedir}"/>	
+		</sequential>
+	</macrodef>
+	
+	<macrodef name="ftp_actionsurfic">
+		<attribute name="remotedir"/>		
+		<attribute name="action"/>	
+		<attribute name="dir"/>	
+		<attribute name="name"/>	
+		<sequential>
+			<ftp action="@{action}" server="${ftp_server}" userid="${ftp_userid}" password="${ftp_password}" remotedir="@{remotedir}" verbose="yes" >	
+			<fileset dir="@{dir}">
+			  <include name="@{name}"/>
+			</fileset>
+			</ftp>
+		</sequential>
+	</macrodef>
+	
+	<!--
+	=======================================================================
+	construireUnZIP
+	param-chemin : indique le chemin du référentiel à compresser dans un ZIP et contenant un version.ini construit ici à partir du nºbuild de ce chemin
+	param-nommage : indique le nommage du ZIP tel qu'il est connu du progiciel EQX
+	le résultat se trouve dans ${param-chemin} accompagné d'un .INI nommé param-nommage s'il est nécessaire de le copier
+	
+	Le copie d'un fichier *.ini a lieu si jamais l'unité appelante contient la variable copyVersionIni=1
+	======================================================================= -->	
+	<target name="construireUnZIP"  description="Récupérer le build, créer version.ini puis le ZIP contenant le référentiel dans ${param-dest}" >
+		<get-svnrev type="svnrev.nommage" chemin="${param-chemin}"/>
+		<echo message=" - ${param-nommage} : ${svnrev.complementaire}"/>
+		<!-- copier le fichier masque présent dans etc et remplacer le tag @SVNREVCSV@ avec le nºbuild demandé à svn -->
+		<delete file="${param-chemin}\version.ini" />
+	    <copy file="${repBuild}\etc\version.template.txt" toFile="${param-chemin}\version.ini">
+	      <filterset> 
+	        <filter token="SVNREV" value="${svnrev.nommage}"/>
+	      </filterset>
+	    </copy>
+		<echo message="  - compression référentiel ${param-nommage}"/>
+		<zip destfile="${param-dest}\${param-nommage}.ZIP">
+			<zipfileset dir="${param-chemin}"/>
+		</zip>	
+		
+		<copy file="${param-chemin}\VERSION.INI" tofile="${param-dest}\${param-nommage}.INI"/>  
+	</target>	
+	<!--
+	=======================================================================
+	tables : construction des référentiels:
+	CONVENTION_GIE.ZIP  et éventuellement CONVENTION_GIE.INI
+	CONVENTION_MICROCONCEPT.ZIP et éventuellement  CONVENTION_MICROCONCEPT.INI
+	DONNEES_CAISSE.ZIP et éventuellement DONNEES_CAISSE.INI
+	dans ${destZIP}
+	=======================================================================
+	-->
+   	<target name="tables" depends="" description="SITE MISE A JOUR : Création des référentiels CONVENTION_GIE et CONVENTION_MICROCONCEPT" > 		
+   		<echo message="Creation des referentiels CONVENTION_GIE et CONVENTION_MICROCONCEPT pour ${destZIP}"/>
+   		<mkdir  dir="${destZIP}"/>
+			
+   		<echo message="1.- CONVENTION_GIE à partir de CD_Donnees\ImportCSV"/>
+			<antcall target="construireUnZIP">
+				<param name="param-nommage" value="CONVENTION_GIE"/>
+				<param name="param-chemin" value="${CD_Donnees}\ImportCSV"/>
+				<param name="param-dest" value="${destZIP}"/>
+			</antcall>
+
+   		<echo message="2.- CONVENTION_MICROCONCEPT à partir de CD_Donnees\Complémentaires"/>
+			<antcall target="construireUnZIP">
+				<param name="param-nommage" value="CONVENTION_MICROCONCEPT"/>
+				<param name="param-chemin" value="${CD_Donnees}\Complémentaires"/>
+				<param name="param-dest" value="${destZIP}"/>
+			</antcall>
+			
+		<echo message="3.- DONNEES_CAISSE à partir de CD_Donnees\Caisses"/>
+			<antcall target="construireUnZIP">
+				<param name="param-nommage" value="DONNEES_CAISSE"/>
+				<param name="param-chemin" value="${CD_Donnees}\Caisses"/>
+				<param name="param-dest" value="${destZIP}"/>
+			</antcall> 
+    </target>
+	
+</project>

@@ -46,6 +46,7 @@ public class Thread_Releve extends Thread {
 				new ReleveHotmail(cpt, fenetre);
 				break;
 			case IMAP:
+				new ReleveGmail(cpt, fenetre);
 				break;
 		}
 	}

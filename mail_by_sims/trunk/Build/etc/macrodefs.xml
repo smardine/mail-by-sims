@@ -373,8 +373,9 @@
 				<arg value="@{dir}\@{script}.iss"/>
 			</exec>		
 			
-			<echo message="Version generee: ${version.major},${version.minor},${version.release},${version.build}"/>
+			
 		</sequential>
+		<echo message="Version generee: ${version.major},${version.minor},${version.release},${version.build}"/>
 	</macrodef>	
 	
 

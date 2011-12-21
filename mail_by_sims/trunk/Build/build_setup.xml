@@ -15,6 +15,6 @@
 		
 		
 		<copy file="${basedir}/setup.exe" tofile="c:\iSetup.exe"/> -->
-		<echo message="Version generee: ${version.major},${version.minor},${version.release},${svn.revision}"/>
+		/>
 	</target>
 </project>

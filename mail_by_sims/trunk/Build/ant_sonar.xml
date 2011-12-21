@@ -2,13 +2,13 @@
 
 <project basedir="." default="sonar" name="Mail by sims">
 	<!-- Proprietées globales du scripts ant  -->
-	<property name="junit.output.dir" value="junit"/>
-	<property name="instrumented.dir" value="cobertura/instrumented"/>
-	<property name="classes.dir" value="bin"/>
-	<property name="jars.dir" value="lib"/>
-	<property name="test.dir" value="test"/>
+	<property name="junit.output.dir" value="../junit"/>
+	<property name="instrumented.dir" value="../cobertura/instrumented"/>
+	<property name="classes.dir" value="../bin"/>
+	<property name="jars.dir" value="../lib"/>
+	<property name="test.dir" value="../test"/>
 	<property name="cobertura.dir" value="${jars.dir}/cobertura"/>
-	<property name="reports.xml.dir" value="cobertura/reports"/>
+	<property name="reports.xml.dir" value="../cobertura/reports"/>
 	<property name="cob.ser.file" value="cobertura.ser" />
 	<property name="majornum" value="0"/>
 	<!-- Propriete exclusive a svn  -->

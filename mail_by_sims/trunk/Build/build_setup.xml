@@ -15,6 +15,6 @@
 		
 		
 		<copy file="${basedir}/setup.exe" tofile="c:\iSetup.exe"/> -->
-		/>
+		
 	</target>
 </project>

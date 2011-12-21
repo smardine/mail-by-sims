@@ -14,7 +14,7 @@
 AppId={{58DDDC3E-DA55-441E-A0CE-3258FA410B79}
 AppName={#MyAppName}
 AppVerName={#MyAppVerName} {#VERSION_INFO}
-VersionInfoProductVersion={#VERSION_INFO}
+
 AppPublisher={#MyAppPublisher}
 DefaultDirName={pf}\{#MyAppName}
 DisableDirPage=yes

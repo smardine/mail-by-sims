@@ -1,0 +1,26 @@
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION ${version.comma}
+PRODUCTVERSION ${version.comma} 
+FILEFLAGSMASK 0x3fL
+FILEFLAGS 0x0L
+FILEOS 0x4L
+FILETYPE 0x1L
+FILESUBTYPE 0x0L
+BEGIN
+  BLOCK "StringFileInfo"
+  BEGIN
+    BLOCK "040C04B0"
+    BEGIN
+      VALUE "FileDescription", "${my.filedescription}\0"
+      VALUE "FileVersion", "${version.point}\0"
+      VALUE "LegalCopyright", "Copyright \251 1986-${my.year} SimsCoprs\0"
+      VALUE "ProductName", "${productname}\0"
+      VALUE "ProductVersion","${version.buildinfo}\0"
+    END
+  END
+
+  BLOCK "VarFileInfo"
+  BEGIN
+    VALUE "Translation", 0x040C,1200
+  END
+END

@@ -342,7 +342,7 @@
 		<echo message="Version ${version.point}"/>
 
     	<!-- Créer le fichier  '.inc' qui contient la constante du numéro de version. -->
-		<copy file="./etc/innoversion.template.inc" tofile="${dir}\Setup.version.inc" overwrite="true">
+		<copy file="../etc/innoversion.template.inc" tofile="${dir}\Setup.version.inc" overwrite="true">
 			<filterchain>
 				<expandproperties/>
 			</filterchain>
@@ -379,106 +379,6 @@
 		</sequential>
 	</macrodef>	
 	
-<!--
-	=======================================================================
-	   Constantes d'accès au site de mise à jour
-	=======================================================================
-           -->
-	
-	<property name="ftp_userid" value="microconcept"/>
-	<property name="ftp_password" value="GiovohChe9"/>
-	<property name="ftp_server" value="10.36.3.1"/>
-	<property name="ftp_datas" value="/Datas"/>
-<!--
-	=======================================================================
-	   Macros d'envoi d'informations vers le site FTP de MICROCONCEPT
-	   Paramètres ( voir les paramètres du même nom de la balise FTP)   :
-		action       : action à effectuer 
-		remotedir : chemin sur la machine FTP
-		dir            : chemin source sur la machine locale (à placer dans fileset)
-		name        :  valeur à placer dans la balise include
-	=======================================================================
-	-->		
-	<macrodef name="ftp_createdir">
-		<attribute name="remotedir"/>		
-		<sequential>
-			<ftp action="mkdir" server="${ftp_server}" userid="${ftp_userid}" password="${ftp_password}" remotedir="@{remotedir}"/>	
-		</sequential>
-	</macrodef>
-	
-	<macrodef name="ftp_actionsurfic">
-		<attribute name="remotedir"/>		
-		<attribute name="action"/>	
-		<attribute name="dir"/>	
-		<attribute name="name"/>	
-		<sequential>
-			<ftp action="@{action}" server="${ftp_server}" userid="${ftp_userid}" password="${ftp_password}" remotedir="@{remotedir}" verbose="yes" >	
-			<fileset dir="@{dir}">
-			  <include name="@{name}"/>
-			</fileset>
-			</ftp>
-		</sequential>
-	</macrodef>
-	
-	<!--
-	=======================================================================
-	construireUnZIP
-	param-chemin : indique le chemin du référentiel à compresser dans un ZIP et contenant un version.ini construit ici à partir du nºbuild de ce chemin
-	param-nommage : indique le nommage du ZIP tel qu'il est connu du progiciel EQX
-	le résultat se trouve dans ${param-chemin} accompagné d'un .INI nommé param-nommage s'il est nécessaire de le copier
-	
-	Le copie d'un fichier *.ini a lieu si jamais l'unité appelante contient la variable copyVersionIni=1
-	======================================================================= -->	
-	<target name="construireUnZIP"  description="Récupérer le build, créer version.ini puis le ZIP contenant le référentiel dans ${param-dest}" >
-		<get-svnrev type="svnrev.nommage" chemin="${param-chemin}"/>
-		<echo message=" - ${param-nommage} : ${svnrev.complementaire}"/>
-		<!-- copier le fichier masque présent dans etc et remplacer le tag @SVNREVCSV@ avec le nºbuild demandé à svn -->
-		<delete file="${param-chemin}\version.ini" />
-	    <copy file="${repBuild}\etc\version.template.txt" toFile="${param-chemin}\version.ini">
-	      <filterset> 
-	        <filter token="SVNREV" value="${svnrev.nommage}"/>
-	      </filterset>
-	    </copy>
-		<echo message="  - compression référentiel ${param-nommage}"/>
-		<zip destfile="${param-dest}\${param-nommage}.ZIP">
-			<zipfileset dir="${param-chemin}"/>
-		</zip>	
-		
-		<copy file="${param-chemin}\VERSION.INI" tofile="${param-dest}\${param-nommage}.INI"/>  
-	</target>	
-	<!--
-	=======================================================================
-	tables : construction des référentiels:
-	CONVENTION_GIE.ZIP  et éventuellement CONVENTION_GIE.INI
-	CONVENTION_MICROCONCEPT.ZIP et éventuellement  CONVENTION_MICROCONCEPT.INI
-	DONNEES_CAISSE.ZIP et éventuellement DONNEES_CAISSE.INI
-	dans ${destZIP}
-	=======================================================================
-	-->
-   	<target name="tables" depends="" description="SITE MISE A JOUR : Création des référentiels CONVENTION_GIE et CONVENTION_MICROCONCEPT" > 		
-   		<echo message="Creation des referentiels CONVENTION_GIE et CONVENTION_MICROCONCEPT pour ${destZIP}"/>
-   		<mkdir  dir="${destZIP}"/>
-			
-   		<echo message="1.- CONVENTION_GIE à partir de CD_Donnees\ImportCSV"/>
-			<antcall target="construireUnZIP">
-				<param name="param-nommage" value="CONVENTION_GIE"/>
-				<param name="param-chemin" value="${CD_Donnees}\ImportCSV"/>
-				<param name="param-dest" value="${destZIP}"/>
-			</antcall>
 
-   		<echo message="2.- CONVENTION_MICROCONCEPT à partir de CD_Donnees\Complémentaires"/>
-			<antcall target="construireUnZIP">
-				<param name="param-nommage" value="CONVENTION_MICROCONCEPT"/>
-				<param name="param-chemin" value="${CD_Donnees}\Complémentaires"/>
-				<param name="param-dest" value="${destZIP}"/>
-			</antcall>
-			
-		<echo message="3.- DONNEES_CAISSE à partir de CD_Donnees\Caisses"/>
-			<antcall target="construireUnZIP">
-				<param name="param-nommage" value="DONNEES_CAISSE"/>
-				<param name="param-chemin" value="${CD_Donnees}\Caisses"/>
-				<param name="param-dest" value="${destZIP}"/>
-			</antcall> 
-    </target>
 	
 </project>

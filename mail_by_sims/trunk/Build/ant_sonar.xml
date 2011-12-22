@@ -134,7 +134,7 @@
 	<property key="sonar.host.url" value="http://172.30.3.55:1234/sonar/" />
       <!-- source directories (required) -->
       <sources>
-        <path location="./src" />
+        <path location="../src" />
       </sources>
   
     	<!-- list of properties (optional) -->
@@ -148,36 +148,36 @@
     
       <!-- test source directories (optional) -->
       <tests>
-        <path location="./test" />
+        <path location="../test" />
       </tests>
  
       <!-- binaries directories, which contain for example the compiled Java bytecode (optional) -->
       <binaries>
-        <path location="./bin" />
+        <path location="../bin" />
       </binaries>
  
       <!-- path to libraries (optional). These libraries are for example used by the Java Findbugs plugin -->
       <libraries>
-      	<path location="./lib/activation.jar" />
-      	<path location="./lib/deltasync.jar" />
-       	<path location="./lib/jaybird_full_2_1_6.jar" />
-       	<path location="./lib/junit.jar" />
-       	<path location="./lib/mail.jar" />
-       	<path location="./lib/libdeltasync/apache-mime4j-0.5.jar"/>
-      	<path location="./lib/libdeltasync/commons-codec-1.5.jar"/>
-        <path location="./lib/libdeltasync/commons-codec-1.5-javadoc.jar"/>
-        <path location="./lib/libdeltasync/commons-codec-1.5-sources.jar"/>
-        <path location="./lib/libdeltasync/commons-logging-1.1.1.jar"/>
-        <path location="./lib/libdeltasync/httpclient-4.1.1.jar"/>
-        <path location="./lib/libdeltasync/httpclient-cache-4.1.1.jar"/>
-        <path location="./lib/libdeltasync/httpcore-4.1.jar"/>
-        <path location="./lib/libdeltasync/httpmime-4.1.1.jar"/>
-        <path location="./lib/libdeltasync/logback-classic-0.9.29.jar"/>
-        <path location="./lib/libdeltasync/logback-classic-0.9.29-sources.jar"/>
-        <path location="./lib/libdeltasync/logback-core-0.9.29.jar"/>
-        <path location="./lib/libdeltasync/logback-core-0.9.29-sources.jar"/>
-        <path location="./lib/libdeltasync/slf4j-api-1.6.1.jar"/>
-        <path location="./lib/libdeltasync/slf4j-api-1.6.1-sources.jar"/>
+      	<path location="../lib/activation.jar" />
+      	<path location="../lib/deltasync.jar" />
+       	<path location="../lib/jaybird_full_2_1_6.jar" />
+       	<path location="../lib/junit.jar" />
+       	<path location="../lib/mail.jar" />
+       	<path location="../lib/libdeltasync/apache-mime4j-0.5.jar"/>
+      	<path location="../lib/libdeltasync/commons-codec-1.5.jar"/>
+        <path location="../lib/libdeltasync/commons-codec-1.5-javadoc.jar"/>
+        <path location="../lib/libdeltasync/commons-codec-1.5-sources.jar"/>
+        <path location="../lib/libdeltasync/commons-logging-1.1.1.jar"/>
+        <path location="../lib/libdeltasync/httpclient-4.1.1.jar"/>
+        <path location="../lib/libdeltasync/httpclient-cache-4.1.1.jar"/>
+        <path location="../lib/libdeltasync/httpcore-4.1.jar"/>
+        <path location="../lib/libdeltasync/httpmime-4.1.1.jar"/>
+        <path location="../lib/libdeltasync/logback-classic-0.9.29.jar"/>
+        <path location="../lib/libdeltasync/logback-classic-0.9.29-sources.jar"/>
+        <path location="../lib/libdeltasync/logback-core-0.9.29.jar"/>
+        <path location="../lib/libdeltasync/logback-core-0.9.29-sources.jar"/>
+        <path location="../lib/libdeltasync/slf4j-api-1.6.1.jar"/>
+        <path location="../lib/libdeltasync/slf4j-api-1.6.1-sources.jar"/>
       </libraries>
     </sonar:sonar>
   </target>

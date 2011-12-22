@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JTextField;
-import javax.swing.JTree;
 
 import mdl.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
@@ -19,7 +18,7 @@ public class MlActionCreationCompteGmailHotmail implements ActionListener {
 	private JTextField nomCompte;
 	private final CreationComptesGmailHotmail fenetre;
 
-	private JTree tree;
+	// private JTree tree;
 	private EnDefFournisseur defFournisseur;
 
 	/**
@@ -41,13 +40,13 @@ public class MlActionCreationCompteGmailHotmail implements ActionListener {
 	public MlActionCreationCompteGmailHotmail(
 			CreationComptesGmailHotmail p_creationComptesGmailHotmail,
 			EnDefFournisseur p_defFournisseur, JTextField p_nomCompte,
-			JTextField p_adresse, JTextField p_password, JTree p_tree) {
+			JTextField p_adresse, JTextField p_password) {
 		this.fenetre = p_creationComptesGmailHotmail;
 		this.defFournisseur = p_defFournisseur;
 		this.nomCompte = p_nomCompte;
 		this.adresse = p_adresse;
 		this.password = p_password;
-		this.tree = p_tree;
+		// this.tree = p_tree;
 
 	}
 
@@ -60,8 +59,7 @@ public class MlActionCreationCompteGmailHotmail implements ActionListener {
 				return;
 			}
 			MlCompteMail compteMail = valorisationMlCompte();
-			threadVerifCompte t = new threadVerifCompte(compteMail, tree,
-					fenetre);
+			threadVerifCompte t = new threadVerifCompte(compteMail, fenetre);
 			t.start();
 			// CompteMailFactory crea = new CompteMailFactory();
 			//

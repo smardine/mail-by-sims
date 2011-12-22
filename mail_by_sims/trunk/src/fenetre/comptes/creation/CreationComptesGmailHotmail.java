@@ -8,7 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JTree;
 
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.EnDefFournisseur;
@@ -27,21 +26,20 @@ public class CreationComptesGmailHotmail extends JFrame {
 	private JLabel jLabel = null;
 	private JLabel jLabel1 = null;
 	private JLabel jLabel5 = null;
-	private final JTree tree;
+	// private final JTree tree;
 	private final EnDefFournisseur defFournisseur;
 
 	/**
 	 * This is the default constructor
 	 */
-	public CreationComptesGmailHotmail(EnDefFournisseur p_enumChoisi,
-			JTree p_tree) {
+	public CreationComptesGmailHotmail(EnDefFournisseur p_enumChoisi) {
 		super();
 		this.defFournisseur = p_enumChoisi;
-		this.tree = p_tree;
+		// this.tree = p_tree;
 		initialize();
 
 		btValider.addActionListener(new MlActionCreationCompteGmailHotmail(
-				this, defFournisseur, nomCompte, adresseMail, password, tree));
+				this, defFournisseur, nomCompte, adresseMail, password));
 	}
 
 	/**

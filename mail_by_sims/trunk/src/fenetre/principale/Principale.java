@@ -516,7 +516,7 @@ public class Principale extends JFrame {
 				getClass().getResource("/logo_appli.png")));
 
 		this.addComponentListener(new MlComposantListener(panelPrincipal));
-		Thread_Verif verif = new Thread_Verif(jTree);
+		Thread_Verif verif = new Thread_Verif();
 		verif.start();
 
 		modelList = new DefaultListModel();

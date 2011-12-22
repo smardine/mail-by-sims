@@ -36,7 +36,7 @@ public class MlActionMain implements ActionListener {
 			System.exit(0);
 		}
 		if (e.getActionCommand().equals(EnActionMain.GESTION_COMPTE.getLib())) {
-			new GestionCompte(tree);
+			new GestionCompte();
 		}
 		if (e.getActionCommand().equals(EnActionMain.EXPLORER.getLib())) {
 			String Explorer = GestionRepertoire.RecupRepTravail();

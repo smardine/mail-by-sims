@@ -16,7 +16,7 @@
         	notree="false" 
         	packagenames="releve.imap.util,verification,fenetre.principale.MlAction,factory,exception,fenetre.comptes.gestion.MlActionGestion,fenetre.comptes.gestion,tools,fenetre.principale.jTable,fenetre.comptes.creation,thread,importMail,fenetre,releve,fenetre.comptes.creation.MlActionCreation,fenetre.principale,bdd,fenetre.comptes,releve.pop,mdl,fenetre.principale.jtree,releve.imap,fenetre.principale.jList,test,releve.hotmail" 
         	source="1.6" 
-        	sourcepath="Images;test;src" 
+        	sourcepath="../Images;../test;../src" 
         	splitindex="true" 
         	use="true" 
         	version="true">

@@ -9,7 +9,6 @@ import javax.swing.JFrame;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTree;
 import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 
@@ -17,7 +16,6 @@ import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
 import mdl.MlListeCompteMail;
 import bdd.accesTable.AccesTableCompte;
-import factory.JTreeFactory;
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.gestion.MlActionGestion.EnActionComptes;
 import fenetre.comptes.gestion.MlActionGestion.MlActionComptes;
@@ -32,14 +30,15 @@ public class GestionCompte extends JFrame {
 	private DefaultListModel modelList = null;
 	private JList jList = null;
 	private JScrollPane jScrollPane = null;
-	private final JTree tree;
+
+	// private final JTree tree;
 
 	/**
 	 * This is the default constructor
 	 */
-	public GestionCompte(JTree p_treeCompte) {
+	public GestionCompte() {
 		super();
-		this.tree = p_treeCompte;
+		// this.tree = p_treeCompte;
 		initialize();
 		modelList = new DefaultListModel();
 		jList.setModel(modelList);
@@ -72,8 +71,7 @@ public class GestionCompte extends JFrame {
 			@Override
 			public void windowClosing(java.awt.event.WindowEvent e) {
 				dispose();
-				JTreeFactory treeFact = new JTreeFactory();
-				treeFact.reloadJtree();
+
 			}
 		});
 
@@ -105,7 +103,7 @@ public class GestionCompte extends JFrame {
 			btCreer.setText(EnActionComptes.CREER.getLib());
 			btCreer.setBounds(new Rectangle(387, 34, 99, 41));
 			btCreer.setActionCommand(EnActionComptes.CREER.getLib());
-			btCreer.addActionListener(new MlActionComptes(this, tree));
+			btCreer.addActionListener(new MlActionComptes(this));
 		}
 		return btCreer;
 	}
@@ -120,7 +118,7 @@ public class GestionCompte extends JFrame {
 			btModifier.setText(EnActionComptes.MODIFIER.getLib());
 			btModifier.setBounds(new Rectangle(387, 109, 99, 41));
 			btModifier.setActionCommand(EnActionComptes.MODIFIER.getLib());
-			btModifier.addActionListener(new MlActionComptes(this, tree));
+			btModifier.addActionListener(new MlActionComptes(this));
 		}
 		return btModifier;
 	}
@@ -135,7 +133,7 @@ public class GestionCompte extends JFrame {
 			btSupprimer.setText(EnActionComptes.SUPPRIMER.getLib());
 			btSupprimer.setBounds(new Rectangle(387, 184, 99, 41));
 			btSupprimer.setActionCommand(EnActionComptes.SUPPRIMER.getLib());
-			btSupprimer.addActionListener(new MlActionComptes(this, tree));
+			btSupprimer.addActionListener(new MlActionComptes(this));
 		}
 		return btSupprimer;
 	}

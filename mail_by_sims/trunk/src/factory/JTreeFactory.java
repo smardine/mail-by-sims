@@ -19,6 +19,7 @@ import mdl.MlDossier;
 import mdl.MlListeCompteMail;
 import mdl.MlMessageGrille;
 import releve.imap.util.messageUtilisateur;
+import thread.threadMajUnreadCount;
 import bdd.accesTable.AccesTableCompte;
 import bdd.accesTable.AccesTableDossier;
 import exception.DonneeAbsenteException;
@@ -32,14 +33,16 @@ import fenetre.principale.jtree.ArborescenceBoiteMail;
  */
 public class JTreeFactory {
 
-	private DefaultMutableTreeNode treeNode;
+	private static DefaultMutableTreeNode treeNode;
 	private final AccesTableCompte accesCompte;
 	private final JTree tree;
 	private final String TAG = this.getClass().getSimpleName();
+	private final AccesTableDossier accesDossier;
 
 	public JTreeFactory() {
 		this.tree = ComposantVisuelCommun.getJTree();
 		this.accesCompte = new AccesTableCompte();
+		this.accesDossier = new AccesTableDossier();
 	}
 
 	public DefaultMutableTreeNode getTreeNode(Main p_fenetre,
@@ -54,19 +57,8 @@ public class JTreeFactory {
 					p_progressbar.setValue(progress);
 					p_progressbar.setString(progress + " %");
 				}
+				treeNode = ajouteCompteNode(cpt);
 
-				DefaultMutableTreeNode compteNode = new DefaultMutableTreeNode(
-						cpt);
-				for (MlDossier unDossier : cpt.getListDossierPrincipaux()) {
-					DefaultMutableTreeNode dossierBaseNode = new DefaultMutableTreeNode(
-							unDossier);
-					// pour chacun des dossier de base, on prend la liste des
-					// sous dossier
-					dossierBaseNode = recupereSousDossier(dossierBaseNode,
-							unDossier, cpt);
-					compteNode.add(dossierBaseNode);
-				}
-				treeNode.add(compteNode);
 				cptCount++;
 			}
 
@@ -74,13 +66,53 @@ public class JTreeFactory {
 		return treeNode;
 	}
 
+	public DefaultMutableTreeNode ajouteCompteNode(MlCompteMail p_cptMail) {
+
+		DefaultMutableTreeNode compteNode = new DefaultMutableTreeNode(
+				p_cptMail);
+		for (MlDossier unDossier : p_cptMail.getListDossierPrincipaux()) {
+			DefaultMutableTreeNode dossierBaseNode = new DefaultMutableTreeNode(
+					unDossier);
+			// pour chacun des dossier de base, on prend la liste des
+			// sous dossier
+			dossierBaseNode = recupereSousDossier(dossierBaseNode, unDossier,
+					p_cptMail);
+			compteNode.add(dossierBaseNode);
+		}
+		treeNode.add(compteNode);
+
+		return treeNode;
+
+	}
+
+	public DefaultMutableTreeNode supprimeCompteNode(MlCompteMail p_cptMail) {
+		DefaultMutableTreeNode compteNode = rechercheCompteNode(p_cptMail
+				.getIdCompte());
+		// int nbDossier = compteNode.getChildCount();
+		while (compteNode.getChildCount() > 0) {
+			compteNode.remove(0);
+		}
+		// for (int i = 0; i < nbDossier; i++) {
+		// compteNode.remove(i);
+		// }
+		treeNode.remove(compteNode);
+		TreePath treePath = ComposantVisuelCommun.getJTree().getPathForRow(0);
+		((ArborescenceBoiteMail) tree.getModel())
+
+		.fireTreeNodesRemoved(new TreeModelEvent(this, treePath));
+		// return (DefaultMutableTreeNode) treePath.getLastPathComponent();
+
+		return treeNode;
+
+	}
+
 	/**
 	 * @param p_dossierBaseNode
 	 */
 	private DefaultMutableTreeNode recupereSousDossier(
-			DefaultMutableTreeNode p_dossierBaseNode,
-			MlDossier p_nomSousDossier, MlCompteMail p_cptMail) {
-		for (MlDossier nomSousDossier : p_nomSousDossier.getListSousDossier()) {
+			DefaultMutableTreeNode p_dossierBaseNode, MlDossier p_sousDossier,
+			MlCompteMail p_cptMail) {
+		for (MlDossier nomSousDossier : p_sousDossier.getListSousDossier()) {
 			DefaultMutableTreeNode sousDossierTreeNode = new DefaultMutableTreeNode(
 					nomSousDossier);
 			p_dossierBaseNode.add(sousDossierTreeNode);
@@ -169,10 +201,8 @@ public class JTreeFactory {
 	public void reloadJtree() {
 		TreePath originalTreePath = tree.getSelectionPath();
 		int[] originalSelectionRow = tree.getSelectionRows();
-		JTreeFactory treeFact = new JTreeFactory();
 
-		tree.setModel(new ArborescenceBoiteMail(treeFact
-				.getTreeNode(null, null)));
+		tree.setModel(new ArborescenceBoiteMail(this.getTreeNode(null, null)));
 		tree.setSelectionPath(originalTreePath);
 		tree.setSelectionRows(originalSelectionRow);
 		for (MouseListener unListener : ComposantVisuelCommun
@@ -191,7 +221,7 @@ public class JTreeFactory {
 	 */
 	public TreePath createNewDossierAndRefreshTree(TreePath p_treePath,
 			String nomDossier, int p_idCompte) {
-		AccesTableDossier accesDossier = new AccesTableDossier();
+
 		TreePath newTp = p_treePath.pathByAddingChild(nomDossier);
 		String dossierParent = (String) p_treePath.getLastPathComponent();
 		int idDossierParent = accesDossier.getIdDossier(dossierParent,
@@ -416,34 +446,11 @@ public class JTreeFactory {
 
 	/**
 	 * Mise a jour du compteur de message non lu pour l'afficher a l'utilisateur
-	 * @param p_m le MlMessage que l'on vient de créer ou de mette a jour
-	 *            (statut lecture)
+	 * @param p_messageGrille le MlMessage que l'on vient de créer ou de mette a
+	 *            jour (statut lecture)
 	 */
-	public void majUnreadCount(final MlMessageGrille p_m) {
-
-		new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				AccesTableDossier accesDossier = new AccesTableDossier();
-				MlCompteMail cptMail = rechercheCompteMail(p_m.getIdCompte());
-				cptMail.setUnreadMessCount(accesCompte
-						.getUnreadMessageFromCompte(cptMail.getIdCompte()));
-				MlDossier dossier = rechercheDossier(p_m.getIdDossier(), p_m
-						.getIdCompte());
-				dossier.setUnreadMessageCount(accesDossier
-						.getUnreadMessageFromFolder(cptMail.getIdCompte(),
-								dossier.getIdDossier()));
-				while (dossier.getIdDossierParent() != 0) {
-					dossier = rechercheDossier(dossier.getIdDossierParent(),
-							dossier.getIdCompte());
-					dossier.setUnreadMessageCount(dossier
-							.getUnreadMessageCount() - 1);
-				}
-
-				refreshJTree();
-			}
-		}).start();
+	public void majUnreadCount(final MlMessageGrille p_messageGrille) {
+		new threadMajUnreadCount(p_messageGrille, accesCompte).start();
 
 	}
 }

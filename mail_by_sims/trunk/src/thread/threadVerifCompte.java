@@ -1,7 +1,6 @@
 package thread;
 
 import javax.swing.DefaultListModel;
-import javax.swing.JTree;
 
 import mdl.ComposantVisuelCommun;
 import mdl.MlCompteMail;
@@ -9,6 +8,7 @@ import mdl.MlListeCompteMail;
 import releve.imap.util.messageUtilisateur;
 import bdd.accesTable.AccesTableCompte;
 import factory.CompteMailFactory;
+import factory.JTreeFactory;
 import factory.ReleveFactory;
 import fenetre.Patience;
 import fenetre.comptes.creation.CreationComptesGmailHotmail;
@@ -20,13 +20,13 @@ public class threadVerifCompte extends Thread {
 	private final MlCompteMail compteMail;
 	private final Patience fenetrePatience;
 	private final String TAG = this.getClass().getSimpleName();
-	private final JTree tree;
+	// private final JTree tree;
 	private final CreationComptesPop fenetre;
 	private CreationComptesGmailHotmail fenetreGmail;
 
-	public threadVerifCompte(MlCompteMail p_compteMail, JTree p_tree,
+	public threadVerifCompte(MlCompteMail p_compteMail,
 			CreationComptesPop p_fenetre) {
-		this.tree = p_tree;
+		// this.tree = p_tree;
 		this.fenetre = p_fenetre;
 		this.compteMail = p_compteMail;
 		fenetrePatience = new Patience("Test du compte "
@@ -34,9 +34,9 @@ public class threadVerifCompte extends Thread {
 
 	}
 
-	public threadVerifCompte(MlCompteMail p_compteMail, JTree p_tree,
+	public threadVerifCompte(MlCompteMail p_compteMail,
 			CreationComptesGmailHotmail p_fenetre) {
-		this.tree = p_tree;
+		// this.tree = p_tree;
 		this.compteMail = p_compteMail;
 		this.fenetreGmail = p_fenetre;
 		this.fenetre = null;
@@ -80,7 +80,10 @@ public class threadVerifCompte extends Thread {
 					fenetreGmail.dispose();
 				}
 				fenetrePatience.setVisible(false);
-				new GestionCompte(tree);
+				JTreeFactory treeFact = new JTreeFactory();
+				treeFact.ajouteCompteNode(compteMail);
+				treeFact.reloadJtree();
+				new GestionCompte();
 				return;
 			}
 

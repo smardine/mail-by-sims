@@ -14,6 +14,7 @@ import releve.imap.util.messageUtilisateur;
 import bdd.accesTable.AccesTableCompte;
 import exception.DonneeAbsenteException;
 import factory.CompteMailFactory;
+import factory.JTreeFactory;
 import fenetre.Patience;
 
 /**
@@ -42,6 +43,9 @@ public class threadSuppressCompte extends Thread {
 		CompteMailFactory fact = new CompteMailFactory();
 		boolean result;
 		try {
+			JTreeFactory treeFact = new JTreeFactory();
+			treeFact.supprimeCompteNode(compteMail);
+			treeFact.reloadJtree();
 			result = fact.suppressionCompteMail(compteMail, label, progressBar);
 		} catch (DonneeAbsenteException e) {
 			result = false;
@@ -61,6 +65,8 @@ public class threadSuppressCompte extends Thread {
 			for (MlCompteMail cpt : lst) {
 				model.addElement(cpt.getNomCompte());
 			}
+
+			// treeFact.refreshJTree();
 
 		} else {
 			messageUtilisateur.affMessageErreur(TAG,

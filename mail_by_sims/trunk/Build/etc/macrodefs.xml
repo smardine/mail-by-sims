@@ -134,9 +134,14 @@
 			<isset property="debug"/>
         </condition>
 
+		<property name ="version.buildinfo" value="${version.point}${version.buildinfo.type}" /> 
+		
+		<!--
 		<condition property="version.buildinfo" value="${version.point}${version.buildinfo.type}" else="${version.point}-beta${version.buildinfo.type}">
 			<isset property="reel"/>
-        </condition>
+        </condition> 
+        
+        -->
 		
 
 		<!-- retrouver l'année pour le copyright -->

@@ -13,7 +13,6 @@ import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JTree;
 import javax.swing.SwingConstants;
 
 import fenetre.comptes.EnDefFournisseur;
@@ -27,7 +26,7 @@ public class choixFAI extends JFrame {
 	private JButton jButtonHOTMAIL = null;
 	private JComboBox jComboBoxAutre = null;
 	// private EnDefFournisseur choixComptePop;
-	private final JTree tree;
+	// private final JTree tree;
 	private JLabel jLabel = null;
 	private JLabel jLabel1 = null;
 	private JLabel jLabel2 = null;
@@ -36,10 +35,10 @@ public class choixFAI extends JFrame {
 	/**
 	 * This is the default constructor
 	 */
-	public choixFAI(JTree p_tree) {
+	public choixFAI() {
 
 		super();
-		this.tree = p_tree;
+		// this.tree = p_tree;
 		initialize();
 		List<EnDefFournisseur> lstComptePop = EnDefFournisseur.getComptePop();
 
@@ -48,12 +47,12 @@ public class choixFAI extends JFrame {
 			jComboBoxAutre.addItem(lstComptePop.get(i).getLib());
 		}
 
-		jButtonGMAIL.addActionListener(new MlChoixDuCompte(this, tree));
+		jButtonGMAIL.addActionListener(new MlChoixDuCompte(this));
 		jButtonGMAIL.setActionCommand(EnDefFournisseur.GMAIL.getLib());
-		jButtonHOTMAIL.addActionListener(new MlChoixDuCompte(this, tree));
+		jButtonHOTMAIL.addActionListener(new MlChoixDuCompte(this));
 		jButtonHOTMAIL.setActionCommand(EnDefFournisseur.HOTMAIL.getLib());
 
-		jComboBoxAutre.addActionListener(new MlChoixDuCompte(this, tree));
+		jComboBoxAutre.addActionListener(new MlChoixDuCompte(this));
 
 	}
 

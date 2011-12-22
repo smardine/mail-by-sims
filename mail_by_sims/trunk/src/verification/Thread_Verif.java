@@ -1,17 +1,16 @@
 package verification;
 
 import javax.swing.JOptionPane;
-import javax.swing.JTree;
 
 import bdd.accesTable.AccesTableCompte;
 import fenetre.comptes.gestion.GestionCompte;
 
 public class Thread_Verif extends Thread {
 
-	private final JTree jTree;
+	// private final JTree jTree;
 
-	public Thread_Verif(JTree p_jTree) {
-		this.jTree = p_jTree;
+	public Thread_Verif() {
+		// this.jTree = p_jTree;
 
 	}
 
@@ -26,7 +25,7 @@ public class Thread_Verif extends Thread {
 							+ "Voulez-vous en ajouter un maintenant?",
 					"Information", JOptionPane.YES_NO_OPTION);
 			if (creerCompte == 0) {// on accepte
-				new GestionCompte(jTree);
+				new GestionCompte();
 			}// sinon, on ne fait rien
 		}
 	}

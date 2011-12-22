@@ -340,7 +340,12 @@ public class MlCompteMail {
 	 * @return the listDossier
 	 */
 	public MlListeDossier getListDossierPrincipaux() {
+		if (accesDossier != null) {
+			return accesDossier.getListeSousDossierBase(idCompte);
+		}
+		accesDossier = new AccesTableDossier();
 		return accesDossier.getListeSousDossierBase(idCompte);
+
 	}
 
 	/**

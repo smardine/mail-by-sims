@@ -8,7 +8,6 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
-import javax.swing.JTree;
 
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.EnDefFournisseur;
@@ -33,21 +32,21 @@ public class CreationComptesPop extends JFrame {
 	private JLabel jLabel3 = null;
 	private JLabel jLabel4 = null;
 	private JLabel jLabel5 = null;
-	private final JTree tree;
+	// private final JTree tree;
 	private final EnDefFournisseur defFournisseur;
 
 	/**
 	 * This is the default constructor
 	 */
-	public CreationComptesPop(EnDefFournisseur p_enumChoisi, JTree p_tree) {
+	public CreationComptesPop(EnDefFournisseur p_enumChoisi) {
 		super();
 		this.defFournisseur = p_enumChoisi;
-		this.tree = p_tree;
+		// this.tree = p_tree;
 		initialize();
 		rempliChamp(defFournisseur);
 		btValider.addActionListener(new MlActionCreationComptesPop(this,
 				nomCompte, adresseMail, serveurPOP, serveurSMTP, user,
-				password, tree, defFournisseur));
+				password, defFournisseur));
 	}
 
 	private void rempliChamp(EnDefFournisseur p_defFournisseur) {

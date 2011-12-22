@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JTextField;
-import javax.swing.JTree;
 
 import mdl.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
@@ -22,7 +21,7 @@ public class MlActionCreationComptesPop implements ActionListener {
 	private JTextField nomCompte;
 	private final CreationComptesPop fenetre;
 
-	private JTree tree;
+	// private JTree tree;
 	private EnDefFournisseur defFournisseur;
 
 	/**
@@ -46,7 +45,7 @@ public class MlActionCreationComptesPop implements ActionListener {
 	public MlActionCreationComptesPop(CreationComptesPop p_fenetre,
 			JTextField p_nomCompte, JTextField p_adresse, JTextField p_pop,
 			JTextField p_smtp, JTextField p_user, JTextField p_password,
-			JTree p_tree, EnDefFournisseur p_defFournisseur) {
+			EnDefFournisseur p_defFournisseur) {
 		this.fenetre = p_fenetre;
 		this.nomCompte = p_nomCompte;
 		this.adresse = p_adresse;
@@ -54,7 +53,7 @@ public class MlActionCreationComptesPop implements ActionListener {
 		this.smtp = p_smtp;
 		this.user = p_user;
 		this.password = p_password;
-		this.tree = p_tree;
+		// this.tree = p_tree;
 		this.defFournisseur = p_defFournisseur;
 
 	}
@@ -78,7 +77,7 @@ public class MlActionCreationComptesPop implements ActionListener {
 			compteMail.setPassword(password.getText());
 			compteMail.setTypeCompte(defFournisseur.getTypeCompte());
 
-			threadVerifCompte t = new threadVerifCompte(compteMail, tree,
+			threadVerifCompte t = new threadVerifCompte(compteMail,
 					this.fenetre);
 			t.start();
 

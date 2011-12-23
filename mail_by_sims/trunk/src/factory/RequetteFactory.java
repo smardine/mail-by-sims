@@ -20,7 +20,7 @@ import java.util.List;
 
 import releve.imap.util.messageUtilisateur;
 import tools.Historique;
-import bdd.BDAcces;
+import bdd.BDAccesDll;
 import bdd.structure.EnStructPieceJointe;
 import bdd.structure.EnTable;
 
@@ -425,7 +425,7 @@ public class RequetteFactory {
 	 * bdd
 	 */
 	private Connection checkConnexion() {
-		return new BDAcces().getConnexion();
+		return new BDAccesDll().getConnexion();
 	}
 
 	/**

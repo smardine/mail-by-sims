@@ -30,6 +30,10 @@ public final class GestionRepertoire {
 		return sAppliDir;
 	}
 
+	public static String RecupRepLib() {
+		return RecupRepTravail() + "/lib";
+	}
+
 	/**
 	 * @return
 	 */

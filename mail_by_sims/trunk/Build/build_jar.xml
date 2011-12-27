@@ -28,7 +28,7 @@
             <zipfileset excludes="META-INF/*.SF" src="../lib/libdeltasync/slf4j-api-1.6.1-sources.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="../lib/libdeltasync/slf4j-api-1.6.1.jar"/>
             <zipfileset excludes="META-INF/*.SF" src="../lib/deltasync.jar"/>
-            
+            <zipfileset excludes="META-INF/*.SF" src="../lib/junit.jar"/>
         </jar>
     </target>
 </project>

@@ -8,7 +8,6 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.List;
-import java.util.Properties;
 
 import javax.swing.JOptionPane;
 
@@ -33,21 +32,16 @@ public class BDAccesDll {
 	private static FBManager firebirdManager;
 	final int VERSION_BASE = 8;
 
-	private boolean ttACreer = false;
+	private static boolean ttACreer = false;
 	private static FBMaintenanceManager maintenance;
+	private static boolean librairyloaded = false;
 
 	/**
 	 * constructeur
 	 */
 	public BDAccesDll() {
 
-		System.loadLibrary("icudt30");
-		System.loadLibrary("icuuc30");
-		System.loadLibrary("icuin30");
-
-		System.loadLibrary("fbembed");
-
-		System.loadLibrary("jaybird21");
+		loadDlls();
 
 		parametres = new BDParamDll();
 		try {
@@ -62,15 +56,12 @@ public class BDAccesDll {
 		}
 
 		if (etatConnexion) {
-			Properties props = new Properties();
-			props.setProperty("user", parametres.getUSER());
-			props.setProperty("password", parametres.getPASSWORD());
-			props.setProperty("charset", "ISO8859_1");
+
 			String UrlDeConnexion = parametres.getDriverSGBD() + ":"
-			// + parametres.getHOSTNAME() + ":"
-					+ parametres.getEmplacementBase();
-			// + "?encoding=ISO8859_1&user=" + parametres.getUSER()
-			// + "&password=" + parametres.getPASSWORD();
+
+			+ parametres.getEmplacementBase() + "?encoding=ISO8859_1&user="
+					+ parametres.getUSER() + "&password="
+					+ parametres.getPASSWORD();
 			if (!isDataBaseExist(parametres.getEmplacementBase())) {
 				ttACreer = true;
 			}
@@ -109,22 +100,17 @@ public class BDAccesDll {
 
 			try {
 
-				connexion = DriverManager.getConnection(UrlDeConnexion, props);
+				connexion = DriverManager.getConnection(UrlDeConnexion);
 				connexion.setAutoCommit(false);
 
 				etatConnexion = true;
 			} catch (SQLException e) {
-				JOptionPane.showMessageDialog(null,
+				messageUtilisateur.affMessageException(TAG, e,
 						"Impossible de se connecter"
-								+ " à la base de données\n\r" + e, "ALERTE",
-						JOptionPane.ERROR_MESSAGE);
+								+ " à la base de données\n\r");
+
 				etatConnexion = false;
-				JOptionPane
-						.showMessageDialog(
-								null,
-								"     Pour des raisons de sécurité, le programme va maintenant être fermé"
-										+ " \n\r  il faudra le relancer et vérifier les login, mot de passe, nom du serveur et chemin de la base de données avant de lancer l'import",
-								"ALERTE", JOptionPane.ERROR_MESSAGE);
+
 				System.exit(0);
 			}
 			if (ttACreer) {
@@ -134,6 +120,26 @@ public class BDAccesDll {
 
 		}
 
+	}
+
+	/**
+	 * 
+	 */
+	private void loadDlls() {
+		if (!librairyloaded) {
+			try {
+				System.loadLibrary("icudt30");
+				System.loadLibrary("icuuc30");
+				System.loadLibrary("icuin30");
+				System.loadLibrary("fbembed");
+			} catch (Exception e) {
+				messageUtilisateur.affMessageException(TAG, e,
+						"Impossible de charger les DLL firbird");
+				librairyloaded = false;
+			}
+		}
+
+		librairyloaded = true;
 	}
 
 	public boolean verifVersionBDD() {

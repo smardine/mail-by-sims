@@ -25,6 +25,11 @@ OutputBaseFilename=setup
 SetupIconFile=.././Images/logo_appli.ico
 Compression=lzma
 SolidCompression=yes
+;logo à utiliser sur la page d'acceuil du setup
+;164*313
+WizardImageFile=.././Images/logo_appli_WizardImageFile.bmp
+;logo à utiliser dans les fenetre suivantes      111*113
+WizardSmallImageFile=.././Images/logo_appli_SmallWizardImageFile.bmp
 
 
 [Languages]
@@ -37,11 +42,15 @@ Name: "quicklaunchicon"; Description: "{cm:CreateQuickLaunchIcon}"; GroupDescrip
 [Files]
 Source: ".././mbs.exe"; DestDir: "{app}"; Flags: ignoreversion
 Source: ".././mbs.jar"; DestDir: "{app}"; Flags: ignoreversion
-Source: ".././lib/*"; DestDir: {app}/lib; Flags: ignoreversion; Excludes: junit.jar;
+Source: ".././lib/activation.jar"; DestDir: {app}/lib; Flags: ignoreversion;
+Source: ".././lib/deltasync.jar"; DestDir: {app}/lib; Flags: ignoreversion;
+Source: ".././lib/jaybird_full_2_1_6.jar"; DestDir: {app}/lib; Flags: ignoreversion;
+Source: ".././lib/mail.jar"; DestDir: {app}/lib; Flags: ignoreversion;
 Source: ".././lib/libdeltasync/*"; DestDir: "{app}/lib/libdeltasync"; Flags: ignoreversion
+Source: ".././lib/fbdll/*"; DestDir: "{app}/lib/fbdll"; Flags: ignoreversion recursesubdirs createallsubdirs
 
-Source: ".././Images\*"; DestDir: "{app}/Images"; Flags: ignoreversion recursesubdirs createallsubdirs
-Source: ".././template\*"; DestDir: "{app}/template"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ".././Images/*"; DestDir: "{app}/Images"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ".././template/*"; DestDir: "{app}/template"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
 [Icons]

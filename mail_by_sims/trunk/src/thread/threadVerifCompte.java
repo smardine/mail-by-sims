@@ -58,6 +58,8 @@ public class threadVerifCompte extends Thread {
 						"le compte n'a pas été correctement enregistré");
 
 			} else {
+				JTreeFactory treeFact = new JTreeFactory();
+				treeFact.ajouteCompteNode(compteMail);
 				ReleveFactory relevFact = new ReleveFactory(compteMail,
 						fenetrePatience);
 				relevFact.recupereListeDossier();
@@ -80,8 +82,7 @@ public class threadVerifCompte extends Thread {
 					fenetreGmail.dispose();
 				}
 				fenetrePatience.setVisible(false);
-				JTreeFactory treeFact = new JTreeFactory();
-				treeFact.ajouteCompteNode(compteMail);
+
 				treeFact.reloadJtree();
 				new GestionCompte();
 				return;

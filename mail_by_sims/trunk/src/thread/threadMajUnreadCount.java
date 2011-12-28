@@ -3,9 +3,9 @@
  */
 package thread;
 
-import mdl.MlCompteMail;
-import mdl.MlDossier;
-import mdl.MlMessageGrille;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mldossier.MlDossier;
+import mdl.mlmessage.MlMessageGrille;
 import bdd.accesTable.AccesTableCompte;
 import bdd.accesTable.AccesTableDossier;
 import factory.JTreeFactory;

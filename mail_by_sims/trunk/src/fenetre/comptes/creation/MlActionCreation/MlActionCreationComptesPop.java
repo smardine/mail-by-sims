@@ -5,7 +5,7 @@ import java.awt.event.ActionListener;
 
 import javax.swing.JTextField;
 
-import mdl.MlCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
 import thread.threadVerifCompte;
 import fenetre.comptes.EnDefFournisseur;

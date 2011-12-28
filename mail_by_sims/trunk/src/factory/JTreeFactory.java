@@ -4,7 +4,10 @@
 package factory;
 
 import java.awt.event.MouseListener;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Enumeration;
+import java.util.List;
 
 import javax.swing.JProgressBar;
 import javax.swing.JTree;
@@ -14,10 +17,10 @@ import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
-import mdl.MlCompteMail;
-import mdl.MlDossier;
-import mdl.MlListeCompteMail;
-import mdl.MlMessageGrille;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mlcomptemail.MlListeCompteMail;
+import mdl.mldossier.MlDossier;
+import mdl.mlmessage.MlMessageGrille;
 import releve.imap.util.messageUtilisateur;
 import thread.threadMajUnreadCount;
 import bdd.accesTable.AccesTableCompte;
@@ -64,6 +67,21 @@ public class JTreeFactory {
 
 		}
 		return treeNode;
+	}
+
+	public TreePath getTreePathFromTreeNode(TreeNode p_node) {
+		TreeNode aNode = p_node;
+		List<TreeNode> lst = new ArrayList<TreeNode>();
+		// Add all nodes to list
+		while (aNode != null) {
+			lst.add(aNode);
+			aNode = aNode.getParent();
+		}
+		Collections.reverse(lst);
+
+		// Convert array of nodes to TreePath
+		return new TreePath(lst.toArray());
+
 	}
 
 	public DefaultMutableTreeNode ajouteCompteNode(MlCompteMail p_cptMail) {

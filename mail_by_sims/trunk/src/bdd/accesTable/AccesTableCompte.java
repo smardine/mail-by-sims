@@ -9,9 +9,9 @@ import java.util.List;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
-import mdl.MlCompteMail;
-import mdl.MlListeCompteMail;
-import mdl.MlListeDossier;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mlcomptemail.MlListeCompteMail;
+import mdl.mldossier.MlListeDossier;
 import bdd.structure.EnStructCompte;
 import bdd.structure.EnStructDossier;
 import bdd.structure.EnStructMailRecu;

@@ -28,7 +28,7 @@ import javax.swing.JOptionPane;
 import javax.swing.text.Document;
 
 import mdl.ComposantVisuelCommun;
-import mdl.MlMessage;
+import mdl.mlmessage.MlMessage;
 import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.Historique;

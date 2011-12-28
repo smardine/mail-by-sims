@@ -5,9 +5,9 @@ package thread;
 
 import javax.mail.MessagingException;
 
-import mdl.MlCompteMail;
-import mdl.MlDossier;
-import mdl.MlListeMessageGrille;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mldossier.MlDossier;
+import mdl.mlmessage.MlListeMessageGrille;
 import releve.imap.util.messageUtilisateur;
 import bdd.accesTable.AccesTableDossier;
 import bdd.accesTable.AccesTableMailRecu;

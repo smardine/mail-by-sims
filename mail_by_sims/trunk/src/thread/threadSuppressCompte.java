@@ -8,8 +8,8 @@ import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
 import mdl.ComposantVisuelCommun;
-import mdl.MlCompteMail;
-import mdl.MlListeCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mlcomptemail.MlListeCompteMail;
 import releve.imap.util.messageUtilisateur;
 import bdd.accesTable.AccesTableCompte;
 import exception.DonneeAbsenteException;

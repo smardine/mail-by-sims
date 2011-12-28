@@ -9,8 +9,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
-import mdl.MlCompteMail;
-import mdl.MlDossier;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mldossier.MlDossier;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
 import tools.Historique;
@@ -417,9 +417,8 @@ public class DossierFactory {
 		treeFact.reloadJtree();
 	}
 
-	public void deleteDossier(TreePath p_selectionPath) {
-		String dossierASupprimer = p_selectionPath.getLastPathComponent()
-				.toString();
+	public void deleteDossier(MlDossier p_dossier) {
+		String dossierASupprimer = p_dossier.getNomDossier();
 
 		REPONSE rep = messageUtilisateur
 				.affMessageQuestionOuiNon(
@@ -432,18 +431,22 @@ public class DossierFactory {
 			case OUI:// on supprime le dossier
 				idDossier = accesDossier.getIdDossier(dossierASupprimer,
 						cptMail.getIdCompte());
-				accesDossier.deleteDossier(cptMail.getIdCompte(), idDossier,
-						null);
+				accesDossier.deleteDossier(cptMail.getIdCompte(), p_dossier
+						.getIdDossier(), null);
 
 				JTreeFactory treeFact = new JTreeFactory();
-				treeFact.supprimeNode(p_selectionPath,
-						(DefaultMutableTreeNode) p_selectionPath
-								.getLastPathComponent());
+				DefaultMutableTreeNode dossierNode = treeFact
+						.rechercheDossierNode(p_dossier.getIdDossier(), cptMail
+								.getIdCompte());
+
+				final TreePath treePathFromTreeNode = treeFact
+						.getTreePathFromTreeNode(dossierNode);
+				treeFact.supprimeNode(treePathFromTreeNode, dossierNode);
 				// ComposantVisuelCommun.getJTree().getModel()
 				// .valueForPathChanged(p_selectionPath,
 				// p_selectionPath.getLastPathComponent());
 				ComposantVisuelCommun.getJTree().setSelectionPath(
-						p_selectionPath.getParentPath());
+						treePathFromTreeNode.getParentPath());
 
 				break;
 			case NON:// on ne fait rien
@@ -452,5 +455,4 @@ public class DossierFactory {
 		}
 
 	}
-
 }

@@ -4,7 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import mdl.ComposantVisuelCommun;
-import mdl.MlCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
 import thread.threadSuppressCompte;

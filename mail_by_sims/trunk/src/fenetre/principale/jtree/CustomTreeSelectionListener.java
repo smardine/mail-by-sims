@@ -12,9 +12,9 @@ import javax.swing.text.Document;
 import javax.swing.tree.DefaultMutableTreeNode;
 
 import mdl.ComposantVisuelCommun;
-import mdl.MlCompteMail;
-import mdl.MlDossier;
-import mdl.MlListeMessageGrille;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mldossier.MlDossier;
+import mdl.mlmessage.MlListeMessageGrille;
 import tools.GestionRepertoire;
 import factory.JTableFactory;
 

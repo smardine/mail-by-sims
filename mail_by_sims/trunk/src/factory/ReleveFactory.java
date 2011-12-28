@@ -11,8 +11,8 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Store;
 
-import mdl.MlCompteMail;
-import mdl.MlMessage;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mlmessage.MlMessage;
 import tools.GestionRepertoire;
 import tools.Historique;
 import bdd.accesTable.AccesTableMailRecu;

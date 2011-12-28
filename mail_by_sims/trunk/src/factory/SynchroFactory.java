@@ -7,9 +7,9 @@ import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
 
-import mdl.MlCompteMail;
-import mdl.MlListeMessageGrille;
-import mdl.MlMessageGrille;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mlmessage.MlListeMessageGrille;
+import mdl.mlmessage.MlMessageGrille;
 import bdd.accesTable.AccesTableMailRecu;
 
 import com.sun.mail.imap.IMAPFolder;

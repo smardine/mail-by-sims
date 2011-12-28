@@ -7,6 +7,7 @@
 <project basedir="." default="build" name="Mail by sims">
     <property environment="env"/>
     <property name="ECLIPSE_HOME" value="../../eclipse-galileo VisualEditor"/>
+    <property name="workspace_loc:Mail by sims" value="."/>
     <property name="junit.output.dir" value="junit"/>
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.6"/>
@@ -40,6 +41,7 @@
             <fileset dir="src">
                 <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
+                <exclude name="bdd/BDAcces.java"/>
             </fileset>
         </copy>
         <copy includeemptydirs="false" todir="bin">
@@ -65,6 +67,7 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="src"/>
+            <exclude name="bdd/BDAcces.java"/>
             <classpath refid="Mail by sims.classpath"/>
         </javac>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
@@ -90,8 +93,9 @@
         <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
         <antcall target="build"/>
     </target>
-    <target name="main">
+    <target name="mbs jaybird dll">
         <java classname="fenetre.principale.Main" failonerror="true" fork="yes">
+            <jvmarg line="-Djava.library.path=&quot;${workspace_loc:Mail by sims}/lib/fbdll&quot;"/>
             <classpath refid="Mail by sims.classpath"/>
         </java>
     </target>
@@ -100,6 +104,7 @@
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="test.TestSuiteClientMail" todir="${junit.output.dir}"/>
+            <jvmarg line="-Djava.library.path=&quot;${workspace_loc:Mail by sims}/lib/fbdll&quot;"/>
             <classpath refid="Mail by sims.classpath"/>
         </junit>
     </target>

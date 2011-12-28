@@ -9,9 +9,9 @@ import javax.mail.Message;
 import javax.mail.MessagingException;
 import javax.mail.Store;
 
-import mdl.MlCompteMail;
-import mdl.MlListeMessageGrille;
-import mdl.MlMessageGrille;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mlmessage.MlListeMessageGrille;
+import mdl.mlmessage.MlMessageGrille;
 import tools.Historique;
 import bdd.accesTable.AccesTableDossier;
 import bdd.accesTable.AccesTableMailRecu;

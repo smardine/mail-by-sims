@@ -13,8 +13,8 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.tree.TreePath;
 
-import mdl.MlCompteMail;
-import mdl.MlDossier;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mldossier.MlDossier;
 import factory.Fontfactory;
 import factory.IconeTreeFactory;
 import fenetre.comptes.EnDossierBase;

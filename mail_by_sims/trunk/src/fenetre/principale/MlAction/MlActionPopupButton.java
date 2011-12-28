@@ -3,8 +3,8 @@ package fenetre.principale.MlAction;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-import mdl.MlCompteMail;
-import mdl.MlListeCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mlcomptemail.MlListeCompteMail;
 import thread.Thread_Releve;
 import bdd.accesTable.AccesTableCompte;
 

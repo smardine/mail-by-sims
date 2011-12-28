@@ -12,7 +12,7 @@ import javax.mail.Store;
 import javax.swing.JLabel;
 import javax.swing.JProgressBar;
 
-import mdl.MlCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
 import bdd.accesTable.AccesTableCompte;
 import bdd.accesTable.AccesTableDossier;
 

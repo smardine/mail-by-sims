@@ -6,10 +6,10 @@ import java.util.ArrayList;
 
 import javax.swing.JTable;
 
-import mdl.MlCompteMail;
-import mdl.MlDossier;
-import mdl.MlListeMessageGrille;
-import mdl.MlMessageGrille;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mldossier.MlDossier;
+import mdl.mlmessage.MlListeMessageGrille;
+import mdl.mlmessage.MlMessageGrille;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
 import thread.ThreadDeplaceMessage;

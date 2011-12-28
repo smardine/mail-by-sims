@@ -53,6 +53,7 @@ Source: ".././Images/*"; DestDir: "{app}/Images"; Flags: ignoreversion recursesu
 Source: ".././template/*"; DestDir: "{app}/template"; Flags: ignoreversion recursesubdirs createallsubdirs
 ; NOTE: Don't use "Flags: ignoreversion" on any shared system files
 
+
 [Icons]
 Name: "{group}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"
 Name: "{group}\{cm:UninstallProgram,{#MyAppName}}"; Filename: "{uninstallexe}"
@@ -60,7 +61,209 @@ Name: "{commondesktop}\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: 
 Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Filename: "{app}\{#MyAppExeName}"; Tasks: quicklaunchicon
 
 [Run]
-Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppName}}"; Flags: nowait postinstall skipifsilent
+Filename: {app}\{#MyAppExeName}; Description: {cm:LaunchProgram,{#MyAppName}}; Flags: nowait postinstall SkipIfDoesntExist; 
+
+[Code]
 
 
+const
+   MOVEFILE_REPLACE_EXISTING      = 1;
+   MOVEFILE_COPY_ALLOWED          = 2;
+   MOVEFILE_DELAY_UNTIL_REBOOT    = 4;
+   MOVEFILE_WRITE_THROUGH         = 8;
 
+   // For Windows XP and above.
+   MOVEFILE_CREATE_HARDLINK       = 16;
+   MOVEFILE_FAIL_IF_NOT_TRACKABLE = 32;
+
+function MoveFileEx (lpExistingFileName, lpNewFileName: PChar; dwFlags: Cardinal): BOOL;
+ external 'MoveFileExA@kernel32.dll stdcall';
+
+  var
+    ChIni:string;
+	
+function CopyFolder(FromFldr,ToFldr:String;replaceFile:boolean):Boolean;
+begin
+  if (replaceFile) then
+    result:= MoveFileEx(FromFldr,ToFldr,MOVEFILE_REPLACE_EXISTING)
+  else
+    result:= MoveFileEx(FromFldr,ToFldr,MOVEFILE_COPY_ALLOWED);
+
+end;
+function InstallationFirebird:boolean;
+var 
+ResultCode:Integer;
+begin
+if (Exec(ExpandConstant('{app}\lib\Firebird-2.0.3.12981-1-Win32.exe'),'/SILENT /NORESTART /COPYFBCLIENT /COMPONENTS="SuperServerComponent, ServerComponent, DevAdminComponent, ClientComponent" ','',SW_SHOW,ewWaitUntilTerminated,ResultCode)) then
+   begin
+   end;
+end;
+
+(*
+  Defini les valeurs a rajouter dans la variable systeme path.
+*)
+function ModPathDir(): TArrayOfString;
+var
+Dir:	TArrayOfString;
+begin
+	setArrayLength(Dir, 2); //attention a bien definir la taille de cette Array.
+	Dir[0] := '%MBS_HOME%';
+	Dir[1] := '%JAVA_HOME%\bin';
+	Result := Dir;
+end;
+
+(*
+Inscrit des valeurs dans la base de registre.
+*)
+procedure WriteToReg();
+var
+valeur_cle:String;
+begin
+		if UsingWinNT() = true then begin
+    //variable d'environnement globale
+		if (RegQueryStringValue(HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'JAVA_HOME', valeur_cle) = false) then
+			RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'JAVA_HOME', 'C:\Program Files\Java\jdk1.6.0_25');
+		if (RegQueryStringValue(HKLM, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MBS_HOME', valeur_cle) = false) then	
+			RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'MBS_HOME', ExpandConstant('{app}'));
+		
+    //variable d'environnement propre a l'application, on ne verifie pas si la clé existe deja car on cherche a la remplacer
+			RegWriteStringValue(HKEY_CURRENT_USER, 'Software\SimsCorps', 'MailBySimsPath', ExpandConstant('{app}'));
+	
+    end;
+
+end;
+
+(*
+ permet de modifier le "Path" de Windows dans la base de registre.
+ Si la valeur que l'on essaye de rentrer existe deja, elle ne sera pas raoutée.
+ Pour definir la liste des valeurs à ajouter, on appelle la fonction ModPathDir().
+
+*)
+procedure ModifyPathRegistry();
+var
+	oldpath:	String;
+	newpath:	String;
+	pathArr:	TArrayOfString;
+	aExecFile:	String;
+	aExecArr:	TArrayOfString;
+	i, d:		Integer;
+	pathdir:	TArrayOfString;
+begin
+
+	// Get array of new directories and act on each individually
+	pathdir := ModPathDir();
+	for d := 0 to GetArrayLength(pathdir)-1 do begin
+
+		// Modify WinNT path
+		if UsingWinNT() = true then begin
+
+			// Get current path, split into an array
+			RegQueryStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'Path', oldpath);
+			oldpath := oldpath + ';';
+			i := 0;
+			while (Pos(';', oldpath) > 0) do begin
+				SetArrayLength(pathArr, i+1);
+				pathArr[i] := Copy(oldpath, 0, Pos(';', oldpath)-1);
+				oldpath := Copy(oldpath, Pos(';', oldpath)+1, Length(oldpath));
+				i := i + 1;
+
+				// Check if current directory matches app dir
+				if pathdir[d] = pathArr[i-1] then begin
+					// if uninstalling, remove dir from path
+					if IsUninstaller() = true then begin
+						continue;
+					// if installing, abort because dir was already in path
+					end else begin
+						abort;
+					end;
+				end;
+
+				// Add current directory to new path
+				if i = 1 then begin
+					newpath := pathArr[i-1];
+				end else begin
+					newpath := newpath + ';' + pathArr[i-1];
+				end;
+			end;
+
+			// Append app dir to path if not already included
+			if IsUninstaller() = false then
+				newpath := newpath + ';' + pathdir[d];
+
+			// Write new path
+			RegWriteStringValue(HKEY_LOCAL_MACHINE, 'SYSTEM\CurrentControlSet\Control\Session Manager\Environment', 'Path', newpath);
+		
+
+		// Modify Win9x path
+		end else begin
+
+			// Convert to shortened dirname
+			pathdir[d] := GetShortName(pathdir[d]);
+
+			// If autoexec.bat exists, check if app dir already exists in path
+			aExecFile := 'C:\AUTOEXEC.BAT';
+			if FileExists(aExecFile) then begin
+				LoadStringsFromFile(aExecFile, aExecArr);
+				for i := 0 to GetArrayLength(aExecArr)-1 do begin
+					if IsUninstaller() = false then begin
+						// If app dir already exists while installing, abort add
+						if (Pos(pathdir[d], aExecArr[i]) > 0) then
+							abort;
+					end else begin
+						// If app dir exists and = what we originally set, then delete at uninstall
+						if aExecArr[i] = 'SET PATH=%PATH%;' + pathdir[d] then
+							aExecArr[i] := '';
+					end;
+				end;
+			end;
+
+			// If app dir not found, or autoexec.bat didn't exist, then (create and) append to current path
+			if IsUninstaller() = false then begin
+				SaveStringToFile(aExecFile, #13#10 + 'SET PATH=%PATH%;' + pathdir[d], True);
+
+			// If uninstalling, write the full autoexec out
+			end else begin
+				SaveStringsToFile(aExecFile, aExecArr, False);
+			end;
+		end;
+
+		// Write file to flag modifypath was selected
+		//   Workaround since IsTaskSelected() cannot be called at uninstall and AppName and AppId cannot be "read" in Code section
+		if IsUninstaller() = false then
+			SaveStringToFile(ExpandConstant('{app}') + '\uninsTasks.txt', WizardSelectedTasks(False), False);
+	end;
+end;
+
+
+procedure checkFirebird();
+var
+valeur_cle:String;
+begin
+	if (RegQueryStringValue(HKLM, 'SOFTWARE\Firebird Project\Firebird Server\Instances', 'DefaultInstance', valeur_cle) = false) then
+	InstallationFirebird();
+end;
+(*
+  Est appellé dès que l'on passe une etape dans le setup.
+  Valeur possible pour CurStep:
+    - ssInstall:juste avant l'extraction des fichier du setup.
+    - ssPostInstall:juste apres que le setup ait fini d'extraire ses fichiers.
+    - ssDone: juste avant que le setup ne se ferme, efface eventuellement les fichiers temporaires...
+*)
+procedure CurStepChanged(CurStep: TSetupStep);
+var
+ResultCode:Integer;
+begin
+	if CurStep=ssInstall then
+	begin
+	if (FileExists(AddBackslash(ExpandConstant('{app}')) + 'unins000.exe')) then
+		Exec(ExpandConstant('{app}\unins000.exe'),'/SILENT','',SW_SHOW,ewWaitUntilTerminated,ResultCode);
+	
+	end;
+	
+	if CurStep=ssPostInstall then
+	begin
+	checkFirebird();
+	WriteToReg();
+	ModifyPathRegistry();
+	end;
+end;

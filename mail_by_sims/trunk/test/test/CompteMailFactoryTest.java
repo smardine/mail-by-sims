@@ -4,7 +4,7 @@
 package test;
 
 import junit.framework.TestCase;
-import mdl.MlCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
 import factory.CompteMailFactory;
 import fenetre.comptes.EnDefFournisseur;
 

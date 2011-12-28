@@ -1,7 +1,7 @@
 package thread;
 
-import mdl.MlCompteMail;
-import mdl.MlListeCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mlcomptemail.MlListeCompteMail;
 import releve.hotmail.ReleveHotmail;
 import releve.imap.ReleveGmail;
 import releve.pop.ClientMail;

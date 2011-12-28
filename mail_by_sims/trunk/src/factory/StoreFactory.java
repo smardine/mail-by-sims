@@ -9,7 +9,7 @@ import javax.mail.MessagingException;
 import javax.mail.Session;
 import javax.mail.Store;
 
-import mdl.MlCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
 
 /**
  * Cette classe s'occupe de l'etablissment de connexion a un serveur

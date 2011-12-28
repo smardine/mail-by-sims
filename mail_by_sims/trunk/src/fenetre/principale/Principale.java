@@ -33,7 +33,7 @@ import javax.swing.border.EtchedBorder;
 import javax.swing.tree.TreeSelectionModel;
 
 import mdl.ComposantVisuelCommun;
-import mdl.MlListeMessageGrille;
+import mdl.mlmessage.MlListeMessageGrille;
 import verification.Thread_Verif;
 import factory.JTreeFactory;
 import fenetre.EnTitreFenetre;

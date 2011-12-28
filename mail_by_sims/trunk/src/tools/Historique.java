@@ -6,7 +6,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import mdl.MlCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
 
 public final class Historique {

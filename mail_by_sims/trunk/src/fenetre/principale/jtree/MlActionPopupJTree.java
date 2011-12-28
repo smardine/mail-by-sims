@@ -8,12 +8,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
-import mdl.MlCompteMail;
-import mdl.MlDossier;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mldossier.MlDossier;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
 import thread.ThreadSupprimeMessage;
-import bdd.accesTable.AccesTableCompte;
 import bdd.accesTable.AccesTableDossier;
 import factory.DossierFactory;
 import factory.JTreeFactory;
@@ -40,40 +39,43 @@ public class MlActionPopupJTree implements ActionListener {
 			if (null == nomNewDossier || nomNewDossier.equals("")) {
 				return;
 			}
-			DefaultMutableTreeNode dossierParent = (DefaultMutableTreeNode) selectionPath
+			DefaultMutableTreeNode nodeParent = (DefaultMutableTreeNode) selectionPath
 					.getLastPathComponent();
-			AccesTableCompte accesCompte = new AccesTableCompte();
-			int idCompte = accesCompte.getIdComptes((String) selectionPath
-					.getPathComponent(1).toString());
-			AccesTableDossier accesDossier = new AccesTableDossier();
-			int idDossierParent = accesDossier.getIdDossier(dossierParent
-					.toString(), idCompte);
+			if (nodeParent.getUserObject() instanceof MlDossier) {
+				MlDossier dossierParent = (MlDossier) nodeParent
+						.getUserObject();
+				AccesTableDossier accesDossier = new AccesTableDossier();
+				if (accesDossier.createNewDossier(dossierParent.getIdCompte(),
+						dossierParent.getIdDossier(), nomNewDossier, "")) {
+					MlDossier aDossier = new MlDossier(accesDossier
+							.getIdDossier(nomNewDossier, dossierParent
+									.getIdCompte()));
 
-			if ("".equals(idDossierParent)) {
-				idDossierParent = 0;
-			}
-			if (accesDossier.createNewDossier(idCompte, idDossierParent,
-					nomNewDossier, "")) {
-				MlDossier aDossier = new MlDossier(accesDossier.getIdDossier(
-						nomNewDossier, idCompte));
-				TreePath newTreePath = selectionPath
-						.pathByAddingChild(new DefaultMutableTreeNode(aDossier));
-				JTreeFactory treeFact = new JTreeFactory();
-				treeFact.ajouteNode(selectionPath,
-						(DefaultMutableTreeNode) selectionPath
-								.getLastPathComponent(),
-						(DefaultMutableTreeNode) newTreePath
-								.getLastPathComponent());
-				tree.setSelectionPath(newTreePath);
-				ComposantVisuelCommun.setTree(tree);
+					JTreeFactory treeFact = new JTreeFactory();
+					treeFact.ajouteNode(selectionPath, nodeParent,
+							new DefaultMutableTreeNode(aDossier));
+					//					
+					tree.setSelectionPath(selectionPath);
+
+					ComposantVisuelCommun.setTree(tree);
+					treeFact.refreshJTree();
+
+				}
 
 			}
 
 		} else if ("SUPPRIMER".equals(actionCommand)) {
-			Object[] pathComplet = selectionPath.getPath();
-			DossierFactory dossierFact = new DossierFactory(new MlCompteMail(
-					pathComplet[1].toString()));
-			dossierFact.deleteDossier(selectionPath);
+			// Object[] pathComplet = selectionPath.getPath();
+			JTreeFactory treeFact = new JTreeFactory();
+			final DefaultMutableTreeNode dossierNode = (DefaultMutableTreeNode) selectionPath
+					.getLastPathComponent();
+			MlDossier dossier = (MlDossier) dossierNode.getUserObject();
+			DefaultMutableTreeNode cptNode = treeFact
+					.rechercheCompteNode(dossier.getIdCompte());
+
+			DossierFactory dossierFact = new DossierFactory(
+					(MlCompteMail) cptNode.getUserObject());
+			dossierFact.deleteDossier(dossier);
 
 		} else if ("VIDER".equals(actionCommand)) {
 			REPONSE reponse = messageUtilisateur.affMessageQuestionOuiNon(

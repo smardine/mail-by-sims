@@ -13,8 +13,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.WindowConstants;
 
 import mdl.ComposantVisuelCommun;
-import mdl.MlCompteMail;
-import mdl.MlListeCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mlcomptemail.MlListeCompteMail;
 import bdd.accesTable.AccesTableCompte;
 import fenetre.EnTitreFenetre;
 import fenetre.comptes.gestion.MlActionGestion.EnActionComptes;

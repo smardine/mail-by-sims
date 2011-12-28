@@ -5,7 +5,7 @@ package factory;
 
 import javax.mail.Message;
 
-import mdl.MlCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
 
 /**
  * Cette classe s'occupent de tout ce qui a trait aux regles de messageries

@@ -8,10 +8,10 @@ import javax.swing.JTree;
 import javax.swing.tree.TreePath;
 
 import mdl.ComposantVisuelCommun;
-import mdl.MlCompteMail;
-import mdl.MlListeCompteMail;
-import mdl.MlListeMessage;
-import mdl.MlMessage;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mlcomptemail.MlListeCompteMail;
+import mdl.mlmessage.MlListeMessage;
+import mdl.mlmessage.MlMessage;
 import releve.imap.util.messageUtilisateur;
 import tools.GestionRepertoire;
 import tools.Historique;

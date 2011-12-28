@@ -6,8 +6,8 @@ import java.awt.event.MouseListener;
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 
-import mdl.MlCompteMail;
-import mdl.MlListeCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mlcomptemail.MlListeCompteMail;
 import bdd.accesTable.AccesTableCompte;
 
 public class MlActionMainCombo implements MouseListener {

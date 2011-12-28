@@ -8,8 +8,8 @@ import javax.swing.ImageIcon;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 
-import mdl.MlListeMessageGrille;
-import mdl.MlMessageGrille;
+import mdl.mlmessage.MlListeMessageGrille;
+import mdl.mlmessage.MlMessageGrille;
 import releve.imap.util.messageUtilisateur;
 import exception.DonneeAbsenteException;
 

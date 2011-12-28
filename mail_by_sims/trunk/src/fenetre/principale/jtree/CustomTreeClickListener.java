@@ -9,8 +9,13 @@ import javax.swing.JTree;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 
-import mdl.MlCompteMail;
-import mdl.MlDossier;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mldossier.MlBrouillon;
+import mdl.mldossier.MlCorbeille;
+import mdl.mldossier.MlDossier;
+import mdl.mldossier.MlEnvoye;
+import mdl.mldossier.MlReception;
+import mdl.mldossier.MlSpam;
 import bdd.accesTable.AccesTableMailRecu;
 
 public class CustomTreeClickListener implements MouseListener {
@@ -33,12 +38,12 @@ public class CustomTreeClickListener implements MouseListener {
 	 * @return javax.swing.JPopupMenu
 	 */
 	private JPopupMenu getJPopupMenu() {
-		if (popUpMenu == null) {
-			popUpMenu = new JPopupMenu();
-			popUpMenu.add(getAjouter());
-			popUpMenu.add(getSupprimer());
+		// if (popUpMenu == null) {
+		popUpMenu = new JPopupMenu();
+		popUpMenu.add(getAjouter());
+		popUpMenu.add(getSupprimer());
 
-		}
+		// }
 		return popUpMenu;
 	}
 
@@ -47,13 +52,13 @@ public class CustomTreeClickListener implements MouseListener {
 	 * @return javax.swing.JMenuItem
 	 */
 	private JMenuItem getAjouter() {
-		if (Ajouter == null) {
-			Ajouter = new JMenuItem();
-			Ajouter.setText("Ajouter un dossier");
-			Ajouter.setActionCommand("AJOUTER");
-			Ajouter.addActionListener(new MlActionPopupJTree(tree));
+		// if (Ajouter == null) {
+		Ajouter = new JMenuItem();
+		Ajouter.setText("Ajouter un dossier");
+		Ajouter.setActionCommand("AJOUTER");
+		Ajouter.addActionListener(new MlActionPopupJTree(tree));
 
-		}
+		// }
 		return Ajouter;
 	}
 
@@ -62,22 +67,22 @@ public class CustomTreeClickListener implements MouseListener {
 	 * @return javax.swing.JMenuItem
 	 */
 	private JMenuItem getSupprimer() {
-		if (Supprimer == null) {
-			Supprimer = new JMenuItem();
-			Supprimer.setText("Supprimer ce dossier");
-			Supprimer.setActionCommand("SUPPRIMER");
-			Supprimer.addActionListener(new MlActionPopupJTree(tree));
-		}
+		// if (Supprimer == null) {
+		Supprimer = new JMenuItem();
+		Supprimer.setText("Supprimer ce dossier");
+		Supprimer.setActionCommand("SUPPRIMER");
+		Supprimer.addActionListener(new MlActionPopupJTree(tree));
+		// }
 		return Supprimer;
 	}
 
 	private JMenuItem getViderCorbeille() {
-		if (viderCorbeille == null) {
-			viderCorbeille = new JMenuItem();
-			viderCorbeille.setText("Vider la corbeille");
-			viderCorbeille.setActionCommand("VIDER");
-			viderCorbeille.addActionListener(new MlActionPopupJTree(tree));
-		}
+		// if (viderCorbeille == null) {
+		viderCorbeille = new JMenuItem();
+		viderCorbeille.setText("Vider la corbeille");
+		viderCorbeille.setActionCommand("VIDER");
+		viderCorbeille.addActionListener(new MlActionPopupJTree(tree));
+		// }
 		return viderCorbeille;
 	}
 
@@ -106,37 +111,48 @@ public class CustomTreeClickListener implements MouseListener {
 
 			tree.setSelectionRow(selRow);
 
-			DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) pathFromEvent
-					.getLastPathComponent();
-			Object userObject = aNode.getUserObject();
-			if (userObject instanceof MlCompteMail) {
-				Supprimer.setEnabled(false);
-			} else if (userObject instanceof MlDossier) {
-				MlDossier dossier = (MlDossier) userObject;
-				if (dossier.getIdDossierParent() == 0) {
-					Supprimer.setEnabled(false);
-					DefaultMutableTreeNode parent = (DefaultMutableTreeNode) aNode
-							.getParent();
-					MlCompteMail compteMailParent = (MlCompteMail) parent
-							.getUserObject();
-					if (compteMailParent.getIdCorbeille() == dossier
-							.getIdDossier()) {
-						popUpMenu.add(getViderCorbeille());
-						if (new AccesTableMailRecu().getListeMessageGrille(
-								compteMailParent.getIdCompte(),
-								dossier.getIdDossier()).size() == 0) {
-							viderCorbeille.setEnabled(false);
-						} else {
-							viderCorbeille.setEnabled(true);
-						}
-					}
-				} else {
-					Supprimer.setEnabled(true);
-				}
-			}
+			construitPopUpMenu(pathFromEvent);
 			popUpMenu.show(e.getComponent(), e.getX(), e.getY());
 		}
 
+	}
+
+	/**
+	 * @param p_pathFromEvent
+	 */
+	private void construitPopUpMenu(TreePath p_pathFromEvent) {
+		DefaultMutableTreeNode aNode = (DefaultMutableTreeNode) p_pathFromEvent
+				.getLastPathComponent();
+		Object userObject = aNode.getUserObject();
+		if (userObject instanceof MlCompteMail) {
+			popUpMenu.setVisible(false);
+			Ajouter.setVisible(false);
+			Supprimer.setVisible(false);
+
+		} else if (userObject instanceof MlDossier) {
+			if (userObject instanceof MlReception
+					|| userObject instanceof MlEnvoye
+					|| userObject instanceof MlSpam
+					|| userObject instanceof MlBrouillon) {
+				Supprimer.setVisible(false);
+			} else if (userObject instanceof MlCorbeille) {
+				Supprimer.setVisible(false);
+				Ajouter.setVisible(false);
+				popUpMenu.add(getViderCorbeille());
+				if (new AccesTableMailRecu().getListeMessageGrille(
+						((MlCorbeille) userObject).getIdCompte(),
+						((MlCorbeille) userObject).getIdDossier()).size() == 0) {
+					viderCorbeille.setEnabled(false);
+				} else {
+					viderCorbeille.setEnabled(true);
+				}
+			} else {
+				Supprimer.setEnabled(true);
+				Supprimer.setVisible(true);
+				Ajouter.setVisible(true);
+
+			}
+		}
 	}
 
 	/**

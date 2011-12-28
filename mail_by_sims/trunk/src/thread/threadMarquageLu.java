@@ -3,8 +3,8 @@
  */
 package thread;
 
-import mdl.MlListeMessageGrille;
-import mdl.MlMessageGrille;
+import mdl.mlmessage.MlListeMessageGrille;
+import mdl.mlmessage.MlMessageGrille;
 import bdd.accesTable.AccesTableMailRecu;
 import fenetre.Patience;
 

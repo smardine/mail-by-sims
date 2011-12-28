@@ -6,7 +6,7 @@ package factory;
 import javax.swing.JTable;
 
 import mdl.ComposantVisuelCommun;
-import mdl.MlListeMessageGrille;
+import mdl.mlmessage.MlListeMessageGrille;
 import fenetre.principale.jTable.MyTableModel;
 
 /**

@@ -9,7 +9,7 @@ import java.io.IOException;
 
 import javax.mail.MessagingException;
 
-import mdl.MlCompteMail;
+import mdl.mlcomptemail.MlCompteMail;
 import releve.imap.util.messageUtilisateur;
 
 import com.googlecode.jdeltasync.AuthenticationException;

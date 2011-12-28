@@ -8,11 +8,16 @@ import java.util.List;
 
 import javax.swing.JProgressBar;
 
-import mdl.MlCompteMail;
-import mdl.MlDossier;
-import mdl.MlListeDossier;
-import mdl.MlListeMessageGrille;
-import mdl.MlMessageGrille;
+import mdl.mlcomptemail.MlCompteMail;
+import mdl.mldossier.MlBrouillon;
+import mdl.mldossier.MlCorbeille;
+import mdl.mldossier.MlDossier;
+import mdl.mldossier.MlEnvoye;
+import mdl.mldossier.MlListeDossier;
+import mdl.mldossier.MlReception;
+import mdl.mldossier.MlSpam;
+import mdl.mlmessage.MlListeMessageGrille;
+import mdl.mlmessage.MlMessageGrille;
 import releve.imap.util.messageUtilisateur;
 import bdd.structure.EnStructCompte;
 import bdd.structure.EnStructDossier;
@@ -95,21 +100,36 @@ public class AccesTableDossier {
 	 * @param p_idCompte
 	 * @return
 	 */
-	public MlListeDossier getListeSousDossierBase(int p_idCompte) {
+	public MlListeDossier getListeSousDossierBase(final MlCompteMail p_cptMail) {
 		String requete = "SELECT "// 
 				+ EnStructDossier.ID_DOSSIER.getNomChamp()//
 				+ " FROM "// 
 				+ EnTable.DOSSIER.getNomTable()// 
 				+ " WHERE " //
-				+ EnStructCompte.ID.getNomChamp() + "=" + p_idCompte //
+				+ EnStructCompte.ID.getNomChamp()
+				+ "="
+				+ p_cptMail.getIdCompte() //
 				+ " AND "//
 				+ EnStructDossier.ID_DOSSIER_PARENT.getNomChamp() + "=0 "// 
 				+ "ORDER BY "// 
 				+ EnStructDossier.ID_DOSSIER.getNomChamp();
 		List<String> lstRetour = requeteFact.getListeDeChamp(requete);
 		MlListeDossier lst = new MlListeDossier();
+
 		for (String s : lstRetour) {
-			lst.add(new MlDossier(Integer.parseInt(s)));
+			int idDossier = Integer.parseInt(s);
+			if (idDossier == p_cptMail.getIdInbox()) {
+				lst.add(new MlReception(p_cptMail));
+			} else if (idDossier == p_cptMail.getIdEnvoye()) {
+				lst.add(new MlEnvoye(p_cptMail));
+			} else if (idDossier == p_cptMail.getIdSpam()) {
+				lst.add(new MlSpam(p_cptMail));
+			} else if (idDossier == p_cptMail.getIdCorbeille()) {
+				lst.add(new MlCorbeille(p_cptMail));
+			} else if (idDossier == p_cptMail.getIdBrouillons()) {
+				lst.add(new MlBrouillon(p_cptMail));
+			}
+			// lst.add(new MlDossier(Integer.parseInt(s)));
 		}
 		return lst;
 
@@ -120,8 +140,8 @@ public class AccesTableDossier {
 	 * @param p_idCompte
 	 * @return
 	 */
-	public int getnbSousDossierBase(int p_idCompte) {
-		return getListeSousDossierBase(p_idCompte).size();
+	public int getnbSousDossierBase(MlCompteMail p_cptMail) {
+		return getListeSousDossierBase(p_cptMail).size();
 
 	}
 

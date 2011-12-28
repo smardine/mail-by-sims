@@ -47,7 +47,7 @@ Source: ".././lib/deltasync.jar"; DestDir: {app}/lib; Flags: ignoreversion;
 Source: ".././lib/jaybird_full_2_1_6.jar"; DestDir: {app}/lib; Flags: ignoreversion;
 Source: ".././lib/mail.jar"; DestDir: {app}/lib; Flags: ignoreversion;
 Source: ".././lib/libdeltasync/*"; DestDir: "{app}/lib/libdeltasync"; Flags: ignoreversion
-Source: ".././lib/fbdll/*"; DestDir: "{app}/lib/fbdll"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: ".././lib/Firebird-2.0.3.12981-1-Win32.exe"; DestDir: "{app}/lib"; Flags: ignoreversion
 
 Source: ".././Images/*"; DestDir: "{app}/Images"; Flags: ignoreversion recursesubdirs createallsubdirs
 Source: ".././template/*"; DestDir: "{app}/template"; Flags: ignoreversion recursesubdirs createallsubdirs
@@ -61,4 +61,6 @@ Name: "{userappdata}\Microsoft\Internet Explorer\Quick Launch\{#MyAppName}"; Fil
 
 [Run]
 Filename: "{app}\{#MyAppExeName}"; Description: "{cm:LaunchProgram,{#MyAppName}}"; Flags: nowait postinstall skipifsilent
+
+
 

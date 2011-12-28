@@ -31,21 +31,39 @@ public final class GestionRepertoire {
 	}
 
 	public static String RecupRepLib() {
-		return RecupRepTravail() + "/lib";
+		File replib = new File(RecupRepTravail() + "/lib");
+		if (!replib.exists()) {
+			replib.mkdirs();
+		}
+		return replib.getAbsolutePath();
+	}
+
+	public static String RecupRepTempo() {
+		File reptempo = new File(RecupRepTravail() + "/tempo");
+		if (!reptempo.exists()) {
+			reptempo.mkdirs();
+		}
+		return reptempo.getAbsolutePath();
+	}
+
+	public static String RecupRepPieceJointe() {
+		File reppj = new File(RecupRepTempo() + "/pieces jointes");
+		if (!reppj.exists()) {
+			reppj.mkdirs();
+		}
+		return reppj.getAbsolutePath();
 	}
 
 	/**
 	 * @return
 	 */
 	public static String RecupRepTemplate() {
-		final File dir = new File("./template");
-		String sAppliDir = "";
-		try {
-			sAppliDir = dir.getCanonicalPath();
-		} catch (final Exception e1) {
-			Historique.ecrire("Message d'erreur: " + e1);
+		final File dir = new File(RecupRepTravail() + "/template");
+		if (!dir.exists()) {
+			dir.mkdirs();
 		}
-		return sAppliDir;
+
+		return dir.getAbsolutePath();
 	}
 
 	/**

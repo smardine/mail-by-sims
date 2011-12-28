@@ -258,7 +258,7 @@ public class AccesTableMailRecu {
 	}
 
 	/**
-	 * operation inverse de {@link AccesTableMailRecu.encodeHTMLforBase}
+	 * operation inverse de encodeHTMLforBase}
 	 * @param p_input
 	 * @return le texte modifié
 	 */

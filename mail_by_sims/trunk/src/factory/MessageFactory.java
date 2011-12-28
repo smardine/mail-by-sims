@@ -233,11 +233,8 @@ public class MessageFactory {
 		p_fenetre.afficheInfo("Récuperation d'une piece jointe", "", 0);
 
 		// creation du repertoire qui va acceuillir les pieces jointes
-		File repPieceJointe = new File(GestionRepertoire.RecupRepTravail()
-				+ "/tempo/pieces jointes");
-		if (!repPieceJointe.exists()) {
-			repPieceJointe.mkdirs();
-		}
+		File repPieceJointe = new File(GestionRepertoire.RecupRepPieceJointe());
+
 		File fichier = new File(repPieceJointe.getAbsolutePath() + "/"
 				+ fileName);
 		if (!fichier.exists()) {

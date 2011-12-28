@@ -448,8 +448,8 @@ public class ReleveFactory {
 				MlMessage messPourBase = new MlMessage();
 				// messPourBase.setUIDMessage(uidMessage);
 				messPourBase.setCheminPhysique(GestionRepertoire
-						.RecupRepTravail()
-						+ "/tempo/" + System.currentTimeMillis() + ".eml");
+						.RecupRepTempo()
+						+ "/" + System.currentTimeMillis() + ".eml");
 
 				messageJavaMail.writeTo(new FileOutputStream(messPourBase
 						.getCheminPhysique()));

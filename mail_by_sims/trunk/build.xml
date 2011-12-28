@@ -41,7 +41,8 @@
             <fileset dir="src">
                 <exclude name="**/*.launch"/>
                 <exclude name="**/*.java"/>
-                <exclude name="bdd/BDAcces.java"/>
+                <exclude name="bdd/BDAccesDll.java"/>
+                <exclude name="bdd/BDParamDll.java"/>
             </fileset>
         </copy>
         <copy includeemptydirs="false" todir="bin">
@@ -67,7 +68,8 @@
         <echo message="${ant.project.name}: ${ant.file}"/>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
             <src path="src"/>
-            <exclude name="bdd/BDAcces.java"/>
+            <exclude name="bdd/BDAccesDll.java"/>
+            <exclude name="bdd/BDParamDll.java"/>
             <classpath refid="Mail by sims.classpath"/>
         </javac>
         <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
@@ -99,12 +101,25 @@
             <classpath refid="Mail by sims.classpath"/>
         </java>
     </target>
-    <target name="TestSuiteClientMail">
+    <target name="mbs">
+        <java classname="fenetre.principale.Main" failonerror="true" fork="yes">
+            <classpath refid="Mail by sims.classpath"/>
+        </java>
+    </target>
+    <target name="TestSuiteClientMailDll">
         <mkdir dir="${junit.output.dir}"/>
         <junit fork="yes" printsummary="withOutAndErr">
             <formatter type="xml"/>
             <test name="test.TestSuiteClientMail" todir="${junit.output.dir}"/>
             <jvmarg line="-Djava.library.path=&quot;${workspace_loc:Mail by sims}/lib/fbdll&quot;"/>
+            <classpath refid="Mail by sims.classpath"/>
+        </junit>
+    </target>
+    <target name="TestSuiteClientMail">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.TestSuiteClientMail" todir="${junit.output.dir}"/>
             <classpath refid="Mail by sims.classpath"/>
         </junit>
     </target>

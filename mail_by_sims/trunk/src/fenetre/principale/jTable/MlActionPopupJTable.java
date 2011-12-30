@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import javax.swing.JTable;
 
 import mdl.mlcomptemail.MlCompteMail;
-import mdl.mldossier.MlDossier;
 import mdl.mlmessage.MlListeMessageGrille;
 import mdl.mlmessage.MlMessageGrille;
 import releve.imap.util.REPONSE;
@@ -194,23 +193,15 @@ public class MlActionPopupJTable implements ActionListener {
 		if (lstADepl.size() > 0) {
 			MlCompteMail cpt = treeFactory.rechercheCompteMail(lstADepl.get(0)
 					.getIdCompte());
-			MlDossier dossier = treeFactory.rechercheDossier(lstADepl.get(0)
-					.getIdDossier(), cpt.getIdCompte());
-			MlDossier corbeille = treeFactory.rechercheDossier(cpt
-					.getIdCorbeille(), cpt.getIdCompte());
 
-			ThreadDeplaceMessage t = new ThreadDeplaceMessage(lstADepl, cpt,
-					dossier, corbeille);
+			ThreadDeplaceMessage t = new ThreadDeplaceMessage(lstADepl, cpt);
 			t.start();
 		}
 		if (lstASuppr.size() > 0) {
 			MlCompteMail cpt = treeFactory.rechercheCompteMail(lstASuppr.get(0)
 					.getIdCompte());
-			MlDossier dossier = treeFactory.rechercheDossier(lstASuppr.get(0)
-					.getIdDossier(), cpt.getIdCompte());
 
-			ThreadSupprimeMessage t = new ThreadSupprimeMessage(lstASuppr, cpt,
-					dossier);
+			ThreadSupprimeMessage t = new ThreadSupprimeMessage(lstASuppr, cpt);
 			t.start();
 		}
 

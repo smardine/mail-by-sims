@@ -27,16 +27,18 @@ public class ThreadDeplaceMessage extends Thread {
 	private final AccesTableDossier accesDossier;
 
 	private final MlCompteMail compteMail;
-	private MlDossier dossierMail;
+
 	private final MlDossier corbeille;
+	private final JTreeFactory treeFactory;
 
 	public ThreadDeplaceMessage(MlListeMessageGrille p_lstADepl,
-			MlCompteMail p_cptMail, MlDossier p_dossierMail,
-			MlDossier p_corbeille) {
+			MlCompteMail p_cptMail) {
 		this.list = p_lstADepl;
 		this.compteMail = p_cptMail;
-		this.dossierMail = p_dossierMail;
-		this.corbeille = p_corbeille;
+		this.treeFactory = new JTreeFactory();
+
+		this.corbeille = treeFactory.rechercheDossier(compteMail
+				.getIdCorbeille(), compteMail.getIdCompte());
 
 		this.fenetre = new Patience(
 				"Deplacement des messages vers la corbeille");
@@ -47,7 +49,6 @@ public class ThreadDeplaceMessage extends Thread {
 
 	@Override
 	public void run() {
-		JTreeFactory treeFactory = new JTreeFactory();
 
 		fenetre.setVisible(true);
 		DeplaceOuSupprFactory fact = new DeplaceOuSupprFactory(compteMail,
@@ -56,21 +57,22 @@ public class ThreadDeplaceMessage extends Thread {
 		try {
 			fact.deplaceMessageVersCorbeille();
 			accesMail.deplaceMessageVersCorbeille(list);
-			dossierMail.setUnreadMessageCount(accesDossier
-					.getUnreadMessageFromFolder(dossierMail.getIdCompte(),
-							dossierMail.getIdDossier()));
-			while (dossierMail.getIdDossierParent() != 0) {
-				dossierMail = treeFactory.rechercheDossier(dossierMail
-						.getIdDossierParent(), compteMail.getIdCompte());
-				dossierMail.setUnreadMessageCount(accesDossier
-						.getUnreadMessageFromFolder(dossierMail.getIdCompte(),
-								dossierMail.getIdDossier()));
-			}
+
+			// dossierMail.setUnreadMessageCount(accesDossier
+			// .getUnreadMessageFromFolder(dossierMail.getIdCompte(),
+			// dossierMail.getIdDossier()));
+			// while (dossierMail.getIdDossierParent() != 0) {
+			// dossierMail = treeFactory.rechercheDossier(dossierMail
+			// .getIdDossierParent(), compteMail.getIdCompte());
+			// dossierMail.setUnreadMessageCount(accesDossier
+			// .getUnreadMessageFromFolder(dossierMail.getIdCompte(),
+			// dossierMail.getIdDossier()));
+			// }
 
 			corbeille.setUnreadMessageCount(accesDossier
 					.getUnreadMessageFromFolder(corbeille.getIdCompte(),
 							corbeille.getIdDossier()));
-
+			treeFactory.majUnreadCount(list);
 			treeFactory.refreshJTree();
 		} catch (MessagingException e) {
 			messageUtilisateur.affMessageException(TAG, e,

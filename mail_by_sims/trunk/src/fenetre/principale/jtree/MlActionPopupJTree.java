@@ -10,11 +10,13 @@ import javax.swing.tree.TreePath;
 import mdl.ComposantVisuelCommun;
 import mdl.mlcomptemail.MlCompteMail;
 import mdl.mldossier.MlDossier;
+import mdl.mlmessage.MlListeMessageGrille;
 import releve.imap.util.REPONSE;
 import releve.imap.util.messageUtilisateur;
 import thread.ThreadSupprimeMessage;
 import bdd.accesTable.AccesTableDossier;
 import factory.DossierFactory;
+import factory.JTableFactory;
 import factory.JTreeFactory;
 
 public class MlActionPopupJTree implements ActionListener {
@@ -92,9 +94,10 @@ public class MlActionPopupJTree implements ActionListener {
 							.rechercheCompteMail(dossierAVider.getIdCompte());
 
 					ThreadSupprimeMessage t = new ThreadSupprimeMessage(
-							dossierAVider.getListMessageGrille(), cpt,
-							dossierAVider);
+							dossierAVider.getListMessageGrille(), cpt);
 					t.start();
+					JTableFactory tableFact = new JTableFactory();
+					tableFact.refreshJTable(new MlListeMessageGrille());
 					break;
 				case NON:
 					break;

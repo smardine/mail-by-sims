@@ -6,6 +6,7 @@ package factory;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import javax.mail.Flags;
 import javax.mail.Folder;
 import javax.mail.Message;
 import javax.mail.MessagingException;
@@ -22,7 +23,9 @@ import com.googlecode.jdeltasync.DeltaSyncClient;
 import com.googlecode.jdeltasync.DeltaSyncClientHelper;
 import com.googlecode.jdeltasync.DeltaSyncException;
 import com.sun.mail.imap.IMAPFolder;
+import com.sun.mail.imap.IMAPMessage;
 import com.sun.mail.pop3.POP3Folder;
+import com.sun.mail.pop3.POP3Message;
 
 import fenetre.Patience;
 import fenetre.comptes.EnTypeCompte;
@@ -446,10 +449,12 @@ public class ReleveFactory {
 			if (uidMessage == null
 					|| bd.isMessageUIDAbsent(uidMessage, p_idDossier)) {
 				MlMessage messPourBase = new MlMessage();
-				// messPourBase.setUIDMessage(uidMessage);
+
 				messPourBase.setCheminPhysique(GestionRepertoire
 						.RecupRepTempo()
 						+ "/" + System.currentTimeMillis() + ".eml");
+
+				messPourBase.setLu(traiteStatuLecture(messageJavaMail));
 
 				messageJavaMail.writeTo(new FileOutputStream(messPourBase
 						.getCheminPhysique()));
@@ -471,6 +476,38 @@ public class ReleveFactory {
 				bd.createNewMessage(messPourBase);
 			}// fin de isMessageUIDAbsent
 		}// fin de parcour des message
+	}
+
+	/**
+	 * @param p_messageJavaMail
+	 * @return
+	 */
+	private boolean traiteStatuLecture(Message p_messageJavaMail) {
+		if (compteMail.getTypeCompte() == EnTypeCompte.GMAIL) {
+			IMAPMessage imapMess = (IMAPMessage) p_messageJavaMail;
+			try {
+				Flags flags = imapMess.getFlags(); // sytemFlag=32 => read
+				if (flags.contains(Flags.Flag.SEEN)) {
+					return true;
+				}
+			} catch (MessagingException e) {
+				e.printStackTrace();
+				return false;
+			}
+		} else if (compteMail.getTypeCompte() == EnTypeCompte.POP) {
+			POP3Message popMess = (POP3Message) p_messageJavaMail;
+			try {
+				Flags flags = popMess.getFlags(); // sytemFlag=32 => read
+				if (flags.contains(Flags.Flag.SEEN)) {
+					return true;
+				}
+			} catch (MessagingException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
+
+		return false;
 	}
 
 	/**

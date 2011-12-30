@@ -20,6 +20,7 @@ import mdl.ComposantVisuelCommun;
 import mdl.mlcomptemail.MlCompteMail;
 import mdl.mlcomptemail.MlListeCompteMail;
 import mdl.mldossier.MlDossier;
+import mdl.mlmessage.MlListeMessageGrille;
 import mdl.mlmessage.MlMessageGrille;
 import releve.imap.util.messageUtilisateur;
 import thread.threadMajUnreadCount;
@@ -464,11 +465,13 @@ public class JTreeFactory {
 
 	/**
 	 * Mise a jour du compteur de message non lu pour l'afficher a l'utilisateur
-	 * @param p_messageGrille le MlMessage que l'on vient de créer ou de mette a
-	 *            jour (statut lecture)
+	 * @param p_listeMessageGrille le MlMessage que l'on vient de créer ou de
+	 *            mette a jour (statut lecture)
 	 */
-	public void majUnreadCount(final MlMessageGrille p_messageGrille) {
-		new threadMajUnreadCount(p_messageGrille, accesCompte).start();
+	public void majUnreadCount(final MlListeMessageGrille p_listeMessageGrille) {
+		for (MlMessageGrille m : p_listeMessageGrille) {
+			new threadMajUnreadCount(m, accesCompte).start();
+		}
 
 	}
 }

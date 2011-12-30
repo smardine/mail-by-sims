@@ -149,8 +149,9 @@ public class AccesTableMailRecu {
 			// updateStatusLecture(lst, false);
 
 			JTreeFactory treeFact = new JTreeFactory();
-			treeFact
-					.majUnreadCount(new MlMessageGrille(Integer.parseInt(maxId)));
+			MlListeMessageGrille lst = new MlListeMessageGrille();
+			lst.add(new MlMessageGrille(Integer.parseInt(maxId)));
+			treeFact.majUnreadCount(lst);
 
 			verifEtSuppressionBlob(new File(m.getCheminPhysique()));
 			verifEtSuppressionBlob(fileToBlobContenu);
@@ -530,8 +531,10 @@ public class AccesTableMailRecu {
 
 		for (MlMessageGrille m : p_lstMailLu) {
 			updateStatusLecture(m, p_isLu);
-			treeFact.majUnreadCount(m);
+			m.setLu(p_isLu);
+
 		}
+		treeFact.majUnreadCount(p_lstMailLu);
 
 		return true;
 	}

@@ -19,11 +19,13 @@ public class threadMajUnreadCount extends Thread {
 	private final JTreeFactory treeFact;
 	private final AccesTableDossier accesDossier;
 	private final AccesTableCompte accesCompte;
+	private final boolean isLu;
 
 	public threadMajUnreadCount(MlMessageGrille p_message,
 			AccesTableCompte p_accesCompte) {
 		this.messageGrille = p_message;
 		this.accesCompte = p_accesCompte;
+		this.isLu = messageGrille.isLu();
 		treeFact = new JTreeFactory();
 		accesDossier = new AccesTableDossier();
 
@@ -43,7 +45,14 @@ public class threadMajUnreadCount extends Thread {
 		while (dossier.getIdDossierParent() != 0) {
 			dossier = treeFact.rechercheDossier(dossier.getIdDossierParent(),
 					dossier.getIdCompte());
-			dossier.setUnreadMessageCount(dossier.getUnreadMessageCount() - 1);
+			if (isLu) {
+				dossier
+						.setUnreadMessageCount(dossier.getUnreadMessageCount() - 1);
+			} else {
+				dossier
+						.setUnreadMessageCount(dossier.getUnreadMessageCount() + 1);
+			}
+
 		}
 
 		treeFact.refreshJTree();
